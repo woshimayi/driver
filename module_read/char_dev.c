@@ -12,6 +12,7 @@
 #include <linux/cdev.h>
 #include <linux/slab.h>
 #include <linux/uaccess.h>
+#include "head.h"
 
 #define GLOBALMEM_SIZE	0x1000
 #define MEM_CLEAR 0x1
@@ -43,14 +44,18 @@ static long globalmem_ioctl(struct file *filp, unsigned int cmd,
 {
 	struct globalmem_dev *dev = filp->private_data;
 
-	switch (cmd) {
-	case MEM_CLEAR:
-		memset(dev->mem, 0, GLOBALMEM_SIZE);
-		printk(KERN_INFO "globalmem is set to zero\n");
-		break;
+	switch (cmd) 
+	{
+		case HELLO_ONE:
+			memset(dev->mem, 0, GLOBALMEM_SIZE);
+			printk(KERN_INFO "globalmem is set to one\n");
+			break;
+		case HELLO_TWO:
+			memset(dev->mem, 0, GLOBALMEM_SIZE);
+			printk(KERN_INFO "globalmem is set to two\n");
 
-	default:
-		return -EINVAL;
+		default:
+			return -EINVAL;
 	}
 
 	return 0;
@@ -69,13 +74,13 @@ static ssize_t globalmem_read(struct file *filp, char __user * buf, size_t size,
 	if (count > GLOBALMEM_SIZE - p)
 		count = GLOBALMEM_SIZE - p;
 
-	if (copy_to_user(buf, dev->mem + p, count)) {
+	if (copy_to_user(buf, dev->mem, count)) {
 		ret = -EFAULT;
 	} else {
 		*ppos += count;
 		ret = count;
 
-		printk(KERN_INFO "read %u bytes(s) from %lu\n", count, p);
+		printk(KERN_INFO "read %u bytes(s) from %lu mem = %s\n", count, p, dev->mem);
 	}
 
 	return ret;
@@ -95,12 +100,15 @@ static ssize_t globalmem_write(struct file *filp, const char __user * buf,
 		count = GLOBALMEM_SIZE - p;
 
 	if (copy_from_user(dev->mem + p, buf, count))
+	{
 		ret = -EFAULT;
-	else {
+	}
+	else 
+	{
 		*ppos += count;
 		ret = count;
 
-		printk(KERN_INFO "written %u bytes(s) from %lu\n", count, p);
+		printk(KERN_INFO "written %u bytes(s) from %lu mem = %s\n", count, p, dev->mem);
 	}
 
 	return ret;
