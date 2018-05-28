@@ -1,3 +1,19 @@
+/*
+* 使用socket 获取网络信息
+* ioctl https://baike.baidu.com/item/ioctl/6392403 
+* 
+* 网络接口信息
+*
+* 接口数量:5
+* 接口：docker0
+* 接口状态: UP
+* IP地址:172.17.0.1
+* 子网掩码:255.255.0.0
+* 广播地址:0.0.0.0
+* MAC地址:02:42:3d:e3:4a:04
+*
+*/
+
 #include <arpa/inet.h>
 #include <net/if.h>
 #include <net/if_arp.h>
