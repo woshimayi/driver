@@ -1,3 +1,16 @@
+/*
+ * @Description: In User Settings Edit
+ * @Author: your name
+ * @Date: 2018-07-13 13:36:22
+ * @LastEditTime: 2018-12-10 21:23:46
+ * @LastEditors: your name
+ */
+/*
+ * @Author: mikey.zhaopeng 
+ * @Date: 2018-12-10 21:10:46 
+ * @Last Modified by:   mikey.zhaopeng 
+ * @Last Modified time: 2018-12-10 21:10:46 
+ */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -25,6 +38,8 @@ struct timespec
 	long tv_sec;
 	long tv_nsec;
 };
+
+
 
 int oal_lock(const UINT32 *timeoutMs)
 {
@@ -173,6 +188,11 @@ int oal_lock(const UINT32 *timeoutMs)
 
 /** OS dependent timestamp functions go in this file.
  */
+/**
+ * @msg: OS dependent timestamp functions go in this file.
+ * @param {type} 
+ * @return: 
+ */ 
 void oalTms_get(CmsTimestamp *tms)
 {
    struct timespec ts;
@@ -250,7 +270,7 @@ int timeout(int timeout, char sec)
 	while(1)
 	{
 		gettimeofday(&end,NULL);
-		time_use=(end.tv_sec-start.tv_sec)*1000000+(end.tv_usec-start.tv_usec);//Î¢Ãë
+		time_use=(end.tv_sec-start.tv_sec)*1000000+(end.tv_usec-start.tv_usec);//Î¢ï¿½ï¿½
  		printf("time_use = %f\n", time_use);
 		if(time_use>=tmpTime)
 		{
