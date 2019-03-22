@@ -1,0 +1,20 @@
+Name:tr69c
+Eid:1
+AccessBit:1
+Path: /usr/S304/cpk/tr69c/MyPlugin/tr69c
+RunArgs:
+Flags:1651
+BackLog:1
+Port:30005
+LifeNum:20
+Version:1.0.0
+Size:0
+RunSize:0
+Type:app
+Right:root
+Visibility: no
+Architecture:mips
+KernelVersion:linux 3.4.11
+EntryFile:tr69c
+Provides:T&W
+Description:tr69c
