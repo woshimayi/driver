@@ -34,6 +34,22 @@
 #define LOG_ERR(fmt, ...)  fprintf(stderr, fmt, ##__VA_ARGS__)
 
 
+#define KEYMASK_UP      0x00
+#define KEYMASK_DOWN    0xFF
+#define KEYMASK_LEFT    0x00
+#define KEYMASK_RIGHT   0xFF
+#define KEYMASK_L1      0x01
+#define KEYMASK_L2      0x04
+#define KEYMASK_R1      0x02
+#define KEYMASK_R2      0x08
+#define KEYMASK_Y       0x1F
+#define KEYMASK_A       0x4F
+#define KEYMASK_X       0x8F
+#define KEYMASK_B       0x2F
+#define KEYMASK_SELECT  0x10
+#define KEYMASK_START   0x20
+
+
 // 消息队列
 typedef struct _joy_stick_ctx
 {
@@ -290,11 +306,12 @@ int main(int argc, char *argv[])
                             }
                         }
                     }
+                    LOG_DBG("buttons_state:%d, tp_axes->x:%d, tp_axes->y:%d, tp_axes->z:%d", buttons_state, tp_axes->x, tp_axes->y, tp_axes->z);
                 }
                 else
                 {
                     op_times++;
-                    if (print_init_stat == 0)
+                    if (print_init_stat == 0) // 初始化进入读取所有按键信息
                     {
                         for (i = 0; i < number_of_btns; i++)
                         {
@@ -304,7 +321,7 @@ int main(int argc, char *argv[])
                         if (tp_axes)
                             for (i = 0; i < number_of_axes; i++)
                             {
-                                LOG_DBG("joystick init state: axes %d is x=%d  y=%d.\n", i, tp_axes[i].x, tp_axes[i].y);
+                                LOG_DBG("joystick init state: axes %d is x=%d  y=%d. z=%d\n", i, tp_axes[i].x, tp_axes[i].y, tp_axes[i].z);
                             }
                         print_init_stat = 1;
                     }
