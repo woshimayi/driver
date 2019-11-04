@@ -108,46 +108,57 @@ int xbox_map_read(int xbox_fd, xbox_map_t *map)
         switch (number)
         {
             case XBOX_BUTTON_A:
+                printf("XBOX_BUTTON_A\n");
                 map->a = value;
                 break;
 
             case XBOX_BUTTON_B:
+                printf("XBOX_BUTTON_B\n");
                 map->b = value;
                 break;
 
             case XBOX_BUTTON_X:
+                printf("XBOX_BUTTON_X\n");
                 map->x = value;
                 break;
 
             case XBOX_BUTTON_Y:
+                printf("XBOX_BUTTON_Y\n");
                 map->y = value;
                 break;
 
             case XBOX_BUTTON_LB:
+                printf("XBOX_BUTTON_LB\n");
                 map->lb = value;
                 break;
 
             case XBOX_BUTTON_RB:
+                printf("XBOX_BUTTON_RB\n");
                 map->rb = value;
                 break;
 
             case XBOX_BUTTON_START:
+                printf("XBOX_BUTTON_START\n");
                 map->start = value;
                 break;
 
             case XBOX_BUTTON_BACK:
+                printf("XBOX_BUTTON_BACK\n");
                 map->back = value;
                 break;
 
             case XBOX_BUTTON_HOME:
+                printf("XBOX_BUTTON_HOME\n");
                 map->home = value;
                 break;
 
             case XBOX_BUTTON_LO:
+                printf("XBOX_BUTTON_LO\n");
                 map->lo = value;
                 break;
 
             case XBOX_BUTTON_RO:
+                printf("XBOX_BUTTON_RO\n");
                 map->ro = value;
                 break;
 
@@ -160,34 +171,42 @@ int xbox_map_read(int xbox_fd, xbox_map_t *map)
         switch (number)
         {
             case XBOX_AXIS_LX:
+                printf("XBOX_AXIS_LX\n");
                 map->lx = value;
                 break;
 
             case XBOX_AXIS_LY:
+                printf("XBOX_AXIS_LY\n");
                 map->ly = value;
                 break;
 
             case XBOX_AXIS_RX:
+                printf("XBOX_AXIS_RX\n");
                 map->rx = value;
                 break;
 
             case XBOX_AXIS_RY:
+                printf("XBOX_AXIS_RY\n");
                 map->ry = value;
                 break;
 
             case XBOX_AXIS_LT:
+                printf("XBOX_AXIS_LT\n");
                 map->lt = value;
                 break;
 
             case XBOX_AXIS_RT:
+                printf("XBOX_AXIS_RT\n");
                 map->rt = value;
                 break;
 
             case XBOX_AXIS_XX:
+                printf("XBOX_AXIS_XX\n");
                 map->xx = value;
                 break;
 
             case XBOX_AXIS_YY:
+                printf("XBOX_AXIS_YY\n");
                 map->yy = value;
                 break;
 
