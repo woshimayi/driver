@@ -1,0 +1,77 @@
+jstest-gtk (0.1.1~git20160825-2) unstable; urgency=medium
+
+  * Hard-code the data directory instead of relying on binreloc
+    (closes: #850022, #850569).
+  * Enable all hardening options.
+
+ -- Stephen Kitt <skitt@debian.org>  Tue, 10 Jan 2017 09:08:01 +0100
+
+jstest-gtk (0.1.1~git20160825-1) unstable; urgency=medium
+
+  * New upstream snapshot, switching to CMake.
+  * Migrate to dbgsym debug packages.
+  * Switch to https: VCS URIs (see #810378).
+  * Clean up debian/control using cme.
+  * Standards-Version 3.9.8, no change required.
+  * Switch to debhelper compatibility level 10.
+
+ -- Stephen Kitt <skitt@debian.org>  Mon, 12 Dec 2016 23:08:53 +0100
+
+jstest-gtk (0.1.1~git20140501-2) unstable; urgency=medium
+
+  * Fix flags-from-env.patch so the package builds again.
+  * Refresh patches.
+  * Upgrade to debhelper compatibility level 9.
+  * Rework debian/rules in simplified dh style.
+  * Drop Debian-specific menu.
+  * Add keywords to the .desktop file.
+  * Standards-Version 3.9.6, no further change required.
+
+ -- Stephen Kitt <skitt@debian.org>  Tue, 10 Nov 2015 09:19:53 +0100
+
+jstest-gtk (0.1.1~git20140501-1) unstable; urgency=low
+
+  * New upstream snapshot.
+  * Drop libraries.patch, gcc-4.7.patch and typos.patch, merged upstream.
+  * Move packaging to git.
+  * Switch to my Debian address.
+  * Standards-Version 3.9.5, no change required.
+  * Switch to default compression options.
+
+ -- Stephen Kitt <skitt@debian.org>  Mon, 05 May 2014 21:57:06 +0200
+
+jstest-gtk (0.1.1~git20090722-2) unstable; urgency=low
+
+  * Acknowledge NMU (thanks Gregor!).
+  * Limit architectures to those using Linux kernels.
+  * Add build-arch/build-indep targets and clean up debian/rules (in
+    particular, avoid touching build-stamp from the binary target).
+  * Correct Vcs-Browser URL.
+  * Restore watch file.
+  * Remove obsolete Encoding key from the desktop file.
+  * Drop build-dependency on quilt, and correct debian/rules
+    appropriately.
+  * Add headers to all the patches.
+  * Ship NEWS as the upstream changelog.
+  * Re-enable typos.patch to fix another typo.
+  * Update copyright years and format URL.
+  * Rework libraries.patch to use pkg-config for all libraries.
+  * Rework flag management to allow hardened builds.
+  * Standards-Version 3.9.3, no further change required.
+
+ -- Stephen Kitt <steve@sk2.org>  Mon, 28 May 2012 23:49:12 +0200
+
+jstest-gtk (0.1.1~git20090722-1.1) unstable; urgency=low
+
+  * Non-maintainer upload.
+  * Fix "ftbfs with GCC-4.7": add patch gcc-4.7.patch from Paul Tagliamonte
+    (adds missing include).
+    Closes: #667217
+
+ -- gregor herrmann <gregoa@debian.org>  Sun, 22 Apr 2012 15:56:27 +0200
+
+jstest-gtk (0.1.1~git20090722-1) unstable; urgency=low
+
+  * Initial release (Closes: #527962).
+
+ -- Stephen Kitt <steve@sk2.org>  Tue, 22 Feb 2011 22:44:48 +0100

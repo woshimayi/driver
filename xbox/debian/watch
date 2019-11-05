@@ -1,0 +1,3 @@
+version=3
+
+http://pingus.seul.org/~grumbel/jstest-gtk/ jstest-gtk-(.*)\.tar\.bz2

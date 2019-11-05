@@ -1,0 +1,37 @@
+Description: Hard-code the data directory
+Author: Stephen Kitt <skitt@debian.org>
+
+binreloc fails to find /usr/share/jstest-gtk in some circumstances.
+Since we know where the data directory is, hard-code it.
+
+--- a/src/main.cpp
++++ b/src/main.cpp
+@@ -188,27 +188,7 @@
+ 
+ std::string find_datadir()
+ {
+-  BrInitError error;
+-  if (!br_init(&error))
+-  {
+-    std::ostringstream out;
+-    out << "Error: Couldn't init binreloc: " << error;
+-    throw std::runtime_error(out.str());
+-  }
+-  else
+-  {
+-    char* c_prefix = br_find_exe_dir(NULL);
+-    if (!c_prefix)
+-    {
+-      throw std::runtime_error("Error: Couldn't find prefix");
+-    }
+-    else
+-    {
+-      std::string prefix = c_prefix;
+-      free(c_prefix);
+-      return prefix + "/data/";
+-    }
+-  }
++  return "/usr/share/jstest-gtk/data/";
+ }
+ 
+ int main(int argc, char** argv)

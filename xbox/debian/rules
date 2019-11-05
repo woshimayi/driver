@@ -1,0 +1,17 @@
+#!/usr/bin/make -f
+
+export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+export DEB_LDFLAGS_MAINT_APPEND="-Wl,-z,defs -Wl,--as-needed"
+
+%:
+	dh $@
+
+override_dh_strip:
+	dh_strip --ddeb-migration='jstest-gtk-dbg (<< 0.1.1~git20140501-3~)'
+
+override_dh_installchangelogs:
+	dh_installchangelogs NEWS
+
+override_dh_install:
+	cp obj-$(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)/jstest-gtk .
+	dh_install

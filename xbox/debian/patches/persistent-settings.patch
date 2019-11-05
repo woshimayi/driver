@@ -1,0 +1,18 @@
+Description: Explain how to store joystick settings permanently
+Author: Stephen Kitt <steve@sk2.org>
+Forwarded: no
+
+--- a/src/joystick_map_widget.cpp
++++ b/src/joystick_map_widget.cpp
+@@ -25,8 +25,9 @@
+ JoystickMapWidget::JoystickMapWidget(Joystick& joystick)
+   : Gtk::Dialog("Mapping: " + joystick.get_name()),
+     label("Change the order of axis and button. The order applies directly to the "
+-          "joystick kernel driver, so it will work in any game, it is however not "
+-          "persistant across reboots."),
++          "joystick kernel driver, so it will work in any game. To make the order "
++	  "persistent, you can use the jscal-store command provided by the joystick "
++	  "package."),
+     axis_map(joystick, RemapWidget::REMAP_AXIS),
+     button_map(joystick, RemapWidget::REMAP_BUTTON)
+ {

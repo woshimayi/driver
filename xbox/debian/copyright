@@ -1,0 +1,29 @@
+Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Contact: Ingo Ruhnke <grumbel@gmx.de>
+Source: http://pingus.seul.org/~grumbel/jstest-gtk/
+Debianized-By: Miriam Ruiz <little_miry@yahoo.es>
+Debianized-Date: Sat, 09 May 2009 19:58:17 +0200
+
+Files: *
+Copyright: 2009 Ingo Ruhnke <grumbel@gmx.de>
+License: GPL-3+
+
+Files: external/binreloc-2.0/*
+Copyright: Hongli Lai <h.lai@chello.nl>
+License: public-domain
+ This source code is public domain. You can relicense this code under
+ whatever license you want.
+
+Files: debian/*
+Copyright: 2009-2011 Miriam Ruiz <little_miry@yahoo.es>
+           2011-2016 Stephen Kitt <skitt@debian.org>
+License: GPL-3+
+
+License: GPL-3+
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 3 of the License, or
+ (at your option) any later version.
+ .
+ On Debian systems, the complete text of version 3 of the GNU General
+ Public License can be found in `/usr/share/common-licenses/GPL-3'.

@@ -1,0 +1,3 @@
+jstest-gtk usr/bin/
+data usr/share/jstest-gtk/
+debian/*.desktop usr/share/applications/
