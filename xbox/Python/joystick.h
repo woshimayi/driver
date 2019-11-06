@@ -74,8 +74,10 @@ typedef struct xbox_map
 int xbox_open(const char *file_name)
 {
     int xbox_fd;
+    int i4_open_flags = O_RDONLY;
+    i4_open_flags |= O_NONBLOCK; // 使用非阻塞模式，否则无法进行顺利读取数据
 
-    xbox_fd = open(file_name, O_RDONLY);
+    xbox_fd = open(file_name, i4_open_flags);
     if (xbox_fd < 0)
     {
         perror("open");
@@ -227,11 +229,11 @@ int xbox_map_read(int xbox_fd, xbox_map_t *map)
 }
 
 
-int xbox_init(int xbox_fd, xbox_map_t map)
+int xbox_init(int xbox_fd, xbox_map_t * map)
 {
     int len, type;
 
-    memset(&map, 0, sizeof(xbox_map_t));
+    memset(map, 0, sizeof(xbox_map_t));
 
     xbox_fd = xbox_open("/dev/input/js0");
     if (xbox_fd < 0)

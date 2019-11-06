@@ -3,7 +3,7 @@
 
 int main(void)
 {
-    int xbox_fd, len = -1
+    int xbox_fd, len = -1;
     xbox_map_t map;
     xbox_init(xbox_fd, &map);
 
