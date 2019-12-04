@@ -1,0 +1,7 @@
+# depslib dependency file v1.0
+1531226994 source:e:\zs个人资料\c\rock\main.c
+	<stdio.h>
+	<windows.h>
+	<conio.h>
+	<string.h>
+

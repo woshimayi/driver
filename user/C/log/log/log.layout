@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_layout_file>
+	<FileVersion major="1" minor="0" />
+	<ActiveTarget name="Debug" />
+	<File name="test.c" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="144" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="log.h" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="7855" topLine="204" />
+		</Cursor>
+	</File>
+	<File name="log.c" open="1" top="1" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="13036" topLine="442" />
+		</Cursor>
+		<Folding>
+			<Collapse line="502" />
+			<Collapse line="511" />
+			<Collapse line="520" />
+			<Collapse line="531" />
+			<Collapse line="540" />
+			<Collapse line="551" />
+			<Collapse line="558" />
+			<Collapse line="564" />
+		</Folding>
+	</File>
+</CodeBlocks_layout_file>

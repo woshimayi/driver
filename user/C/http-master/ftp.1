@@ -1,0 +1,394 @@
+.\" Copyright (c) 1985, 1989, 1990, 1993
+.\"	The Regents of the University of California.  All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\" 1. Redistributions of source code must retain the above copyright
+.\"    notice, this list of conditions and the following disclaimer.
+.\" 2. Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\" 3. Neither the name of the University nor the names of its contributors
+.\"    may be used to endorse or promote products derived from this software
+.\"    without specific prior written permission.
+.\"
+.\" THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+.\" SUCH DAMAGE.
+.\"
+.\"	@(#)ftp.1	8.3 (Berkeley) 10/9/94
+.\"
+.\" Copyright (c) 2015 Sunil Nimmagadda <sunil@openbsd.org>
+.\"
+.\" Permission to use, copy, modify, and distribute this software for any
+.\" purpose with or without fee is hereby granted, provided that the above
+.\" copyright notice and this permission notice appear in all copies.
+.\"
+.\" THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+.\" WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+.\" MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+.\" ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+.\" WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+.\" ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+.\" OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+.\"
+.Dd $Mdocdate: August 13 2015 $
+.Dt FTP 1
+.Os
+.Sh NAME
+.Nm ftp
+.Nd Internet file transfer program
+.Sh SYNOPSIS
+.Nm
+.Op Fl 46AVv
+.Op Fl D Ar title
+.Op Ar host Op Ar port
+.Nm
+.Op Fl 46ACMV
+.Op Fl D Ar title
+.Op Fl o Ar output
+.Op Fl S Ar tls_options
+.Op Fl U Ar useragent
+.Op Fl w Ar seconds
+.Ar url ...
+.Sh DESCRIPTION
+.Nm
+is the user interface to the Internet standard File Transfer
+Protocol (FTP).
+The program allows a user to transfer files to and from a
+remote network site.
+.Pp
+The latter usage format will fetch a file using either the
+FTP, HTTP or HTTPS protocols into the current directory.
+This is ideal for scripts.
+Refer to
+.Sx AUTO-FETCHING FILES
+below for more information.
+.Pp
+The options are as follows:
+.Bl -tag -width Ds
+.It Fl 4
+Forces
+.Nm
+to use IPv4 addresses only.
+.It Fl 6
+Forces
+.Nm
+to use IPv6 addreses only.
+.It Fl A
+Force active mode FTP.
+By default,
+.Nm
+will try to use passive mode FTP and fall back to active mode
+if passive is not supported by the server.
+This option causes
+.Nm
+to always use an active connection.
+It is only useful for connecting
+to very old servers that do not implement passive mode properly.
+.It Fl C
+Continue a previously interrupted file transfer.
+.Nm
+will continue transferring from an offset equal to the length of file.
+.Pp
+Resuming HTTP(S) transfers are only supported if the remote server supports the
+.Dq Range
+header.
+.It Fl D Ar title
+Specify a short title for the start of the progress bar.
+.It Fl M
+Causes
+.Nm
+to never display the progress meter in cases where it would do so by default.
+.It Fl o Ar output
+When fetching a file or URL, save the contents in
+.Ar output .
+To make the contents go to stdout, use `-' for
+.Ar output .
+.It Fl S Ar tls_options
+TLS options to use with HTTPS transfers.
+The following settings are available:
+.Bl -tag -width Ds
+.It Cm cafile Ns = Ns Ar /path/to/cert.pem
+PEM encoded file containing CA certificates used for certificate validation.
+.It Cm capath Ns = Ns Ar /path/to/certs/
+Directory containing PEM encoded CA certificates used for certificate
+validation.
+.It Cm ciphers Ns = Ns Ar cipher_list
+Specify the list of ciphers that will be used by
+.Nm .
+See the
+.Xr openssl 1
+.Cm ciphers
+subcommand.
+.It Cm depth Ns = Ns Ar max_depth
+Maximum depth of the certificate chain allowed when performing validation.
+.It Cm dont
+Don't perform server certificate validation.
+.It Cm protocols Ns = Ns Ar string
+Specify the TLS protocols to use.
+If not specified the value
+.Qq all
+is used.
+Refer to the
+.Xr tls_config_parse_protocols 3
+function for other valid protocol string values.
+.It Cm muststaple
+Require the server to present a valid OCSP stapling in the TLS handshake.
+.It Cm noverifytime
+Disable validation of certificate times and OCSP validation.
+.It Cm session Ns = Ns Ar /path/to/session
+Specify a file to use for TLS session data.
+If this file has a non-zero length, the session data will be read from this file
+and the client will attempt to resume the TLS session with the server.
+Upon completion of a successful TLS handshake this file will be updated with
+new session data, if available.
+This file will be created if it does not already exist.
+.El
+.Pp
+By default, server certificate validation is performed, and if it fails
+.Nm
+will abort.
+If no
+.Cm cafile
+or
+.Cm capath
+setting is provided,
+.Pa /etc/ssl/cert.pem
+will be used.
+.It Fl U Ar useragent
+Set
+.Ar useragent
+as the User-Agent for HTTP(S) URL requests.
+If not specified, the default User-Agent is
+.Dq OpenBSD ftp .
+.It Fl V
+Disable verbose mode.
+.It Fl w Ar seconds
+Abort a slow connection after
+.Ar seconds .
+.El
+.Pp
+The host with which
+.Nm
+is to communicate may be specified on the command line.
+If this is done,
+.Nm
+will immediately attempt to establish a connection to an
+FTP server on that host; otherwise,
+.Nm
+will enter its command interpreter and await instructions
+from the user.
+When
+.Nm
+is awaiting commands, the prompt
+.Dq ftp\*(Gt
+is provided to the user.
+The following commands are recognized
+by
+.Nm :
+.Bl -tag -width Fl
+.It Ic open Ar host Op Ar port
+Establish a connection to the specified
+.Ar host
+FTP server.
+An optional port number may be supplied,
+in which case
+.Nm
+will attempt to contact an FTP server at that port.
+.It Ic close
+Terminate the FTP session with the remote server and
+return to the command interpreter.
+.It Ic help Op Ar command
+Print an informative message about the meaning of
+.Ar command .
+If no argument is given,
+.Nm
+prints a list of the known commands.
+.It Ic \&? Op Ar command
+A synonym for
+.Ic help .
+.It Ic quit
+Terminate the FTP session with the remote server and exit
+.Nm .
+.It Ic exit
+A synonym for
+.Ic quit .
+.It Ic ls Op Ar remote-directory Op Ar local-file
+Print a listing of the contents of a directory on the remote machine.
+The listing includes any system-dependent information that the server
+chooses to include; for example, most
+.Ux
+systems will produce output from the command
+.Ql ls -l .
+If
+.Ar remote-directory
+is left unspecified, the current working directory is used.
+If no local file is specified, or if
+.Ar local-file
+is
+.Sq - ,
+the output is sent to the terminal.
+.It Ic nlist Op Ar remote-directory Op Ar local-file
+Print a list of the files in a
+directory on the remote machine.
+If
+.Ar remote-directory
+is left unspecified, the current working directory is used.
+If no local file is specified, or if
+.Ar local-file
+is
+.Sq - ,
+the output is sent to the terminal.
+Note that on some servers, the
+.Ic nlist
+command will only return information on normal files (not directories
+or special files).
+.It Ic pwd
+Print the name of the current working directory on the remote
+machine.
+.It Ic cd Ar remote-directory
+Change the working directory on the remote machine
+to
+.Ar remote-directory .
+.It Ic get Ar remote-file Op Ar local-file
+Retrieve the
+.Ar remote-file
+and store it on the local machine.
+If the local
+file name is not specified, it is given the same
+name it has on the remote machine.
+.It Ic passive Op Ic on | off
+Toggle passive mode.
+If passive mode is turned on (default is on),
+.Nm
+will send a
+.Dv EPSV
+command for all data connections instead of the usual
+.Dv EPRT
+command.
+The
+.Dv EPSV
+command requests that the remote server open a port for the data connection
+and return the address of that port.
+The remote server listens on that port and the client connects to it.
+When using the more traditional
+.Dv EPRT
+command, the client listens on a port and sends that address to the remote
+server, who connects back to it.
+Passive mode is useful when using
+.Nm
+through a gateway router or host that controls the directionality of
+traffic.
+.It Ic lcd Op Ar local-directory
+Change the working directory on the local machine.
+If
+no
+.Ar local-directory
+is specified, the user's home directory is used.
+.It Ic lpwd
+Print the working directory on the local machine.
+.It Ic put Ar local-file Op Ar remote-file
+Store a local file on the remote machine.
+If
+.Ar remote-file
+is left unspecified, the local file name is used.
+.It Ic mget Ar remote-files
+Do a
+.Ic get
+for each file name specified.
+.It Ic mput Ar local-files
+Do a
+.Ic put
+for each file name specified.
+.El
+.Sh AUTO-FETCHING FILES
+In addition to standard commands, this version of
+.Nm
+supports an auto-fetch feature.
+To enable auto-fetch, simply pass the list of hostnames/files
+on the command line.
+.Pp
+The following formats are valid syntax for an auto-fetch element:
+.Bl -tag -width Ds
+.Sm off
+.It Xo ftp://
+.Ar host Op : Ar port
+.No / Ar file
+.Xc
+.Sm on
+An FTP URL, retrieved using the FTP protocol if
+.Ev ftp_proxy
+isn't defined.
+Otherwise, transfer using HTTP via the proxy defined in
+.Ev ftp_proxy .
+.Sm off
+.It Xo http://
+.Ar host Op : Ar port
+.No / Ar file
+.Xc
+.Sm on
+An HTTP URL, retrieved using the HTTP protocol.
+If
+.Ev http_proxy
+is defined, it is used as a URL to an HTTP proxy server.
+.Sm off
+.It Xo https://
+.Ar host Op : Ar port
+.No / Ar file
+.Xc
+.Sm on
+An HTTPS URL, retrieved using the HTTPS protocol.
+If
+.Ev http_proxy
+is defined, this HTTPS proxy server will be used to fetch the
+file using the CONNECT method.
+.It Pf file: Ar file
+.Ar file
+is retrieved from a mounted file system.
+.El
+.Sh ENVIRONMENT
+.Nm
+utilizes the following environment variables:
+.Bl -tag -width Ds
+.It Ev ftp_proxy
+URL of FTP proxy to use when making FTP URL requests
+(if not defined, use the standard FTP protocol).
+.It Ev http_proxy
+URL of HTTP proxy to use when making HTTP(S) URL requests.
+.El
+.Sh PORT ALLOCATION
+For active mode data connections,
+.Nm
+will listen to a random high TCP port.
+The interval of ports used are configurable using
+.Xr sysctl 8
+variables
+.Va net.inet.ip.porthifirst
+and
+.Va net.inet.ip.porthilast .
+.Sh HISTORY
+The
+.Nm
+command first appeard in
+.Bx 4.2 .
+A complete rewrite of the
+.Nm
+command first appeared in
+.Ox x.x .
+.Sh AUTHORS
+.An Sunil Nimmagadda Aq Mt sunil@openbsd.org
+.Sh CAVEATS
+While aborting a data transfer, certain FTP servers violate
+the protocol by not responding with a 426 reply first, thereby making
+.Nm
+wait indefinitely for a correct reply.
