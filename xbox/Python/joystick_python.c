@@ -7,24 +7,24 @@ len = xbox_map_read(xbox_fd, &map);
 xbox_close(xbox_fd);
 
 
-static PyObject * Extest_xbox_init(PyObject * self, PyObject * args)
+static PyObject *Extest_xbox_init(PyObject *self, PyObject *args)
 {
     int fd;
-    return (PyObject * )Py_BuildValue("")
+    return (PyObject *)Py_BuildValue("")
 }
 
 
-static PyObject * Extest_xbox_map_read(PyObject * self, PyObject * args)
+static PyObject *Extest_xbox_map_read(PyObject *self, PyObject *args)
 {
     int fd;
-    return (PyObject * )Py_BuildValue("")
+    return (PyObject *)Py_BuildValue("")
 }
 
 
-static PyObject * Extest_xbox_close(PyObject * self, PyObject * args)
+static PyObject *Extest_xbox_close(PyObject *self, PyObject *args)
 {
     int fd;
-    return (PyObject * )Py_BuildValue("")
+    return (PyObject *)Py_BuildValue("")
 }
 
 static PyMethodDef JoystickMethods[] =
@@ -48,6 +48,6 @@ static struct PyModuleDef ExtestMoudle =
 
 void PyInit_Joystick()
 {
-    PyModule_Create( & JoystickMoudle)
+    PyModule_Create(& JoystickMoudle)
 }
 

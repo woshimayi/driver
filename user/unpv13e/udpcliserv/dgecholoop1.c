@@ -3,25 +3,24 @@
 static void	recvfrom_int(int);
 static int	count;
 
-void
-dg_echo(int sockfd, SA *pcliaddr, socklen_t clilen)
+void dg_echo(int sockfd, SA *pcliaddr, socklen_t clilen)
 {
-	socklen_t	len;
-	char		mesg[MAXLINE];
+    socklen_t	len;
+    char		mesg[MAXLINE];
 
-	Signal(SIGINT, recvfrom_int);
+    Signal(SIGINT, recvfrom_int);
 
-	for ( ; ; ) {
-		len = clilen;
-		Recvfrom(sockfd, mesg, MAXLINE, 0, pcliaddr, &len);
+    for (; ;)
+    {
+        len = clilen;
+        Recvfrom(sockfd, mesg, MAXLINE, 0, pcliaddr, &len);
 
-		count++;
-	}
+        count++;
+    }
 }
 
-static void
-recvfrom_int(int signo)
+static void recvfrom_int(int signo)
 {
-	printf("\nreceived %d datagrams\n", count);
-	exit(0);
+    printf("\nreceived %d datagrams\n", count);
+    exit(0);
 }

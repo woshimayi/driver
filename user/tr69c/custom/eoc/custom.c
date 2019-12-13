@@ -10,10 +10,10 @@ void TR69C_buildWlanStatsCustom(tProtoCtx *pc, int *bufsz, int *paramNum)
     CMC_WLAN_STATISTICS_T wlanStat;
     char paramPath[BUFLEN_128] = {0};
     InstanceIdStack iidStack = EMPTY_INSTANCE_ID_STACK;
- 
+
     memset(&wlanStat, 0, sizeof(wlanStat));
-    
-    while(VOS_RET_SUCCESS == CMC_wlanGetNextIntfStats(&wlanStat, &iidStack))
+
+    while (VOS_RET_SUCCESS == CMC_wlanGetNextIntfStats(&wlanStat, &iidStack))
     {
         if (wlanStat.showToAcs)
         {
@@ -29,7 +29,7 @@ void TR69C_buildWlanStatsCustom(tProtoCtx *pc, int *bufsz, int *paramNum)
             CMC_phlGetPathByDesc(EMDMOID_LAN_WLAN, &iidStack, paramPath, sizeof(paramPath), "totalPacketsSent");
             TR69C_writePathAndUintValue(paramPath, wlanStat.totalPacketsSent, pc, bufsz, paramNum);
         }
-        
+
         memset(&wlanStat, 0, sizeof(wlanStat));
     }
 }

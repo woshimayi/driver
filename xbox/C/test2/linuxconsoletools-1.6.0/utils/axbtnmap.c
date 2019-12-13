@@ -36,54 +36,64 @@
 
 int determine_ioctl(int fd, int *ioctls, int *ioctl_used, void *argp)
 {
-	int i, retval = 0;
+    int i, retval = 0;
 
-	/* Try each ioctl in turn. */
-	for (i = 0; ioctls[i]; i++) {
-		if ((retval = ioctl(fd, ioctls[i], argp)) >= 0) {
-			/* The ioctl did something. */
-			*ioctl_used = ioctls[i];
-			return retval;
-		} else if (errno != -EINVAL) {
-			/* Some other error occurred. */
-			return retval;
-		}
-	}
-	return retval;
+    /* Try each ioctl in turn. */
+    for (i = 0; ioctls[i]; i++)
+    {
+        if ((retval = ioctl(fd, ioctls[i], argp)) >= 0)
+        {
+            /* The ioctl did something. */
+            *ioctl_used = ioctls[i];
+            return retval;
+        }
+        else if (errno != -EINVAL)
+        {
+            /* Some other error occurred. */
+            return retval;
+        }
+    }
+    return retval;
 }
 
 int getbtnmap(int fd, uint16_t *btnmap)
 {
-	static int jsiocgbtnmap = 0;
-	int ioctls[] = { JSIOCGBTNMAP, JSIOCGBTNMAP_LARGE, JSIOCGBTNMAP_SMALL, 0 };
+    static int jsiocgbtnmap = 0;
+    int ioctls[] = { JSIOCGBTNMAP, JSIOCGBTNMAP_LARGE, JSIOCGBTNMAP_SMALL, 0 };
 
-	if (jsiocgbtnmap != 0) {
-		/* We already know which ioctl to use. */
-		return ioctl(fd, jsiocgbtnmap, btnmap);
-	} else {
-		return determine_ioctl(fd, ioctls, &jsiocgbtnmap, btnmap);
-	}
+    if (jsiocgbtnmap != 0)
+    {
+        /* We already know which ioctl to use. */
+        return ioctl(fd, jsiocgbtnmap, btnmap);
+    }
+    else
+    {
+        return determine_ioctl(fd, ioctls, &jsiocgbtnmap, btnmap);
+    }
 }
 
 int setbtnmap(int fd, uint16_t *btnmap)
 {
-	static int jsiocsbtnmap = 0;
-	int ioctls[] = { JSIOCSBTNMAP, JSIOCSBTNMAP_LARGE, JSIOCSBTNMAP_SMALL, 0 };
+    static int jsiocsbtnmap = 0;
+    int ioctls[] = { JSIOCSBTNMAP, JSIOCSBTNMAP_LARGE, JSIOCSBTNMAP_SMALL, 0 };
 
-	if (jsiocsbtnmap != 0) {
-		/* We already know which ioctl to use. */
-		return ioctl(fd, jsiocsbtnmap, btnmap);
-	} else {
-		return determine_ioctl(fd, ioctls, &jsiocsbtnmap, btnmap);
-	}
+    if (jsiocsbtnmap != 0)
+    {
+        /* We already know which ioctl to use. */
+        return ioctl(fd, jsiocsbtnmap, btnmap);
+    }
+    else
+    {
+        return determine_ioctl(fd, ioctls, &jsiocsbtnmap, btnmap);
+    }
 }
 
 int getaxmap(int fd, uint8_t *axmap)
 {
-	return ioctl(fd, JSIOCGAXMAP, axmap);
+    return ioctl(fd, JSIOCGAXMAP, axmap);
 }
 
 int setaxmap(int fd, uint8_t *axmap)
 {
-	return ioctl(fd, JSIOCSAXMAP, axmap);
+    return ioctl(fd, JSIOCSAXMAP, axmap);
 }

@@ -8,13 +8,13 @@ typedef unsigned long  UINT64;
 
 int bua_getSecondsSince1970(UINT64 *currentTime)
 {
-//    struct timeval tv;
-//    struct timezone tz;
-//    
-//    gettimeofday (&tv, NULL);
-//    
-//	*currentTime = tv.tv_sec;
-//    printf("current time get is %lu %lu\n", tv.tv_sec, *currentTime);
+    //    struct timeval tv;
+    //    struct timezone tz;
+    //
+    //    gettimeofday (&tv, NULL);
+    //
+    //	*currentTime = tv.tv_sec;
+    //    printf("current time get is %lu %lu\n", tv.tv_sec, *currentTime);
 
 
     FILE *fp = NULL;
@@ -37,10 +37,10 @@ int bua_getSecondsSince1970(UINT64 *currentTime)
 
 int main()
 {
-	UINT64 currentTime = 0;
-	bua_getSecondsSince1970(&currentTime);
-	printf("currentTime       = %d\n", currentTime);
-	return 0;
+    UINT64 currentTime = 0;
+    bua_getSecondsSince1970(&currentTime);
+    printf("currentTime       = %d\n", currentTime);
+    return 0;
 }
 
 

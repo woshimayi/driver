@@ -11,7 +11,7 @@ static int major = 250;
 static inr minor = 0;
 static dev_t devno;
 static struct class *cls;
-static struct device * test_device;
+static struct device *test_device;
 
 
 #define TCFG0       0x0000
@@ -21,8 +21,8 @@ static struct device * test_device;
 #define TCMPB0      0x0010
 
 
-static unsigned int * gpd0con;
-static void * timer_base;
+static unsigned int *gpd0con;
+static void *timer_base;
 
 #define MAGIC_NUMBER    'k'
 #define BEEP_ON     _IO(MAGIC_NUMBER, 0)
@@ -30,12 +30,12 @@ static void * timer_base;
 #define BEEP_FREQ   _IO(MAGIC_NUMBER, 2)
 
 
-static int beep_open(struct inode * inode, struct file * filep)
+static int beep_open(struct inode *inode, struct file *filep)
 {
 
 }
 
-static int beep_release(struct inode * inode, struct file * filep)
+static int beep_release(struct inode *inode, struct file *filep)
 {
 
 }
@@ -45,7 +45,7 @@ static long beep_ioctl(struct file *filep, unsigned int cmd, unsigned long arg)
 
 }
 
-static struct file_operation beep_ops=
+static struct file_operation beep_ops =
 {
     .open = beep_open,
     .release = beep_release,
@@ -53,17 +53,17 @@ static struct file_operation beep_ops=
 };
 
 
-static int beep_probe(struct platform_device * pdev)
+static int beep_probe(struct platform_device *pdev)
 {
-    
+
 }
 
-static int beep_remove(struct platform_device * pdev)
+static int beep_remove(struct platform_device *pdev)
 {
-    
+
 }
 
-static struct platform_driver beep_driver=
+static struct platform_driver beep_driver =
 {
     .driver.name = "bigbang",
     .probe = beep_probe,

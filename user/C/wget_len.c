@@ -11,8 +11,8 @@ void RUT_getQoeFileSizeInAdvance(int *qoeLen)
     int tmpData1 = 0;
     int tmpData2 = 0;
     char *p = NULL;
-//    UTIL_DO_SYSTEM_ACTION("killall wget");
-//    UTIL_DO_SYSTEM_ACTION("wget --spider '%s' -t 3 -T 3 -o /tmp/qoelen", qoeUrl);
+    //    UTIL_DO_SYSTEM_ACTION("killall wget");
+    //    UTIL_DO_SYSTEM_ACTION("wget --spider '%s' -t 3 -T 3 -o /tmp/qoelen", qoeUrl);
     //UTIL_DO_SYSTEM_ACTION("wget --spider http://219.137.236.100:8000/bell/monitor.wan.bin -o /tmp/qoelen");
     FILE *fp = fopen("qoelen.cpp", "r");
     if (fp == NULL)
@@ -23,7 +23,7 @@ void RUT_getQoeFileSizeInAdvance(int *qoeLen)
     {
         while (NULL != fgets(buf, sizeof(buf), fp))
         {
-        	printf("%s", buf);
+            printf("%s", buf);
             if (NULL == strstr(buf, "Length:"))
             {
                 continue;
@@ -43,14 +43,14 @@ void RUT_getQoeFileSizeInAdvance(int *qoeLen)
     }
 
     fclose(fp);
-//    UTIL_DO_SYSTEM_ACTION("rm /tmp/qoelen -rf");
+    //    UTIL_DO_SYSTEM_ACTION("rm /tmp/qoelen -rf");
 }
 
 int main()
 {
-	int len = 0;
-	RUT_getQoeFileSizeInAdvance(&len);
-	printf("%d\n", len);
-	return 0;
+    int len = 0;
+    RUT_getQoeFileSizeInAdvance(&len);
+    printf("%d\n", len);
+    return 0;
 }
 

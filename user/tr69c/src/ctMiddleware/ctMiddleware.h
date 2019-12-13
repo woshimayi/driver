@@ -1,14 +1,14 @@
 #ifndef CT_MIDDLEWARE_H
 
 #if 1
-#define CTMDW_DEBUG  printf
+    #define CTMDW_DEBUG  printf
 #else
-#define CTMDW_DEBUG(format, args...)
+    #define CTMDW_DEBUG(format, args...)
 #endif
 #define CTMDW_STREAM
 
 /* unix domain name */
-#define CTMDW_UNIX_SOCK "/var/ct/tmp/interface2sock" 
+#define CTMDW_UNIX_SOCK "/var/ct/tmp/interface2sock"
 
 /* reboot timeout*/
 #define CTMDW_REBOOT_TIMEOUT  (10*1000)
@@ -113,7 +113,7 @@
 #define CTMDW_OPTCODE_MWEXIT             89
 #define CTMDW_OPTCODE_MWEXIT_RET             90
 //reserve
-#define CTMDW_OPTCODE_FILEGET                201 
+#define CTMDW_OPTCODE_FILEGET                201
 #define CTMDW_OPTCODE_FILEGET_RET            202
 #define CTMDW_OPTCODE_REBOOT_RET             203
 
@@ -144,81 +144,91 @@
 #define CTMDW_LOG_FWLOG                 "FWLog"
 
 /* operation state */
-typedef enum {
-   CTMDW_DIAGNOSTIC_NONE = 0,
-   CTMDW_DIAGNOSTIC_PING,
-   CTMDW_DIAGNOSTIC_ATM,
-   CTMDW_DIAGNOSTIC_DSL,
-}CTMDW_DIAGNOSTIC_STATE;
+typedef enum
+{
+    CTMDW_DIAGNOSTIC_NONE = 0,
+    CTMDW_DIAGNOSTIC_PING,
+    CTMDW_DIAGNOSTIC_ATM,
+    CTMDW_DIAGNOSTIC_DSL,
+} CTMDW_DIAGNOSTIC_STATE;
 
 /* download state */
-typedef enum {
-   CTMDW_DOWNLOAD_STATE_IDLE = -1,
-   CTMDW_DOWNLOAD_STATE_OK = 0,
-   CTMDW_DOWNLOAD_STATE_ERR_FAILED,
-   CTMDW_DOWNLOAD_STATE_ERR_ACCOUNT,
-   CTMDW_DOWNLOAD_STATE_ERR_CONNECT,
-   CTMDW_DOWNLOAD_STATE_ERR_FILE,
-}CTMDW_DOWNLOAD_STATE;
+typedef enum
+{
+    CTMDW_DOWNLOAD_STATE_IDLE = -1,
+    CTMDW_DOWNLOAD_STATE_OK = 0,
+    CTMDW_DOWNLOAD_STATE_ERR_FAILED,
+    CTMDW_DOWNLOAD_STATE_ERR_ACCOUNT,
+    CTMDW_DOWNLOAD_STATE_ERR_CONNECT,
+    CTMDW_DOWNLOAD_STATE_ERR_FILE,
+} CTMDW_DOWNLOAD_STATE;
 
 /* ctmdw client state */
-typedef enum {
-   CTMDW_STATE_NOTINIT = -1,
-   CTMDW_STATE_REGISTERED = 0
+typedef enum
+{
+    CTMDW_STATE_NOTINIT = -1,
+    CTMDW_STATE_REGISTERED = 0
 } CTMDW_STATE;
 
 /*mapping table*/
-typedef struct __MAPCTTOTR69TABLE {
-   char ctName[64];
-   char tr69Name[64];
+typedef struct __MAPCTTOTR69TABLE
+{
+    char ctName[64];
+    char tr69Name[64];
 } MAPCTTOTR69TABLE, *PMAPCTTOTR69TABLE;
 
-typedef enum {
-   CTMDW_STATUS_OK = 0,
-   CTMDW_STATUS_ERR_GEN,
-   CTMDW_STATUS_ERR_NOMEM,
-   CTMDW_STATUS_ERR_FMT,
-   CTMDW_STATUS_ERR_PARAM,
-}CTMDW_STATUS;
+typedef enum
+{
+    CTMDW_STATUS_OK = 0,
+    CTMDW_STATUS_ERR_GEN,
+    CTMDW_STATUS_ERR_NOMEM,
+    CTMDW_STATUS_ERR_FMT,
+    CTMDW_STATUS_ERR_PARAM,
+} CTMDW_STATUS;
 
 /*ret value*/
-typedef enum {
-   CTMDW_ACTION_OK,
-   CTMDW_ACTION_OK_PART,
-   CTMDW_ACTION_OK_REBOOT,
-   CTMDW_ACTION_ERR_GEN,
-   CTMDW_ACTION_ERR_FMT,
-   CTMDW_ACTION_ERR_NOMEM,
-   CTMDW_ACTION_ERR_PARAM,
-   CTMDW_ACTION_ERR_OUTOFRANGE,
-   CTMDW_ACTION_ERR_NOTACCESS,   
-}CTMDW_ACTION_RETVAL;
+typedef enum
+{
+    CTMDW_ACTION_OK,
+    CTMDW_ACTION_OK_PART,
+    CTMDW_ACTION_OK_REBOOT,
+    CTMDW_ACTION_ERR_GEN,
+    CTMDW_ACTION_ERR_FMT,
+    CTMDW_ACTION_ERR_NOMEM,
+    CTMDW_ACTION_ERR_PARAM,
+    CTMDW_ACTION_ERR_OUTOFRANGE,
+    CTMDW_ACTION_ERR_NOTACCESS,
+} CTMDW_ACTION_RETVAL;
 
-typedef struct __CTMDW_VAL {
-   char                    *name;     //tr69 data module fomatted name
-   char                    *value;    //value for set and returned value for get
-   CTMDW_ACTION_RETVAL     actRetVal; //status of value instance
-}CTMDW_VAL, *PCTMDW_VAL;  
+typedef struct __CTMDW_VAL
+{
+    char                    *name;     //tr69 data module fomatted name
+    char                    *value;    //value for set and returned value for get
+    CTMDW_ACTION_RETVAL     actRetVal; //status of value instance
+} CTMDW_VAL, *PCTMDW_VAL;
 
-typedef struct __CTMDW_TLV {
-   int                     type;      //tlv type
-   int                     length;    //tlv length
-   char                    *value;    //pointer to value string of incoming TLV 
-   int                     numofVal;  //number of value instance
-   PCTMDW_VAL              valLst;    //array of value instance
-   char                    *rvalue;   //pointer to return value string
-   CTMDW_ACTION_RETVAL     actRetVal; //status of TLV instance
-}CTMDW_TLV, *PCTMDW_TLV;
+typedef struct __CTMDW_TLV
+{
+    int                     type;      //tlv type
+    int                     length;    //tlv length
+    char                    *value;    //pointer to value string of incoming TLV
+    int                     numofVal;  //number of value instance
+    PCTMDW_VAL              valLst;    //array of value instance
+    char                    *rvalue;   //pointer to return value string
+    CTMDW_ACTION_RETVAL     actRetVal; //status of TLV instance
+} CTMDW_TLV, *PCTMDW_TLV;
 
-typedef struct CTMDW_MSG {
-   int                     opcode;    //optcode        
-   int                     numOfTLV;  //number of TLV instance
-   PCTMDW_TLV              tvlLst;    //array of TVL instance
-}CTMDW_MSG, *PCTMDW_MSG;
+typedef struct CTMDW_MSG
+{
+    int                     opcode;    //optcode
+    int                     numOfTLV;  //number of TLV instance
+    PCTMDW_TLV              tvlLst;    //array of TVL instance
+} CTMDW_MSG, *PCTMDW_MSG;
 
-typedef struct {
-   char *paraName;
-   char pvalue[256];
+typedef struct
+{
+    char *paraName;
+    char pvalue[256];
 } CTMDW_INFORM_VALUE, *PCTMDW_INFORM_VALUE;
 
 extern void initCTClient(void);
@@ -228,18 +238,18 @@ extern void init_ctmdwDefNotification(void);
 extern int enblCTMiddleware;
 //extern CTMDW_STATUS ctmdw_doSetDefault(void);
 extern void ctmdw_sendSetDefaultRet(void);
-extern void ctmdw_rebootcb(void* handle);
+extern void ctmdw_rebootcb(void *handle);
 void initCTMdwClient(void);
 void ctmdw_sendInform(void);
 void ctmdw_sendChangeInform(void);
 void ctmdw_sendCTAccountChangeInform(void);
 void ctmdw_sendCTBindInform(void);
 void ctmdw_sendOperation(void);
-CTMDW_STATUS mappingTR69NameToCTName(char* paraNameMapped, char* pPName, UINT32 nameLen);
+CTMDW_STATUS mappingTR69NameToCTName(char *paraNameMapped, char *pPName, UINT32 nameLen);
 extern int ctmdw_getCTMDWEnable(void);
-extern void ctmdw_startCTMDWClient(void* handle);
-extern void stopCTMDWTimer(void* handle);
+extern void ctmdw_startCTMDWClient(void *handle);
+extern void stopCTMDWTimer(void *handle);
 extern void ctmdw_sendMode2Inform(void);
-void ctmdw_stopCTMDWClient(void* handle);
+void ctmdw_stopCTMDWClient(void *handle);
 void ctmdw_sendMWExit(void);
 #endif

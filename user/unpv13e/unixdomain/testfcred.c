@@ -4,7 +4,7 @@
 
 main()
 {
-	printf("sizeof(struct fcred) = %d\n", sizeof(struct fcred));
-	printf("sizeof(struct cmsghdr) = %d\n", sizeof(struct cmsghdr));
-	exit(0);
+    printf("sizeof(struct fcred) = %d\n", sizeof(struct fcred));
+    printf("sizeof(struct cmsghdr) = %d\n", sizeof(struct cmsghdr));
+    exit(0);
 }

@@ -10,15 +10,15 @@
 #include	"sock.h"
 #include	<ctype.h>
 
-void
-pattern(char *ptr, int len)
+void pattern(char *ptr, int len)
 {
-	char	c;
+    char	c;
 
-	c = 0;
-	while(len-- > 0)  {
-		while(isprint((c & 0x7F)) == 0)
-			c++;	/* skip over nonprinting characters */
-		*ptr++ = (c++ & 0x7F);
-	}
+    c = 0;
+    while (len-- > 0)
+    {
+        while (isprint((c & 0x7F)) == 0)
+            c++;	/* skip over nonprinting characters */
+        *ptr++ = (c++ & 0x7F);
+    }
 }

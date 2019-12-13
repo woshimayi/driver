@@ -1,22 +1,22 @@
 
 /*----------------------------------------------------------------------*
-<:copyright-broadcom 
- 
- Copyright (c) 2005 Broadcom Corporation 
- All Rights Reserved 
- No portions of this material may be reproduced in any form without the 
- written permission of: 
-          Broadcom Corporation 
-          16215 Alton Parkway 
-          Irvine, California 92619 
- All information contained in this document is Broadcom Corporation 
- company private, proprietary, and trade secret. 
- 
+<:copyright-broadcom
+
+ Copyright (c) 2005 Broadcom Corporation
+ All Rights Reserved
+ No portions of this material may be reproduced in any form without the
+ written permission of:
+          Broadcom Corporation
+          16215 Alton Parkway
+          Irvine, California 92619
+ All information contained in this document is Broadcom Corporation
+ company private, proprietary, and trade secret.
+
 :>
  *----------------------------------------------------------------------*
  * File Name  : RPCState.c
  *
- * Description: RPC routines 
+ * Description: RPC routines
  * $Revision: 1.54 $
  * $Id: RPCState.c,v 1.54 2006/02/03 15:53:05 dmounday Exp $
  *----------------------------------------------------------------------*/
@@ -27,7 +27,7 @@
 #include <errno.h>
 #include <ctype.h>
 #include <sys/time.h>
-#include <sys/types.h> 
+#include <sys/types.h>
 #include <syslog.h>
 #include <sys/sysinfo.h>
 
@@ -54,16 +54,16 @@
 
 #define MAX_PADDINGS 20
 #ifdef OMIT_INDENT
-#define xml_mIndent(A,B,C);
+    #define xml_mIndent(A,B,C);
 #else
-#define xml_mIndent(A,B,C) // XMLmIndent( A, B, 0);
+    #define xml_mIndent(A,B,C) // XMLmIndent( A, B, 0);
 #endif
 #define NUMREQINFORMDEVIDS (sizeof(informDevIds)/sizeof(char *))
 
 
 #define ARRAY_SIZE(x) (sizeof(x)/sizeof(x[0]))
 
-#define  STR_VOICE_LINE  ".Line." 
+#define  STR_VOICE_LINE  ".Line."
 #define  STR_WAN_LANINTERFACE "X_CT-COM_LanInterface"
 #define  STR_WAN_LANINTERFACE_CU "X_CU_LanInterface"
 #define  STR_CARD_KEYPARAM "X_CT-COM_CardKey"
@@ -120,38 +120,42 @@ UBOOL8 loid_changed_flag = FALSE;
 extern char alarmNumber[BUFLEN_8]; //ALARM or CLEAR ALARM with the alarm number
 
 
-static const char *informDevIds[] = {
-   "InternetGatewayDevice.DeviceInfo.Manufacturer",
-   "InternetGatewayDevice.DeviceInfo.ManufacturerOUI",
-   "InternetGatewayDevice.DeviceInfo.ProductClass",
-   "InternetGatewayDevice.DeviceInfo.SerialNumber",
+static const char *informDevIds[] =
+{
+    "InternetGatewayDevice.DeviceInfo.Manufacturer",
+    "InternetGatewayDevice.DeviceInfo.ManufacturerOUI",
+    "InternetGatewayDevice.DeviceInfo.ProductClass",
+    "InternetGatewayDevice.DeviceInfo.SerialNumber",
 };
 
-static char *informParameters[] = {
-   "InternetGatewayDevice.DeviceSummary",
-   "InternetGatewayDevice.DeviceInfo.SpecVersion",
-   "InternetGatewayDevice.DeviceInfo.HardwareVersion",
-   "InternetGatewayDevice.DeviceInfo.SoftwareVersion",
-   "InternetGatewayDevice.DeviceInfo.ProvisioningCode",
-   "InternetGatewayDevice.ManagementServer.ConnectionRequestURL",
-   "InternetGatewayDevice.ManagementServer.ParameterKey",
-   NULL  /* this pathname can change, copied from acsState.connReqIfNameFullPath*/
+static char *informParameters[] =
+{
+    "InternetGatewayDevice.DeviceSummary",
+    "InternetGatewayDevice.DeviceInfo.SpecVersion",
+    "InternetGatewayDevice.DeviceInfo.HardwareVersion",
+    "InternetGatewayDevice.DeviceInfo.SoftwareVersion",
+    "InternetGatewayDevice.DeviceInfo.ProvisioningCode",
+    "InternetGatewayDevice.ManagementServer.ConnectionRequestURL",
+    "InternetGatewayDevice.ManagementServer.ParameterKey",
+    NULL  /* this pathname can change, copied from acsState.connReqIfNameFullPath*/
 };
 
-static char *informParametersYunnan[] = {
-   "InternetGatewayDevice.DeviceSummary",
-   "InternetGatewayDevice.DeviceInfo.SpecVersion",
-   "InternetGatewayDevice.DeviceInfo.HardwareVersion",
-   "InternetGatewayDevice.DeviceInfo.SoftwareVersion",
-   "InternetGatewayDevice.DeviceInfo.ProvisioningCode",
-   "InternetGatewayDevice.ManagementServer.ConnectionRequestURL",
-   "InternetGatewayDevice.ManagementServer.ParameterKey",
-   "InternetGatewayDevice.DeviceInfo.DeviceType",
-   "InternetGatewayDevice.DeviceInfo.AccessType",
-   NULL  /* this pathname can change, copied from acsState.connReqIfNameFullPath*/
+static char *informParametersYunnan[] =
+{
+    "InternetGatewayDevice.DeviceSummary",
+    "InternetGatewayDevice.DeviceInfo.SpecVersion",
+    "InternetGatewayDevice.DeviceInfo.HardwareVersion",
+    "InternetGatewayDevice.DeviceInfo.SoftwareVersion",
+    "InternetGatewayDevice.DeviceInfo.ProvisioningCode",
+    "InternetGatewayDevice.ManagementServer.ConnectionRequestURL",
+    "InternetGatewayDevice.ManagementServer.ParameterKey",
+    "InternetGatewayDevice.DeviceInfo.DeviceType",
+    "InternetGatewayDevice.DeviceInfo.AccessType",
+    NULL  /* this pathname can change, copied from acsState.connReqIfNameFullPath*/
 };
 
-static char *informParametersFujian[] = {
+static char *informParametersFujian[] =
+{
     "InternetGatewayDevice.DeviceSummary",
     "InternetGatewayDevice.DeviceInfo.SpecVersion",
     "InternetGatewayDevice.DeviceInfo.HardwareVersion",
@@ -163,43 +167,45 @@ static char *informParametersFujian[] = {
     NULL  /* this pathname can change, copied from acsState.connReqIfNameFullPath*/
 };
 
-static const char *informEventStr[] = {
-   "0 BOOTSTRAP",
-   "1 BOOT",
-   "2 PERIODIC",
-   "3 SCHEDULED",
-   "4 VALUE CHANGE",
-   "5 KICKED",
-   "6 CONNECTION REQUEST",
-   "7 TRANSFER COMPLETE",
-   "8 DIAGNOSTICS COMPLETE",
-   "M Reboot",
-   "M ScheduleInform",
-   "M Download",
-   "M Upload",
-   "NULL",
-   "NULL",     //14
-   "NULL",
-   "NULL",
-   "NULL",
-   "NULL",
-   "X CT-COM BIND2",
-   "X CT-COM NAME CHANGE",
-   "NULL",
-   "NULL",
-   "NULL",
-   "NULL",
-   "NULL",
-   "NULL",
-   "X CT-COM BIND1",
+static const char *informEventStr[] =
+{
+    "0 BOOTSTRAP",
+    "1 BOOT",
+    "2 PERIODIC",
+    "3 SCHEDULED",
+    "4 VALUE CHANGE",
+    "5 KICKED",
+    "6 CONNECTION REQUEST",
+    "7 TRANSFER COMPLETE",
+    "8 DIAGNOSTICS COMPLETE",
+    "M Reboot",
+    "M ScheduleInform",
+    "M Download",
+    "M Upload",
+    "NULL",
+    "NULL",     //14
+    "NULL",
+    "NULL",
+    "NULL",
+    "NULL",
+    "X CT-COM BIND2",
+    "X CT-COM NAME CHANGE",
+    "NULL",
+    "NULL",
+    "NULL",
+    "NULL",
+    "NULL",
+    "NULL",
+    "X CT-COM BIND1",
 };
 
 
-CTMDW_INFORM_VALUE ctdefaultvalue[] = {
-{"InternetGatewayDevice.ManagementServer.CTMgtIPAddress", "NULL"},
-{"InternetGatewayDevice.ManagementServer.MgtDNS", "NULL"},
-{"InternetGatewayDevice.ManagementServer.InternetPvc", "NULL"},
-{"InternetGatewayDevice.ManagementServer.CTUserIPAddress.", "NULL"},
+CTMDW_INFORM_VALUE ctdefaultvalue[] =
+{
+    {"InternetGatewayDevice.ManagementServer.CTMgtIPAddress", "NULL"},
+    {"InternetGatewayDevice.ManagementServer.MgtDNS", "NULL"},
+    {"InternetGatewayDevice.ManagementServer.InternetPvc", "NULL"},
+    {"InternetGatewayDevice.ManagementServer.CTUserIPAddress.", "NULL"},
 };
 
 static TR69C_ALLOC_BUF_T sg_tr69cAllocBuf;
@@ -261,22 +267,22 @@ extern void writeLog(const char *buf, int bufLen);
 
 static void inversionParamItem(ParamItem *head)
 {
-    ParamItem *p, *t , *q;
+    ParamItem *p, *t, *q;
     p = NULL;
 
     t = head->next;
-        
-    if(t == NULL)
+
+    if (t == NULL)
     {
         return;
-    }        
+    }
 
     q = t->next;
-    if(q == NULL) 
+    if (q == NULL)
     {
         return;
-    }           
-    while(q)
+    }
+    while (q)
     {
         t->next = p;
         p = t;
@@ -290,7 +296,7 @@ static void inversionParamItem(ParamItem *head)
 int getsysRunTime(void)
 {
     struct sysinfo sysRunInfo;
-    
+
     /*success*/
     if (sysinfo(&sysRunInfo) == 0)
     {
@@ -316,12 +322,12 @@ static void tr69c_initInformEventStr()
         informEventStr[13] = "X CT-COM ALARM";
         informEventStr[17] = "X CT-COM CLEARALARM";
     }
-    
+
     if (SF_FEATURE_SUPPORT_TR69C_MONITOR)
-    { 
+    {
         informEventStr[14] = "X CT-COM MONITOR";
     }
-    
+
     if (SF_FEATURE_SUPPORT_TR69C_MAINTAIN)
     {
         informEventStr[16] = "X CT-COM ACCOUNTCHANGE";
@@ -368,10 +374,10 @@ static void tr69c_initInformEventStrforCU()
     }
 
     informEventStr[25] = "11 X_CU_OFFLINE";
-    
+
 }
 
-RPCAction* newRPCAction(void)
+RPCAction *newRPCAction(void)
 {
     return ((RPCAction *)VOS_MALLOC_FLAGS(sizeof(RPCAction), ALLOC_ZEROIZE));
 }
@@ -388,30 +394,30 @@ void dumpAcsState(void)
     fprintf(stderr, "ParameterKey       %s\n", acsState.parameterKey);
     fprintf(stderr, "MaxEnvelopes       %d\n", acsState.maxEnvelopes);
     fprintf(stderr, "RPC Methods supported by ACS:\n");
-    fprintf(stderr, "   GetRpcMethods           %s\n", acsState.acsRpcMethods.rpcGetRPCMethods?
-            "Yes": "No");
-    fprintf(stderr, "   SetParameterValues      %s\n", acsState.acsRpcMethods.rpcSetParameterValues?
-            "Yes": "No");
-    fprintf(stderr, "   GetParameterValues      %s\n", acsState.acsRpcMethods.rpcGetParameterValues?
-            "Yes": "No");
-    fprintf(stderr, "   GetParameterNames       %s\n", acsState.acsRpcMethods.rpcGetParameterNames?
-            "Yes": "No");
-    fprintf(stderr, "   GetParameterAttributes  %s\n", acsState.acsRpcMethods.rpcGetParameterAttributes?
-            "Yes": "No");
-    fprintf(stderr, "   SetParameterAttributes  %s\n", acsState.acsRpcMethods.rpcSetParameterAttributes?
-            "Yes": "No");
-    fprintf(stderr, "   Reboot                  %s\n", acsState.acsRpcMethods.rpcReboot?
-            "Yes": "No");
-    fprintf(stderr, "   FactoryReset            %s\n", acsState.acsRpcMethods.rpcFactoryReset?
-            "Yes": "No");
-    fprintf(stderr, "   Download                %s\n", acsState.acsRpcMethods.rpcDownload?
-            "Yes": "No");
-    fprintf(stderr, "   ScheduleInform          %s\n", acsState.acsRpcMethods.rpcScheduleInform?
-            "Yes": "No");
-    fprintf(stderr, "   Upload                  %s\n", acsState.acsRpcMethods.rpcUpload?
-            "Yes": "No");
-    fprintf(stderr, "   GetQueuedTransfers      %s\n", acsState.acsRpcMethods.rpcGetQueuedTransfers?
-            "Yes": "No");
+    fprintf(stderr, "   GetRpcMethods           %s\n", acsState.acsRpcMethods.rpcGetRPCMethods ?
+            "Yes" : "No");
+    fprintf(stderr, "   SetParameterValues      %s\n", acsState.acsRpcMethods.rpcSetParameterValues ?
+            "Yes" : "No");
+    fprintf(stderr, "   GetParameterValues      %s\n", acsState.acsRpcMethods.rpcGetParameterValues ?
+            "Yes" : "No");
+    fprintf(stderr, "   GetParameterNames       %s\n", acsState.acsRpcMethods.rpcGetParameterNames ?
+            "Yes" : "No");
+    fprintf(stderr, "   GetParameterAttributes  %s\n", acsState.acsRpcMethods.rpcGetParameterAttributes ?
+            "Yes" : "No");
+    fprintf(stderr, "   SetParameterAttributes  %s\n", acsState.acsRpcMethods.rpcSetParameterAttributes ?
+            "Yes" : "No");
+    fprintf(stderr, "   Reboot                  %s\n", acsState.acsRpcMethods.rpcReboot ?
+            "Yes" : "No");
+    fprintf(stderr, "   FactoryReset            %s\n", acsState.acsRpcMethods.rpcFactoryReset ?
+            "Yes" : "No");
+    fprintf(stderr, "   Download                %s\n", acsState.acsRpcMethods.rpcDownload ?
+            "Yes" : "No");
+    fprintf(stderr, "   ScheduleInform          %s\n", acsState.acsRpcMethods.rpcScheduleInform ?
+            "Yes" : "No");
+    fprintf(stderr, "   Upload                  %s\n", acsState.acsRpcMethods.rpcUpload ?
+            "Yes" : "No");
+    fprintf(stderr, "   GetQueuedTransfers      %s\n", acsState.acsRpcMethods.rpcGetQueuedTransfers ?
+            "Yes" : "No");
 }
 
 void dumpRpcAction(RPCAction *a)
@@ -476,7 +482,7 @@ static const char *getRPCMethodName(eRPCMethods m)
             break;
         case rpcScheduleInform:
             t = "ScheduleInform";
-            break;          
+            break;
         case rpcSetParameterValues:
             t = "SetParameterValues";
             break;
@@ -520,7 +526,7 @@ static const char *getRPCMethodName(eRPCMethods m)
             t = "no RPC methods";
             break;
     }
-    
+
     return t;
 }
 
@@ -540,63 +546,63 @@ static void freeParamItems(ParamItem *item)
 
 static void freeAttributeItems(AttributeItem *item)
 {
-   AttributeItem *next;
-   while (item)
-   {
-      next = item->next;
-      VOS_MEM_FREE_BUF_AND_NULL_PTR(item->pname);
-      VOS_MEM_FREE_BUF_AND_NULL_PTR(item);
-      item = next;
-   }
+    AttributeItem *next;
+    while (item)
+    {
+        next = item->next;
+        VOS_MEM_FREE_BUF_AND_NULL_PTR(item->pname);
+        VOS_MEM_FREE_BUF_AND_NULL_PTR(item);
+        item = next;
+    }
 }
 
 static void freeDownloadReq(DownloadReq *r)
 {
-   VOS_MEM_FREE_BUF_AND_NULL_PTR(r->url);
-   VOS_MEM_FREE_BUF_AND_NULL_PTR(r->user);
-   VOS_MEM_FREE_BUF_AND_NULL_PTR(r->pwd);
-   VOS_MEM_FREE_BUF_AND_NULL_PTR(r->fileName);
+    VOS_MEM_FREE_BUF_AND_NULL_PTR(r->url);
+    VOS_MEM_FREE_BUF_AND_NULL_PTR(r->user);
+    VOS_MEM_FREE_BUF_AND_NULL_PTR(r->pwd);
+    VOS_MEM_FREE_BUF_AND_NULL_PTR(r->fileName);
 }
 /*
 * item is undefined on return
 */
 void freeRPCAction(RPCAction *item)
 {
-   VOS_MEM_FREE_BUF_AND_NULL_PTR(item->ID);
-   VOS_MEM_FREE_BUF_AND_NULL_PTR(item->parameterKey);
-   VOS_MEM_FREE_BUF_AND_NULL_PTR(item->commandKey);
-   VOS_MEM_FREE_BUF_AND_NULL_PTR(item->informID);
-   switch (item->rpcMethod)
-   {
-      case rpcGetParameterNames:
-         VOS_MEM_FREE_BUF_AND_NULL_PTR(item->ud.paramNamesReq.parameterPath);
-         break;
-      case rpcSetParameterValues:
-      case rpcGetParameterValues:
-      case rpcScheduleInform:
-         freeParamItems(item->ud.pItem);
-         break;
-      case rpcSetParameterAttributes:
-      case rpcGetParameterAttributes:
-         freeAttributeItems(item->ud.aItem);
-         break;
-      case rpcAddObject:
-      case rpcDeleteObject:
-         VOS_MEM_FREE_BUF_AND_NULL_PTR(item->ud.addDelObjectReq.objectName);
-         break;
-      case rpcDownload:
-         freeDownloadReq( &item->ud.downloadReq );
-         break;
-      case rpcUpload:
-         freeDownloadReq( &item->ud.downloadReq );
-         break;
-      case rpcGetQueuedTransfers:
-        /* do we need to free anything? */
-        break;
-      default:
-         break;
-   }
-   VOS_MEM_FREE_BUF_AND_NULL_PTR(item);
+    VOS_MEM_FREE_BUF_AND_NULL_PTR(item->ID);
+    VOS_MEM_FREE_BUF_AND_NULL_PTR(item->parameterKey);
+    VOS_MEM_FREE_BUF_AND_NULL_PTR(item->commandKey);
+    VOS_MEM_FREE_BUF_AND_NULL_PTR(item->informID);
+    switch (item->rpcMethod)
+    {
+        case rpcGetParameterNames:
+            VOS_MEM_FREE_BUF_AND_NULL_PTR(item->ud.paramNamesReq.parameterPath);
+            break;
+        case rpcSetParameterValues:
+        case rpcGetParameterValues:
+        case rpcScheduleInform:
+            freeParamItems(item->ud.pItem);
+            break;
+        case rpcSetParameterAttributes:
+        case rpcGetParameterAttributes:
+            freeAttributeItems(item->ud.aItem);
+            break;
+        case rpcAddObject:
+        case rpcDeleteObject:
+            VOS_MEM_FREE_BUF_AND_NULL_PTR(item->ud.addDelObjectReq.objectName);
+            break;
+        case rpcDownload:
+            freeDownloadReq(&item->ud.downloadReq);
+            break;
+        case rpcUpload:
+            freeDownloadReq(&item->ud.downloadReq);
+            break;
+        case rpcGetQueuedTransfers:
+            /* do we need to free anything? */
+            break;
+        default:
+            break;
+    }
+    VOS_MEM_FREE_BUF_AND_NULL_PTR(item);
 }  /* End of freeRPCAction() */
 
 /*----------------------------------------------------------------------*/
@@ -676,110 +682,110 @@ static VOS_RET_E tr69c_saveToAllocBuf(const char *data, UINT32 len)
  */
 static void mprintf(tProtoCtx *pc, int *len, const char *fmt, ...)
 {
-   int      n;
-   va_list  ap;
-   char     buf[512];
-    
-   va_start(ap, fmt);
-   if (ap == NULL)
-   {
-      n = util_strlen(fmt);
-      if (n > 0)
-      {
-         *len += n;
-         if (pc != NULL)
-         {
-            proto_SendRaw(pc, fmt, n);
-         }
-         else
-         {
-             tr69c_saveToAllocBuf(fmt, n);
-         }
-      }
-   }
-   else
-   {
-      n = vsnprintf(buf, 512, fmt, ap);
-      if (n < 0 || n >= 512)
-      {
-         /* out of memory */ 
-         vosLog_error("xml: mprintf: out of memory");
-         acsState.fault = VOS_RET_RESOURCE_EXCEEDED;
-      }
-      else if (n > 0)
-      {
-         *len += n;
-          if (pc != NULL)
-          {
-            proto_SendRaw(pc, buf, n);
-          } 
-          else
-          {
-              tr69c_saveToAllocBuf(buf, n);
-          }
-      }
-   }
-   va_end(ap);
+    int      n;
+    va_list  ap;
+    char     buf[512];
+
+    va_start(ap, fmt);
+    if (ap == NULL)
+    {
+        n = util_strlen(fmt);
+        if (n > 0)
+        {
+            *len += n;
+            if (pc != NULL)
+            {
+                proto_SendRaw(pc, fmt, n);
+            }
+            else
+            {
+                tr69c_saveToAllocBuf(fmt, n);
+            }
+        }
+    }
+    else
+    {
+        n = vsnprintf(buf, 512, fmt, ap);
+        if (n < 0 || n >= 512)
+        {
+            /* out of memory */
+            vosLog_error("xml: mprintf: out of memory");
+            acsState.fault = VOS_RET_RESOURCE_EXCEEDED;
+        }
+        else if (n > 0)
+        {
+            *len += n;
+            if (pc != NULL)
+            {
+                proto_SendRaw(pc, buf, n);
+            }
+            else
+            {
+                tr69c_saveToAllocBuf(buf, n);
+            }
+        }
+    }
+    va_end(ap);
 }
 
 /*----------------------------------------------------------------------*/
 static void xml_mprintf(tProtoCtx *pc, int *len, char *s)
 {
-   if (s)
-   {
-      for (; *s; s++)
-      {
-         switch (*s)
-         {
-            case '&':
-               mprintf(pc, len, "&amp;");
-               break;
-            case '<':
-               mprintf(pc, len, "&lt;");
-               break;
-            case '>':
-               mprintf(pc, len, "&gt;");
-               break;
-            case '"':
-               mprintf(pc, len, "&quot;");
-               break;
-            case '\'':
-               mprintf(pc, len, "&apos;");
-            case 9:
-            case 10:
-            case 13:
-               mprintf(pc, len, "&#%d;", *s);
-               break;
-            default:
-               if (isprint(*s))
-               {
-                  mprintf(pc, len, "%c", *s);
-               }
-               else
-               {
-                  mprintf(pc, len, " ");
-               }
-               break;
-         }
-      }
-   }
+    if (s)
+    {
+        for (; *s; s++)
+        {
+            switch (*s)
+            {
+                case '&':
+                    mprintf(pc, len, "&amp;");
+                    break;
+                case '<':
+                    mprintf(pc, len, "&lt;");
+                    break;
+                case '>':
+                    mprintf(pc, len, "&gt;");
+                    break;
+                case '"':
+                    mprintf(pc, len, "&quot;");
+                    break;
+                case '\'':
+                    mprintf(pc, len, "&apos;");
+                case 9:
+                case 10:
+                case 13:
+                    mprintf(pc, len, "&#%d;", *s);
+                    break;
+                default:
+                    if (isprint(*s))
+                    {
+                        mprintf(pc, len, "%c", *s);
+                    }
+                    else
+                    {
+                        mprintf(pc, len, " ");
+                    }
+                    break;
+            }
+        }
+    }
 }
 
 #if 0
 /*----------------------------------------------------------------------*/
 static void XMLmIndent(tProtoCtx *pc, int *len, int indent)
 {
-   int i;
+    int i;
 
-   if (indent < 0)
-   {
-      return;
-   }
+    if (indent < 0)
+    {
+        return;
+    }
 
-   for (i = 0; i < indent; i++)
-   {
-      mprintf(pc, len, " ");
-   }
+    for (i = 0; i < indent; i++)
+    {
+        mprintf(pc, len, " ");
+    }
 }
 #endif
 
@@ -788,22 +794,22 @@ char *changeDot(char *pp)
     char *temp = pp;
     char *pos = strstr(temp, ".");
 
-    while(pos)
+    while (pos)
     {
         temp = pos;
-        pos = strstr(temp+1, ".");
+        pos = strstr(temp + 1, ".");
     }
-    
+
     if (temp && (NULL == pos))
     {
         *temp = ' ';
     }
-    
+
     return pp;
 }
 
 
-RPCAction* getAction()
+RPCAction *getAction()
 {
     if (simRpcAction != NULL)
     {
@@ -814,7 +820,7 @@ RPCAction* getAction()
     {
         vosLog_debug("itms and cpe");
         return acsRpcAction;
-    }    
+    }
 }
 
 
@@ -822,7 +828,7 @@ void wriltComToFile(char *format)
 {
     char buf[512] = {0};
     char mark[128] = {0};
-    
+
     UTIL_SNPRINTF(mark, sizeof(mark), "\n----------------------------------------------------------------------\n");
     UTIL_SNPRINTF(buf, sizeof(buf), "%s%s", mark, format);
     UTIL_SNPRINTF(buf, sizeof(buf), "%s%s\n", buf, mark);
@@ -849,10 +855,10 @@ void commandPrint(int rpcMethod)
         vosLog_debug("acsRpcAction->rpcMethod =%d", rpcAction->rpcMethod);
         switch (rpcMethod)
         {
-            case rpcGetParameterValues:              
+            case rpcGetParameterValues:
                 if (pi)
                 {
-                    for( ;pi != NULL; pi = pi->next)
+                    for (; pi != NULL; pi = pi->next)
                     {
                         str_tmp = VOS_MALLOC_FLAGS(strlen(pi->pname) + 1, ALLOC_ZEROIZE);
                         UTIL_STRNCPY(str_tmp, pi->pname, strlen(pi->pname) + 1);
@@ -864,13 +870,13 @@ void commandPrint(int rpcMethod)
                 break;
 
             case rpcSetParameterValues:
-               if (pi)
+                if (pi)
                 {
-                    for( ;pi != NULL; pi = pi->next)
-                    {                      
+                    for (; pi != NULL; pi = pi->next)
+                    {
                         str_tmp = VOS_MALLOC_FLAGS(strlen(pi->pname) + 1, ALLOC_ZEROIZE);
                         UTIL_STRNCPY(str_tmp, pi->pname, strlen(pi->pname) + 1);
-                        UTIL_SNPRINTF(buf, sizeof(buf), "tr69c setParamval %s %s", changeDot(str_tmp), pi->pvalue);                        
+                        UTIL_SNPRINTF(buf, sizeof(buf), "tr69c setParamval %s %s", changeDot(str_tmp), pi->pvalue);
                         VOS_FREE(str_tmp);
                         wriltComToFile(buf);
                     }
@@ -885,14 +891,14 @@ void commandPrint(int rpcMethod)
                     UTIL_SNPRINTF(buf, sizeof(buf), "tr69c getParamNames %s", changeDot(str_tmp));
                     VOS_FREE(str_tmp);
                     wriltComToFile(buf);
-                }                
+                }
                 break;
 
             case rpcGetParameterAttributes:
                 if (ai)
                 {
-                    for( ;ai != NULL; ai = ai->next)
-                    {                     
+                    for (; ai != NULL; ai = ai->next)
+                    {
                         str_tmp = VOS_MALLOC_FLAGS(strlen(ai->pname) + 1, ALLOC_ZEROIZE);
                         UTIL_STRNCPY(str_tmp, ai->pname, strlen(ai->pname) + 1);
                         UTIL_SNPRINTF(buf, sizeof(buf), "tr69c getParamattr %s", changeDot(str_tmp));
@@ -905,11 +911,11 @@ void commandPrint(int rpcMethod)
             case rpcSetParameterAttributes:
                 if (ai)
                 {
-                    for( ;ai != NULL; ai = ai->next)
+                    for (; ai != NULL; ai = ai->next)
                     {
                         str_tmp = VOS_MALLOC_FLAGS(strlen(ai->pname) + 1, ALLOC_ZEROIZE);
                         UTIL_STRNCPY(str_tmp, ai->pname, strlen(ai->pname) + 1);
-                        UTIL_SNPRINTF(buf, sizeof(buf), "tr69c setParamattr %s %d", changeDot(str_tmp), ai->chgNotify);                       
+                        UTIL_SNPRINTF(buf, sizeof(buf), "tr69c setParamattr %s %d", changeDot(str_tmp), ai->chgNotify);
                         VOS_FREE(str_tmp);
                         wriltComToFile(buf);
                     }
@@ -918,34 +924,34 @@ void commandPrint(int rpcMethod)
 
             case rpcAddObject:
                 if (pp)
-                {                    
-                    UTIL_SNPRINTF(buf, sizeof(buf), "tr69c addObj %s", pp);                    
+                {
+                    UTIL_SNPRINTF(buf, sizeof(buf), "tr69c addObj %s", pp);
                     wriltComToFile(buf);
                 }
                 break;
 
             case rpcDeleteObject:
                 if (pp)
-                {                   
+                {
                     str_tmp = VOS_MALLOC_FLAGS(strlen(pp) + 1, ALLOC_ZEROIZE);
                     UTIL_STRNCPY(str_tmp, pp, strlen(pp) + 1);
-                    UTIL_SNPRINTF(buf, sizeof(buf), "tr69c delObj %s", changeDot(str_tmp));                   
+                    UTIL_SNPRINTF(buf, sizeof(buf), "tr69c delObj %s", changeDot(str_tmp));
                     VOS_FREE(str_tmp);
                     wriltComToFile(buf);
                 }
                 break;
 
             case rpcReboot:
-                UTIL_SNPRINTF(buf, sizeof(buf), "tr69c reboot");            
+                UTIL_SNPRINTF(buf, sizeof(buf), "tr69c reboot");
                 wriltComToFile(buf);
                 break;
 
             case rpcFactoryReset:
-                UTIL_SNPRINTF(buf, sizeof(buf), "tr69c factoryreset");               
+                UTIL_SNPRINTF(buf, sizeof(buf), "tr69c factoryreset");
                 wriltComToFile(buf);
                 break;
 
-            default: 
+            default:
                 vosLog_debug("No RPCmethod");
         }
     }
@@ -953,17 +959,17 @@ void commandPrint(int rpcMethod)
 
 static void closeBodyEnvelope(tProtoCtx *pc, int *lth)
 {
-   xml_mIndent(pc, lth, 2);
-   mprintf(pc, lth, "</%sBody>\n", nsSOAP);
-   mprintf(pc, lth, "</%sEnvelope>\n", nsSOAP);
+    xml_mIndent(pc, lth, 2);
+    mprintf(pc, lth, "</%sBody>\n", nsSOAP);
+    mprintf(pc, lth, "</%sEnvelope>\n", nsSOAP);
 }
 
 /* Add <SOAP:Body>
 */
 static void openBody(tProtoCtx *pc, int *lth)
 {
-   xml_mIndent(pc, lth, 2);
-   mprintf(pc, lth, "<%sBody>\n", nsSOAP);
+    xml_mIndent(pc, lth, 2);
+    mprintf(pc, lth, "<%sBody>\n", nsSOAP);
 }
 
 /*
@@ -976,411 +982,417 @@ static void openBody(tProtoCtx *pc, int *lth)
  */
 static void openEnvWithHeader(char *idstr, tProtoCtx *pc, int *lth)
 {
-   NameSpace   *ns;
-   mprintf(pc, lth, "<%sEnvelope", nsSOAP);
-   /* generate Namespace declarations */
-   ns = nameSpaces;
-   while (ns->sndPrefix)
-   {
-      char    pbuf[40];
-      char    *e;
+    NameSpace   *ns;
+    mprintf(pc, lth, "<%sEnvelope", nsSOAP);
+    /* generate Namespace declarations */
+    ns = nameSpaces;
+    while (ns->sndPrefix)
+    {
+        char    pbuf[40];
+        char    *e;
 #if 1
-      mprintf(pc, lth, " ");
+        mprintf(pc, lth, " ");
 #else
-      mprintf(pc, lth, "\n");
+        mprintf(pc, lth, "\n");
 #endif
-      UTIL_STRNCPY(pbuf, ns->sndPrefix, sizeof(pbuf));
-      e=strchr(pbuf,':');
-      if (e) *e='\0'; /* find : in prefix */
-      xml_mIndent(pc, lth, 2);
-      mprintf(pc, lth, "xmlns:%s=\"%s\"", pbuf, ns->nsURL);
-      ++ns;
-   }
-   mprintf(pc, lth, ">\n");
-   if (idstr)
-   {
-      xml_mIndent(pc, lth, 2);
-      mprintf(pc, lth, "<%sHeader>\n", nsSOAP);
-      xml_mIndent(pc, lth, 3);
-      mprintf(pc, lth, "<%sID %smustUnderstand=\"1\">%s</%sID>\n",
-              nsCWMP, nsSOAP,idstr , nsCWMP);
-      xml_mIndent(pc, lth, 2);
-      mprintf(pc, lth, "</%sHeader>\n", nsSOAP);
-   }
+        UTIL_STRNCPY(pbuf, ns->sndPrefix, sizeof(pbuf));
+        e = strchr(pbuf, ':');
+        if (e)
+            *e = '\0'; /* find : in prefix */
+        xml_mIndent(pc, lth, 2);
+        mprintf(pc, lth, "xmlns:%s=\"%s\"", pbuf, ns->nsURL);
+        ++ns;
+    }
+    mprintf(pc, lth, ">\n");
+    if (idstr)
+    {
+        xml_mIndent(pc, lth, 2);
+        mprintf(pc, lth, "<%sHeader>\n", nsSOAP);
+        xml_mIndent(pc, lth, 3);
+        mprintf(pc, lth, "<%sID %smustUnderstand=\"1\">%s</%sID>\n",
+                nsCWMP, nsSOAP, idstr, nsCWMP);
+        xml_mIndent(pc, lth, 2);
+        mprintf(pc, lth, "</%sHeader>\n", nsSOAP);
+    }
 }
 
 static const char *getFaultCode(int fault)
 {
-   const char *r;
+    const char *r;
 
-   switch (fault)
-   {
-      case 9000:
-      case 9001:
-      case 9002:
-      case 9004:
-      case 9009:
-      case 9010:
-      case 9011:
-      case 9012:
-      case 9013:
-         r = "Server";
-         break;
-      case 9003:
-      case 9005:
-      case 9006:
-      case 9007:
-      case 9008:
-         r = "Client";
-         break;
-      default:
-         r = "Vendor";
-         break;
-   }
-   return r;
+    switch (fault)
+    {
+        case 9000:
+        case 9001:
+        case 9002:
+        case 9004:
+        case 9009:
+        case 9010:
+        case 9011:
+        case 9012:
+        case 9013:
+            r = "Server";
+            break;
+        case 9003:
+        case 9005:
+        case 9006:
+        case 9007:
+        case 9008:
+            r = "Client";
+            break;
+        default:
+            r = "Vendor";
+            break;
+    }
+    return r;
 }
 
 static const char *getFaultStr(int fault)
 {
-   const char *detailFaultStr = NULL;
+    const char *detailFaultStr = NULL;
 
-   switch (fault)
-   {
-      case 9000:
-         detailFaultStr = "Method not supported";
-         break;
-      case 9001:
-         detailFaultStr = "Request denied";
-         break;
-      case 9002:
-         detailFaultStr = "Internal Error";
-         break;
-      case 9003:
-         detailFaultStr = "Invalid arguments";
-         break;
-      case 9004:
-         detailFaultStr = "Resources Exceeded";
-         break;
-      case 9005:
-         detailFaultStr = "Invalid Parameter Name";
-         break;
-      case 9006:
-         detailFaultStr = "Invalid parameter type";
-         break;
-      case 9007:
-         detailFaultStr = "Invalid parameter value";
-         break;
-      case 9008:
-         detailFaultStr = "Attempt to set a non-writeable parameter";
-         break;
-      case 9009:
-         detailFaultStr = "Notification request rejected";
-         break;
-      case 9010:
-         detailFaultStr = "Download failure";
-         break;
-      case 9011:
-         detailFaultStr = "Upload failure";
-         break;
-      case 9012:
-         detailFaultStr = "File transfer server authentication failure";
-         break;
-      case 9013:
-         detailFaultStr = "Unsupported protocol for file transfer";
-         break;
-      case 9014:
-         detailFaultStr = "MaxEnvelopes exceeded";
-         break;
-      case 9803:
-         if (SF_FEATURE_SUPPORT_CARD)
-         {
-            detailFaultStr = "Authentication Failure";
-         }
-         break;
-      default:
-         detailFaultStr = "Vendor defined fault";
-         break;
-   }
-   return detailFaultStr;
-}  /* End of getFaultStr() */  
+    switch (fault)
+    {
+        case 9000:
+            detailFaultStr = "Method not supported";
+            break;
+        case 9001:
+            detailFaultStr = "Request denied";
+            break;
+        case 9002:
+            detailFaultStr = "Internal Error";
+            break;
+        case 9003:
+            detailFaultStr = "Invalid arguments";
+            break;
+        case 9004:
+            detailFaultStr = "Resources Exceeded";
+            break;
+        case 9005:
+            detailFaultStr = "Invalid Parameter Name";
+            break;
+        case 9006:
+            detailFaultStr = "Invalid parameter type";
+            break;
+        case 9007:
+            detailFaultStr = "Invalid parameter value";
+            break;
+        case 9008:
+            detailFaultStr = "Attempt to set a non-writeable parameter";
+            break;
+        case 9009:
+            detailFaultStr = "Notification request rejected";
+            break;
+        case 9010:
+            detailFaultStr = "Download failure";
+            break;
+        case 9011:
+            detailFaultStr = "Upload failure";
+            break;
+        case 9012:
+            detailFaultStr = "File transfer server authentication failure";
+            break;
+        case 9013:
+            detailFaultStr = "Unsupported protocol for file transfer";
+            break;
+        case 9014:
+            detailFaultStr = "MaxEnvelopes exceeded";
+            break;
+        case 9803:
+            if (SF_FEATURE_SUPPORT_CARD)
+            {
+                detailFaultStr = "Authentication Failure";
+            }
+            break;
+        default:
+            detailFaultStr = "Vendor defined fault";
+            break;
+    }
+    return detailFaultStr;
+}  /* End of getFaultStr() */
 
 static int getParamCnt(ParamItem *pi)
 {
-   int   cnt = 0;
+    int   cnt = 0;
 
-   while (pi != NULL)
-   {
-      cnt++;
-      pi = pi->next;
-   }
+    while (pi != NULL)
+    {
+        cnt++;
+        pi = pi->next;
+    }
 
-   return cnt;
+    return cnt;
 
 }  /* End of getParamCnt() */
 
 static void writeSoapFault(RPCAction *a, int fault)
 {
-   tProtoCtx *pc = NULL;
+    tProtoCtx *pc = NULL;
 
-   vosLog_debug("=====>ENTER");
-   
-   tr69c_initAllocBuf();
+    vosLog_debug("=====>ENTER");
 
-   do
-   {
-      int   bufsz = 0;
+    tr69c_initAllocBuf();
 
-      openEnvWithHeader(a->ID, pc, &bufsz);
-      openBody(pc, &bufsz);
-      xml_mIndent(pc, &bufsz, 3);
-      mprintf(pc, &bufsz, "<%sFault>\n", nsSOAP);
-      xml_mIndent(pc, &bufsz, 4);
-      mprintf(pc, &bufsz, "<faultcode>%s</faultcode>\n", getFaultCode(fault));
-      xml_mIndent(pc, &bufsz, 4);
-      mprintf(pc, &bufsz, "<faultstring>CWMP fault</faultstring>\n");
-      xml_mIndent(pc, &bufsz, 5);
-      mprintf(pc, &bufsz, "<detail>\n");
-      xml_mIndent(pc, &bufsz, 6);
-      mprintf(pc, &bufsz, "<%sFault>\n", nsCWMP);
-      xml_mIndent(pc, &bufsz, 7);
-      mprintf(pc, &bufsz, "<FaultCode>%d</FaultCode>\n", fault);
-      xml_mIndent(pc, &bufsz, 7);
-      mprintf(pc, &bufsz, "<FaultString>%s</FaultString>\n", getFaultStr(fault));
-      if (a->rpcMethod == rpcSetParameterValues)
-      {
-         ParamItem   *pi = a->ud.pItem;
-         /* walk thru parameters to generate errors */
-        
-         while (pi != NULL )
-         {
-            if (pi->fault)
+    do
+    {
+        int   bufsz = 0;
+
+        openEnvWithHeader(a->ID, pc, &bufsz);
+        openBody(pc, &bufsz);
+        xml_mIndent(pc, &bufsz, 3);
+        mprintf(pc, &bufsz, "<%sFault>\n", nsSOAP);
+        xml_mIndent(pc, &bufsz, 4);
+        mprintf(pc, &bufsz, "<faultcode>%s</faultcode>\n", getFaultCode(fault));
+        xml_mIndent(pc, &bufsz, 4);
+        mprintf(pc, &bufsz, "<faultstring>CWMP fault</faultstring>\n");
+        xml_mIndent(pc, &bufsz, 5);
+        mprintf(pc, &bufsz, "<detail>\n");
+        xml_mIndent(pc, &bufsz, 6);
+        mprintf(pc, &bufsz, "<%sFault>\n", nsCWMP);
+        xml_mIndent(pc, &bufsz, 7);
+        mprintf(pc, &bufsz, "<FaultCode>%d</FaultCode>\n", fault);
+        xml_mIndent(pc, &bufsz, 7);
+        mprintf(pc, &bufsz, "<FaultString>%s</FaultString>\n", getFaultStr(fault));
+        if (a->rpcMethod == rpcSetParameterValues)
+        {
+            ParamItem   *pi = a->ud.pItem;
+            /* walk thru parameters to generate errors */
+
+            while (pi != NULL)
             {
-               xml_mIndent(pc, &bufsz, 7);
-               mprintf(pc, &bufsz, "<SetParameterValuesFault>\n");
-               xml_mIndent(pc, &bufsz, 8);
-               mprintf(pc, &bufsz, "<ParameterName>%s</ParameterName>\n",
-                           pi->pname);
-               xml_mIndent(pc, &bufsz, 8);
-               mprintf(pc, &bufsz, "<FaultCode>%d</FaultCode>\n", pi->fault);
-               xml_mIndent(pc, &bufsz, 8);
-               mprintf(pc, &bufsz, "<FaultString>%s</FaultString>\n",
-                           getFaultStr(pi->fault));
-               xml_mIndent(pc, &bufsz, 7);
-               mprintf(pc, &bufsz, "</SetParameterValuesFault>\n");
+                if (pi->fault)
+                {
+                    xml_mIndent(pc, &bufsz, 7);
+                    mprintf(pc, &bufsz, "<SetParameterValuesFault>\n");
+                    xml_mIndent(pc, &bufsz, 8);
+                    mprintf(pc, &bufsz, "<ParameterName>%s</ParameterName>\n",
+                            pi->pname);
+                    xml_mIndent(pc, &bufsz, 8);
+                    mprintf(pc, &bufsz, "<FaultCode>%d</FaultCode>\n", pi->fault);
+                    xml_mIndent(pc, &bufsz, 8);
+                    mprintf(pc, &bufsz, "<FaultString>%s</FaultString>\n",
+                            getFaultStr(pi->fault));
+                    xml_mIndent(pc, &bufsz, 7);
+                    mprintf(pc, &bufsz, "</SetParameterValuesFault>\n");
+                }
+                pi = pi->next;
             }
-            pi = pi->next;
-         }
-      }
-      xml_mIndent(pc, &bufsz, 6);
-      mprintf(pc, &bufsz, "</%sFault>\n", nsCWMP);
-      xml_mIndent(pc, &bufsz, 5);
-      mprintf(pc, &bufsz, "</detail>\n");
-      xml_mIndent(pc, &bufsz, 3);
-      mprintf(pc, &bufsz, "</%sFault>\n", nsSOAP);
-      closeBodyEnvelope(pc, &bufsz);
-    
-      /* send the HTTP message header*/
-      sendToAcs(bufsz, NULL);
-  
-      /* send the HTTP message body*/
-      pc = getAcsConnDesc();
-      proto_SendRaw(pc, sg_tr69cAllocBuf.buf, bufsz);
-	  
-   } while (0); 
-   
-   tr69c_freeAllocBuf();
+        }
+        xml_mIndent(pc, &bufsz, 6);
+        mprintf(pc, &bufsz, "</%sFault>\n", nsCWMP);
+        xml_mIndent(pc, &bufsz, 5);
+        mprintf(pc, &bufsz, "</detail>\n");
+        xml_mIndent(pc, &bufsz, 3);
+        mprintf(pc, &bufsz, "</%sFault>\n", nsSOAP);
+        closeBodyEnvelope(pc, &bufsz);
+
+        /* send the HTTP message header*/
+        sendToAcs(bufsz, NULL);
+
+        /* send the HTTP message body*/
+        pc = getAcsConnDesc();
+        proto_SendRaw(pc, sg_tr69cAllocBuf.buf, bufsz);
+
+    }
+    while (0);
+
+    tr69c_freeAllocBuf();
 
 }  /* End of writeSoapFault() */
 
 static void doScheduleInform(RPCAction *a)
 {
-   int interval = 0;
-   UINT32 var = 0;
-   ParamItem   *pi = a->ud.pItem;
-   
-   //printf("doScheduleInform name = %p;value = %s\n",a->ud.pItem->pname,a->ud.pItem->pvalue);
-  
-   acsState.fault = 0;  /* init to no fault */
+    int interval = 0;
+    UINT32 var = 0;
+    ParamItem   *pi = a->ud.pItem;
 
-   // if attribute name is empty then return fault message
-   //invalid arguments
-    if (pi == NULL) 
+    //printf("doScheduleInform name = %p;value = %s\n",a->ud.pItem->pname,a->ud.pItem->pvalue);
+
+    acsState.fault = 0;  /* init to no fault */
+
+    // if attribute name is empty then return fault message
+    //invalid arguments
+    if (pi == NULL)
     {
         acsState.fault = 9001;
     }
 
-   /* first set attributes */
-   while (pi!=NULL && !acsState.fault )
-   {
-      const char  *pp = pi->pname;
-      const char  *pv = pi->pvalue;
+    /* first set attributes */
+    while (pi != NULL && !acsState.fault)
+    {
+        const char  *pp = pi->pname;
+        const char  *pv = pi->pvalue;
 
-      if ((NULL == pp)||(NULL == pv))
-      {
-          acsState.fault = 9003;      
-      }
+        if ((NULL == pp) || (NULL == pv))
+        {
+            acsState.fault = 9003;
+        }
 
-      if (0 == util_strcmp(pp,"DelaySeconds"))
-      {
-          interval = atoi(pv);
-          if (interval > 0)
-          {
-              var = (UINT32)interval;
-              setScheduleInform(var);              
-          }
-          else
-          {
-              acsState.fault = 9003;  
-          }
-      }
-      pi = pi->next;
-   }
+        if (0 == util_strcmp(pp, "DelaySeconds"))
+        {
+            interval = atoi(pv);
+            if (interval > 0)
+            {
+                var = (UINT32)interval;
+                setScheduleInform(var);
+            }
+            else
+            {
+                acsState.fault = 9003;
+            }
+        }
+        pi = pi->next;
+    }
 
-   if (acsState.fault == 0) 
-   {
+    if (acsState.fault == 0)
+    {
 
-      tProtoCtx *pc = NULL;
+        tProtoCtx *pc = NULL;
 
-      tr69c_initAllocBuf();
-      
-      do
-      {
+        tr69c_initAllocBuf();
 
-         int   bufsz = 0;
+        do
+        {
 
-         /* build good response */
-         openEnvWithHeader(a->ID, pc, &bufsz);
-         openBody(pc, &bufsz);
-         xml_mIndent(pc,&bufsz, 3);
-         mprintf(pc,&bufsz,"<%sScheduleInformResponse/>\n", nsCWMP);
-         closeBodyEnvelope(pc, &bufsz);
+            int   bufsz = 0;
 
-         /* send the HTTP message header*/
-         sendToAcs(bufsz, NULL);
-         
-         /* send the HTTP message body*/
-         pc = getAcsConnDesc();
-         proto_SendRaw(pc, sg_tr69cAllocBuf.buf, bufsz);
-		 
-      } while (0);
-      
-      tr69c_freeAllocBuf();
-      
-   } else {
-      writeSoapFault(a, acsState.fault);
-      #ifdef DEBUG
-      fprintf(stderr, "Fault in ScheduleInform %d\n", acsState.fault);
-      #endif
-   }
+            /* build good response */
+            openEnvWithHeader(a->ID, pc, &bufsz);
+            openBody(pc, &bufsz);
+            xml_mIndent(pc, &bufsz, 3);
+            mprintf(pc, &bufsz, "<%sScheduleInformResponse/>\n", nsCWMP);
+            closeBodyEnvelope(pc, &bufsz);
+
+            /* send the HTTP message header*/
+            sendToAcs(bufsz, NULL);
+
+            /* send the HTTP message body*/
+            pc = getAcsConnDesc();
+            proto_SendRaw(pc, sg_tr69cAllocBuf.buf, bufsz);
+
+        }
+        while (0);
+
+        tr69c_freeAllocBuf();
+
+    }
+    else
+    {
+        writeSoapFault(a, acsState.fault);
+#ifdef DEBUG
+        fprintf(stderr, "Fault in ScheduleInform %d\n", acsState.fault);
+#endif
+    }
 }  /* End of doScheduleInform() */
 
 static void doGetRPCMethods(RPCAction *a)
 {
-   eRPCMethods m;
-   tProtoCtx *pc = NULL;
+    eRPCMethods m;
+    tProtoCtx *pc = NULL;
 
-   tr69c_initAllocBuf();
-   do
-   {
-      int   bufsz = 0;
-   
-      openEnvWithHeader(a->ID, pc, &bufsz);
-      openBody(pc, &bufsz);
-      xml_mIndent(pc, &bufsz, 3);
-      mprintf(pc, &bufsz, "<%sGetRPCMethodsResponse>\n", nsCWMP);
-      xml_mIndent(pc, &bufsz, 4);
-      #ifdef SUPPRESS_SOAP_ARRAYTYPE
-      mprintf(pc, &bufsz, "<MethodList>\n");
-      #else
-      mprintf(pc, &bufsz, "<MethodList %sarrayType=\"%sstring[%d]\">\n",
-              nsSOAP_ENC, nsXSD, LAST_RPC_METHOD );
-      #endif
-   
-      for (m = rpcGetRPCMethods; m <= LAST_RPC_METHOD; ++m)
-      {
-         xml_mIndent(pc, &bufsz, 5);
-         mprintf(pc, &bufsz, "<string>%s</string>\n", getRPCMethodName(m));
-      }
-      xml_mIndent(pc, &bufsz, 4);
-      mprintf(pc, &bufsz, "</MethodList>\n");
-      xml_mIndent(pc, &bufsz, 3);
-      mprintf(pc, &bufsz, "</%sGetRPCMethodsResponse>\n", nsCWMP);
-      closeBodyEnvelope(pc, &bufsz);
+    tr69c_initAllocBuf();
+    do
+    {
+        int   bufsz = 0;
 
-      /* send the HTTP message header*/
-      sendToAcs(bufsz, NULL);
-      
-      /* send the HTTP message body*/
-      pc = getAcsConnDesc();
-      proto_SendRaw(pc, sg_tr69cAllocBuf.buf, bufsz);
-	  
-   } while (0); 
-   
-   tr69c_freeAllocBuf();
+        openEnvWithHeader(a->ID, pc, &bufsz);
+        openBody(pc, &bufsz);
+        xml_mIndent(pc, &bufsz, 3);
+        mprintf(pc, &bufsz, "<%sGetRPCMethodsResponse>\n", nsCWMP);
+        xml_mIndent(pc, &bufsz, 4);
+#ifdef SUPPRESS_SOAP_ARRAYTYPE
+        mprintf(pc, &bufsz, "<MethodList>\n");
+#else
+        mprintf(pc, &bufsz, "<MethodList %sarrayType=\"%sstring[%d]\">\n",
+                nsSOAP_ENC, nsXSD, LAST_RPC_METHOD);
+#endif
+
+        for (m = rpcGetRPCMethods; m <= LAST_RPC_METHOD; ++m)
+        {
+            xml_mIndent(pc, &bufsz, 5);
+            mprintf(pc, &bufsz, "<string>%s</string>\n", getRPCMethodName(m));
+        }
+        xml_mIndent(pc, &bufsz, 4);
+        mprintf(pc, &bufsz, "</MethodList>\n");
+        xml_mIndent(pc, &bufsz, 3);
+        mprintf(pc, &bufsz, "</%sGetRPCMethodsResponse>\n", nsCWMP);
+        closeBodyEnvelope(pc, &bufsz);
+
+        /* send the HTTP message header*/
+        sendToAcs(bufsz, NULL);
+
+        /* send the HTTP message body*/
+        pc = getAcsConnDesc();
+        proto_SendRaw(pc, sg_tr69cAllocBuf.buf, bufsz);
+
+    }
+    while (0);
+
+    tr69c_freeAllocBuf();
 
 }  /* End of doGetRPCMethods() */
 
 
 static void writeGetAttribute(CMC_PHL_GET_PARAM_ATTR_T *pParamAttr, tProtoCtx *pc, int *bufsz)
 {
-   unsigned int   accessList;
+    unsigned int   accessList;
 
-   /* now fill in ParameterAttributeStruct in response */
-   xml_mIndent(pc, bufsz, 5);
-   mprintf(pc, bufsz, "<ParameterAttributeStruct>\n");
-   xml_mIndent(pc, bufsz, 6);
-   mprintf(pc, bufsz, "<Name>%s</Name>\n", pParamAttr->paramPath);
-   xml_mIndent(pc, bufsz, 6);
-   mprintf(pc, bufsz, "<Notification>%d</Notification>\n",
+    /* now fill in ParameterAttributeStruct in response */
+    xml_mIndent(pc, bufsz, 5);
+    mprintf(pc, bufsz, "<ParameterAttributeStruct>\n");
+    xml_mIndent(pc, bufsz, 6);
+    mprintf(pc, bufsz, "<Name>%s</Name>\n", pParamAttr->paramPath);
+    xml_mIndent(pc, bufsz, 6);
+    mprintf(pc, bufsz, "<Notification>%d</Notification>\n",
             pParamAttr->notification);
-   accessList = pParamAttr->accessBitMask;
-   if (accessList == 0 || accessList == NDA_ACCESS_TR69C)
-   {
-      xml_mIndent(pc, bufsz, 6);
+    accessList = pParamAttr->accessBitMask;
+    if (accessList == 0 || accessList == NDA_ACCESS_TR69C)
+    {
+        xml_mIndent(pc, bufsz, 6);
 #ifdef SUPPRESS_SOAP_ARRAYTYPE
-      mprintf(pc, bufsz, "<AccessList>\n");
+        mprintf(pc, bufsz, "<AccessList>\n");
 #else
-      mprintf(pc, bufsz, "<AccessList %sarrayType=\"%sstring[0]\">\n",
-                 nsSOAP_ENC, nsXSD);
+        mprintf(pc, bufsz, "<AccessList %sarrayType=\"%sstring[0]\">\n",
+                nsSOAP_ENC, nsXSD);
 #endif
-      xml_mIndent(pc, bufsz, 6);
-      mprintf(pc, bufsz, "</AccessList>\n");
-   }
-   else
-   {
-      /*
-       * If we get into this else block, then accessList definately
-       * has a bit set for some entity that is not TR69C.  So just
-       * report that as "Subscriber" has write access to the ACS.
-       */
-      xml_mIndent(pc, bufsz, 6);
+        xml_mIndent(pc, bufsz, 6);
+        mprintf(pc, bufsz, "</AccessList>\n");
+    }
+    else
+    {
+        /*
+         * If we get into this else block, then accessList definately
+         * has a bit set for some entity that is not TR69C.  So just
+         * report that as "Subscriber" has write access to the ACS.
+         */
+        xml_mIndent(pc, bufsz, 6);
 #ifdef SUPPRESS_SOAP_ARRAYTYPE
-      mprintf(pc, bufsz, "<AccessList>\n");
+        mprintf(pc, bufsz, "<AccessList>\n");
 #else
-      mprintf(pc, bufsz, "<AccessList %sarrayType=\"%sstring[1]\">\n",
-              nsSOAP_ENC, nsXSD);
+        mprintf(pc, bufsz, "<AccessList %sarrayType=\"%sstring[1]\">\n",
+                nsSOAP_ENC, nsXSD);
 #endif
-      xml_mIndent(pc, bufsz, 7);
-      mprintf(pc, bufsz, "<string>Subscriber</string>\n");
-      xml_mIndent(pc, bufsz, 6);
-      mprintf(pc, bufsz, "</AccessList>\n");
-   }
-   xml_mIndent(pc, bufsz, 5);
-   mprintf(pc, bufsz, "</ParameterAttributeStruct>\n");
+        xml_mIndent(pc, bufsz, 7);
+        mprintf(pc, bufsz, "<string>Subscriber</string>\n");
+        xml_mIndent(pc, bufsz, 6);
+        mprintf(pc, bufsz, "</AccessList>\n");
+    }
+    xml_mIndent(pc, bufsz, 5);
+    mprintf(pc, bufsz, "</ParameterAttributeStruct>\n");
 }  /* End of writeGetAttribute() */
 
 static void writeGetPName(CMC_PHL_GET_PARAM_NAME_T *paramInfo, tProtoCtx *pc, int *bufsz)
 {
-    
-   /* convert MDM name path back to TR69 name string */
-   xml_mIndent(pc, bufsz, 5);
-   mprintf(pc, bufsz, "<ParameterInfoStruct>\n");
-   xml_mIndent(pc, bufsz, 6);
-   mprintf(pc, bufsz, "<Name>%s</Name>\n", paramInfo->paramPath);
-   xml_mIndent(pc, bufsz, 6);
-   mprintf(pc, bufsz, "<Writable>%s</Writable>\n", paramInfo->writable?"1":"0");
-   xml_mIndent(pc, bufsz, 5);
-   mprintf(pc, bufsz, "</ParameterInfoStruct>\n");
+
+    /* convert MDM name path back to TR69 name string */
+    xml_mIndent(pc, bufsz, 5);
+    mprintf(pc, bufsz, "<ParameterInfoStruct>\n");
+    xml_mIndent(pc, bufsz, 6);
+    mprintf(pc, bufsz, "<Name>%s</Name>\n", paramInfo->paramPath);
+    xml_mIndent(pc, bufsz, 6);
+    mprintf(pc, bufsz, "<Writable>%s</Writable>\n", paramInfo->writable ? "1" : "0");
+    xml_mIndent(pc, bufsz, 5);
+    mprintf(pc, bufsz, "</ParameterInfoStruct>\n");
 
 }  /* End of writeGetPName() */
 
@@ -1400,7 +1412,7 @@ static VOS_RET_E tr69c_getParamNameList(const char *fullPath,
     UINT8 *respBuf = NULL;
 
     vosLog_debug("Enter>, fullPath = %p(%s), nextLevelOnly = %u, isParamPath = %p, paramValue = %p, paramNum = %p",
-        fullPath, fullPath ? fullPath : "", nextLevelOnly, isParamPath, paramNameList, paramNum);
+                 fullPath, fullPath ? fullPath : "", nextLevelOnly, isParamPath, paramNameList, paramNum);
 
     if (NULL == fullPath)
     {
@@ -1423,26 +1435,26 @@ static VOS_RET_E tr69c_getParamNameList(const char *fullPath,
 
     *((UBOOL8 *)reqBuf) = nextLevelOnly;
     reqBuf += sizeof(UBOOL8);
-    
+
     if (NULL != fullPath)
     {
         UTIL_STRNCPY((char *)reqBuf, fullPath, len);
         reqBuf += len;
     }
-  
+
     reqMsg->type = VOS_MSG_TR69C_GET_NAME_LIST;
     reqMsg->src = EID_TR69C;
     reqMsg->dst = EID_CMC;
     reqMsg->flags_request = 1;
     reqMsg->flags_response = 0;
     reqMsg->dataLength = reqDataLen;
-    
+
     ret = vosMsg_sendAndGetReplyBuf(g_msgHandle, reqMsg, &respMsg);
     if (VOS_RET_SUCCESS != ret)
     {
         vosLog_error("vosMsg_sendAndGetReplyBuf failed (ret=%d)", ret);
         VOS_MEM_FREE_BUF_AND_NULL_PTR(reqMsg);
-        
+
         return ret;
     }
 
@@ -1483,7 +1495,7 @@ static VOS_RET_E tr69c_getParamNameList(const char *fullPath,
             memcpy(*paramNameList, respBuf, len);
         }
     }
-    
+
     VOS_MEM_FREE_BUF_AND_NULL_PTR(reqMsg);
     VOS_MEM_FREE_BUF_AND_NULL_PTR(respMsg);
 
@@ -1491,377 +1503,380 @@ static VOS_RET_E tr69c_getParamNameList(const char *fullPath,
 }
 
 
-/* 
-* GetParameterNames requests a single parameter path or single parameter path fragment 
+/*
+* GetParameterNames requests a single parameter path or single parameter path fragment
 */
 static void doGetParameterNames(RPCAction *a)
 {
-   int i = 0;
-   UINT32 paramNum = 0;
-   tProtoCtx *pc = NULL;
-   UBOOL8 nextLevelOnly = (UBOOL8)a->ud.paramNamesReq.nextLevel;
-   UBOOL8 pathIsEmpty = FALSE;
-   UBOOL8 firstParam = TRUE;
-   UBOOL8 isparamterPath = FALSE;
-   CMC_PHL_GET_PARAM_NAME_T *paramNameList = NULL;
+    int i = 0;
+    UINT32 paramNum = 0;
+    tProtoCtx *pc = NULL;
+    UBOOL8 nextLevelOnly = (UBOOL8)a->ud.paramNamesReq.nextLevel;
+    UBOOL8 pathIsEmpty = FALSE;
+    UBOOL8 firstParam = TRUE;
+    UBOOL8 isparamterPath = FALSE;
+    CMC_PHL_GET_PARAM_NAME_T *paramNameList = NULL;
 
-   vosLog_debug("==Enter==");
+    vosLog_debug("==Enter==");
 
-   acsState.fault = VOS_RET_SUCCESS; /* init to no fault */
-   char *pp = a->ud.paramNamesReq.parameterPath;
+    acsState.fault = VOS_RET_SUCCESS; /* init to no fault */
+    char *pp = a->ud.paramNamesReq.parameterPath;
 
-   tr69c_initAllocBuf();
-   
-   do
-   {
-      int bufsz = 0;
+    tr69c_initAllocBuf();
 
-      /* create response msg start */
-      openEnvWithHeader(a->ID, pc, &bufsz);
-      openBody(pc, &bufsz);
-      xml_mIndent(pc, &bufsz, 3);
-      mprintf(pc, &bufsz, "<%sGetParameterNamesResponse>\n", nsCWMP);
+    do
+    {
+        int bufsz = 0;
 
-      /* copy parameter list */
-      xml_mIndent(pc, &bufsz, 4);
+        /* create response msg start */
+        openEnvWithHeader(a->ID, pc, &bufsz);
+        openBody(pc, &bufsz);
+        xml_mIndent(pc, &bufsz, 3);
+        mprintf(pc, &bufsz, "<%sGetParameterNamesResponse>\n", nsCWMP);
+
+        /* copy parameter list */
+        xml_mIndent(pc, &bufsz, 4);
 #ifdef SUPPRESS_SOAP_ARRAYTYPE
-      mprintf(pc, &bufsz, "<ParameterList>\n");
+        mprintf(pc, &bufsz, "<ParameterList>\n");
 #else
-      /* In the first loop paramNum=0.  In the second loop, paramNum will have
-       * the actual parameter count.
-       */
-      if(SF_FEATURE_CUSTOMER_3BB)
-      {
-          paramNum=3000;
-          mprintf(pc, &bufsz,
-              "<ParameterList %sarrayType=\"%sParameterInfoStruct[%04d]\">\n",
-              nsSOAP_ENC, nsCWMP, paramNum);
-      }
-      else
-      {
-          mprintf(pc, &bufsz,
-              "<ParameterList %sarrayType=\"%sParameterInfoStruct[%04d]\">\n",
-              nsSOAP_ENC, nsCWMP, paramNum);
-      }
+        /* In the first loop paramNum=0.  In the second loop, paramNum will have
+         * the actual parameter count.
+         */
+        if (SF_FEATURE_CUSTOMER_3BB)
+        {
+            paramNum = 3000;
+            mprintf(pc, &bufsz,
+                    "<ParameterList %sarrayType=\"%sParameterInfoStruct[%04d]\">\n",
+                    nsSOAP_ENC, nsCWMP, paramNum);
+        }
+        else
+        {
+            mprintf(pc, &bufsz,
+                    "<ParameterList %sarrayType=\"%sParameterInfoStruct[%04d]\">\n",
+                    nsSOAP_ENC, nsCWMP, paramNum);
+        }
 #endif
 
-      if (pp == NULL || util_strlen(pp) == 0)
-      {
-         pathIsEmpty = TRUE;
-      }
+        if (pp == NULL || util_strlen(pp) == 0)
+        {
+            pathIsEmpty = TRUE;
+        }
 
-      acsState.fault = tr69c_getParamNameList(pp, nextLevelOnly, &isparamterPath, &paramNameList, &paramNum);
-      
-      if (acsState.fault == VOS_RET_SUCCESS)
-      {
-          if (isparamterPath)
-          {
-              writeGetPName(&paramNameList[0], pc, &bufsz);
-          }
-          else
-          {
-              firstParam = FALSE;
+        acsState.fault = tr69c_getParamNameList(pp, nextLevelOnly, &isparamterPath, &paramNameList, &paramNum);
 
-              for(i = 0; i < (int)paramNum; i++)
-              {
-                  /* if nextLevelOnly is true, the first parameter name that matches
-                       the given partial path object name should NOT be included
-                       in the GetParameterNamesResponse */
-                  if (!firstParam || (nextLevelOnly == FALSE))
-                  {
-                      writeGetPName(&paramNameList[i], pc, &bufsz);
-                  }
-                  else if (pathIsEmpty && nextLevelOnly)
-                  {
-                    
-                      /* However, for the special case where ACS does a GetParameterNames
-                           with a blank name, then return the first name,
-                           which is InternetGatewayDevice. */
-                      writeGetPName(&paramNameList[i], pc, &bufsz);
-                  }
+        if (acsState.fault == VOS_RET_SUCCESS)
+        {
+            if (isparamterPath)
+            {
+                writeGetPName(&paramNameList[0], pc, &bufsz);
+            }
+            else
+            {
+                firstParam = FALSE;
 
-                  if (pathIsEmpty && nextLevelOnly)
-                  {
-                    
-                      /* out of while loop after write out the first object "InternetGatewayDevice." */
-                      break; 
-                  }
-              }
-              
-          }
-      }
-      else if (acsState.fault == VOS_RET_NO_MORE_INSTANCES)
-      {
-         acsState.fault = VOS_RET_SUCCESS;
-      }
-      else
-      {
-         vosLog_error("get param name error for %d",acsState.fault);
-      }
- 
-      VOS_MEM_FREE_BUF_AND_NULL_PTR(paramNameList);
+                for (i = 0; i < (int)paramNum; i++)
+                {
+                    /* if nextLevelOnly is true, the first parameter name that matches
+                         the given partial path object name should NOT be included
+                         in the GetParameterNamesResponse */
+                    if (!firstParam || (nextLevelOnly == FALSE))
+                    {
+                        writeGetPName(&paramNameList[i], pc, &bufsz);
+                    }
+                    else if (pathIsEmpty && nextLevelOnly)
+                    {
 
-      /* if ParameterPath is empty, with NextLevel is true, the response
-          should list only "InternetGatewayDevice.". */
+                        /* However, for the special case where ACS does a GetParameterNames
+                             with a blank name, then return the first name,
+                             which is InternetGatewayDevice. */
+                        writeGetPName(&paramNameList[i], pc, &bufsz);
+                    }
+
+                    if (pathIsEmpty && nextLevelOnly)
+                    {
+
+                        /* out of while loop after write out the first object "InternetGatewayDevice." */
+                        break;
+                    }
+                }
+
+            }
+        }
+        else if (acsState.fault == VOS_RET_NO_MORE_INSTANCES)
+        {
+            acsState.fault = VOS_RET_SUCCESS;
+        }
+        else
+        {
+            vosLog_error("get param name error for %d", acsState.fault);
+        }
+
+        VOS_MEM_FREE_BUF_AND_NULL_PTR(paramNameList);
+
+        /* if ParameterPath is empty, with NextLevel is true, the response
+            should list only "InternetGatewayDevice.". */
 
 
-      if (acsState.fault != VOS_RET_SUCCESS)
-      {
-         break;   /* quit */
-      }
+        if (acsState.fault != VOS_RET_SUCCESS)
+        {
+            break;   /* quit */
+        }
 
-      xml_mIndent(pc, &bufsz, 4);
-      mprintf(pc, &bufsz, "</ParameterList>\n");
-      xml_mIndent(pc, &bufsz, 3);
-      mprintf(pc, &bufsz, "</%sGetParameterNamesResponse>\n", nsCWMP);
-      closeBodyEnvelope(pc, &bufsz);
-      
-      commandPrint(rpcGetParameterNames);
+        xml_mIndent(pc, &bufsz, 4);
+        mprintf(pc, &bufsz, "</ParameterList>\n");
+        xml_mIndent(pc, &bufsz, 3);
+        mprintf(pc, &bufsz, "</%sGetParameterNamesResponse>\n", nsCWMP);
+        closeBodyEnvelope(pc, &bufsz);
 
-      /* send the HTTP message header*/
-      sendToAcs(bufsz, NULL);
-      
-      /* send the HTTP message body*/
-      pc = getAcsConnDesc();
-      proto_SendRaw(pc, sg_tr69cAllocBuf.buf, bufsz);
-   } while(0);
-   
-   tr69c_freeAllocBuf();
+        commandPrint(rpcGetParameterNames);
 
-   if (acsState.fault != VOS_RET_SUCCESS)
-   {
-      /* build fault here */
-      writeSoapFault(a, acsState.fault);
-      vosLog_error("Fault %d", acsState.fault);
-   }
+        /* send the HTTP message header*/
+        sendToAcs(bufsz, NULL);
+
+        /* send the HTTP message body*/
+        pc = getAcsConnDesc();
+        proto_SendRaw(pc, sg_tr69cAllocBuf.buf, bufsz);
+    }
+    while (0);
+
+    tr69c_freeAllocBuf();
+
+    if (acsState.fault != VOS_RET_SUCCESS)
+    {
+        /* build fault here */
+        writeSoapFault(a, acsState.fault);
+        vosLog_error("Fault %d", acsState.fault);
+    }
 }  /* doGetParameterNames() */
 
 static void doSetParameterAttributes(RPCAction *a)
 {
-   AttributeItem  *pi = a->ud.aItem;
+    AttributeItem  *pi = a->ud.aItem;
 
-   acsState.fault = VOS_RET_SUCCESS; /* init to no fault */
+    acsState.fault = VOS_RET_SUCCESS; /* init to no fault */
 
-   vosLog_debug("==Enter==");
-   
-   if (pi != NULL)
-   {
-      UINT32 paramNum = 0;
-      CMC_PHL_SET_PARAM_ATTR_T *pSetParamAttrList = NULL;
+    vosLog_debug("==Enter==");
 
-      /* find out the total number of parameters requested */
-      while (pi != NULL)
-      {
-         paramNum++;
-         pi = pi->next;
-      }
-      pi = a->ud.aItem;
+    if (pi != NULL)
+    {
+        UINT32 paramNum = 0;
+        CMC_PHL_SET_PARAM_ATTR_T *pSetParamAttrList = NULL;
 
-      /* allocate memory for the set parameter value list */
-      pSetParamAttrList = VOS_MALLOC_FLAGS(sizeof(CMC_PHL_SET_PARAM_ATTR_T) * TR69C_PARAM_SET_ATTR_ARRAY, ALLOC_ZEROIZE);
-      if (pSetParamAttrList == NULL)
-      {
-         vosLog_error("doSetParameterAttributes: malloc failed\n");
-         acsState.fault = VOS_RET_INTERNAL_ERROR;
-      }
-      else
-      {
-         CMC_PHL_SET_PARAM_ATTR_T *pSetParamAttr = pSetParamAttrList;
+        /* find out the total number of parameters requested */
+        while (pi != NULL)
+        {
+            paramNum++;
+            pi = pi->next;
+        }
+        pi = a->ud.aItem;
 
-         while (pi != NULL)
-         {
-            /*acsState.fault = CMC_tr69cFullPathToPathDescriptor(pi->pname,
-                                                 &(pSetParamAttr->pathDesc));
-            if (acsState.fault != VOS_RET_SUCCESS)
+        /* allocate memory for the set parameter value list */
+        pSetParamAttrList = VOS_MALLOC_FLAGS(sizeof(CMC_PHL_SET_PARAM_ATTR_T) * TR69C_PARAM_SET_ATTR_ARRAY, ALLOC_ZEROIZE);
+        if (pSetParamAttrList == NULL)
+        {
+            vosLog_error("doSetParameterAttributes: malloc failed\n");
+            acsState.fault = VOS_RET_INTERNAL_ERROR;
+        }
+        else
+        {
+            CMC_PHL_SET_PARAM_ATTR_T *pSetParamAttr = pSetParamAttrList;
+
+            while (pi != NULL)
             {
-               break;
-            }*/
-            UTIL_STRNCPY(pSetParamAttr->paramPath, pi->pname, TR69C_PARAM_FULL_PATH_LENGTH);
-            pSetParamAttr->notificationChange = (UBOOL8)pi->chgNotify;
-            pSetParamAttr->notification = (UINT8)pi->notification;
-            pSetParamAttr->accessBitMaskChange = (UBOOL8)pi->chgAccess;
-            pSetParamAttr->accessBitMask = NDA_ACCESS_TR69C;
+                /*acsState.fault = CMC_tr69cFullPathToPathDescriptor(pi->pname,
+                                                     &(pSetParamAttr->pathDesc));
+                if (acsState.fault != VOS_RET_SUCCESS)
+                {
+                   break;
+                }*/
+                UTIL_STRNCPY(pSetParamAttr->paramPath, pi->pname, TR69C_PARAM_FULL_PATH_LENGTH);
+                pSetParamAttr->notificationChange = (UBOOL8)pi->chgNotify;
+                pSetParamAttr->notification = (UINT8)pi->notification;
+                pSetParamAttr->accessBitMaskChange = (UBOOL8)pi->chgAccess;
+                pSetParamAttr->accessBitMask = NDA_ACCESS_TR69C;
 
-            if (pi->subAccess != 0)
-            {
-               pSetParamAttr->accessBitMask |=  NDA_ACCESS_SUBSCRIBER;
+                if (pi->subAccess != 0)
+                {
+                    pSetParamAttr->accessBitMask |=  NDA_ACCESS_SUBSCRIBER;
+                }
+
+                pSetParamAttr++;
+                pi = pi->next;
             }
 
-            pSetParamAttr++;
-            pi = pi->next;
-         }
-   
-         if (acsState.fault == VOS_RET_SUCCESS)
-         {
-            acsState.fault = CMC_phlSetParamAttrList(pSetParamAttrList, paramNum);
-         }
-         /* free pSetParamAttrList buffer */
-         VOS_MEM_FREE_BUF_AND_NULL_PTR(pSetParamAttrList);
-      }
-   }
-   else
-   {
-      /* no parameter specified - Invalid arguments */
-      acsState.fault = VOS_RET_INVALID_ARGUMENTS;
-   }
- 
-   if (acsState.fault == VOS_RET_SUCCESS)
-   {
-      tProtoCtx *pc = NULL;
+            if (acsState.fault == VOS_RET_SUCCESS)
+            {
+                acsState.fault = CMC_phlSetParamAttrList(pSetParamAttrList, paramNum);
+            }
+            /* free pSetParamAttrList buffer */
+            VOS_MEM_FREE_BUF_AND_NULL_PTR(pSetParamAttrList);
+        }
+    }
+    else
+    {
+        /* no parameter specified - Invalid arguments */
+        acsState.fault = VOS_RET_INVALID_ARGUMENTS;
+    }
 
-      tr69c_initAllocBuf();
-	  
-      do
-      {
-         int   bufsz = 0;
+    if (acsState.fault == VOS_RET_SUCCESS)
+    {
+        tProtoCtx *pc = NULL;
 
-         openEnvWithHeader(a->ID, pc, &bufsz);
-         openBody(pc, &bufsz);
-         xml_mIndent(pc, &bufsz, 3);
-         mprintf(pc, &bufsz, "<%sSetParameterAttributesResponse/>\n", nsCWMP);
-         closeBodyEnvelope(pc, &bufsz);
-         
-         commandPrint(rpcSetParameterAttributes);
-		 
-         /* send the HTTP message header*/
-         sendToAcs(bufsz, NULL);
-         
-         /* send the HTTP message body*/
-         pc = getAcsConnDesc();
-         proto_SendRaw(pc, sg_tr69cAllocBuf.buf, bufsz);
-		 
-      } while (0);
-      
-      tr69c_freeAllocBuf();
+        tr69c_initAllocBuf();
 
-      saveConfigFlag = TRUE;
-      
-   }
-   else
-   {
-      writeSoapFault(a, acsState.fault);  
-      vosLog_debug("Fault %d", acsState.fault);
-   }
+        do
+        {
+            int   bufsz = 0;
+
+            openEnvWithHeader(a->ID, pc, &bufsz);
+            openBody(pc, &bufsz);
+            xml_mIndent(pc, &bufsz, 3);
+            mprintf(pc, &bufsz, "<%sSetParameterAttributesResponse/>\n", nsCWMP);
+            closeBodyEnvelope(pc, &bufsz);
+
+            commandPrint(rpcSetParameterAttributes);
+
+            /* send the HTTP message header*/
+            sendToAcs(bufsz, NULL);
+
+            /* send the HTTP message body*/
+            pc = getAcsConnDesc();
+            proto_SendRaw(pc, sg_tr69cAllocBuf.buf, bufsz);
+
+        }
+        while (0);
+
+        tr69c_freeAllocBuf();
+
+        saveConfigFlag = TRUE;
+
+    }
+    else
+    {
+        writeSoapFault(a, acsState.fault);
+        vosLog_debug("Fault %d", acsState.fault);
+    }
 }  /* End of doSetParameterAttributes() */
 
-/* 
+/*
 * GetParameterAttributes requests a single parameter path or single parameter path fragment
-* This RPC uses the paramItem union member. 
+* This RPC uses the paramItem union member.
 */
 static void doGetParameterAttributes(RPCAction *a)
 {
-   int i = 0;
-   UINT32 paramNum = 0;
-   tProtoCtx *pc = NULL;
-   UBOOL8 nextLevelOnly = FALSE;
-   UBOOL8 isParamterPath = FALSE;
-   CMC_PHL_GET_PARAM_ATTR_T *paramAttr = NULL;
+    int i = 0;
+    UINT32 paramNum = 0;
+    tProtoCtx *pc = NULL;
+    UBOOL8 nextLevelOnly = FALSE;
+    UBOOL8 isParamterPath = FALSE;
+    CMC_PHL_GET_PARAM_ATTR_T *paramAttr = NULL;
 
-   vosLog_debug("==Enter==");
+    vosLog_debug("==Enter==");
 
-   acsState.fault = VOS_RET_SUCCESS; /* init to no fault */
-          
-   tr69c_initAllocBuf();
-   
-   do
-   {
-      int         bufsz = 0;
-      ParamItem   *pi   = a->ud.pItem;
+    acsState.fault = VOS_RET_SUCCESS; /* init to no fault */
 
-      if (pi == NULL)
-      {
-         /* no parameter specified - Invalid arguments */
-         acsState.fault = VOS_RET_INVALID_ARGUMENTS;
-         break;   /* quit */
-      }
+    tr69c_initAllocBuf();
 
-      /* create response msg start */
-      openEnvWithHeader(a->ID, pc, &bufsz);
-      openBody(pc, &bufsz);
-      xml_mIndent(pc, &bufsz, 3);
-      mprintf(pc, &bufsz, "<%sGetParameterAttributesResponse>\n", nsCWMP);
+    do
+    {
+        int         bufsz = 0;
+        ParamItem   *pi   = a->ud.pItem;
 
-      /* copy parameter list */
-      xml_mIndent(pc, &bufsz, 4);
+        if (pi == NULL)
+        {
+            /* no parameter specified - Invalid arguments */
+            acsState.fault = VOS_RET_INVALID_ARGUMENTS;
+            break;   /* quit */
+        }
+
+        /* create response msg start */
+        openEnvWithHeader(a->ID, pc, &bufsz);
+        openBody(pc, &bufsz);
+        xml_mIndent(pc, &bufsz, 3);
+        mprintf(pc, &bufsz, "<%sGetParameterAttributesResponse>\n", nsCWMP);
+
+        /* copy parameter list */
+        xml_mIndent(pc, &bufsz, 4);
 #ifdef SUPPRESS_SOAP_ARRAYTYPE
-      mprintf(pc, &bufsz, "<ParameterList>\n");
+        mprintf(pc, &bufsz, "<ParameterList>\n");
 #else
-      /* In the first loop paramNum=0.  In the second loop, paramNum will have
-       * the actual parameter count.
-       */
-      mprintf(pc, &bufsz,
-              "<ParameterList %sarrayType=\"%sParameterAttributeStruct[%04d]\">\n",
-              nsSOAP_ENC, nsCWMP, paramNum);
+        /* In the first loop paramNum=0.  In the second loop, paramNum will have
+         * the actual parameter count.
+         */
+        mprintf(pc, &bufsz,
+                "<ParameterList %sarrayType=\"%sParameterAttributeStruct[%04d]\">\n",
+                nsSOAP_ENC, nsCWMP, paramNum);
 #endif
-      paramNum = TR69C_PARAM_GET_ATTR_ARRAY;  /* reset paramNum */
+        paramNum = TR69C_PARAM_GET_ATTR_ARRAY;  /* reset paramNum */
 
-      for ( ; pi != NULL && acsState.fault == VOS_RET_SUCCESS; pi = pi->next)
-      {
-         char *pp = pi->pname;
+        for (; pi != NULL && acsState.fault == VOS_RET_SUCCESS; pi = pi->next)
+        {
+            char *pp = pi->pname;
 
-         paramAttr = VOS_MALLOC_FLAGS(sizeof(CMC_PHL_GET_PARAM_ATTR_T) * TR69C_PARAM_GET_ATTR_ARRAY, ALLOC_ZEROIZE);
-         memset(paramAttr, 0, sizeof(CMC_PHL_GET_PARAM_ATTR_T) * TR69C_PARAM_GET_ATTR_ARRAY);
-         CMC_PHL_GET_PARAM_ATTR_T *pa = paramAttr;
+            paramAttr = VOS_MALLOC_FLAGS(sizeof(CMC_PHL_GET_PARAM_ATTR_T) * TR69C_PARAM_GET_ATTR_ARRAY, ALLOC_ZEROIZE);
+            memset(paramAttr, 0, sizeof(CMC_PHL_GET_PARAM_ATTR_T) * TR69C_PARAM_GET_ATTR_ARRAY);
+            CMC_PHL_GET_PARAM_ATTR_T *pa = paramAttr;
 
-         acsState.fault = CMC_phlGetParamAttrList(pp, nextLevelOnly, &isParamterPath, paramAttr, &paramNum);
+            acsState.fault = CMC_phlGetParamAttrList(pp, nextLevelOnly, &isParamterPath, paramAttr, &paramNum);
 
-         if (acsState.fault == VOS_RET_SUCCESS)
-         {
-            if (isParamterPath)
+            if (acsState.fault == VOS_RET_SUCCESS)
             {
-               writeGetAttribute(pa, pc, &bufsz);
+                if (isParamterPath)
+                {
+                    writeGetAttribute(pa, pc, &bufsz);
+                }
+                else
+                {
+                    for (i = 0; i < (int)paramNum; i++)
+                    {
+                        writeGetAttribute(pa, pc, &bufsz);
+                        pa ++;
+                    }
+                }
+            }
+            else if (acsState.fault == VOS_RET_NO_MORE_INSTANCES)
+            {
+                acsState.fault = VOS_RET_SUCCESS;
             }
             else
             {
-               for(i = 0; i < (int)paramNum; i++)
-               {
-                  writeGetAttribute(pa, pc, &bufsz);
-                  pa ++;
-               }
+                vosLog_error("get param attribute error for %d", acsState.fault);
             }
-         }
-         else if (acsState.fault == VOS_RET_NO_MORE_INSTANCES)
-         {
-            acsState.fault = VOS_RET_SUCCESS;
-         }
-         else
-         {
-            vosLog_error("get param attribute error for %d",acsState.fault);
-         }
 
-      VOS_MEM_FREE_BUF_AND_NULL_PTR(paramAttr);
-      }  /* for () */
+            VOS_MEM_FREE_BUF_AND_NULL_PTR(paramAttr);
+        }  /* for () */
 
-      if (acsState.fault != VOS_RET_SUCCESS)
-      {
-         break;   /* quit */
-      }
+        if (acsState.fault != VOS_RET_SUCCESS)
+        {
+            break;   /* quit */
+        }
 
-      xml_mIndent(pc, &bufsz, 4);
-      mprintf(pc, &bufsz, "</ParameterList>\n");
-      xml_mIndent(pc, &bufsz, 3);
-      mprintf(pc, &bufsz, "</%sGetParameterAttributesResponse>\n", nsCWMP);
-      closeBodyEnvelope(pc, &bufsz);
-      
-      commandPrint(rpcGetParameterAttributes);
-	  
-      /* send the HTTP message header*/
-      sendToAcs(bufsz, NULL);
-      
-      /* send the HTTP message body*/
-      pc = getAcsConnDesc();
-      proto_SendRaw(pc, sg_tr69cAllocBuf.buf, bufsz);
-	  
-   } while (0);
-   
-   tr69c_freeAllocBuf();
-             
-   if (acsState.fault != VOS_RET_SUCCESS)
-   {
-      /* build fault here */
-      writeSoapFault(a, acsState.fault);
-      vosLog_debug("Fault %d", acsState.fault);
-   }
+        xml_mIndent(pc, &bufsz, 4);
+        mprintf(pc, &bufsz, "</ParameterList>\n");
+        xml_mIndent(pc, &bufsz, 3);
+        mprintf(pc, &bufsz, "</%sGetParameterAttributesResponse>\n", nsCWMP);
+        closeBodyEnvelope(pc, &bufsz);
+
+        commandPrint(rpcGetParameterAttributes);
+
+        /* send the HTTP message header*/
+        sendToAcs(bufsz, NULL);
+
+        /* send the HTTP message body*/
+        pc = getAcsConnDesc();
+        proto_SendRaw(pc, sg_tr69cAllocBuf.buf, bufsz);
+
+    }
+    while (0);
+
+    tr69c_freeAllocBuf();
+
+    if (acsState.fault != VOS_RET_SUCCESS)
+    {
+        /* build fault here */
+        writeSoapFault(a, acsState.fault);
+        vosLog_debug("Fault %d", acsState.fault);
+    }
 }  /* End of doGetParameterAttributes() */
 
 
@@ -1872,7 +1887,7 @@ void Sendalarmmsgtoitms(char *errorcode)
     {
         char buf[sizeof(VosMsgHeader)] = {0};
         VosMsgHeader *tr69msg = (VosMsgHeader *)buf;
-        
+
         VOS_RET_E ret = VOS_RET_SUCCESS;
         /*send alarm to itms*/
         tr69msg->type = VOS_MSG_CT_CARDALARM;
@@ -1888,7 +1903,7 @@ void Sendalarmmsgtoitms(char *errorcode)
             vosLog_error("Could not send out CMS_MSG_UPNP_GETALL ret=%d", ret);
         }
     }
-#endif    
+#endif
 }
 
 
@@ -1921,7 +1936,7 @@ static void Files_writeandread()
     }
     else //first write card failed,Repeat three times
     {
-        for(i = 0; i < 3; i++)
+        for (i = 0; i < 3; i++)
         {
             if ((ret = CMC_cardFilesWriteIntoCard()) == VOS_RET_SUCCESS)
             {
@@ -1937,7 +1952,7 @@ static void Files_writeandread()
                 break;
             }
         }
-        if (ret!= VOS_RET_SUCCESS)
+        if (ret != VOS_RET_SUCCESS)
         {
             //Repeat three times,but failed
             CMC_tr69cSetCardManageStatus(0);
@@ -1972,8 +1987,8 @@ static void Files_writeandread()
 
 typedef struct
 {
-    MdmPathDescriptor   pathDesc;   /**< Full path name of a parameter. */   
-    char                *pValue;    /**< Pointer to parameter value string. */   
+    MdmPathDescriptor   pathDesc;   /**< Full path name of a parameter. */
+    char                *pValue;    /**< Pointer to parameter value string. */
     VOS_RET_E              status;     /**< Paremeter value set status. */
 } PhlWriteParamValue_t;
 
@@ -1984,7 +1999,7 @@ static void doWriteintoCard(RPCAction *a)
     CMC_TR69C_DEV_REG_CFG_T userInfo;
     UINT32 check_status = 0;
     UINT32 card_status = 0;
-    
+
     if (rpcSetParameterValues == a->rpcMethod)
     {
         ParamItem *pi = a->ud.pItem;
@@ -2032,7 +2047,7 @@ static void doWriteintoCard(RPCAction *a)
         }
         VOS_MEM_FREE_BUF_AND_NULL_PTR(pWriteParamValueList1);
     }
-    
+
     if (CMC_tr69cGetUserInfo(&userInfo) != VOS_RET_SUCCESS)
     {
         vosLog_error("get MDMOID_USER_INFO failed !");
@@ -2069,7 +2084,7 @@ VOS_RET_E tr69c_setParamValues(char **paramArray, UINT32 paramNum, VOS_RET_E *st
     UINT8 *respBuf = NULL;
 
     vosLog_debug("Enter>");
-    
+
     if (NULL == paramArray)
     {
         vosLog_debug("paramArray is NULL");
@@ -2095,11 +2110,11 @@ VOS_RET_E tr69c_setParamValues(char **paramArray, UINT32 paramNum, VOS_RET_E *st
     reqMsg->flags_request = 1;
     reqMsg->flags_response = 0;
     reqMsg->dataLength = len;
-    
+
     reqBuf = (UINT8 *)(reqMsg + 1);
     *((UINT32 *)reqBuf) = paramNum;
     reqBuf += sizeof(UINT32);
-    
+
     for (i = 0; i < paramNum * 2; i++)
     {
         len = (UINT32)util_strlen(paramArray[i]) + 1;
@@ -2108,10 +2123,10 @@ VOS_RET_E tr69c_setParamValues(char **paramArray, UINT32 paramNum, VOS_RET_E *st
     }
 
     /*t = vosMsg_sendAndGetReplyBuf(g_msgHandle, reqMsg, &respMsg);*/
-    ret = vosMsg_sendAndGetReplyBufWithTimeout(g_msgHandle, reqMsg, &respMsg,8000);
+    ret = vosMsg_sendAndGetReplyBufWithTimeout(g_msgHandle, reqMsg, &respMsg, 8000);
     if (VOS_RET_SUCCESS != ret)
     {
-        if(VOS_RET_TIMED_OUT == ret)
+        if (VOS_RET_TIMED_OUT == ret)
         {
             vosLog_error("send reqMsg VOS_MSG_TR69C_SET_VALUE time out");
         }
@@ -2121,11 +2136,11 @@ VOS_RET_E tr69c_setParamValues(char **paramArray, UINT32 paramNum, VOS_RET_E *st
             VOS_MEM_FREE_BUF_AND_NULL_PTR(reqBuf);
             return ret;
         }
-       
+
     }
 
     /*if timeout ,send successful to itms default*/
-    if(VOS_RET_TIMED_OUT == ret)
+    if (VOS_RET_TIMED_OUT == ret)
     {
         ret = VOS_RET_SUCCESS;
     }
@@ -2142,7 +2157,7 @@ VOS_RET_E tr69c_setParamValues(char **paramArray, UINT32 paramNum, VOS_RET_E *st
             memcpy(status, respBuf, (int)respMsg->dataLength);
         }
     }
-    
+
     VOS_MEM_FREE_BUF_AND_NULL_PTR(reqMsg);
     VOS_MEM_FREE_BUF_AND_NULL_PTR(respMsg);
 
@@ -2158,7 +2173,7 @@ static void doSetParameterValues(RPCAction *a)
     UINT32 stop_write_flag = 0;
     UBOOL8 ctcstp_flg = FALSE;
     UBOOL8 isSetParamOk = TRUE;
-    char board_id[16] = {0};    
+    char board_id[16] = {0};
     vosLog_debug("==Enter==");
 
     acsState.fault = VOS_RET_SUCCESS; /* init to no fault */
@@ -2179,7 +2194,7 @@ static void doSetParameterValues(RPCAction *a)
             CMC_TR69C_SIM_CARD_CFG_T cardManager;
             CMC_tr69cGetCardManager(&cardManager);
             /*if card is down ,no need to set the param*/
-         
+
             if (cardManager.cardStatus == 0)
             {
                 CMC_cardStatusLedOff();
@@ -2190,219 +2205,219 @@ static void doSetParameterValues(RPCAction *a)
     }
 #endif
 
-   if (pi != NULL)
-   {
-      UINT32 paramNum = 0;
-      VOS_RET_E status[TR69C_PARAM_SET_VALUE_ARRAY] = {VOS_RET_SUCCESS};
-      char* errstring= NULL;
-      
-      /* find out the total number of parameters requested */
-      paramNum = (UINT32)getParamCnt(pi);
-
-/* Add by tuhanyu, for upnp device management of separate AP, 2011/04/15, start */
-    if (SF_FEATURE_SUPPORT_UPNP_DMCP)
+    if (pi != NULL)
     {
+        UINT32 paramNum = 0;
+        VOS_RET_E status[TR69C_PARAM_SET_VALUE_ARRAY] = {VOS_RET_SUCCESS};
+        char *errstring = NULL;
 
-        ParamItem   *pitem   = a->ud.pItem;
-        void* list = NULL;
-        int len;
+        /* find out the total number of parameters requested */
+        paramNum = (UINT32)getParamCnt(pi);
 
-         for ( ; pitem != NULL ; pitem = pitem->next)
-         {
-             char     *pp = pitem->pname;
-             char     *pv=pitem->pvalue; 
-             
-            if (SF_FEATURE_SUPPORT_CT_LOOPDETECT)
+        /* Add by tuhanyu, for upnp device management of separate AP, 2011/04/15, start */
+        if (SF_FEATURE_SUPPORT_UPNP_DMCP)
+        {
+
+            ParamItem   *pitem   = a->ud.pItem;
+            void *list = NULL;
+            int len;
+
+            for (; pitem != NULL ; pitem = pitem->next)
             {
-                if (util_strstr(pp,"X_CT-COM_LoopbackDetection"))
-                {
-                    ctcstp_flg = TRUE;
-                }
-            }
+                char     *pp = pitem->pname;
+                char     *pv = pitem->pvalue;
 
-            if (SF_FEATURE_LOCATION_JIANGSU || SF_FEATURE_LOCATION_SUZHOU)
-            {
-                if (util_strstr(pp, STR_CARD_USERINFO_NAME))
+                if (SF_FEATURE_SUPPORT_CT_LOOPDETECT)
                 {
-                    loid_changed_flag = TRUE;
+                    if (util_strstr(pp, "X_CT-COM_LoopbackDetection"))
+                    {
+                        ctcstp_flg = TRUE;
+                    }
                 }
-            }
+
+                if (SF_FEATURE_LOCATION_JIANGSU || SF_FEATURE_LOCATION_SUZHOU)
+                {
+                    if (util_strstr(pp, STR_CARD_USERINFO_NAME))
+                    {
+                        loid_changed_flag = TRUE;
+                    }
+                }
 
 
 #ifdef DMP_X_CT_COM_SUPPORTCARDMON_1
-             if (SF_FEATURE_SUPPORT_CARD)
-             {
-                if (1 == cardtype)
+                if (SF_FEATURE_SUPPORT_CARD)
                 {
-                    if (util_strstr(pp, STR_CARD_KEYPARAM))
+                    if (1 == cardtype)
                     {
-                        /*for card key must ATH first*/
-                        char card_key[CARD_KEY_LEN + 1] = {0};
-                        UINT32 ret = 0;
-                        CMC_cardInit();
-
-                        UTIL_STRNCPY((char*)card_key, pitem->pvalue, sizeof(card_key));
-
-                        vosLog_debug("card_key=%s\n", card_key);
-                        CMC_cardTermCardCheckEachOther(card_key, &ret);
-                        /*Ath OK*/
-                        if (ret == 0)
+                        if (util_strstr(pp, STR_CARD_KEYPARAM))
                         {
-                            g_keyhaveset = 1;
-                            CMC_cardSetCheckStatus(1);
-                            UTIL_DO_SYSTEM_ACTION("soft_feature set support_voip true");
-                        }
-                        else
-                        {
-                            UINT32 i = 0;
-                            UINT32 resultcard = 0;
-                            for (i = 0; i < 3; ++i)
+                            /*for card key must ATH first*/
+                            char card_key[CARD_KEY_LEN + 1] = {0};
+                            UINT32 ret = 0;
+                            CMC_cardInit();
+
+                            UTIL_STRNCPY((char *)card_key, pitem->pvalue, sizeof(card_key));
+
+                            vosLog_debug("card_key=%s\n", card_key);
+                            CMC_cardTermCardCheckEachOther(card_key, &ret);
+                            /*Ath OK*/
+                            if (ret == 0)
                             {
-                                CMC_cardTermCardCheckEachOther(card_key, &resultcard);
-                                
-                                if (0 == resultcard)
+                                g_keyhaveset = 1;
+                                CMC_cardSetCheckStatus(1);
+                                UTIL_DO_SYSTEM_ACTION("soft_feature set support_voip true");
+                            }
+                            else
+                            {
+                                UINT32 i = 0;
+                                UINT32 resultcard = 0;
+                                for (i = 0; i < 3; ++i)
                                 {
-                                    g_keyhaveset = 1;
-                                    CMC_cardSetCheckStatus(1);
-                                    UTIL_DO_SYSTEM_ACTION("soft_feature set support_voip true");
-                                    break;
+                                    CMC_cardTermCardCheckEachOther(card_key, &resultcard);
+
+                                    if (0 == resultcard)
+                                    {
+                                        g_keyhaveset = 1;
+                                        CMC_cardSetCheckStatus(1);
+                                        UTIL_DO_SYSTEM_ACTION("soft_feature set support_voip true");
+                                        break;
+                                    }
+                                }
+                                if (resultcard != 0)
+                                {
+                                    g_keyhaveset = 0;
+                                    g_statusautheachother = resultcard;
+                                    CMC_cardSetCheckStatus(0);
+                                    UTIL_DO_SYSTEM_ACTION("soft_feature set support_voip false");
                                 }
                             }
-                            if (resultcard != 0)
+                            iskeyvalue = 1;
+                        }
+
+                        if (util_strstr(pp, STR_CARD_USERINFO_NAME) || util_strstr(pp, STR_CARD_USERINFO_PASS))
+                        {
+                            /* build fault response */
+                            writeSoapFault(a, 9802);
+                            printf("doSetParameterValues faulte code is %d\n", 9802);
+                            vosLog_debug("Fault %d", 9802);
+                            return;
+                        }
+
+
+                        if ((1 == iskeyvalue) && (0 == g_keyhaveset))
+                        {
+                            break;
+                        }
+
+                        if (!util_strcmp(pp, CHECK_LOID_STATUSPARAM))
+                        {
+                            if ((!util_strcmp("1", pitem->pvalue))
+                                    || (!util_strcmp("2", pitem->pvalue))
+                                    || (!util_strcmp("3", pitem->pvalue)))
                             {
-                                g_keyhaveset = 0;
-                                g_statusautheachother = resultcard;
-                                CMC_cardSetCheckStatus(0);
-                                UTIL_DO_SYSTEM_ACTION("soft_feature set support_voip false");
+                                g_statushaveset = 1;
+                                CMC_cardBusinessLedOff();
+                            }
+                            else if (!util_strcmp("5", pitem->pvalue))
+                            {
+                                CMC_cardBusinessLedOn();
                             }
                         }
-                        iskeyvalue = 1;
-                    }
-                   
-                    if (util_strstr(pp, STR_CARD_USERINFO_NAME) || util_strstr(pp, STR_CARD_USERINFO_PASS))
-                    {
-                        /* build fault response */
-                        writeSoapFault(a, 9802);
-                        printf("doSetParameterValues faulte code is %d\n", 9802);
-                        vosLog_debug("Fault %d", 9802);
-                        return;                
-                    }
-                   
 
-                    if ((1 == iskeyvalue) && (0 == g_keyhaveset))
-                    {
-                        break;
-                    }
-
-                    if (!util_strcmp(pp, CHECK_LOID_STATUSPARAM))
-                    {
-                        if ((!util_strcmp("1", pitem->pvalue))
-                            || (!util_strcmp("2", pitem->pvalue))
-                            || (!util_strcmp("3", pitem->pvalue)))
+                        if (!util_strcmp(pp, CHECK_LOID_RESULTPARAM))
                         {
-                            g_statushaveset = 1;
-                            CMC_cardBusinessLedOff();
+                            g_statusresult_recv = 1;
                         }
-                        else if (!util_strcmp("5", pitem->pvalue))
+
+                        CMC_cardGetStopCardWrittingFlag(&stop_write_flag);
+                    }
+                    else
+                    {
+                        if ((!util_strcmp(pp, CHECK_LOID_RESULTPARAM)) && (!util_strcmp("1", pitem->pvalue)))
                         {
-                            CMC_cardBusinessLedOn();
+                            CMC_cardSetTerminalType(1);
+                            UTIL_DO_SYSTEM_ACTION("echo notcardterminal > /var/config/terminaltype");
                         }
                     }
-
-                    if (!util_strcmp(pp, CHECK_LOID_RESULTPARAM))
-                    {
-                        g_statusresult_recv = 1;
-                    }
-
-                    CMC_cardGetStopCardWrittingFlag(&stop_write_flag);
-                 }
-                 else
-                 {
-                    if ((!util_strcmp(pp, CHECK_LOID_RESULTPARAM)) && (!util_strcmp("1", pitem->pvalue)))
-                    {
-                        CMC_cardSetTerminalType(1);
-                        UTIL_DO_SYSTEM_ACTION("echo notcardterminal > /var/config/terminaltype");
-                    }
-                 }
-             }
+                }
 #endif
-            if (!util_strcmp(pp, DOWNLOAD_DIAG_STATE_PARAM))
-            {
-                download_diag = 1;
+                if (!util_strcmp(pp, DOWNLOAD_DIAG_STATE_PARAM))
+                {
+                    download_diag = 1;
+                }
+
+                if ((!util_strcmp(pp, DOWNLOAD_DIAG_INTER_PARAM))
+                        || (!util_strcmp(pp, DOWNLOAD_DIAG_URL_PARAM))
+                        || (!util_strcmp(pp, DOWNLOAD_DIAG_DSCP_PARAM))
+                        || (!util_strcmp(pp, DOWNLOAD_DIAG_ETHPRI_PARAM)))
+                {
+                    change_download_param = 1;
+                }
+
+                if (!util_strcmp(pp, UPLOAD_DIAG_STATE_PARAM))
+                {
+                    upload_diag = 1;
+                }
+
+                if ((!util_strcmp(pp, UPLOAD_DIAG_INTER_PARAM))
+                        || (!util_strcmp(pp, UPLOAD_DIAG_URL_PARAM))
+                        || (!util_strcmp(pp, UPLOAD_DIAG_DSCP_PARAM))
+                        || (!util_strcmp(pp, UPLOAD_DIAG_ETHPRI_PARAM))
+                        || (!util_strcmp(pp, UPLOAD_DIAG_FILELEN_PARAM)))
+                {
+                    change_upload_param = 1;
+                }
+
+                if ((util_strstr(pp, STR_WAN_LANINTERFACE) && SF_FEATURE_LOCATION_NINGXIA)
+                        || (util_strstr(pp, STR_WAN_LANINTERFACE_CU) && SF_FEATURE_LOCATION_SHANDONG)
+                        || (util_strstr(pp, STR_WAN_LANINTERFACE) && SF_FEATURE_LOCATION_JIANGXI && SF_FEATURE_CUSTOMER_ASB))
+                {
+                    HAL_sysGetBoardId(board_id, 16);
+                    if (!util_strcmp(board_id, "968385PVSFUEPON") || !util_strcmp(board_id, "968385PVSFU"))
+                        wan_laninterface = 1;
+                }
+#if 0
+                if (util_strstr(pp, STR_VOICE_LINE))
+                {
+                    voice_line = 1;
+                }
+#endif
+
+                len = util_strlen(pp) - util_strlen("InternetGatewayDevice.X_CT-COM_ProxyDevice.DeviceList.");
+                if ((len > 0) && util_strstr(pp, "DeviceList.") && !util_strstr(pp, "ActionList."))
+                {
+                    addToParamPathList(pp, &list, pv);
+                }
             }
 
-            if ((!util_strcmp(pp, DOWNLOAD_DIAG_INTER_PARAM))
-             || (!util_strcmp(pp, DOWNLOAD_DIAG_URL_PARAM))
-             || (!util_strcmp(pp, DOWNLOAD_DIAG_DSCP_PARAM))
-             || (!util_strcmp(pp, DOWNLOAD_DIAG_ETHPRI_PARAM)))
+            paramList = (ParamPathList *)list;
+            while (paramList)
             {
-                change_download_param = 1;
+                int errorCode = 0;
+                int result = 0;
+                result = CMC_phlUpdateUpnpProxyDevice(paramList->paramPath, paramList->value, 1, &errorCode, errstring);
+
+                if (result)
+                {
+                    vosLog_error("  error\n");
+
+                    isSetParamOk = FALSE;
+                }
+
+                paramList = paramList->next;
             }
 
-            if (!util_strcmp(pp, UPLOAD_DIAG_STATE_PARAM))
-            {
-                upload_diag = 1;
-            }
+            paramList = NULL;
+            freeParamPathList(&list);
 
-            if ((!util_strcmp(pp, UPLOAD_DIAG_INTER_PARAM))
-             || (!util_strcmp(pp, UPLOAD_DIAG_URL_PARAM))
-             || (!util_strcmp(pp, UPLOAD_DIAG_DSCP_PARAM))
-             || (!util_strcmp(pp, UPLOAD_DIAG_ETHPRI_PARAM))
-             || (!util_strcmp(pp, UPLOAD_DIAG_FILELEN_PARAM)))
+            if (!isSetParamOk)
             {
-                change_upload_param = 1;
-            }
-
-            if ((util_strstr(pp, STR_WAN_LANINTERFACE) && SF_FEATURE_LOCATION_NINGXIA)
-                || (util_strstr(pp, STR_WAN_LANINTERFACE_CU) && SF_FEATURE_LOCATION_SHANDONG)
-                || (util_strstr(pp, STR_WAN_LANINTERFACE) && SF_FEATURE_LOCATION_JIANGXI && SF_FEATURE_CUSTOMER_ASB))
-            {
-                HAL_sysGetBoardId(board_id,16);
-                if(!util_strcmp(board_id, "968385PVSFUEPON") || !util_strcmp(board_id, "968385PVSFU"))
-                    wan_laninterface = 1;
-            }
-            #if 0
-            if (util_strstr(pp, STR_VOICE_LINE))
-            {
-                voice_line = 1;
-            }
-            #endif 
-                
-            len = util_strlen(pp)- util_strlen("InternetGatewayDevice.X_CT-COM_ProxyDevice.DeviceList.");
-            if ((len>0)&&util_strstr(pp,"DeviceList.") && !util_strstr(pp,"ActionList."))
-            {
-                addToParamPathList(pp,&list,pv);    
+                acsState.fault = VOS_RET_INTERNAL_ERROR;
+                writeSoapFault(a, acsState.fault);
+                return;
             }
         }
-
-        paramList = (ParamPathList *)list;
-        while (paramList)
-        {
-            int errorCode = 0;
-            int result = 0;
-            result = CMC_phlUpdateUpnpProxyDevice(paramList->paramPath, paramList->value, 1, &errorCode, errstring);
-            
-            if (result)
-            {
-                vosLog_error("  error\n");
-
-                isSetParamOk = FALSE;
-            }
-
-            paramList = paramList->next;
-        }
-
-        paramList = NULL;
-        freeParamPathList(&list);
-
-        if (!isSetParamOk)
-        {
-            acsState.fault = VOS_RET_INTERNAL_ERROR;
-            writeSoapFault(a, acsState.fault);
-            return;
-        }
-    }
-/* Add by tuhanyu, end */
+        /* Add by tuhanyu, end */
         if (SF_FEATURE_SUPPORT_CARD && (((1 == iskeyvalue) && (0 == g_keyhaveset)) || stop_write_flag))
         {
             acsState.fault = VOS_RET_FAIL_REBOOT_REQUIRED;
@@ -2440,17 +2455,18 @@ static void doSetParameterValues(RPCAction *a)
                     pi->pvalue = VOS_STRDUP("");
                 }
 
-                if(SF_FEATURE_LOCATION_FUJIAN || SF_FEATURE_LOCATION_NINGXIA || SF_FEATURE_LOCATION_SHANDONG || SF_FEATURE_LOCATION_SHANGHAI)
+                if (SF_FEATURE_LOCATION_FUJIAN || SF_FEATURE_LOCATION_NINGXIA || SF_FEATURE_LOCATION_SHANDONG ||
+                        SF_FEATURE_LOCATION_SHANGHAI)
                 {
                     CMC_PHL_GET_PARAM_ATTR_T paramAttr;
-                    if(NULL != util_strstr(pi->pname, "InternetGatewayDevice.Services.VoiceService.1.VoiceProfile.1.Line.2.") && 
-                        VOS_RET_SUCCESS != CMC_phlGetParamAttr(pi->pname, &paramAttr))
+                    if (NULL != util_strstr(pi->pname, "InternetGatewayDevice.Services.VoiceService.1.VoiceProfile.1.Line.2.") &&
+                            VOS_RET_SUCCESS != CMC_phlGetParamAttr(pi->pname, &paramAttr))
                     {
-                        paramNum--;                        
-                    } 
-                    else if ((SF_FEATURE_LOCATION_NINGXIA || SF_FEATURE_LOCATION_SHANDONG) && 
-                        NULL != util_strstr(pi->pname, "InternetGatewayDevice.LANDevice.1.WLANConfiguration") && 
-                        VOS_RET_SUCCESS != CMC_phlGetParamAttr(pi->pname, &paramAttr))
+                        paramNum--;
+                    }
+                    else if ((SF_FEATURE_LOCATION_NINGXIA || SF_FEATURE_LOCATION_SHANDONG) &&
+                             NULL != util_strstr(pi->pname, "InternetGatewayDevice.LANDevice.1.WLANConfiguration") &&
+                             VOS_RET_SUCCESS != CMC_phlGetParamAttr(pi->pname, &paramAttr))
                     {
                         paramNum--;
                     }
@@ -2458,20 +2474,20 @@ static void doSetParameterValues(RPCAction *a)
                     {
                         paramArray[i++] = pi->pname;
                         paramArray[i++] = pi->pvalue;
-                    }        
+                    }
                 }
                 else if ((SF_FEATURE_LOCATION_JIANGXI) && (SF_FEATURE_CUSTOMER_ASB))
                 {
                     CMC_PHL_GET_PARAM_ATTR_T paramAttr;
 
-                    HAL_sysGetBoardId(board_id,16);
-                    if(!util_strcmp(board_id, "968385PVSFUEPON"))
+                    HAL_sysGetBoardId(board_id, 16);
+                    if (!util_strcmp(board_id, "968385PVSFUEPON"))
                     {
-                        if(NULL != util_strstr(pi->pname, "InternetGatewayDevice.Services.VoiceService.1.VoiceProfile.1.Line.2.")
-                           && VOS_RET_SUCCESS != CMC_phlGetParamAttr(pi->pname, &paramAttr))
+                        if (NULL != util_strstr(pi->pname, "InternetGatewayDevice.Services.VoiceService.1.VoiceProfile.1.Line.2.")
+                                && VOS_RET_SUCCESS != CMC_phlGetParamAttr(pi->pname, &paramAttr))
                         {
-                            paramNum--;                        
-                        } 
+                            paramNum--;
+                        }
                         else if (NULL != util_strstr(pi->pname, "InternetGatewayDevice.LANDevice.1.WLANConfiguration")
                                  && VOS_RET_SUCCESS != CMC_phlGetParamAttr(pi->pname, &paramAttr))
                         {
@@ -2498,11 +2514,11 @@ static void doSetParameterValues(RPCAction *a)
 
                 if (util_strcmp(pi->pname, "InternetGatewayDevice.DeviceConfig.ConfigFile") == 0)
                 {
-                    /* This parameter takes ACS config file and saved to flash; 
+                    /* This parameter takes ACS config file and saved to flash;
                                     do not overwrite the config file at the end of set RPC */
                     configFileSavedToFlash = 1;
                 }
-               
+
                 pi = pi->next;
             }
 
@@ -2521,15 +2537,15 @@ static void doSetParameterValues(RPCAction *a)
             {
                 acsState.fault = VOS_RET_SUCCESS;
             }
-            #if 0
+#if 0
             else if (voice_line && acsState.fault != VOS_RET_SUCCESS)
             {
                 acsState.fault = VOS_RET_SUCCESS;
             }
-            #endif 
+#endif
             else if (acsState.fault == VOS_RET_INVALID_ARGUMENTS)
             {
-                int id = (int)paramNum -1;
+                int id = (int)paramNum - 1;
                 pi = a->ud.pItem;
 
                 while (pi != NULL)
@@ -2565,85 +2581,86 @@ static void doSetParameterValues(RPCAction *a)
                     else
                     {
                         vosLog_debug("Send out CMS_MSG_CT_CONFIGD_ETECTION_PARAM event msg.");
-                    } 
+                    }
                 }
             }
-        }  
+        }
 
         VOS_MEM_FREE_BUF_AND_NULL_PTR(errstring);
-   }
-   else
-   {
-      /* no parameter specified - Invalid arguments */
-      acsState.fault = VOS_RET_INVALID_ARGUMENTS;
-   }
+    }
+    else
+    {
+        /* no parameter specified - Invalid arguments */
+        acsState.fault = VOS_RET_INVALID_ARGUMENTS;
+    }
 
-   if (acsState.fault == VOS_RET_SUCCESS)
-   {
-      /* build good response */
-      tProtoCtx *pc = NULL;
+    if (acsState.fault == VOS_RET_SUCCESS)
+    {
+        /* build good response */
+        tProtoCtx *pc = NULL;
 
-      if (!configFileSavedToFlash)
-      {
-         saveConfigFlag = TRUE;
-      }
+        if (!configFileSavedToFlash)
+        {
+            saveConfigFlag = TRUE;
+        }
 
-      /* 网关不能够自动重启，需要平台下发重启命令才能重启*/
-      #if 0
-      if (setParamReboot)
-      {
-         rebootFlag = eACSSetValueReboot;
-      }
-      #endif
+        /* 网关不能够自动重启，需要平台下发重启命令才能重启*/
+#if 0
+        if (setParamReboot)
+        {
+            rebootFlag = eACSSetValueReboot;
+        }
+#endif
 
-      tr69c_initAllocBuf();
-      
-      do
-      {
-         int   bufsz = 0;
+        tr69c_initAllocBuf();
 
-         openEnvWithHeader(a->ID, pc, &bufsz);
-         openBody(pc, &bufsz);
-         xml_mIndent(pc, &bufsz, 3);
-         mprintf(pc, &bufsz, "<%sSetParameterValuesResponse>\n", nsCWMP);
-         xml_mIndent(pc, &bufsz, 4);
-         if (SF_FEATURE_SUPPORT_CARD)
-         {
-            #ifdef DMP_X_CT_COM_SUPPORTCARDMON_1
-            if (1 == cardtype)
-                mprintf(pc, &bufsz, "<Status>%s</Status>\n", setParamReboot?"3":"2");
+        do
+        {
+            int   bufsz = 0;
+
+            openEnvWithHeader(a->ID, pc, &bufsz);
+            openBody(pc, &bufsz);
+            xml_mIndent(pc, &bufsz, 3);
+            mprintf(pc, &bufsz, "<%sSetParameterValuesResponse>\n", nsCWMP);
+            xml_mIndent(pc, &bufsz, 4);
+            if (SF_FEATURE_SUPPORT_CARD)
+            {
+#ifdef DMP_X_CT_COM_SUPPORTCARDMON_1
+                if (1 == cardtype)
+                    mprintf(pc, &bufsz, "<Status>%s</Status>\n", setParamReboot ? "3" : "2");
+                else
+                    mprintf(pc, &bufsz, "<Status>%s</Status>\n", setParamReboot ? "1" : "0");
+#endif
+            }
             else
-                mprintf(pc, &bufsz, "<Status>%s</Status>\n", setParamReboot?"1":"0");
-            #endif
-         }
-         else
-         {
-            mprintf(pc, &bufsz, "<Status>%s</Status>\n", setParamReboot?"1":"0");
-         }
-         xml_mIndent(pc, &bufsz, 3);
-         mprintf(pc, &bufsz,"</%sSetParameterValuesResponse>\n", nsCWMP);
-         closeBodyEnvelope(pc, &bufsz);
-         
-         commandPrint(rpcSetParameterValues);
-		 
-         /* send the HTTP message header*/
-         sendToAcs(bufsz, NULL);
-         
-         /* send the HTTP message body*/
-         pc = getAcsConnDesc();
-         proto_SendRaw(pc, sg_tr69cAllocBuf.buf, bufsz);
-		 
-      } while (0);
-	  
+            {
+                mprintf(pc, &bufsz, "<Status>%s</Status>\n", setParamReboot ? "1" : "0");
+            }
+            xml_mIndent(pc, &bufsz, 3);
+            mprintf(pc, &bufsz, "</%sSetParameterValuesResponse>\n", nsCWMP);
+            closeBodyEnvelope(pc, &bufsz);
 
-      tr69c_freeAllocBuf();
-   }
-   else
-   {
-      /* build fault response */
-      writeSoapFault(a, acsState.fault);
-      vosLog_error("Fault %d", acsState.fault);
-   }
+            commandPrint(rpcSetParameterValues);
+
+            /* send the HTTP message header*/
+            sendToAcs(bufsz, NULL);
+
+            /* send the HTTP message body*/
+            pc = getAcsConnDesc();
+            proto_SendRaw(pc, sg_tr69cAllocBuf.buf, bufsz);
+
+        }
+        while (0);
+
+
+        tr69c_freeAllocBuf();
+    }
+    else
+    {
+        /* build fault response */
+        writeSoapFault(a, acsState.fault);
+        vosLog_error("Fault %d", acsState.fault);
+    }
 }  /* End of doSetParameterValues() */
 
 
@@ -2655,18 +2672,18 @@ static void writeGetPValue(char *path, char *type, char *value,  tProtoCtx *pc, 
 {
     /* now fill in ParameterValueStruct in response */
     xml_mIndent(pc, bufsz, 6);
-    
+
     mprintf(pc, bufsz, "<ParameterValueStruct>\n");
     xml_mIndent(pc, bufsz, 7);
     mprintf(pc, bufsz, "<Name>%s</Name>\n", path);
     xml_mIndent(pc, bufsz, 7);
 
     mprintf(pc, bufsz, "<Value %stype=\"%s%s\">",
-               nsXSI, nsXSD, type);
-    
+            nsXSI, nsXSD, type);
+
 #ifdef SUPPRESS_EMPTY_PARAM
     if (empty(value))
-    { 
+    {
         xml_mprintf(pc, bufsz, "empty");
     }
     else
@@ -2707,7 +2724,7 @@ static void writeGetParamValue(char *pv, tProtoCtx *pc, int *bufsz, UINT32 param
         type = (char *)VOS_MALLOC_FLAGS(len, ALLOC_ZEROIZE);
         UTIL_STRNCPY(type, pv, len);
         pv += len;
-        
+
         writeGetPValue(name, type, value, pc, bufsz);
 
         VOS_MEM_FREE_BUF_AND_NULL_PTR(name);
@@ -2718,7 +2735,7 @@ static void writeGetParamValue(char *pv, tProtoCtx *pc, int *bufsz, UINT32 param
 
 
 VOS_RET_E freeGetParamValueBuf(CMC_PHL_GET_PARAM_VALUE_T *buf,
-                                 SINT32             paramNum)
+                               SINT32             paramNum)
 {
     SINT32 i;
     CMC_PHL_GET_PARAM_VALUE_T *ptr = buf;
@@ -2744,7 +2761,7 @@ VOS_RET_E tr69c_getParamValue(const char *fullPath, char **paramValue)
     char *respBuf = NULL;
 
     vosLog_debug("Enter>, fullPath = %p(%s)", fullPath, fullPath ? fullPath : "");
-    
+
     if (NULL == reqMsg)
     {
         vosLog_error("VOS_MALLOC_FLAGS failed");
@@ -2756,14 +2773,14 @@ VOS_RET_E tr69c_getParamValue(const char *fullPath, char **paramValue)
     {
         UTIL_STRNCPY((char *)&reqBuf[sizeof(VosMsgHeader)], fullPath, pathLen);
     }
-  
+
     reqMsg->type = VOS_MSG_TR69C_GET_VALUE;
     reqMsg->src = EID_TR69C;
     reqMsg->dst = EID_CMC;
     reqMsg->flags_request = 1;
     reqMsg->flags_response = 0;
     reqMsg->dataLength = reqBufSize - sizeof(VosMsgHeader);
-    
+
     ret = vosMsg_sendAndGetReplyBuf(g_msgHandle, reqMsg, &respMsg);
     if (VOS_RET_SUCCESS != ret)
     {
@@ -2780,7 +2797,7 @@ VOS_RET_E tr69c_getParamValue(const char *fullPath, char **paramValue)
     else
     {
         respBuf = (char *)(respMsg + 1);
-        
+
         if (paramValue)
         {
             *paramValue = (char *)VOS_STRDUP(respBuf);
@@ -2795,9 +2812,9 @@ VOS_RET_E tr69c_getParamValue(const char *fullPath, char **paramValue)
 
 
 VOS_RET_E tr69c_getParamValues(const char *fullPath,
-                                   UBOOL8 *isParamPath,
-                                   UINT8 **paramValue,
-                                   UINT32 *paramNum)
+                               UBOOL8 *isParamPath,
+                               UINT8 **paramValue,
+                               UINT32 *paramNum)
 {
     VOS_RET_E ret = VOS_RET_SUCCESS;
     UINT32 pathLen = (NULL == fullPath) ? 0 : (util_strlen(fullPath) + 1);
@@ -2810,32 +2827,32 @@ VOS_RET_E tr69c_getParamValues(const char *fullPath,
     UINT32 offLen = 0;
 
     vosLog_debug("Enter>, fullPath = %p(%s), isParamPath = %p, paramValue = %p, paramNum = %p",
-        fullPath, fullPath ? fullPath : "", isParamPath, paramValue, paramNum);
+                 fullPath, fullPath ? fullPath : "", isParamPath, paramValue, paramNum);
 
     if (NULL == reqBuf)
     {
         vosLog_error("VOS_MALLOC_FLAGS failed");
         return VOS_RET_RESOURCE_EXCEEDED;
     }
-    
+
     if (NULL != fullPath)
     {
         UTIL_STRNCPY((char *)&reqBuf[sizeof(VosMsgHeader)], fullPath, pathLen);
     }
-  
+
     reqMsg->type = VOS_MSG_TR69C_GET_VALUE_LIST;
     reqMsg->src = EID_TR69C;
     reqMsg->dst = EID_CMC;
     reqMsg->flags_request = 1;
     reqMsg->flags_response = 0;
     reqMsg->dataLength = pathLen;
-    
+
     ret = vosMsg_sendAndGetReplyBuf(g_msgHandle, reqMsg, &respMsg);
     if (VOS_RET_SUCCESS != ret)
     {
         vosLog_error("vosMsg_sendAndGetReplyBuf failed (ret=%d)", ret);
         VOS_MEM_FREE_BUF_AND_NULL_PTR(reqBuf);
-        
+
         return ret;
     }
 
@@ -2877,7 +2894,7 @@ VOS_RET_E tr69c_getParamValues(const char *fullPath,
             memcpy(*paramValue, &respBuf[offLen], valueSize);
         }
     }
-    
+
     VOS_MEM_FREE_BUF_AND_NULL_PTR(reqBuf);
     VOS_MEM_FREE_BUF_AND_NULL_PTR(respMsg);
 
@@ -2893,37 +2910,37 @@ static void doGetParameterValues(RPCAction *a)
     vosLog_debug("==Enter==");
 
     acsState.fault = VOS_RET_SUCCESS;   /* init to no fault */
-          
-   /* Loop through the code twice.  The first loop is to calculate
-    * the size of the entire soap envelope so that the HTTP header
-    * can be written to the TCP socket first.  The second loop is
-    * to write the content of the envelope to the TCP socket as it
-    * is generated.
-    */
-    
+
+    /* Loop through the code twice.  The first loop is to calculate
+     * the size of the entire soap envelope so that the HTTP header
+     * can be written to the TCP socket first.  The second loop is
+     * to write the content of the envelope to the TCP socket as it
+     * is generated.
+     */
+
     ParamItem   *pitem   = a->ud.pItem;
-    void* list = NULL;
-    int result =-1;
-    char* errstring= NULL;
+    void *list = NULL;
+    int result = -1;
+    char *errstring = NULL;
     char     *ppn;
     int len;
     InstanceIdStack iidStack_dl = EMPTY_INSTANCE_ID_STACK;
     ParamPathList *paramList = NULL;
     ParamItem phead;
-     if (SF_FEATURE_SUPPORT_UPNP_DMCP)
+    if (SF_FEATURE_SUPPORT_UPNP_DMCP)
     {
 #ifdef __DEBUG_UPNP_TR69_SIMULATE
         if (pitem)
-        {    
+        {
             ppn = pitem->pname;
-            len = util_strlen(ppn)- util_strlen("InternetGatewayDevice.X_CT-COM_ProxyDevice.DeviceList.");     
-            if ((len>=0)&&util_strstr(ppn,"DeviceList.")&&!util_strstr(ppn, "ActionList"))
-            {    
-                char* p;    
+            len = util_strlen(ppn) - util_strlen("InternetGatewayDevice.X_CT-COM_ProxyDevice.DeviceList.");
+            if ((len >= 0) && util_strstr(ppn, "DeviceList.") && !util_strstr(ppn, "ActionList"))
+            {
+                char *p;
                 char tmp[256];
-                UTIL_STRNCPY(tmp,ppn,sizeof(tmp)); 
-    
-                p= util_strstr(tmp,"DeviceList.")+util_strlen("DeviceList.");
+                UTIL_STRNCPY(tmp, ppn, sizeof(tmp));
+
+                p = util_strstr(tmp, "DeviceList.") + util_strlen("DeviceList.");
                 while (*(p))
                 {
                     if (isdigit(*p))
@@ -2936,156 +2953,157 @@ static void doGetParameterValues(RPCAction *a)
                         break;
                     }
                 }
-                
+
                 p++;
-                
-                UTIL_STRNCPY(p ,"Monitoring.", BUFLEN_32); 
-                addToParamPathList(tmp,&list,NULL);    
-                    
-                UTIL_STRNCPY(p ,"ServiceObject.", BUFLEN_32); 
-                addToParamPathList(tmp,&list,NULL);    
-                
-                UTIL_STRNCPY(p ,"DeviceInfo.", BUFLEN_32); 
-                addToParamPathList(tmp,&list,NULL);            
+
+                UTIL_STRNCPY(p, "Monitoring.", BUFLEN_32);
+                addToParamPathList(tmp, &list, NULL);
+
+                UTIL_STRNCPY(p, "ServiceObject.", BUFLEN_32);
+                addToParamPathList(tmp, &list, NULL);
+
+                UTIL_STRNCPY(p, "DeviceInfo.", BUFLEN_32);
+                addToParamPathList(tmp, &list, NULL);
             }
         }
 #else
-        for ( ; pitem != NULL ; pitem = pitem->next)
+        for (; pitem != NULL ; pitem = pitem->next)
         {
-           ppn = pitem->pname;
-           len = util_strlen(ppn)- util_strlen("InternetGatewayDevice.X_CT-COM_ProxyDevice.DeviceList.");     
-           if ((len>0)&&util_strstr(ppn,"DeviceList")&&!util_strstr(ppn, "ActionList"))
-           {
-               addToParamPathList(ppn,&list,NULL);    
-           } 
-           else if (0== util_strcmp(ppn,"InternetGatewayDevice.")||
-                   (0== util_strcmp(ppn,"InternetGatewayDevice.X_CT-COM_ProxyDevice."))||
-                   (0== util_strcmp(ppn,"InternetGatewayDevice.X_CT-COM_ProxyDevice.DeviceList.")))
-           {
-               char aName[256];
-               
-               INIT_INSTANCE_ID_STACK(&iidStack_dl);
-               
-               while (VOS_RET_SUCCESS == CMC_tr69cGetDeviceList(&iidStack_dl))
-               {
-                   UTIL_SNPRINTF(aName, sizeof(aName),"InternetGatewayDevice.X_CT-COM_ProxyDevice.DeviceList.%d.",
-                   iidStack_dl.instance[iidStack_dl.currentDepth-1]);
-                   addToParamPathList(aName,&list,NULL);   
-               }
-               
-           }
-       }
+            ppn = pitem->pname;
+            len = util_strlen(ppn) - util_strlen("InternetGatewayDevice.X_CT-COM_ProxyDevice.DeviceList.");
+            if ((len > 0) && util_strstr(ppn, "DeviceList") && !util_strstr(ppn, "ActionList"))
+            {
+                addToParamPathList(ppn, &list, NULL);
+            }
+            else if (0 == util_strcmp(ppn, "InternetGatewayDevice.") ||
+                     (0 == util_strcmp(ppn, "InternetGatewayDevice.X_CT-COM_ProxyDevice.")) ||
+                     (0 == util_strcmp(ppn, "InternetGatewayDevice.X_CT-COM_ProxyDevice.DeviceList.")))
+            {
+                char aName[256];
+
+                INIT_INSTANCE_ID_STACK(&iidStack_dl);
+
+                while (VOS_RET_SUCCESS == CMC_tr69cGetDeviceList(&iidStack_dl))
+                {
+                    UTIL_SNPRINTF(aName, sizeof(aName), "InternetGatewayDevice.X_CT-COM_ProxyDevice.DeviceList.%d.",
+                                  iidStack_dl.instance[iidStack_dl.currentDepth - 1]);
+                    addToParamPathList(aName, &list, NULL);
+                }
+
+            }
+        }
 #endif
 
-       paramList = (ParamPathList *)list;
-       while (paramList)
-       {
-           int errorCode = 0;
-           
-           result = CMC_phlUpdateUpnpProxyDevice(paramList->paramPath, paramList->value, 0, &errorCode, errstring);
-           
-           if (result)
-           {
-               vosLog_error("  error\n");    
-           }
-           paramList = paramList->next;
-       }
-       freeParamPathList(&list);
-   }
+        paramList = (ParamPathList *)list;
+        while (paramList)
+        {
+            int errorCode = 0;
 
-   tr69c_initAllocBuf();
+            result = CMC_phlUpdateUpnpProxyDevice(paramList->paramPath, paramList->value, 0, &errorCode, errstring);
 
-   do
-   {
-      int         bufsz = 0;
-      ParamItem   *pi   = a->ud.pItem;
+            if (result)
+            {
+                vosLog_error("  error\n");
+            }
+            paramList = paramList->next;
+        }
+        freeParamPathList(&list);
+    }
 
-      if (NULL == pi)
-      {
-         /* no parameter specified - Invalid arguments */
-         acsState.fault = VOS_RET_INVALID_ARGUMENTS;
-         break;   /* quit */
-      }
-      
-      if(SF_FEATURE_LOCATION_GUANGDONG)
-      {     
-          phead.next = a->ud.pItem;          
-          inversionParamItem(&phead);
-          pi = phead.next;
-      }
-      
-      /* create response msg start */
-      openEnvWithHeader(a->ID, pc, &bufsz);
-      openBody(pc, &bufsz);
-      xml_mIndent(pc, &bufsz, 3);
-      mprintf(pc, &bufsz,"<%sGetParameterValuesResponse>\n", nsCWMP);
+    tr69c_initAllocBuf();
 
-      /* copy parameter list */
-      xml_mIndent(pc, &bufsz, 4);
+    do
+    {
+        int         bufsz = 0;
+        ParamItem   *pi   = a->ud.pItem;
+
+        if (NULL == pi)
+        {
+            /* no parameter specified - Invalid arguments */
+            acsState.fault = VOS_RET_INVALID_ARGUMENTS;
+            break;   /* quit */
+        }
+
+        if (SF_FEATURE_LOCATION_GUANGDONG)
+        {
+            phead.next = a->ud.pItem;
+            inversionParamItem(&phead);
+            pi = phead.next;
+        }
+
+        /* create response msg start */
+        openEnvWithHeader(a->ID, pc, &bufsz);
+        openBody(pc, &bufsz);
+        xml_mIndent(pc, &bufsz, 3);
+        mprintf(pc, &bufsz, "<%sGetParameterValuesResponse>\n", nsCWMP);
+
+        /* copy parameter list */
+        xml_mIndent(pc, &bufsz, 4);
 #ifdef SUPPRESS_SOAP_ARRAYTYPE
-      mprintf(pc, &bufsz, "<ParameterList>\n");
+        mprintf(pc, &bufsz, "<ParameterList>\n");
 #else
-      /* In the first loop paramNum=0.  In the second loop, paramNum will have
-       * the actual parameter count.
-       */
-      mprintf(pc, &bufsz,
-              "<ParameterList %sarrayType=\"%sParameterValueStruct[%04d]\">\n",
-              nsSOAP_ENC, nsCWMP, paramNum);
+        /* In the first loop paramNum=0.  In the second loop, paramNum will have
+         * the actual parameter count.
+         */
+        mprintf(pc, &bufsz,
+                "<ParameterList %sarrayType=\"%sParameterValueStruct[%04d]\">\n",
+                nsSOAP_ENC, nsCWMP, paramNum);
 #endif
-      paramNum = TR69C_PARAM_GET_VALUE_ARRAY;  /* reset paramNum */
+        paramNum = TR69C_PARAM_GET_VALUE_ARRAY;  /* reset paramNum */
 
-      for ( ; pi != NULL && acsState.fault == VOS_RET_SUCCESS; pi = pi->next)
-      {
-         char *pp = pi->pname;
-         UINT8 *paramValue = NULL;
+        for (; pi != NULL && acsState.fault == VOS_RET_SUCCESS; pi = pi->next)
+        {
+            char *pp = pi->pname;
+            UINT8 *paramValue = NULL;
 
-         acsState.fault = tr69c_getParamValues(pp, &isParamPath, &paramValue, &paramNum);
-         if (acsState.fault == VOS_RET_SUCCESS)
-         {
-            writeGetParamValue((char *)paramValue, pc, &bufsz, paramNum);
-         }
-         else if (acsState.fault == VOS_RET_NO_MORE_INSTANCES)
-         {
-            acsState.fault = VOS_RET_SUCCESS;
-         }
-         else
-         {
-            vosLog_error("CMC_phlGetNextParamValue error %d", acsState.fault);
-         }
+            acsState.fault = tr69c_getParamValues(pp, &isParamPath, &paramValue, &paramNum);
+            if (acsState.fault == VOS_RET_SUCCESS)
+            {
+                writeGetParamValue((char *)paramValue, pc, &bufsz, paramNum);
+            }
+            else if (acsState.fault == VOS_RET_NO_MORE_INSTANCES)
+            {
+                acsState.fault = VOS_RET_SUCCESS;
+            }
+            else
+            {
+                vosLog_error("CMC_phlGetNextParamValue error %d", acsState.fault);
+            }
 
-         VOS_MEM_FREE_BUF_AND_NULL_PTR(paramValue);
-      }  /* for () */
+            VOS_MEM_FREE_BUF_AND_NULL_PTR(paramValue);
+        }  /* for () */
 
-      
-      if(SF_FEATURE_LOCATION_GUANGDONG)
-      {     
-          inversionParamItem(&phead);
-          pi = phead.next;
-      }
 
-      if (acsState.fault != VOS_RET_SUCCESS)
-      {
-         break;   /* quit */
-      }
+        if (SF_FEATURE_LOCATION_GUANGDONG)
+        {
+            inversionParamItem(&phead);
+            pi = phead.next;
+        }
 
-      xml_mIndent(pc, &bufsz, 4);
-      mprintf(pc, &bufsz, "</ParameterList>\n");
-      xml_mIndent(pc, &bufsz, 3);
-      mprintf(pc, &bufsz, "</%sGetParameterValuesResponse>\n", nsCWMP);
-      closeBodyEnvelope(pc, &bufsz);    
+        if (acsState.fault != VOS_RET_SUCCESS)
+        {
+            break;   /* quit */
+        }
 
-      xml_mIndent(pc, &bufsz, MAX_PADDINGS);
-      commandPrint(rpcGetParameterValues);
+        xml_mIndent(pc, &bufsz, 4);
+        mprintf(pc, &bufsz, "</ParameterList>\n");
+        xml_mIndent(pc, &bufsz, 3);
+        mprintf(pc, &bufsz, "</%sGetParameterValuesResponse>\n", nsCWMP);
+        closeBodyEnvelope(pc, &bufsz);
 
-      /* send the HTTP message header*/
-      sendToAcs(bufsz, NULL);
-      
-      /* send the HTTP message body*/
-      pc = getAcsConnDesc();
-      proto_SendRaw(pc, sg_tr69cAllocBuf.buf, bufsz);
-	  
-    }  while (0);
-	
+        xml_mIndent(pc, &bufsz, MAX_PADDINGS);
+        commandPrint(rpcGetParameterValues);
+
+        /* send the HTTP message header*/
+        sendToAcs(bufsz, NULL);
+
+        /* send the HTTP message body*/
+        pc = getAcsConnDesc();
+        proto_SendRaw(pc, sg_tr69cAllocBuf.buf, bufsz);
+
+    }
+    while (0);
+
     tr69c_freeAllocBuf();
 
     if (acsState.fault != VOS_RET_SUCCESS)
@@ -3097,7 +3115,7 @@ static void doGetParameterValues(RPCAction *a)
     /* Add by tuhanyu, for upnp device management of separate AP, 2011/04/15, start */
     if (SF_FEATURE_SUPPORT_UPNP_DMCP)
     {
-       VOS_MEM_FREE_BUF_AND_NULL_PTR(errstring);
+        VOS_MEM_FREE_BUF_AND_NULL_PTR(errstring);
     }
 }
 
@@ -3106,200 +3124,203 @@ static void doGetParameterValues(RPCAction *a)
 /* AddObject*/
 static void doAddObject(RPCAction *a)
 {
-   char              *pp = a->ud.addDelObjectReq.objectName;
-   int               len;
-   UINT32 instanceNum = 0;
+    char              *pp = a->ud.addDelObjectReq.objectName;
+    int               len;
+    UINT32 instanceNum = 0;
 
-   vosLog_debug("==Enter==");
+    vosLog_debug("==Enter==");
 
-   acsState.fault = VOS_RET_SUCCESS; /* init to no fault */
-   
-   /* The path name must end with a "." (dot) after the last node
-    * in the hierarchical name of the object.
-    */
-   acsState.fault = VOS_RET_INVALID_PARAM_NAME;
-   if ((pp != NULL) &&
-       ((len = util_strlen(pp)) > 0) && (len <= 256) &&
-       (pp[len-1] == '.'))
-   {
-      char  *pLastToken;
+    acsState.fault = VOS_RET_SUCCESS; /* init to no fault */
 
-      pp[len-1] = 0;
-      if (((pLastToken = strrchr(pp, (int)'.')) != NULL) &&
-          (isalpha(*(++pLastToken))))
-      {
-         acsState.fault = VOS_RET_SUCCESS;
-      }
-      pp[len-1] = '.';
-   }
+    /* The path name must end with a "." (dot) after the last node
+     * in the hierarchical name of the object.
+     */
+    acsState.fault = VOS_RET_INVALID_PARAM_NAME;
+    if ((pp != NULL) &&
+            ((len = util_strlen(pp)) > 0) && (len <= 256) &&
+            (pp[len - 1] == '.'))
+    {
+        char  *pLastToken;
 
-   if (acsState.fault == VOS_RET_SUCCESS)
-   {
-       acsState.fault = CMC_phlAddInstance(pp, &instanceNum);
-       if (acsState.fault == VOS_RET_SUCCESS_REBOOT_REQUIRED)
-       {
-          if (!SF_FEATURE_SUPPORT_PLUGIN)
-          {
-              rebootFlag     = eACSAddObjectReboot;//no reboot
-          }
-          acsState.fault = VOS_RET_SUCCESS;
-       }
-   }
+        pp[len - 1] = 0;
+        if (((pLastToken = strrchr(pp, (int)'.')) != NULL) &&
+                (isalpha(*(++pLastToken))))
+        {
+            acsState.fault = VOS_RET_SUCCESS;
+        }
+        pp[len - 1] = '.';
+    }
 
-   if (acsState.fault == VOS_RET_SUCCESS)
-   {
-      /* build AddObject response */
-      tProtoCtx *pc = NULL;
+    if (acsState.fault == VOS_RET_SUCCESS)
+    {
+        acsState.fault = CMC_phlAddInstance(pp, &instanceNum);
+        if (acsState.fault == VOS_RET_SUCCESS_REBOOT_REQUIRED)
+        {
+            if (!SF_FEATURE_SUPPORT_PLUGIN)
+            {
+                rebootFlag     = eACSAddObjectReboot;//no reboot
+            }
+            acsState.fault = VOS_RET_SUCCESS;
+        }
+    }
 
-      tr69c_initAllocBuf();
-      
-      do
-      {
-         int   bufsz = 0;
+    if (acsState.fault == VOS_RET_SUCCESS)
+    {
+        /* build AddObject response */
+        tProtoCtx *pc = NULL;
 
-         openEnvWithHeader(a->ID, pc, &bufsz);
-         openBody(pc, &bufsz);
-         xml_mIndent(pc, &bufsz, 3);
-         mprintf(pc, &bufsz, "<%sAddObjectResponse>\n", nsCWMP);
-         xml_mIndent(pc, &bufsz, 4);
-         mprintf(pc, &bufsz, "<InstanceNumber>%d</InstanceNumber>\n", instanceNum);
-         xml_mIndent(pc, &bufsz, 4);
-         mprintf(pc, &bufsz, "<Status>%s</Status>\n", rebootFlag? "1":"0");
-         xml_mIndent(pc, &bufsz, 3);
-         mprintf(pc, &bufsz, "</%sAddObjectResponse>\n", nsCWMP);
-         closeBodyEnvelope(pc, &bufsz);
-         
-         commandPrint(rpcAddObject);
-		 
-         /* send the HTTP message header*/
-         sendToAcs(bufsz, NULL);
-         
-         /* send the HTTP message body*/
-         pc = getAcsConnDesc();
-         proto_SendRaw(pc, sg_tr69cAllocBuf.buf, bufsz);
+        tr69c_initAllocBuf();
 
-      } while (0);
-	  
-      tr69c_freeAllocBuf();
+        do
+        {
+            int   bufsz = 0;
 
-      saveConfigFlag = TRUE;
-   }
-   else
-   {
-      /* build fault here */
-      writeSoapFault(a, acsState.fault);
-      vosLog_debug("Fault %d", acsState.fault);
-   }
+            openEnvWithHeader(a->ID, pc, &bufsz);
+            openBody(pc, &bufsz);
+            xml_mIndent(pc, &bufsz, 3);
+            mprintf(pc, &bufsz, "<%sAddObjectResponse>\n", nsCWMP);
+            xml_mIndent(pc, &bufsz, 4);
+            mprintf(pc, &bufsz, "<InstanceNumber>%d</InstanceNumber>\n", instanceNum);
+            xml_mIndent(pc, &bufsz, 4);
+            mprintf(pc, &bufsz, "<Status>%s</Status>\n", rebootFlag ? "1" : "0");
+            xml_mIndent(pc, &bufsz, 3);
+            mprintf(pc, &bufsz, "</%sAddObjectResponse>\n", nsCWMP);
+            closeBodyEnvelope(pc, &bufsz);
+
+            commandPrint(rpcAddObject);
+
+            /* send the HTTP message header*/
+            sendToAcs(bufsz, NULL);
+
+            /* send the HTTP message body*/
+            pc = getAcsConnDesc();
+            proto_SendRaw(pc, sg_tr69cAllocBuf.buf, bufsz);
+
+        }
+        while (0);
+
+        tr69c_freeAllocBuf();
+
+        saveConfigFlag = TRUE;
+    }
+    else
+    {
+        /* build fault here */
+        writeSoapFault(a, acsState.fault);
+        vosLog_debug("Fault %d", acsState.fault);
+    }
 }  /* End of doAddObject() */
 
 static void doDeleteObject(RPCAction *a)
 {
-   char              *pp = a->ud.addDelObjectReq.objectName;
-   int               len;
+    char              *pp = a->ud.addDelObjectReq.objectName;
+    int               len;
 
-   vosLog_debug("==Enter==");
+    vosLog_debug("==Enter==");
 
-   acsState.fault = VOS_RET_SUCCESS; /* init to no fault */
+    acsState.fault = VOS_RET_SUCCESS; /* init to no fault */
 
-   /* The path name must end with a "." (dot) after the instance
-    * number of the object.
-    */
-   if ((pp != NULL) &&
-       ((len = util_strlen(pp)) > 1) && (len <= 256) &&
-       (pp[len-1] == '.') && (isdigit(pp[len-2])))
-   {
-      acsState.fault = VOS_RET_SUCCESS;
-   }
-   else
-   {
-      acsState.fault = VOS_RET_INVALID_PARAM_NAME;
-   }
+    /* The path name must end with a "." (dot) after the instance
+     * number of the object.
+     */
+    if ((pp != NULL) &&
+            ((len = util_strlen(pp)) > 1) && (len <= 256) &&
+            (pp[len - 1] == '.') && (isdigit(pp[len - 2])))
+    {
+        acsState.fault = VOS_RET_SUCCESS;
+    }
+    else
+    {
+        acsState.fault = VOS_RET_INVALID_PARAM_NAME;
+    }
 
-   if (acsState.fault == VOS_RET_SUCCESS)
-   {
-      acsState.fault = CMC_phlDelInstance(pp);
-      if (acsState.fault == VOS_RET_SUCCESS_REBOOT_REQUIRED)
-      {
-          if (!SF_FEATURE_SUPPORT_PLUGIN)
-          {
-              rebootFlag     = eACSDelObjectReboot;
-          }
-          acsState.fault = VOS_RET_SUCCESS;
-      }
-   }
+    if (acsState.fault == VOS_RET_SUCCESS)
+    {
+        acsState.fault = CMC_phlDelInstance(pp);
+        if (acsState.fault == VOS_RET_SUCCESS_REBOOT_REQUIRED)
+        {
+            if (!SF_FEATURE_SUPPORT_PLUGIN)
+            {
+                rebootFlag     = eACSDelObjectReboot;
+            }
+            acsState.fault = VOS_RET_SUCCESS;
+        }
+    }
 
-   if (acsState.fault == VOS_RET_SUCCESS)
-   {
-      /* build DeleteObject response */
-      tProtoCtx *pc = NULL;
+    if (acsState.fault == VOS_RET_SUCCESS)
+    {
+        /* build DeleteObject response */
+        tProtoCtx *pc = NULL;
 
-      tr69c_initAllocBuf();
-	  
-      do
-      {
-         int   bufsz = 0;
+        tr69c_initAllocBuf();
 
-         openEnvWithHeader(a->ID, pc, &bufsz);
-         openBody(pc, &bufsz);
-         xml_mIndent(pc, &bufsz, 3);
-         mprintf(pc, &bufsz, "<%sDeleteObjectResponse>\n", nsCWMP);
-         xml_mIndent(pc, &bufsz, 4);
-         mprintf(pc, &bufsz, "<Status>%s</Status>\n", rebootFlag? "1":"0");
-         xml_mIndent(pc, &bufsz, 3);
-         mprintf(pc, &bufsz, "</%sDeleteObjectResponse>\n", nsCWMP);
-         closeBodyEnvelope(pc, &bufsz);
-         
-         commandPrint(rpcDeleteObject);
-		 
-         /* send the HTTP message header*/
-         sendToAcs(bufsz, NULL);
-         
-         /* send the HTTP message body*/
-         pc = getAcsConnDesc();
-         proto_SendRaw(pc, sg_tr69cAllocBuf.buf, bufsz);
+        do
+        {
+            int   bufsz = 0;
 
-      } while (0);
-	  
-      tr69c_freeAllocBuf();
+            openEnvWithHeader(a->ID, pc, &bufsz);
+            openBody(pc, &bufsz);
+            xml_mIndent(pc, &bufsz, 3);
+            mprintf(pc, &bufsz, "<%sDeleteObjectResponse>\n", nsCWMP);
+            xml_mIndent(pc, &bufsz, 4);
+            mprintf(pc, &bufsz, "<Status>%s</Status>\n", rebootFlag ? "1" : "0");
+            xml_mIndent(pc, &bufsz, 3);
+            mprintf(pc, &bufsz, "</%sDeleteObjectResponse>\n", nsCWMP);
+            closeBodyEnvelope(pc, &bufsz);
 
-      saveConfigFlag = TRUE;
-   }
-   else
-   {
-      /* build fault here */
-      writeSoapFault(a, acsState.fault);
-      vosLog_debug("Fault %d", acsState.fault);
-   }
+            commandPrint(rpcDeleteObject);
+
+            /* send the HTTP message header*/
+            sendToAcs(bufsz, NULL);
+
+            /* send the HTTP message body*/
+            pc = getAcsConnDesc();
+            proto_SendRaw(pc, sg_tr69cAllocBuf.buf, bufsz);
+
+        }
+        while (0);
+
+        tr69c_freeAllocBuf();
+
+        saveConfigFlag = TRUE;
+    }
+    else
+    {
+        /* build fault here */
+        writeSoapFault(a, acsState.fault);
+        vosLog_debug("Fault %d", acsState.fault);
+    }
 }  /* End of doDeleteObject() */
 
 static void doRebootRPC(RPCAction *a)
 {
     tProtoCtx *pc = NULL;
 
-   tr69c_initAllocBuf();
-   
-   do
-   {
-      int   bufsz = 0;
+    tr69c_initAllocBuf();
 
-      openEnvWithHeader(a->ID, pc, &bufsz);
-      openBody(pc, &bufsz);
-      xml_mIndent(pc, &bufsz, 3);
-      mprintf(pc, &bufsz, "<%sRebootResponse/>\n", nsCWMP);
-      closeBodyEnvelope(pc, &bufsz);
-      
-      commandPrint(rpcReboot);
-	  
-      /* send the HTTP message header*/
-      sendToAcs(bufsz, NULL);
-      
-      /* send the HTTP message body*/
-      pc = getAcsConnDesc();
-      proto_SendRaw(pc, sg_tr69cAllocBuf.buf, bufsz);
+    do
+    {
+        int   bufsz = 0;
 
-   } while (0);
-   
-   tr69c_freeAllocBuf();
+        openEnvWithHeader(a->ID, pc, &bufsz);
+        openBody(pc, &bufsz);
+        xml_mIndent(pc, &bufsz, 3);
+        mprintf(pc, &bufsz, "<%sRebootResponse/>\n", nsCWMP);
+        closeBodyEnvelope(pc, &bufsz);
+
+        commandPrint(rpcReboot);
+
+        /* send the HTTP message header*/
+        sendToAcs(bufsz, NULL);
+
+        /* send the HTTP message body*/
+        pc = getAcsConnDesc();
+        proto_SendRaw(pc, sg_tr69cAllocBuf.buf, bufsz);
+
+    }
+    while (0);
+
+    tr69c_freeAllocBuf();
 
     /* 平台下发重启，响应平台后，等待5s再重启，
        确保平台下发完工单后立刻下发重启，能弹出"注册成功，下发业务成功"页面 */
@@ -3320,32 +3341,33 @@ static void doRebootRPC(RPCAction *a)
 
 static void doFactoryResetRPC(RPCAction *a)
 {
-   tProtoCtx *pc = NULL;
+    tProtoCtx *pc = NULL;
 
-   tr69c_initAllocBuf();
-   
-   do
-   {
-      int   bufsz = 0;
+    tr69c_initAllocBuf();
 
-      openEnvWithHeader(a->ID, pc, &bufsz);
-      openBody(pc, &bufsz);
-      xml_mIndent(pc, &bufsz, 3);
-      mprintf(pc, &bufsz, "<%sFactoryResetResponse/>\n", nsCWMP);
-      closeBodyEnvelope(pc,&bufsz);
-      
-      commandPrint(rpcFactoryReset);
-	  
-      /* send the HTTP message header*/
-      sendToAcs(bufsz, NULL);
-      
-      /* send the HTTP message body*/
-      pc = getAcsConnDesc();
-      proto_SendRaw(pc, sg_tr69cAllocBuf.buf, bufsz);
+    do
+    {
+        int   bufsz = 0;
 
-   } while (0);
-   
-   tr69c_freeAllocBuf();
+        openEnvWithHeader(a->ID, pc, &bufsz);
+        openBody(pc, &bufsz);
+        xml_mIndent(pc, &bufsz, 3);
+        mprintf(pc, &bufsz, "<%sFactoryResetResponse/>\n", nsCWMP);
+        closeBodyEnvelope(pc, &bufsz);
+
+        commandPrint(rpcFactoryReset);
+
+        /* send the HTTP message header*/
+        sendToAcs(bufsz, NULL);
+
+        /* send the HTTP message body*/
+        pc = getAcsConnDesc();
+        proto_SendRaw(pc, sg_tr69cAllocBuf.buf, bufsz);
+
+    }
+    while (0);
+
+    tr69c_freeAllocBuf();
 
     if (simRpcAction != NULL)
     {
@@ -3365,18 +3387,18 @@ static void doFactoryResetRPC(RPCAction *a)
 static VOS_RET_E tr69c_wanServModeMask2String(UINT32 servModeMask, char *servMode, UINT32 len)
 {
     UBOOL8  firstFlag = TRUE;
-    
+
     vosLog_debug("Enter>, servModeMask = %u, servMode = %p, len = %u", servModeMask, servMode, len);
 
-    if(NULL == servMode)
+    if (NULL == servMode)
     {
         return VOS_RET_INVALID_ARGUMENTS;
     }
-    
+
     servMode[0] = '\0';
-    
+
     if (servModeMask & SERV_MODE_TR069)
-    {         
+    {
         if (firstFlag)
         {
             firstFlag = FALSE;
@@ -3402,7 +3424,7 @@ static VOS_RET_E tr69c_wanServModeMask2String(UINT32 servModeMask, char *servMod
             UTIL_STRNCAT(servMode, "VOIP", len);
         }
     }
-    
+
     if (servModeMask & SERV_MODE_INTERNET)
     {
         if (firstFlag)
@@ -3422,12 +3444,12 @@ static VOS_RET_E tr69c_wanServModeMask2String(UINT32 servModeMask, char *servMod
         if (firstFlag)
         {
             firstFlag = FALSE;
-            UTIL_STRNCPY(servMode, "OTHER", len);          
+            UTIL_STRNCPY(servMode, "OTHER", len);
         }
         else
         {
             UTIL_STRNCAT(servMode, ",", len);
-            UTIL_STRNCAT(servMode, "OTHER", len);           
+            UTIL_STRNCAT(servMode, "OTHER", len);
         }
     }
 
@@ -3436,12 +3458,12 @@ static VOS_RET_E tr69c_wanServModeMask2String(UINT32 servModeMask, char *servMod
         if (firstFlag)
         {
             firstFlag = FALSE;
-            UTIL_STRNCPY(servMode, "IPTV", len);          
+            UTIL_STRNCPY(servMode, "IPTV", len);
         }
         else
         {
             UTIL_STRNCAT(servMode, ",", len);
-            UTIL_STRNCAT(servMode, "IPTV", len);           
+            UTIL_STRNCAT(servMode, "IPTV", len);
         }
     }
 
@@ -3455,7 +3477,7 @@ void tr69c_GetMemOccupyInfo(char *memInfo, UINT32 len)
     FILE *fp = NULL;
     char cmd[BUFLEN_48] = {0};
     char buf[BUFLEN_80] = {0};
-    
+
     UINT32 totalmm = 0;
     UINT32 totalActive = 0;
     char tempMemInfo[BUFLEN_128] = {0};
@@ -3487,7 +3509,7 @@ void tr69c_GetMemOccupyInfo(char *memInfo, UINT32 len)
     fclose(fp);
 
     //vosLog_debug("MemTotal = %d,MemFree = %d,Cached = %d", totalmm, totalfree, totalcache);
-    UTIL_SNPRINTF(tempMemInfo, sizeof(tempMemInfo), "%d", (totalActive*100/totalmm));
+    UTIL_SNPRINTF(tempMemInfo, sizeof(tempMemInfo), "%d", (totalActive * 100 / totalmm));
     vosLog_debug("tempMemInfo = %s", tempMemInfo);
 
     UTIL_STRNCPY(memInfo, tempMemInfo, len);
@@ -3546,7 +3568,7 @@ void tr69c_GetCpuOccupyInfo(char *cpuInfo, UINT32 len)
 
     if (cpuSum1 != cpuSum2)
     {
-        cpu_use = (user_2 + system_2 + nice_2 - user_1 - system_1 - nice_1)*100/(cpuSum2 - cpuSum1);
+        cpu_use = (user_2 + system_2 + nice_2 - user_1 - system_1 - nice_1) * 100 / (cpuSum2 - cpuSum1);
     }
     if (0 == cpu_use)
     {
@@ -3569,12 +3591,12 @@ void TR69C_writePathAndUintValue(char *path, UINT32 value, tProtoCtx *pc, int *b
     xml_mIndent(pc, bufsz, 7);
     mprintf(pc, bufsz, "<Name>%s</Name>\n", path);
     xml_mIndent(pc, bufsz, 7);
-    
+
     mprintf(pc, bufsz, "<Value %stype=\"%sunsignedInt\">", nsXSI, nsXSD);
     mprintf(pc, bufsz, "%d", value);
     mprintf(pc, bufsz, "</Value>\n");
     xml_mIndent(pc, bufsz, 6);
-    mprintf(pc, bufsz,"</ParameterValueStruct>\n");   
+    mprintf(pc, bufsz, "</ParameterValueStruct>\n");
 
     (*paramNum)++;
 }
@@ -3587,12 +3609,12 @@ static void tr69c_writePathAndStringValue(char *path, char *value, tProtoCtx *pc
     xml_mIndent(pc, bufsz, 7);
     mprintf(pc, bufsz, "<Name>%s</Name>\n", path);
     xml_mIndent(pc, bufsz, 7);
-    
+
     mprintf(pc, bufsz, "<Value %stype=\"%sstring\">", nsXSI, nsXSD);
     mprintf(pc, bufsz, "%s", value);
     mprintf(pc, bufsz, "</Value>\n");
     xml_mIndent(pc, bufsz, 6);
-    mprintf(pc, bufsz,"</ParameterValueStruct>\n");   
+    mprintf(pc, bufsz, "</ParameterValueStruct>\n");
 
     (*paramNum)++;
 }
@@ -3602,7 +3624,7 @@ static VOS_RET_E tr69c_buildDeviceInfo(int i, tProtoCtx *pc, int *bufsz)
 {
     VOS_RET_E ret = VOS_RET_SUCCESS;
     char *pDevName = NULL;
-    
+
     pDevName = strrchr(informDevIds[i], '.');
     pDevName++;
 
@@ -3611,7 +3633,7 @@ static VOS_RET_E tr69c_buildDeviceInfo(int i, tProtoCtx *pc, int *bufsz)
     if (!util_strcmp(pDevName, "Manufacturer"))
     {
         mprintf(pc, bufsz, "<%s>%s</%s>\n",
-        pDevName, acsState.manufacturer, pDevName);
+                pDevName, acsState.manufacturer, pDevName);
     }
     else if (!util_strcmp(pDevName, "ManufacturerOUI"))
     {
@@ -3620,24 +3642,24 @@ static VOS_RET_E tr69c_buildDeviceInfo(int i, tProtoCtx *pc, int *bufsz)
     else if (!util_strcmp(pDevName, "ProductClass"))
     {
         mprintf(pc, bufsz, "<%s>%s</%s>\n",
-        pDevName, acsState.productClass, pDevName);
+                pDevName, acsState.productClass, pDevName);
     }
     else if (!util_strcmp(pDevName, "SerialNumber"))
     {
         mprintf(pc, bufsz, "<%s>%s</%s>\n",
-        pDevName, acsState.serialNumber, pDevName);
+                pDevName, acsState.serialNumber, pDevName);
     }
     else if (SF_FEATURE_LOCATION_YUNNAN && !util_strcmp(pDevName, "DeviceType"))
     {
         mprintf(pc, bufsz, "<%s>%s</%s>\n",
-        pDevName, acsState.deviceType, pDevName);
+                pDevName, acsState.deviceType, pDevName);
     }
     else if (SF_FEATURE_LOCATION_YUNNAN && !util_strcmp(pDevName, "AccessType"))
     {
         mprintf(pc, bufsz, "<%s>%s</%s>\n",
-        pDevName, acsState.accessType, pDevName);
+                pDevName, acsState.accessType, pDevName);
     }
-    
+
     return ret;
 }
 
@@ -3646,29 +3668,29 @@ static int tr69c_buildBootInfo(int bootstrap, int x_ct_com_xbind, int valuechang
 {
     int paralistSupportCardmon = 0;
     static UBOOL8 del_flag = FALSE;
-    
+
     if (1 == bootstrap)
     {
         /*we got BOOTSTRAP event, so discard all event*/
         clearInformEventListNoBackup();
 
         addInformEventToList(INFORM_EVENT_BOOTSTRAP);
-        
-        if(SF_FEATURE_LOCATION_FUJIAN)
+
+        if (SF_FEATURE_LOCATION_FUJIAN)
         {
-            addInformEventToList(INFORM_EVENT_BOOT);        
+            addInformEventToList(INFORM_EVENT_BOOT);
         }
-        
-        if (SF_FEATURE_SUPPORT_CT_USERINFO 
-         && !SF_FEATURE_UPLINK_TYPE_EOC 
-         && !SF_FEATURE_LOCATION_JIANGSU 
-         && !SF_FEATURE_LOCATION_SUZHOU
-         && !SF_FEATURE_LOCATION_SICHUAN 
-         && !SF_FEATURE_LOCATION_GUANGXI
-         && !SF_FEATURE_LOCATION_SHANGHAI
-         && !SF_FEATURE_LOCATION_FUJIAN
-         && !SF_FEATURE_SUPPORT_CARD
-         && !SF_FEATURE_LOCATION_GUANGDONG)
+
+        if (SF_FEATURE_SUPPORT_CT_USERINFO
+                && !SF_FEATURE_UPLINK_TYPE_EOC
+                && !SF_FEATURE_LOCATION_JIANGSU
+                && !SF_FEATURE_LOCATION_SUZHOU
+                && !SF_FEATURE_LOCATION_SICHUAN
+                && !SF_FEATURE_LOCATION_GUANGXI
+                && !SF_FEATURE_LOCATION_SHANGHAI
+                && !SF_FEATURE_LOCATION_FUJIAN
+                && !SF_FEATURE_SUPPORT_CARD
+                && !SF_FEATURE_LOCATION_GUANGDONG)
         {
             addInformEventToList(INFORM_EVENT_CT_USERINFO);
         }
@@ -3689,7 +3711,7 @@ static int tr69c_buildBootInfo(int bootstrap, int x_ct_com_xbind, int valuechang
                 if (NULL == (fp = fopen("/var/config/remote_resetstatus", "r")))
                 {
                     vosLog_debug("can not open file /var/config/remote_resetstatus");
-                    
+
                     if (SF_FEATURE_SUPPORT_CT_USERINFO)
                     {
                         addInformEventToList(INFORM_EVENT_CT_USERINFO);
@@ -3699,7 +3721,7 @@ static int tr69c_buildBootInfo(int bootstrap, int x_ct_com_xbind, int valuechang
                 {
                     del_flag = TRUE;
                     fgets(file_buf, sizeof(file_buf), fp);
-                    
+
                     if (NULL != util_strstr(file_buf, "remote reset finished !"))
                     {
                         vosLog_debug("remote reset no need to send X CT-COM BIND event !");
@@ -3711,7 +3733,7 @@ static int tr69c_buildBootInfo(int bootstrap, int x_ct_com_xbind, int valuechang
                             addInformEventToList(INFORM_EVENT_CT_USERINFO);
                         }
                     }
-                    
+
                     fclose(fp);
                 }
             }
@@ -3732,7 +3754,7 @@ static int tr69c_buildBootInfo(int bootstrap, int x_ct_com_xbind, int valuechang
         else
         {
             /*X CT-COM BIND must inform*/
-            if ( (1 == x_ct_com_xbind) && SF_FEATURE_SUPPORT_CT_USERINFO)
+            if ((1 == x_ct_com_xbind) && SF_FEATURE_SUPPORT_CT_USERINFO)
             {
                 addInformEventToList(INFORM_EVENT_CT_USERINFO);
             }
@@ -3758,7 +3780,7 @@ static int tr69c_buildBootInfo(int bootstrap, int x_ct_com_xbind, int valuechang
             {
                 CMC_phlClearAllParamValueChanges();
             }
-        }         
+        }
     }
 
     if (SF_FEATURE_SUPPORT_CARD)
@@ -3791,7 +3813,7 @@ static int tr69c_buildParamValueChanges(int numParamValueChanges, int fault, tPr
         fs = fopen(VAR_CONFIG_SETATTR_FILE, "r");
         if (NULL == fs)
         {
-            vosLog_debug( "open file setattr faild" );
+            vosLog_debug("open file setattr faild");
         }
         else
         {
@@ -3803,56 +3825,56 @@ static int tr69c_buildParamValueChanges(int numParamValueChanges, int fault, tPr
             {
                 while (*site != '\0')
                 {
-                   memset(fullPath, 0, sizeof(fullPath));
-                   
-                   while(*site != '\0')
-                   {
-                      fullPath[i] = *site;
-                      site ++;
-                      i ++;
-                      
-                      if (*site == '&')
-                      {
-                         site ++;
-                         i = 0;
-                         break;
-                      }
-                   }
+                    memset(fullPath, 0, sizeof(fullPath));
 
-                vosLog_debug("value change fullPath:%s",fullPath);
-               
-                if (fullPath[0] == 'I')
-                {
-                    if (ret == VOS_RET_SUCCESS)
+                    while (*site != '\0')
                     {
-                         CMC_phlIsParamValueChanged(fullPath, &change);
-                         if (change)
-                         {
-                            ret = tr69c_getParamValues(fullPath, NULL, &paramValue, NULL);
-                            if (ret == VOS_RET_SUCCESS)
-                            {
-                               writeGetParamValue((char *)paramValue, pc, bufsz, 1);
-                               (*paramNum)++;
-                            }
+                        fullPath[i] = *site;
+                        site ++;
+                        i ++;
 
-                            memset(fullPath, 0, sizeof(fullPath));
-                            VOS_MEM_FREE_BUF_AND_NULL_PTR(paramValue);
+                        if (*site == '&')
+                        {
+                            site ++;
+                            i = 0;
+                            break;
                         }
                     }
-                    else
+
+                    vosLog_debug("value change fullPath:%s", fullPath);
+
+                    if (fullPath[0] == 'I')
                     {
-                        vosLog_error("CMC_tr69cFullPathToPathDescriptor error %d", ret);
+                        if (ret == VOS_RET_SUCCESS)
+                        {
+                            CMC_phlIsParamValueChanged(fullPath, &change);
+                            if (change)
+                            {
+                                ret = tr69c_getParamValues(fullPath, NULL, &paramValue, NULL);
+                                if (ret == VOS_RET_SUCCESS)
+                                {
+                                    writeGetParamValue((char *)paramValue, pc, bufsz, 1);
+                                    (*paramNum)++;
+                                }
+
+                                memset(fullPath, 0, sizeof(fullPath));
+                                VOS_MEM_FREE_BUF_AND_NULL_PTR(paramValue);
+                            }
+                        }
+                        else
+                        {
+                            vosLog_error("CMC_tr69cFullPathToPathDescriptor error %d", ret);
+                        }
+                    }
+
+                    if (*site == '\0')/*traversed all the nodes*/
+                    {
+                        break;
                     }
                 }
-               
-                if (*site == '\0')/*traversed all the nodes*/
-                {
-                    break;
-                }
             }
-        }
 
-        fclose(fs);
+            fclose(fs);
         }
     }
 
@@ -3868,50 +3890,50 @@ static void tr69c_buildAlarmNumberInfo(tProtoCtx *pc, int *bufsz, int *paramNum)
     CMC_tr69cGetAlarm(&alarm_info);
 
     xml_mIndent(pc, bufsz, 6);
-    mprintf(pc, bufsz,"<ParameterValueStruct>\n");
+    mprintf(pc, bufsz, "<ParameterValueStruct>\n");
     xml_mIndent(pc, bufsz, 7);
-    mprintf(pc, bufsz,"<Name>InternetGatewayDevice.DeviceInfo.X_CT-COM_Alarm.AlarmNumber</Name>\n");
+    mprintf(pc, bufsz, "<Name>InternetGatewayDevice.DeviceInfo.X_CT-COM_Alarm.AlarmNumber</Name>\n");
     xml_mIndent(pc, bufsz, 7);
 
-    mprintf(pc, bufsz,"<Value %stype=\"%sstring\">", nsXSI, nsXSD);
-    mprintf(pc, bufsz,"%s", alarm_info.alarmNumber);
-    mprintf(pc, bufsz,"</Value>\n");
+    mprintf(pc, bufsz, "<Value %stype=\"%sstring\">", nsXSI, nsXSD);
+    mprintf(pc, bufsz, "%s", alarm_info.alarmNumber);
+    mprintf(pc, bufsz, "</Value>\n");
     xml_mIndent(pc, bufsz, 6);
-    mprintf(pc, bufsz,"</ParameterValueStruct>\n");
+    mprintf(pc, bufsz, "</ParameterValueStruct>\n");
 
     (*paramNum)++;
 }
 #endif
 
 
-static void tr69c_buildAlarmInfo(int paralistMonitorFlag, 
+static void tr69c_buildAlarmInfo(int paralistMonitorFlag,
                                  int paralistAlarmFlag,
-                                 int paralistCleanAlarmFlag, 
+                                 int paralistCleanAlarmFlag,
                                  tProtoCtx *pc, int *bufsz, int *paramNum)
 {
     int i = 0;
 
-    vosLog_debug("Enter>, paralistMonitorFlag = %d, paralistAlarmFlag = %d, paralistCleanAlarmFlag = %d", 
-                          paralistMonitorFlag, paralistAlarmFlag, paralistCleanAlarmFlag);
-    
+    vosLog_debug("Enter>, paralistMonitorFlag = %d, paralistAlarmFlag = %d, paralistCleanAlarmFlag = %d",
+                 paralistMonitorFlag, paralistAlarmFlag, paralistCleanAlarmFlag);
+
     if (1 == paralistMonitorFlag)
     {
-        for(i = 0; i< send_monitor_number; i++)
+        for (i = 0; i < send_monitor_number; i++)
         {
             tr69c_writePathAndStringValue(monitorSend[i].paralist, monitorSend[i].value, pc, bufsz, paramNum);
         }
     }
-    
+
     if (1 == paralistAlarmFlag)
     {
-        #ifdef DMP_X_CT_COM_SUPPORTCARDMON_1
+#ifdef DMP_X_CT_COM_SUPPORTCARDMON_1
         if (SF_FEATURE_SUPPORT_CARD)
         {
             tr69c_buildAlarmNumberInfo(pc, bufsz, paramNum);
         }
-        #endif
+#endif
 
-        for(i = 0; i< send_alarm_number; i++)
+        for (i = 0; i < send_alarm_number; i++)
         {
             tr69c_writePathAndStringValue(alarmSend[i].paralist, alarmSend[i].value, pc, bufsz, paramNum);
         }
@@ -3919,11 +3941,11 @@ static void tr69c_buildAlarmInfo(int paralistMonitorFlag,
 
     if (1 == paralistCleanAlarmFlag)
     {
-        for(i = 0; i< send_clean_alarm_number; i++)
+        for (i = 0; i < send_clean_alarm_number; i++)
         {
             tr69c_writePathAndStringValue(cleanalarmSend[i].paralist, cleanalarmSend[i].value, pc, bufsz, paramNum);
         }
-    }      
+    }
 }
 
 
@@ -3934,17 +3956,17 @@ static void tr69c_buildNameChangeInfo(tProtoCtx *pc, int *bufsz, int *paramNum)
     InstanceIdStack  iidStack = EMPTY_INSTANCE_ID_STACK;
     char paramPath[BUFLEN_128] = {0};
     char servMode[BUFLEN_128] = {0};
-   // UINT32 vlan = 0;
+    // UINT32 vlan = 0;
     char accessType[BUFLEN_32] = {0};
     VOS_RET_E ret = VOS_RET_SUCCESS;
     char wlanSsid[UTIL_WLAN_SSID_MAX_LEN] = {0};
-    
+
     vosLog_debug("Enter>, pc = %p, bufsz = %p, paramNum = %p ", pc, bufsz, paramNum);
-        
+
     memset(&wanCfg, 0, sizeof(wanCfg));
     memset(&ethIntfInfo, 0, sizeof(ethIntfInfo));
 
-    while(VOS_RET_SUCCESS == CMC_wanGetNextIpConn(&wanCfg, &iidStack))
+    while (VOS_RET_SUCCESS == CMC_wanGetNextIpConn(&wanCfg, &iidStack))
     {
         ret = CMC_phlGetPathByDesc(EMDMOID_WAN_IP_CONN, &iidStack, paramPath, sizeof(paramPath), "X_CT-COM_ServiceList");
         if (VOS_RET_SUCCESS != ret)
@@ -3952,7 +3974,7 @@ static void tr69c_buildNameChangeInfo(tProtoCtx *pc, int *bufsz, int *paramNum)
             vosLog_error("CMC_phlGetPathByDesc failed, ret = %d", ret);
             return;
         }
-        
+
         tr69c_wanServModeMask2String(wanCfg.servModeMask, servMode, sizeof(servMode));
         tr69c_writePathAndStringValue(paramPath, servMode, pc, bufsz, paramNum);
 
@@ -3964,9 +3986,9 @@ static void tr69c_buildNameChangeInfo(tProtoCtx *pc, int *bufsz, int *paramNum)
 
         memset(&wanCfg, 0, sizeof(wanCfg));
     }
-    
+
     INIT_INSTANCE_ID_STACK(&iidStack);
-    while(VOS_RET_SUCCESS == CMC_wanGetNextPppConn(&wanCfg, &iidStack))
+    while (VOS_RET_SUCCESS == CMC_wanGetNextPppConn(&wanCfg, &iidStack))
     {
         ret = CMC_phlGetPathByDesc(EMDMOID_WAN_PPP_CONN, &iidStack, paramPath, sizeof(paramPath), "X_CT-COM_ServiceList");
         if (VOS_RET_SUCCESS != ret)
@@ -3974,7 +3996,7 @@ static void tr69c_buildNameChangeInfo(tProtoCtx *pc, int *bufsz, int *paramNum)
             vosLog_error("CMC_phlGetPathByDesc failed, ret = %d", ret);
             return;
         }
-        
+
         tr69c_wanServModeMask2String(wanCfg.servModeMask, servMode, sizeof(servMode));
         tr69c_writePathAndStringValue(paramPath, servMode, pc, bufsz, paramNum);
 
@@ -3983,24 +4005,24 @@ static void tr69c_buildNameChangeInfo(tProtoCtx *pc, int *bufsz, int *paramNum)
         {
             tr69c_writePathAndStringValue(paramPath, wanCfg.lanInterface, pc, bufsz, paramNum);
         }
-        
+
         memset(&wanCfg, 0, sizeof(wanCfg));
     }
-    
+
     INIT_INSTANCE_ID_STACK(&iidStack);
     while (VOS_RET_SUCCESS == CMC_lanGetNextIfLinkStatus(&ethIntfInfo, &iidStack))
-    {        
+    {
         ret = CMC_phlGetPathByDesc(EMDMOID_LAN_ETH_INTF, &iidStack, paramPath, sizeof(paramPath), "MACAddress");
         if (VOS_RET_SUCCESS != ret)
         {
             vosLog_error("CMC_phlGetPathByDesc failed, ret = %d", ret);
-            return;        
+            return;
         }
-        
+
         tr69c_writePathAndStringValue(paramPath, ethIntfInfo.macAddr, pc, bufsz, paramNum);
         memset(&ethIntfInfo, 0, sizeof(ethIntfInfo));
     }
-    
+
     INIT_INSTANCE_ID_STACK(&iidStack);
     while (VOS_RET_SUCCESS == CMC_wlanGetNextSSID(wlanSsid, sizeof(wlanSsid), &iidStack))
     {
@@ -4010,14 +4032,14 @@ static void tr69c_buildNameChangeInfo(tProtoCtx *pc, int *bufsz, int *paramNum)
             vosLog_error("CMC_phlGetPathByDesc failed, ret = %d", ret);
             return;
         }
-        
+
         tr69c_writePathAndStringValue(paramPath, wlanSsid, pc, bufsz, paramNum);
     }
-    
+
     TR69C_buildVlanCustom(pc, bufsz, paramNum);
 
     INIT_INSTANCE_ID_STACK(&iidStack);
-    while(VOS_RET_SUCCESS == CMC_wanGetAccessType(accessType, &iidStack, sizeof(accessType)))
+    while (VOS_RET_SUCCESS == CMC_wanGetAccessType(accessType, &iidStack, sizeof(accessType)))
     {
         ret = CMC_phlGetPathByDesc(EMDMOID_WAN_COMMON_INTF_CFG, &iidStack, paramPath, sizeof(paramPath), "WANAccessType");
         if (VOS_RET_SUCCESS != ret)
@@ -4025,7 +4047,7 @@ static void tr69c_buildNameChangeInfo(tProtoCtx *pc, int *bufsz, int *paramNum)
             vosLog_error("CMC_phlGetPathByDesc failed, ret = %d", ret);
             return;
         }
-        
+
         tr69c_writePathAndStringValue(paramPath, accessType, pc, bufsz, paramNum);
     }
 }
@@ -4039,7 +4061,7 @@ static void tr69c_buildMacInfo(tProtoCtx *pc, int *bufsz, int *paramNum)
     int found = 0;
 
     memset(&wanCfg, 0, sizeof(wanCfg));
-    while(!found && (VOS_RET_SUCCESS == CMC_wanGetNextIpConn(&wanCfg, &iidStack)))
+    while (!found && (VOS_RET_SUCCESS == CMC_wanGetNextIpConn(&wanCfg, &iidStack)))
     {
         if (wanCfg.servModeMask & SERV_MODE_TR069)
         {
@@ -4054,7 +4076,7 @@ static void tr69c_buildMacInfo(tProtoCtx *pc, int *bufsz, int *paramNum)
     }
 
     INIT_INSTANCE_ID_STACK(&iidStack);
-    while(!found && (VOS_RET_SUCCESS == CMC_wanGetNextPppConn(&wanCfg, &iidStack)))
+    while (!found && (VOS_RET_SUCCESS == CMC_wanGetNextPppConn(&wanCfg, &iidStack)))
     {
         if (wanCfg.servModeMask & SERV_MODE_TR069)
         {
@@ -4087,7 +4109,7 @@ static void tr69c_buildCpuAndMemInfo(tProtoCtx *pc, int *bufsz, int *paramNum)
 }
 
 
-void tr69c_buildUserInfo(int paralistUserInfoFlag, 
+void tr69c_buildUserInfo(int paralistUserInfoFlag,
                          int paralistSupportCardmon,
                          int paralistLoidChange,
                          tProtoCtx *pc, int *bufsz,
@@ -4099,7 +4121,7 @@ void tr69c_buildUserInfo(int paralistUserInfoFlag,
     char paramPath[BUFLEN_128] = {0};
     UINT8 *value = NULL;
     UINT32 num = 0;
-    
+
     vosLog_debug("Enter>, paralistUserInfoFlag = %d, paralistLoidChange = %d", paralistUserInfoFlag, paralistLoidChange);
 
     memset(&userInfo, 0, sizeof(userInfo));
@@ -4124,12 +4146,12 @@ void tr69c_buildUserInfo(int paralistUserInfoFlag,
             UTIL_STRNCPY(paramPath, "InternetGatewayDevice.X_CT-COM_UserInfo.UserId", sizeof(paramPath));
         }
     }
-    
+
     if (!IS_EMPTY_STRING(userInfo.username))
     {
         UTIL_STRNCPY(paramValue, userInfo.username, sizeof(paramValue));
     }
-    
+
     if (SF_FEATURE_LOCATION_GUANGDONG && SF_FEATURE_SUPPORT_CT)
     {
         if (!IS_EMPTY_STRING(userInfo.password))
@@ -4138,10 +4160,10 @@ void tr69c_buildUserInfo(int paralistUserInfoFlag,
         }
     }
 
-    if ((1 == paralistUserInfoFlag) 
-      || SF_OR_IF(SF_FEATURE_SUPPORT_CARD)
-        (1 == paralistSupportCardmon)
-        SF_OR_ENDIF) 
+    if ((1 == paralistUserInfoFlag)
+            || SF_OR_IF(SF_FEATURE_SUPPORT_CARD)
+            (1 == paralistSupportCardmon)
+            SF_OR_ENDIF)
     {
         tr69c_writePathAndStringValue(paramPath, paramValue, pc, bufsz, paramNum);
 
@@ -4160,7 +4182,7 @@ void tr69c_buildUserInfo(int paralistUserInfoFlag,
                 UTIL_STRNCPY(paramPath, "InternetGatewayDevice.X_CT-COM_UserInfo.UserName", sizeof(paramPath));
             }
         }
-        
+
         memset(paramValue, 0, sizeof(paramValue));
         if (!(SF_FEATURE_LOCATION_GUANGDONG && SF_FEATURE_SUPPORT_CT))
         {
@@ -4169,7 +4191,7 @@ void tr69c_buildUserInfo(int paralistUserInfoFlag,
                 UTIL_STRNCPY(paramValue, userInfo.password, sizeof(paramValue));
             }
         }
-        
+
         tr69c_writePathAndStringValue(paramPath, paramValue, pc, bufsz, paramNum);
     }
     else if (1 == paralistLoidChange)
@@ -4186,12 +4208,12 @@ void tr69c_buildUserInfo(int paralistUserInfoFlag,
 
     if (SF_FEATURE_LOCATION_FUJIAN)
     {
-        if ((CMC_TR69C_DEV_REG_SUCCESS == userInfo.status) 
-         || (CMC_TR69C_DEV_REG_SEND_BUSINESS_SUCCESS == userInfo.result))
+        if ((CMC_TR69C_DEV_REG_SUCCESS == userInfo.status)
+                || (CMC_TR69C_DEV_REG_SEND_BUSINESS_SUCCESS == userInfo.result))
         {
             UTIL_STRNCPY(paramPath, "InternetGatewayDevice.DeviceInfo.X_CT-COM_RegStatistics.", sizeof(paramPath));
             tr69c_getParamValues(paramPath, NULL, &value, &num);
-            writeGetParamValue((char *)value, pc, bufsz, num); 
+            writeGetParamValue((char *)value, pc, bufsz, num);
             *paramNum += num;
         }
     }
@@ -4205,16 +4227,16 @@ void tr69c_buildPppAccount(tProtoCtx *pc, int *bufsz, int *paramNum)
     char paramPath[TR69C_PARAM_FULL_PATH_LENGTH] = {0};
 
     memset(&wanCfg, 0, sizeof(wanCfg));
-    
-    while(VOS_RET_SUCCESS == CMC_wanGetNextPppConn(&wanCfg, &iidStack))
+
+    while (VOS_RET_SUCCESS == CMC_wanGetNextPppConn(&wanCfg, &iidStack))
     {
         if (SF_AND_IF(SF_FEATURE_SUPPORT_RTP_ROX)
-            ((wanCfg.servModeMask & SERV_MODE_INTERNET) &&(VOS_WAN_TYPE_BRIDGE != wanCfg.connType))
-            || (1 == wanCfg.enablePppProxy)
-            SF_AND_ELSE(SF_FEATURE_SUPPORT_RTP_ROX)
-            (wanCfg.servModeMask & SERV_MODE_INTERNET) 
-            && (wanCfg.connType != VOS_WAN_TYPE_BRIDGE)
-            SF_AND_ENDIF)
+                ((wanCfg.servModeMask & SERV_MODE_INTERNET) && (VOS_WAN_TYPE_BRIDGE != wanCfg.connType))
+                || (1 == wanCfg.enablePppProxy)
+                SF_AND_ELSE(SF_FEATURE_SUPPORT_RTP_ROX)
+                (wanCfg.servModeMask & SERV_MODE_INTERNET)
+                && (wanCfg.connType != VOS_WAN_TYPE_BRIDGE)
+                SF_AND_ENDIF)
         {
             CMC_phlGetPathByDesc(EMDMOID_WAN_PPP_CONN, &iidStack, paramPath, sizeof(paramPath), "Username");
 
@@ -4226,35 +4248,35 @@ void tr69c_buildPppAccount(tProtoCtx *pc, int *bufsz, int *paramNum)
 
 
 void tr69c_buildCardInfo(int paralistCardStatusFlag,
-                         int paralistSupportCardmon, 
+                         int paralistSupportCardmon,
                          tProtoCtx *pc, int *bufsz)
 {
     CMC_TR69C_SIM_CARD_CFG_T pCardManager;
-    VOS_RET_E ret= VOS_RET_SUCCESS;
+    VOS_RET_E ret = VOS_RET_SUCCESS;
 
-    memset (&pCardManager, 0, sizeof(pCardManager));
+    memset(&pCardManager, 0, sizeof(pCardManager));
 
     ret = CMC_tr69cGetCardManager(&pCardManager);
     if (1 == paralistCardStatusFlag)
     {
-        printf("func=%s***line=%d\n",__FUNCTION__,__LINE__);
+        printf("func=%s***line=%d\n", __FUNCTION__, __LINE__);
         if (ret == VOS_RET_SUCCESS)
         {
-            printf("func=%s***line=%d\n",__FUNCTION__,__LINE__);
+            printf("func=%s***line=%d\n", __FUNCTION__, __LINE__);
             xml_mIndent(pc, bufsz, 6);
-            mprintf(pc, bufsz,"<ParameterValueStruct>\n");
+            mprintf(pc, bufsz, "<ParameterValueStruct>\n");
             xml_mIndent(pc, bufsz, 7);
-            mprintf(pc, bufsz,"<Name>InternetGatewayDevice.DeviceInfo.X_CT-COM_Cardmanage.status</Name>\n");
+            mprintf(pc, bufsz, "<Name>InternetGatewayDevice.DeviceInfo.X_CT-COM_Cardmanage.status</Name>\n");
             xml_mIndent(pc, bufsz, 7);
 
-            mprintf(pc, bufsz,"<Value %stype=\"%sstring\">", nsXSI, nsXSD);
-            mprintf(pc, bufsz,"%d", pCardManager.status);
-            mprintf(pc, bufsz,"</Value>\n");
+            mprintf(pc, bufsz, "<Value %stype=\"%sstring\">", nsXSI, nsXSD);
+            mprintf(pc, bufsz, "%d", pCardManager.status);
+            mprintf(pc, bufsz, "</Value>\n");
             xml_mIndent(pc, bufsz, 6);
-            mprintf(pc, bufsz,"</ParameterValueStruct>\n");
+            mprintf(pc, bufsz, "</ParameterValueStruct>\n");
         }
-        
-        printf("func=%s***line=%d\n",__FUNCTION__,__LINE__);
+
+        printf("func=%s***line=%d\n", __FUNCTION__, __LINE__);
     }
 
     if (1 == paralistSupportCardmon)
@@ -4262,16 +4284,16 @@ void tr69c_buildCardInfo(int paralistCardStatusFlag,
         if (VOS_RET_SUCCESS == ret)
         {
             xml_mIndent(pc, bufsz, 6);
-            mprintf(pc, bufsz,"<ParameterValueStruct>\n");
+            mprintf(pc, bufsz, "<ParameterValueStruct>\n");
             xml_mIndent(pc, bufsz, 7);
-            mprintf(pc, bufsz,"<Name>InternetGatewayDevice.DeviceInfo.X_CT-COM_Cardmanage.CardNo</Name>\n");
+            mprintf(pc, bufsz, "<Name>InternetGatewayDevice.DeviceInfo.X_CT-COM_Cardmanage.CardNo</Name>\n");
             xml_mIndent(pc, bufsz, 7);
 
-            mprintf(pc, bufsz,"<Value %stype=\"%sstring\">",nsXSI, nsXSD);
-            mprintf(pc, bufsz,"%s", pCardManager.cardNum);
-            mprintf(pc, bufsz,"</Value>\n");
+            mprintf(pc, bufsz, "<Value %stype=\"%sstring\">", nsXSI, nsXSD);
+            mprintf(pc, bufsz, "%s", pCardManager.cardNum);
+            mprintf(pc, bufsz, "</Value>\n");
             xml_mIndent(pc, bufsz, 6);
-            mprintf(pc, bufsz,"</ParameterValueStruct>\n");
+            mprintf(pc, bufsz, "</ParameterValueStruct>\n");
         }
     }
 }
@@ -4279,22 +4301,22 @@ void tr69c_buildCardInfo(int paralistCardStatusFlag,
 
 static void tr69c_buildWanAndWlanStats(tProtoCtx *pc, int *bufsz, int *paramNum, int informWanAndWlanStat)
 {
-    CMC_WAN_CON_STATUS_T wanStat; 
+    CMC_WAN_CON_STATUS_T wanStat;
     CMC_WAN_CONN_CFG_T wanCfg;
     char paramPath[BUFLEN_128] = {0};
     InstanceIdStack iidStack = EMPTY_INSTANCE_ID_STACK;
- 
+
     memset(&wanStat, 0, sizeof(wanStat));
-    
+
     if (informWanAndWlanStat)
     {
         TR69C_buildWlanStatsCustom(pc, bufsz, paramNum);
-    
-        while(VOS_RET_SUCCESS == CMC_wanGetNextIpStatus(&wanStat, &iidStack))
+
+        while (VOS_RET_SUCCESS == CMC_wanGetNextIpStatus(&wanStat, &iidStack))
         {
             CMC_phlGetPathByDesc(EMDMOID_WAN_IP_CONN_STATS, &iidStack, paramPath, sizeof(paramPath), "ethernetBytesSent");
             TR69C_writePathAndUintValue(paramPath, wanStat.txByte, pc, bufsz, paramNum);
-            
+
             CMC_phlGetPathByDesc(EMDMOID_WAN_IP_CONN_STATS, &iidStack, paramPath, sizeof(paramPath), "ethernetBytesReceived");
             TR69C_writePathAndUintValue(paramPath, wanStat.rxByte, pc, bufsz, paramNum);
 
@@ -4307,14 +4329,15 @@ static void tr69c_buildWanAndWlanStats(tProtoCtx *pc, int *bufsz, int *paramNum,
             CMC_phlGetPathByDesc(EMDMOID_WAN_IP_CONN_STATS, &iidStack, paramPath, sizeof(paramPath), "ethernetErrorsReceived");
             TR69C_writePathAndUintValue(paramPath, wanStat.rxErr, pc, bufsz, paramNum);
 
-            CMC_phlGetPathByDesc(EMDMOID_WAN_IP_CONN_STATS, &iidStack, paramPath, sizeof(paramPath), "ethernetDiscardPacketsReceived");
+            CMC_phlGetPathByDesc(EMDMOID_WAN_IP_CONN_STATS, &iidStack, paramPath, sizeof(paramPath),
+                                 "ethernetDiscardPacketsReceived");
             TR69C_writePathAndUintValue(paramPath, wanStat.rxDrop, pc, bufsz, paramNum);
 
             memset(&wanStat, 0, sizeof(wanStat));
         }
-    
+
         INIT_INSTANCE_ID_STACK(&iidStack);
-        while(VOS_RET_SUCCESS == CMC_wanGetNextPppStatus(&wanStat, &iidStack))
+        while (VOS_RET_SUCCESS == CMC_wanGetNextPppStatus(&wanStat, &iidStack))
         {
             CMC_phlGetPathByDesc(EMDMOID_WAN_PPP_CONN_STATS, &iidStack, paramPath, sizeof(paramPath), "ethernetBytesSent");
             TR69C_writePathAndUintValue(paramPath, wanStat.txByte, pc, bufsz, paramNum);
@@ -4331,22 +4354,23 @@ static void tr69c_buildWanAndWlanStats(tProtoCtx *pc, int *bufsz, int *paramNum,
             CMC_phlGetPathByDesc(EMDMOID_WAN_PPP_CONN_STATS, &iidStack, paramPath, sizeof(paramPath), "ethernetErrorsReceived");
             TR69C_writePathAndUintValue(paramPath, wanStat.rxErr, pc, bufsz, paramNum);
 
-            CMC_phlGetPathByDesc(EMDMOID_WAN_PPP_CONN_STATS, &iidStack, paramPath, sizeof(paramPath), "ethernetDiscardPacketsReceived");
+            CMC_phlGetPathByDesc(EMDMOID_WAN_PPP_CONN_STATS, &iidStack, paramPath, sizeof(paramPath),
+                                 "ethernetDiscardPacketsReceived");
             TR69C_writePathAndUintValue(paramPath, wanStat.rxDrop, pc, bufsz, paramNum);
 
             memset(&wanStat, 0, sizeof(wanStat));
         }
-        
+
         INIT_INSTANCE_ID_STACK(&iidStack);
-        while(VOS_RET_SUCCESS == CMC_wanGetNextPppConn(&wanCfg, &iidStack))
+        while (VOS_RET_SUCCESS == CMC_wanGetNextPppConn(&wanCfg, &iidStack))
         {
             CMC_phlGetPathByDesc(EMDMOID_WAN_PPP_CONN, &iidStack, paramPath, sizeof(paramPath), "uptime");
             TR69C_writePathAndUintValue(paramPath, wanCfg.upTime, pc, bufsz, paramNum);
-            
+
             memset(&wanCfg, 0, sizeof(wanCfg));
         }
-        
-        
+
+
     }
 }
 #if 0
@@ -4356,11 +4380,11 @@ static void tr69c_buildFuJianInform(tProtoCtx *pc, int *bufsz, int *paramNum)
     InstanceIdStack  iidStack = EMPTY_INSTANCE_ID_STACK;
     char paramPath[BUFLEN_128] = {0};
     char *paramValue = NULL;
-        
+
     vosLog_debug("Enter>, pc = %p, bufsz = %p, paramNum = %p", pc, bufsz, paramNum);
-    
+
     memset(&wanCfg, 0, sizeof(wanCfg));
-    
+
     UTIL_STRNCPY(paramPath, "InternetGatewayDevice.DeviceInfo.X_CT-COM_MacAddress", sizeof(paramPath));
     tr69c_getParamValue(paramPath, &paramValue);
     tr69c_writePathAndStringValue(paramPath, paramValue, pc, bufsz, paramNum);
@@ -4370,8 +4394,8 @@ static void tr69c_buildFuJianInform(tProtoCtx *pc, int *bufsz, int *paramNum)
     tr69c_getParamValue(paramPath, &paramValue);
     tr69c_writePathAndStringValue(paramPath, paramValue, pc, bufsz, paramNum);
     VOS_MEM_FREE_BUF_AND_NULL_PTR(paramValue);
-    
-    while(VOS_RET_SUCCESS == CMC_wanGetNextIpConn(&wanCfg, &iidStack))
+
+    while (VOS_RET_SUCCESS == CMC_wanGetNextIpConn(&wanCfg, &iidStack))
     {
         if (wanCfg.servModeMask & SERV_MODE_INTERNET)
         {
@@ -4379,22 +4403,22 @@ static void tr69c_buildFuJianInform(tProtoCtx *pc, int *bufsz, int *paramNum)
             tr69c_writePathAndStringValue(paramPath, wanCfg.connectStatus, pc, bufsz, paramNum);
         }
 
-        if (!(wanCfg.servModeMask & SERV_MODE_TR069))        
+        if (!(wanCfg.servModeMask & SERV_MODE_TR069))
         {
             CMC_phlGetPathByDesc(EMDMOID_WAN_IP_CONN, &iidStack, paramPath, sizeof(paramPath), "ExternalIPAddress");
             tr69c_writePathAndStringValue(paramPath, wanCfg.ipAddr, pc, bufsz, paramNum);
         }
-        
+
         CMC_phlGetPathByDesc(EMDMOID_WAN_IP_CONN, &iidStack, paramPath, sizeof(paramPath), "connectionType");
         tr69c_getParamValue(paramPath, &paramValue);
         tr69c_writePathAndStringValue(paramPath, paramValue, pc, bufsz, paramNum);
         VOS_MEM_FREE_BUF_AND_NULL_PTR(paramValue);
-        
+
         memset(&wanCfg, 0, sizeof(wanCfg));
     }
-    
+
     memset(&iidStack, 0, sizeof(iidStack));
-    while(VOS_RET_SUCCESS == CMC_wanGetNextPppConn(&wanCfg, &iidStack))
+    while (VOS_RET_SUCCESS == CMC_wanGetNextPppConn(&wanCfg, &iidStack))
     {
         if (wanCfg.servModeMask & SERV_MODE_INTERNET)
         {
@@ -4402,12 +4426,12 @@ static void tr69c_buildFuJianInform(tProtoCtx *pc, int *bufsz, int *paramNum)
             tr69c_writePathAndStringValue(paramPath, wanCfg.connectStatus, pc, bufsz, paramNum);
         }
 
-        if (!(wanCfg.servModeMask & SERV_MODE_TR069))        
+        if (!(wanCfg.servModeMask & SERV_MODE_TR069))
         {
             CMC_phlGetPathByDesc(EMDMOID_WAN_PPP_CONN, &iidStack, paramPath, sizeof(paramPath), "ExternalIPAddress");
             tr69c_writePathAndStringValue(paramPath, wanCfg.ipAddr, pc, bufsz, paramNum);
         }
-        
+
         CMC_phlGetPathByDesc(EMDMOID_WAN_PPP_CONN, &iidStack, paramPath, sizeof(paramPath), "connectionType");
         tr69c_getParamValue(paramPath, &paramValue);
         tr69c_writePathAndStringValue(paramPath, paramValue, pc, bufsz, paramNum);
@@ -4417,12 +4441,12 @@ static void tr69c_buildFuJianInform(tProtoCtx *pc, int *bufsz, int *paramNum)
         tr69c_getParamValue(paramPath, &paramValue);
         tr69c_writePathAndStringValue(paramPath, paramValue, pc, bufsz, paramNum);
         VOS_MEM_FREE_BUF_AND_NULL_PTR(paramValue);
-        
+
         CMC_phlGetPathByDesc(EMDMOID_WAN_PPP_CONN, &iidStack, paramPath, sizeof(paramPath), "uptime");
         TR69C_writePathAndUintValue(paramPath, wanCfg.upTime, pc, bufsz, paramNum);
-            
+
         memset(&wanCfg, 0, sizeof(wanCfg));
-    }    
+    }
 }
 #endif
 
@@ -4430,12 +4454,14 @@ void tr69c_buildIptvStbMacInfo(tProtoCtx *pc, int *bufsz, int *paramNum)
 {
     CMC_MCAST_IPTV_STB_MAC_T iptvStbMac;
 
-    tr69c_writePathAndStringValue("InternetGatewayDevice.DeviceInfo.SerialNumber", acsState.serialNumber, pc, bufsz, paramNum);
+    tr69c_writePathAndStringValue("InternetGatewayDevice.DeviceInfo.SerialNumber", acsState.serialNumber, pc, bufsz,
+                                  paramNum);
 
     memset(&iptvStbMac, 0, sizeof(iptvStbMac));
     if (VOS_RET_SUCCESS == CMC_igmpGetIptvStbMac(&iptvStbMac))
     {
-        tr69c_writePathAndStringValue("InternetGatewayDevice.Services.X_CT-COM_IPTV.STBMAC", iptvStbMac.STBMAC, pc, bufsz, paramNum);
+        tr69c_writePathAndStringValue("InternetGatewayDevice.Services.X_CT-COM_IPTV.STBMAC", iptvStbMac.STBMAC, pc, bufsz,
+                                      paramNum);
     }
 }
 
@@ -4446,8 +4472,8 @@ void tr69c_buildWlanTotalAssociations(tProtoCtx *pc, int *bufsz, int *paramNum)
     char paramPath[TR69C_PARAM_FULL_PATH_LENGTH] = {0};
 
     memset(&wlanCfg, 0, sizeof(wlanCfg));
-    
-    while(VOS_RET_SUCCESS == CMC_lanGetNextWlanInfo(&wlanCfg, &iidStack))
+
+    while (VOS_RET_SUCCESS == CMC_lanGetNextWlanInfo(&wlanCfg, &iidStack))
     {
         //if (wlanCfg.enable && wlanCfg.showToACS)
         if (wlanCfg.enable)
@@ -4491,7 +4517,7 @@ void tr69c_buildLanEthAvailableIfnameInfo(tProtoCtx *pc, int *bufsz, int *paramN
     memset(&ethIntfInfo, 0, sizeof(ethIntfInfo));
     if (findFile && !IS_EMPTY_STRING(ifName))
     {
-        while(VOS_RET_SUCCESS == CMC_lanGetNextIfLinkStatus(&ethIntfInfo, &iidStack))
+        while (VOS_RET_SUCCESS == CMC_lanGetNextIfLinkStatus(&ethIntfInfo, &iidStack))
         {
             if (!util_strcmp(ifName, ethIntfInfo.ifName))
             {
@@ -4518,7 +4544,7 @@ static void tr69c_buildAlarmNumberStruct(tProtoCtx *pc, int *bufsz, int *paramNu
     mprintf(pc, bufsz, "%s", alarmNumber);
     mprintf(pc, bufsz, "</Value>\n");
     xml_mIndent(pc, bufsz, 6);
-    mprintf(pc, bufsz,"</ParameterValueStruct>\n");
+    mprintf(pc, bufsz, "</ParameterValueStruct>\n");
 
     (*paramNum)++;
 
@@ -4543,16 +4569,16 @@ void buildInform(RPCAction *a, InformEvList *infEvent)
 
     tr69c_initInformEventStr();
 
-    if(SF_FEATURE_ISP_CU)
+    if (SF_FEATURE_ISP_CU)
     {
         tr69c_initInformEventStrforCU();
     }
-   
+
     acsState.fault = VOS_RET_SUCCESS; /* init to no fault */
     a->informID    = VOS_STRDUP(itoa(rand()));
 
     tr69c_initAllocBuf();
-	
+
     do
     {
         int  i = 0;
@@ -4574,7 +4600,7 @@ void buildInform(RPCAction *a, InformEvList *infEvent)
         int informWlanStat = 0;
         int x_ct_longreset = 0;
         int firstBridgeUsernameFlag = 0;
-        
+
         openEnvWithHeader(a->informID, pc, &bufsz);
         openBody(pc, &bufsz);
         xml_mIndent(pc, &bufsz, 3);
@@ -4586,22 +4612,22 @@ void buildInform(RPCAction *a, InformEvList *infEvent)
         for (i = 0; i < (SINT32) NUMREQINFORMDEVIDS && acsState.fault == VOS_RET_SUCCESS; i++)
         {
             acsState.fault = tr69c_buildDeviceInfo(i, pc, &bufsz);
-        }  
+        }
 
         if (acsState.fault != VOS_RET_SUCCESS)
         {
             vosLog_error("acsState.fault = %d, quit", acsState.fault);
             break;
         }
-        
+
         xml_mIndent(pc, &bufsz, 4);
         mprintf(pc, &bufsz, "</DeviceId>\n");
         xml_mIndent(pc, &bufsz, 4);
         /*build DeviceId List End*/
-    
+
         /*If we get an BOOTSTRAP event, we need to discard all other event, except BOOT*/
         for (i = 0; i < infEvent->informEvCnt; i++)
-        {         
+        {
             if (infEvent->informEvList[i] == INFORM_EVENT_BOOTSTRAP)
             {
                 bootstrap = 1;
@@ -4644,16 +4670,16 @@ void buildInform(RPCAction *a, InformEvList *infEvent)
                 needInformNameChange = 1;
             }
         }
-        
+
         CMC_phlGetNumOfParamValueChanged(&changeNum);
-        
+
         vosLog_debug("numParamValueChanges = %d", numParamValueChanges);
         numParamValueChanges = (int)changeNum;
         if (numParamValueChanges > 0)
         {
             /* if there is no value_change event in the event list, add it.  It's passive notification */
             for (i = 0; i < infEvent->informEvCnt; i++)
-            {         
+            {
                 if (infEvent->informEvList[i] == INFORM_EVENT_VALUE_CHANGE)
                 {
                     /* nothing needs to be done */
@@ -4663,12 +4689,12 @@ void buildInform(RPCAction *a, InformEvList *infEvent)
             }
         }
 
-    /* build Event List */
+        /* build Event List */
 #ifdef SUPPRESS_SOAP_ARRAYTYPE
         mprintf(pc, &bufsz, "<Event>\n");
 #else
         mprintf(pc, &bufsz, "<Event %sarrayType=\"%sEventStruct[%d]\">\n",
-        nsSOAP_ENC, nsCWMP, infEvent->informEvCnt);
+                nsSOAP_ENC, nsCWMP, infEvent->informEvCnt);
 #endif
 
         for (i = 0; i < infEvent->informEvCnt; i++)
@@ -4686,25 +4712,25 @@ void buildInform(RPCAction *a, InformEvList *infEvent)
             else
             {
                 mprintf(pc, &bufsz, "<EventCode>%s</EventCode>\n",
-                informEventStr[infEvent->informEvList[i]]);
+                        informEventStr[infEvent->informEvList[i]]);
             }
 
             xml_mIndent(pc, &bufsz, 6);
 
-            if (infEvent->informEvList[i]==INFORM_EVENT_REBOOT_METHOD)
+            if (infEvent->informEvList[i] == INFORM_EVENT_REBOOT_METHOD)
             {
                 ck = acsState.rebootCommandKey;
             }
-            else if (infEvent->informEvList[i]==INFORM_EVENT_DOWNLOAD_METHOD)
+            else if (infEvent->informEvList[i] == INFORM_EVENT_DOWNLOAD_METHOD)
             {
                 ck = acsState.downloadCommandKey;
             }
-            else if (infEvent->informEvList[i]== INFORM_EVENT_UPLOAD_METHOD)
-            { 
+            else if (infEvent->informEvList[i] == INFORM_EVENT_UPLOAD_METHOD)
+            {
                 ck = acsState.downloadCommandKey;
             }
-            else if (infEvent->informEvList[i]==INFORM_EVENT_SCHEDULE_METHOD)
-            { 
+            else if (infEvent->informEvList[i] == INFORM_EVENT_SCHEDULE_METHOD)
+            {
                 ck = acsState.scheduleInformCommandKey;
             }
             else if (INFORM_EVENT_CT_STB_BIND == infEvent->informEvList[i])
@@ -4727,39 +4753,39 @@ void buildInform(RPCAction *a, InformEvList *infEvent)
                 needInformNameChange = 1;
             }
             else if (SF_FEATURE_SUPPORT_TR69C_MONITOR && (INFORM_EVENT_CT_MONITOR == infEvent->informEvList[i]))
-            { 
+            {
                 paralistMonitorFlag = 1;
             }
-            
+
             if (SF_FEATURE_SUPPORT_TR69C_ALARM)
             {
                 if (INFORM_EVENT_CT_ALARM == infEvent->informEvList[i])
-                {   
+                {
                     paralistAlarmFlag = 1;
                 }
                 else if (INFORM_EVENT_CLEAR_CT_ALARM == infEvent->informEvList[i])
-                {    
+                {
                     paralistCleanAlarmFlag = 1;
                 }
             }
 
-        if (SF_FEATURE_SUPPORT_PPPOE_SNOOPING && (INFORM_BRIDGE_USERNAME == infEvent->informEvList[i]))
-        {
-            firstBridgeUsernameFlag = 1;
-            paramNum ++;
-        }
+            if (SF_FEATURE_SUPPORT_PPPOE_SNOOPING && (INFORM_BRIDGE_USERNAME == infEvent->informEvList[i]))
+            {
+                firstBridgeUsernameFlag = 1;
+                paramNum ++;
+            }
             if (SF_FEATURE_SUPPORT_CT_USERINFO)
             {
-                 /* register infomation, add userId and Password*/
-                 if (INFORM_EVENT_CT_USERINFO == infEvent->informEvList[i])
-                 {
+                /* register infomation, add userId and Password*/
+                if (INFORM_EVENT_CT_USERINFO == infEvent->informEvList[i])
+                {
                     paralistUserInfoFlag = 1;
                     if (SF_FEATURE_SUPPORT_CARD)
                     {
                         UINT32 cardtype = 0;
-                        #ifdef DMP_X_CT_COM_SUPPORTCARDMON_1
+#ifdef DMP_X_CT_COM_SUPPORTCARDMON_1
                         CMC_cardGetCardType(&cardtype);
-                        #endif
+#endif
                         if (1 == cardtype)
                         {
                             paralistSupportCardmon = 1;
@@ -4770,52 +4796,52 @@ void buildInform(RPCAction *a, InformEvList *infEvent)
                             paramNum += 2;
                         }
                     }
-                 }
+                }
             }
-        
+
             if (SF_FEATURE_SUPPORT_CARD)
             {
                 UINT32 cardtype = 0;
-                #ifdef DMP_X_CT_COM_SUPPORTCARDMON_1
+#ifdef DMP_X_CT_COM_SUPPORTCARDMON_1
                 CMC_cardGetCardType(&cardtype);
-                #endif
+#endif
 
                 if (INFORM_EVENT_CT_CARDWRITE == infEvent->informEvList[i])
                 {
-                   paralistCardStatusFlag = 1;
-                   paramNum ++;
+                    paralistCardStatusFlag = 1;
+                    paramNum ++;
                 }
-                
-                 if (INFORM_EVENT_CT_CARDNOTIFY == infEvent->informEvList[i])
-                 {
+
+                if (INFORM_EVENT_CT_CARDNOTIFY == infEvent->informEvList[i])
+                {
                     paralistReadCardFlag = 1;
                     paramNum++;
-                 }
+                }
 
-                 if (1 == cardtype)
-                 {
+                if (1 == cardtype)
+                {
                     if (INFORM_EVENT_BOOT == infEvent->informEvList[i])
                     {
-                       paralistSupportCardmon = 1;
-                       paramNum++;
+                        paralistSupportCardmon = 1;
+                        paramNum++;
                     }
-                 }
+                }
             }
 
 #ifdef SUPPRESS_EMPTY_PARAM
-             if (empty(ck))
-             {
+            if (empty(ck))
+            {
                 mprintf(pc, &bufsz, "<CommandKey>empty</CommandKey>\n");
-             }
-             else
-             {
+            }
+            else
+            {
                 mprintf(pc, &bufsz, "<CommandKey>%s</CommandKey>\n", ck);
-             }
+            }
 #else
-             mprintf(pc, &bufsz, "<CommandKey>%s</CommandKey>\n", ck? ck: "");
+            mprintf(pc, &bufsz, "<CommandKey>%s</CommandKey>\n", ck ? ck : "");
 #endif
-             xml_mIndent(pc, &bufsz, 5);
-             mprintf(pc, &bufsz,"</EventStruct>\n");
+            xml_mIndent(pc, &bufsz, 5);
+            mprintf(pc, &bufsz, "</EventStruct>\n");
 
         }  /* for (i = 0; i < infEvent->informEvCnt; i++) */
 
@@ -4826,7 +4852,7 @@ void buildInform(RPCAction *a, InformEvList *infEvent)
             mprintf(pc, &bufsz, "<EventStruct>\n");
             xml_mIndent(pc, &bufsz, 6);
             mprintf(pc, &bufsz, "<EventCode>%s</EventCode>\n",
-            informEventStr[INFORM_EVENT_VALUE_CHANGE]);
+                    informEventStr[INFORM_EVENT_VALUE_CHANGE]);
             xml_mIndent(pc, &bufsz, 6);
 #ifdef SUPPRESS_EMPTY_PARAM
             mprintf(pc, &bufsz, "<CommandKey>empty</CommandKey>\n");
@@ -4834,7 +4860,7 @@ void buildInform(RPCAction *a, InformEvList *infEvent)
             mprintf(pc, &bufsz, "<CommandKey>%s</CommandKey>\n", "");
 #endif
             xml_mIndent(pc, &bufsz, 5);
-            mprintf(pc, &bufsz,"</EventStruct>\n");
+            mprintf(pc, &bufsz, "</EventStruct>\n");
         }
 
         xml_mIndent(pc, &bufsz, 4);
@@ -4850,7 +4876,7 @@ void buildInform(RPCAction *a, InformEvList *infEvent)
         mprintf(pc, &bufsz, "<RetryCount>%d</RetryCount>\n", acsState.retryCount);
         xml_mIndent(pc, &bufsz, 4);
 
-      /* build Parameter List */
+        /* build Parameter List */
 #ifdef SUPPRESS_SOAP_ARRAYTYPE
         mprintf(pc, &bufsz, "<ParameterList>\n");
 #else
@@ -4858,8 +4884,8 @@ void buildInform(RPCAction *a, InformEvList *infEvent)
         * the actual parameter count.
         */
         mprintf(pc, &bufsz,
-                  "<ParameterList %sarrayType=\"%sParameterValueStruct[%04d]\">\n",
-                  nsSOAP_ENC, nsCWMP, paramNum);
+                "<ParameterList %sarrayType=\"%sParameterValueStruct[%04d]\">\n",
+                nsSOAP_ENC, nsCWMP, paramNum);
 #endif
         paramNum = 0;  /* reset paramNum */
 
@@ -4880,8 +4906,9 @@ void buildInform(RPCAction *a, InformEvList *infEvent)
         }
 
         /* the External IP address parameter name was set in updateTr69cCfg */
-        informParam[informParamCount-1] = VOS_STRDUP(acsState.connReqIpAddrFullPath);
-        vosLog_debug("----informParam[i]:%s--acsState.connReqIpAddrFullPath:%s----",informParam[i],acsState.connReqIpAddrFullPath);
+        informParam[informParamCount - 1] = VOS_STRDUP(acsState.connReqIpAddrFullPath);
+        vosLog_debug("----informParam[i]:%s--acsState.connReqIpAddrFullPath:%s----", informParam[i],
+                     acsState.connReqIpAddrFullPath);
 
         for (i = 0; i < (SINT32) informParamCount && acsState.fault == VOS_RET_SUCCESS && informParam[i]; i++)
         {
@@ -4902,9 +4929,9 @@ void buildInform(RPCAction *a, InformEvList *infEvent)
             }
 
         }  /* for (i = 0; i < informParamCount; i++) */
-        
+
         /* free the external IP address parameter name */
-        VOS_MEM_FREE_BUF_AND_NULL_PTR(informParam[informParamCount-1]);
+        VOS_MEM_FREE_BUF_AND_NULL_PTR(informParam[informParamCount - 1]);
 
         /*register infomation, add userID and Password*/
         tr69c_buildUserInfo(paralistUserInfoFlag, paralistSupportCardmon, paralistLoidChange, pc, &bufsz, &paramNum);
@@ -4918,7 +4945,7 @@ void buildInform(RPCAction *a, InformEvList *infEvent)
         {
             tr69c_buildNameChangeInfo(pc, &bufsz, &paramNum);
         }
-        
+
 #ifdef DMP_X_CT_COM_SUPPORTCARDMON_1
         if (SF_FEATURE_SUPPORT_CARD)
         {
@@ -4955,7 +4982,7 @@ void buildInform(RPCAction *a, InformEvList *infEvent)
             }
 
         }
-        
+
         if (acsState.fault != VOS_RET_SUCCESS)
         {
             vosLog_error("failed to build inform, acsState.fault=%d", acsState.fault);
@@ -4963,9 +4990,9 @@ void buildInform(RPCAction *a, InformEvList *infEvent)
         }
 
         /*traverse all the nodes which has been concerned and parameters has changed*/
-        acsState.fault =  tr69c_buildParamValueChanges(numParamValueChanges, 
-                          acsState.fault, 
-                          pc, &bufsz, 
+        acsState.fault =  tr69c_buildParamValueChanges(numParamValueChanges,
+                          acsState.fault,
+                          pc, &bufsz,
                           &paramNum);
 
         if (acsState.fault != VOS_RET_SUCCESS)
@@ -4975,10 +5002,10 @@ void buildInform(RPCAction *a, InformEvList *infEvent)
         }
 
         /*handle alarm info*/
-        tr69c_buildAlarmInfo(paralistMonitorFlag, 
-                            paralistAlarmFlag,
-                            paralistCleanAlarmFlag, 
-                            pc, &bufsz, &paramNum);
+        tr69c_buildAlarmInfo(paralistMonitorFlag,
+                             paralistAlarmFlag,
+                             paralistCleanAlarmFlag,
+                             pc, &bufsz, &paramNum);
 
         if (SF_FEATURE_SUPPORT_PLUGIN && (paralistAlarmFlag || paralistCleanAlarmFlag))
         {
@@ -5002,23 +5029,23 @@ void buildInform(RPCAction *a, InformEvList *infEvent)
             tr69c_buildCardInfo(0, paralistSupportCardmon, pc, &bufsz);
         }
 #endif
-    if (SF_FEATURE_SUPPORT_PPPOE_SNOOPING)
-    {
-        if (firstBridgeUsernameFlag == 1 && bridgeUserName[0] != 0 )
+        if (SF_FEATURE_SUPPORT_PPPOE_SNOOPING)
         {
-            xml_mIndent(pc,&bufsz, 6);
-            mprintf(pc,&bufsz,"<ParameterValueStruct>\n");
-            xml_mIndent(pc,&bufsz, 7);
-            mprintf(pc,&bufsz,"<Name>InternetGatewayDevice.X_CT-COM_UserInfo.UserName</Name>\n");
-            xml_mIndent(pc,&bufsz, 7);
+            if (firstBridgeUsernameFlag == 1 && bridgeUserName[0] != 0)
+            {
+                xml_mIndent(pc, &bufsz, 6);
+                mprintf(pc, &bufsz, "<ParameterValueStruct>\n");
+                xml_mIndent(pc, &bufsz, 7);
+                mprintf(pc, &bufsz, "<Name>InternetGatewayDevice.X_CT-COM_UserInfo.UserName</Name>\n");
+                xml_mIndent(pc, &bufsz, 7);
 
-            mprintf(pc,&bufsz,"<Value %stype=\"%sstring\">",nsXSI, nsXSD);
-            mprintf(pc,&bufsz,"%s", bridgeUserName);
-            mprintf(pc,&bufsz,"</Value>\n");
-            xml_mIndent(pc,&bufsz, 6);
-            mprintf(pc,&bufsz,"</ParameterValueStruct>\n");
+                mprintf(pc, &bufsz, "<Value %stype=\"%sstring\">", nsXSI, nsXSD);
+                mprintf(pc, &bufsz, "%s", bridgeUserName);
+                mprintf(pc, &bufsz, "</Value>\n");
+                xml_mIndent(pc, &bufsz, 6);
+                mprintf(pc, &bufsz, "</ParameterValueStruct>\n");
+            }
         }
-    }
         /* notify changes are released after ACS response */
 
         xml_mIndent(pc, &bufsz, 4);
@@ -5035,11 +5062,12 @@ void buildInform(RPCAction *a, InformEvList *infEvent)
         /* send the HTTP message body*/
         pc = getAcsConnDesc();
         proto_SendRaw(pc, sg_tr69cAllocBuf.buf, bufsz);
-        
-    } while (0);
+
+    }
+    while (0);
 
     tr69c_freeAllocBuf();
-   
+
     if (acsState.fault == VOS_RET_SUCCESS)
     {
         transferCompletePending = ((informState == eACSDownloadReboot) ||
@@ -5056,220 +5084,225 @@ void buildInform(RPCAction *a, InformEvList *infEvent)
 
 void sendGetRPCMethods(void)
 {
-   tProtoCtx *pc = NULL;
+    tProtoCtx *pc = NULL;
 
-   vosLog_debug("sendGetRPCMethods");
+    vosLog_debug("sendGetRPCMethods");
 
-   tr69c_initAllocBuf();
-   
-   do
-   {
-      int   bufsz = 0;
+    tr69c_initAllocBuf();
 
-      openEnvWithHeader(NULL, pc, &bufsz);
-      openBody(pc, &bufsz);
-      xml_mIndent(pc, &bufsz, 3);
-      mprintf(pc, &bufsz, "<%sGetRPCMethods>\n", nsCWMP);
-      xml_mIndent(pc, &bufsz,3);
-      mprintf(pc, &bufsz, "</%sGetRPCMethods>\n", nsCWMP);
-      closeBodyEnvelope(pc, &bufsz);
+    do
+    {
+        int   bufsz = 0;
 
-      /* send the HTTP message header*/
-      sendToAcs(bufsz, NULL);
-      
-      /* send the HTTP message body*/
-      pc = getAcsConnDesc();
-      proto_SendRaw(pc, sg_tr69cAllocBuf.buf, bufsz);
-	  
-   } while (0);
-   
-   tr69c_freeAllocBuf();
-      
+        openEnvWithHeader(NULL, pc, &bufsz);
+        openBody(pc, &bufsz);
+        xml_mIndent(pc, &bufsz, 3);
+        mprintf(pc, &bufsz, "<%sGetRPCMethods>\n", nsCWMP);
+        xml_mIndent(pc, &bufsz, 3);
+        mprintf(pc, &bufsz, "</%sGetRPCMethods>\n", nsCWMP);
+        closeBodyEnvelope(pc, &bufsz);
+
+        /* send the HTTP message header*/
+        sendToAcs(bufsz, NULL);
+
+        /* send the HTTP message body*/
+        pc = getAcsConnDesc();
+        proto_SendRaw(pc, sg_tr69cAllocBuf.buf, bufsz);
+
+    }
+    while (0);
+
+    tr69c_freeAllocBuf();
+
 }  /* End of sendGetRPCMethods() */
 
 void sendTransferComplete(void)
 {
-   char        *ck;
-   tProtoCtx *pc = NULL;
-   char        dateTimeBuf[BUFLEN_64];
+    char        *ck;
+    tProtoCtx *pc = NULL;
+    char        dateTimeBuf[BUFLEN_64];
 
-   vosLog_debug("sendTransferComplete");
+    vosLog_debug("sendTransferComplete");
 
-   tr69c_initAllocBuf();
-   
-   do
-   {
-      int   bufsz = 0;
+    tr69c_initAllocBuf();
 
-      openEnvWithHeader("12345678", pc, &bufsz);
-      openBody(pc, &bufsz);
-      xml_mIndent(pc, &bufsz, 3);
-      mprintf(pc, &bufsz, "<%sTransferComplete>\n", nsCWMP);
-      xml_mIndent(pc, &bufsz, 4);
-      ck=acsState.downloadCommandKey;
-      #ifdef SUPPRESS_EMPTY_PARAM
-      if (ck && util_strlen(ck)>0)
-      {
-         mprintf(pc, &bufsz, "<CommandKey>%s</CommandKey>\n", ck);
-      }
-      else
-      {
-         mprintf(pc, &bufsz, "<CommandKey>empty</CommandKey>\n");
-      }
-      #else
-      mprintf(pc, &bufsz, "<CommandKey>%s</CommandKey>\n", ck? ck: "");
-      #endif
-      xml_mIndent(pc, &bufsz, 4);
-      mprintf(pc, &bufsz, "<FaultStruct>\n");
-      xml_mIndent(pc, &bufsz, 5);
-      mprintf(pc, &bufsz, "<FaultCode>%d</FaultCode>\n",acsState.dlFaultStatus);
-      xml_mIndent(pc, &bufsz, 5);
-      mprintf(pc, &bufsz, "<FaultString>%s</FaultString>\n", acsState.dlFaultMsg?
-      #ifdef SUPPRESS_EMPTY_PARAM
-                  acsState.dlFaultMsg: "empty");
-      #else
-                  acsState.dlFaultMsg: "");
-      #endif
-      xml_mIndent(pc, &bufsz, 4);
-      mprintf(pc, &bufsz, "</FaultStruct>\n");
-      xml_mIndent(pc, &bufsz, 4);
-      utilTms_getXSIDateTime((UINT32)acsState.startDLTime, dateTimeBuf, sizeof(dateTimeBuf));
-      mprintf(pc, &bufsz, "<StartTime>%s</StartTime>\n", dateTimeBuf);
-      xml_mIndent(pc, &bufsz, 4);
-      utilTms_getXSIDateTime((UINT32)acsState.endDLTime, dateTimeBuf, sizeof(dateTimeBuf));
-      mprintf(pc, &bufsz, "<CompleteTime>%s</CompleteTime>\n", dateTimeBuf);
-      xml_mIndent(pc, &bufsz, 3);
-      mprintf(pc, &bufsz, "</%sTransferComplete>\n", nsCWMP);
-      closeBodyEnvelope(pc, &bufsz);
+    do
+    {
+        int   bufsz = 0;
 
-      /* send the HTTP message header*/
-      sendToAcs(bufsz, NULL);
-      
-      /* send the HTTP message body*/
-      pc = getAcsConnDesc();
-      proto_SendRaw(pc, sg_tr69cAllocBuf.buf, bufsz);
-	  
-   } while (0);
-   
-   tr69c_freeAllocBuf();
+        openEnvWithHeader("12345678", pc, &bufsz);
+        openBody(pc, &bufsz);
+        xml_mIndent(pc, &bufsz, 3);
+        mprintf(pc, &bufsz, "<%sTransferComplete>\n", nsCWMP);
+        xml_mIndent(pc, &bufsz, 4);
+        ck = acsState.downloadCommandKey;
+#ifdef SUPPRESS_EMPTY_PARAM
+        if (ck && util_strlen(ck) > 0)
+        {
+            mprintf(pc, &bufsz, "<CommandKey>%s</CommandKey>\n", ck);
+        }
+        else
+        {
+            mprintf(pc, &bufsz, "<CommandKey>empty</CommandKey>\n");
+        }
+#else
+        mprintf(pc, &bufsz, "<CommandKey>%s</CommandKey>\n", ck ? ck : "");
+#endif
+        xml_mIndent(pc, &bufsz, 4);
+        mprintf(pc, &bufsz, "<FaultStruct>\n");
+        xml_mIndent(pc, &bufsz, 5);
+        mprintf(pc, &bufsz, "<FaultCode>%d</FaultCode>\n", acsState.dlFaultStatus);
+        xml_mIndent(pc, &bufsz, 5);
+        mprintf(pc, &bufsz, "<FaultString>%s</FaultString>\n", acsState.dlFaultMsg ?
+#ifdef SUPPRESS_EMPTY_PARAM
+                acsState.dlFaultMsg : "empty");
+#else
+                acsState.dlFaultMsg: ""
+               );
+#endif
+        xml_mIndent(pc, &bufsz, 4);
+        mprintf(pc, &bufsz, "</FaultStruct>\n");
+        xml_mIndent(pc, &bufsz, 4);
+        utilTms_getXSIDateTime((UINT32)acsState.startDLTime, dateTimeBuf, sizeof(dateTimeBuf));
+        mprintf(pc, &bufsz, "<StartTime>%s</StartTime>\n", dateTimeBuf);
+        xml_mIndent(pc, &bufsz, 4);
+        utilTms_getXSIDateTime((UINT32)acsState.endDLTime, dateTimeBuf, sizeof(dateTimeBuf));
+        mprintf(pc, &bufsz, "<CompleteTime>%s</CompleteTime>\n", dateTimeBuf);
+        xml_mIndent(pc, &bufsz, 3);
+        mprintf(pc, &bufsz, "</%sTransferComplete>\n", nsCWMP);
+        closeBodyEnvelope(pc, &bufsz);
+
+        /* send the HTTP message header*/
+        sendToAcs(bufsz, NULL);
+
+        /* send the HTTP message body*/
+        pc = getAcsConnDesc();
+        proto_SendRaw(pc, sg_tr69cAllocBuf.buf, bufsz);
+
+    }
+    while (0);
+
+    tr69c_freeAllocBuf();
 
 }  /* End of sendTransferComplete() */
 
 static void doDownload(RPCAction *a)
 {
-   tProtoCtx *pc = NULL;
-   DownloadReq *r = &a->ud.downloadReq;
-   
-   vosLog_debug("doDownload");
+    tProtoCtx *pc = NULL;
+    DownloadReq *r = &a->ud.downloadReq;
 
-   if (a == acsRpcAction)
-   {
-      acsRpcAction = NULL;  /* if *a is copy of acsRpcAction. set to NULL */
-   }
+    vosLog_debug("doDownload");
 
-   vosLog_debug("preDownloadSetup: URL=%s", r->url);
-   vosLog_debug("User/pw: %s:%s", r->user, r->pwd);
-   vosLog_debug("Required memory buffer size will be %d", r->fileSize);
+    if (a == acsRpcAction)
+    {
+        acsRpcAction = NULL;  /* if *a is copy of acsRpcAction. set to NULL */
+    }
 
-   tr69c_initAllocBuf();
-   
-   do
-   {
-      int   bufsz = 0;
+    vosLog_debug("preDownloadSetup: URL=%s", r->url);
+    vosLog_debug("User/pw: %s:%s", r->user, r->pwd);
+    vosLog_debug("Required memory buffer size will be %d", r->fileSize);
 
-      openEnvWithHeader(a->ID, pc, &bufsz);
-      openBody(pc, &bufsz);
-      xml_mIndent(pc, &bufsz, 3);
-      mprintf(pc, &bufsz, "<%sDownloadResponse>\n", nsCWMP);
-      xml_mIndent(pc, &bufsz, 4);
-      mprintf(pc, &bufsz, "<Status>1</Status>\n");
-      xml_mIndent(pc, &bufsz, 4);
-      mprintf(pc, &bufsz, "<StartTime>0001-01-01T00:00:00Z</StartTime>\n");
-      xml_mIndent(pc, &bufsz, 4);
-      mprintf(pc, &bufsz, "<CompleteTime>0001-01-01T00:00:00Z</CompleteTime>\n");
-      xml_mIndent(pc, &bufsz, 3);
-      mprintf(pc, &bufsz, "</%sDownloadResponse>\n", nsCWMP);
-      closeBodyEnvelope(pc, &bufsz);
+    tr69c_initAllocBuf();
 
-      /* send the HTTP message header*/
-      sendToAcs(bufsz, NULL);
-      
-      /* send the HTTP message body*/
-      pc = getAcsConnDesc();
-      proto_SendRaw(pc, sg_tr69cAllocBuf.buf, bufsz);
+    do
+    {
+        int   bufsz = 0;
 
-   } while (0);
-   
-   tr69c_freeAllocBuf();
+        openEnvWithHeader(a->ID, pc, &bufsz);
+        openBody(pc, &bufsz);
+        xml_mIndent(pc, &bufsz, 3);
+        mprintf(pc, &bufsz, "<%sDownloadResponse>\n", nsCWMP);
+        xml_mIndent(pc, &bufsz, 4);
+        mprintf(pc, &bufsz, "<Status>1</Status>\n");
+        xml_mIndent(pc, &bufsz, 4);
+        mprintf(pc, &bufsz, "<StartTime>0001-01-01T00:00:00Z</StartTime>\n");
+        xml_mIndent(pc, &bufsz, 4);
+        mprintf(pc, &bufsz, "<CompleteTime>0001-01-01T00:00:00Z</CompleteTime>\n");
+        xml_mIndent(pc, &bufsz, 3);
+        mprintf(pc, &bufsz, "</%sDownloadResponse>\n", nsCWMP);
+        closeBodyEnvelope(pc, &bufsz);
 
-   /* queue this event up */
-   if (requestQueued(r,a->rpcMethod) == FALSE)
-   {
-      /* cannot queue this request, resource exceeded, mark it so when it's time to
-         process it, an error is sent instead */
-      r->state = eTransferRejected;
-   }
+        /* send the HTTP message header*/
+        sendToAcs(bufsz, NULL);
 
-   if (eFirmwareUpgrade == r->efileType && SF_FEATURE_SUPPORT_PLUGIN)
-   {
-      acsState.upgradeDownloadFlag = 1;
-   }
+        /* send the HTTP message body*/
+        pc = getAcsConnDesc();
+        proto_SendRaw(pc, sg_tr69cAllocBuf.buf, bufsz);
 
-   utilTmr_set(tmrHandle, downloadStart, (void *)a, (UINT32)(1+r->delaySec)*1000, "download");
+    }
+    while (0);
+
+    tr69c_freeAllocBuf();
+
+    /* queue this event up */
+    if (requestQueued(r, a->rpcMethod) == FALSE)
+    {
+        /* cannot queue this request, resource exceeded, mark it so when it's time to
+           process it, an error is sent instead */
+        r->state = eTransferRejected;
+    }
+
+    if (eFirmwareUpgrade == r->efileType && SF_FEATURE_SUPPORT_PLUGIN)
+    {
+        acsState.upgradeDownloadFlag = 1;
+    }
+
+    utilTmr_set(tmrHandle, downloadStart, (void *)a, (UINT32)(1 + r->delaySec) * 1000, "download");
 }  /* End of doDownload() */
 
 static void doUpload(RPCAction *a)
 {
-   tProtoCtx *pc = NULL;
-   DownloadReq *r = &a->ud.downloadReq;
-   
-   if (a == acsRpcAction)
-      acsRpcAction = NULL;  /* if *a is copy of acsRpcAction. set to NULL */
+    tProtoCtx *pc = NULL;
+    DownloadReq *r = &a->ud.downloadReq;
 
-   vosLog_debug("UploadSetup: URL=%s", r->url);
-   vosLog_debug("User/pw: %s:%s", r->user, r->pwd);
-   vosLog_debug("Required memory buffer size will be %d", r->fileSize);
+    if (a == acsRpcAction)
+        acsRpcAction = NULL;  /* if *a is copy of acsRpcAction. set to NULL */
 
-   tr69c_initAllocBuf();
-   
-   do
-   {
-      int   bufsz = 0;
+    vosLog_debug("UploadSetup: URL=%s", r->url);
+    vosLog_debug("User/pw: %s:%s", r->user, r->pwd);
+    vosLog_debug("Required memory buffer size will be %d", r->fileSize);
 
-      /* build good response */
-      openEnvWithHeader(a->ID, pc, &bufsz);
-      openBody(pc, &bufsz);
-      xml_mIndent(pc, &bufsz, 3);
-      mprintf(pc, &bufsz, "<%sUploadResponse>\n", nsCWMP);
-      xml_mIndent(pc, &bufsz, 4);
-      mprintf(pc, &bufsz, "<Status>1</Status>\n");
-      xml_mIndent(pc, &bufsz, 4);
-      mprintf(pc, &bufsz, "<StartTime>0001-01-01T00:00:00Z</StartTime>\n");
-      xml_mIndent(pc, &bufsz, 4);
-      mprintf(pc, &bufsz, "<CompleteTime>0001-01-01T00:00:00Z</CompleteTime>\n");
-      xml_mIndent(pc, &bufsz, 3);
-      mprintf(pc, &bufsz, "</%sUploadResponse>\n", nsCWMP);
-      closeBodyEnvelope(pc, &bufsz);
-	  
-      /* send the HTTP message header*/
-      sendToAcs(bufsz, NULL);
-      
-      /* send the HTTP message body*/
-      pc = getAcsConnDesc();
-      proto_SendRaw(pc, sg_tr69cAllocBuf.buf, bufsz);
+    tr69c_initAllocBuf();
 
-   } while (0);
-   
-   tr69c_freeAllocBuf();
-   
-   /* queue this event up */
-   if (requestQueued(r,a->rpcMethod) == FALSE)
-   {
-      /* cannot queue this request, resource exceeded, mark it so when it's time to
-         process it, an error is sent instead */
-      r->state = eTransferRejected;
-   }
-   utilTmr_set(tmrHandle, uploadStart, (void *)a, (UINT32)(1+r->delaySec)*1000, "upload");
+    do
+    {
+        int   bufsz = 0;
+
+        /* build good response */
+        openEnvWithHeader(a->ID, pc, &bufsz);
+        openBody(pc, &bufsz);
+        xml_mIndent(pc, &bufsz, 3);
+        mprintf(pc, &bufsz, "<%sUploadResponse>\n", nsCWMP);
+        xml_mIndent(pc, &bufsz, 4);
+        mprintf(pc, &bufsz, "<Status>1</Status>\n");
+        xml_mIndent(pc, &bufsz, 4);
+        mprintf(pc, &bufsz, "<StartTime>0001-01-01T00:00:00Z</StartTime>\n");
+        xml_mIndent(pc, &bufsz, 4);
+        mprintf(pc, &bufsz, "<CompleteTime>0001-01-01T00:00:00Z</CompleteTime>\n");
+        xml_mIndent(pc, &bufsz, 3);
+        mprintf(pc, &bufsz, "</%sUploadResponse>\n", nsCWMP);
+        closeBodyEnvelope(pc, &bufsz);
+
+        /* send the HTTP message header*/
+        sendToAcs(bufsz, NULL);
+
+        /* send the HTTP message body*/
+        pc = getAcsConnDesc();
+        proto_SendRaw(pc, sg_tr69cAllocBuf.buf, bufsz);
+
+    }
+    while (0);
+
+    tr69c_freeAllocBuf();
+
+    /* queue this event up */
+    if (requestQueued(r, a->rpcMethod) == FALSE)
+    {
+        /* cannot queue this request, resource exceeded, mark it so when it's time to
+           process it, an error is sent instead */
+        r->state = eTransferRejected;
+    }
+    utilTmr_set(tmrHandle, uploadStart, (void *)a, (UINT32)(1 + r->delaySec) * 1000, "upload");
 }  /* End of doUpload() */
 
 /*
@@ -5278,40 +5311,40 @@ static void doUpload(RPCAction *a)
  */
 void updateKeys(RPCAction *pRpcAction)
 {
-   if (pRpcAction->parameterKey)
-   {
-      if (rebootFlag == NOREBOOT)
-      {
-         /* not rebooting also copy to current parameter key */
-         VOS_MEM_FREE_BUF_AND_NULL_PTR(acsState.parameterKey);
-         acsState.parameterKey = VOS_STRDUP(pRpcAction->parameterKey);
-      }
-      if (acsState.newParameterKey)
-      {
-         VOS_MEM_FREE_BUF_AND_NULL_PTR(acsState.newParameterKey);
-      }
-      acsState.newParameterKey = pRpcAction->parameterKey;
-      CMC_tr69cSetMgmtServerParameterKey(pRpcAction->parameterKey);
-      pRpcAction->parameterKey = NULL;
-   }
-   if (pRpcAction->rpcMethod==rpcReboot && pRpcAction->commandKey)
-   {
-      if (acsState.rebootCommandKey)
-      {
-         VOS_MEM_FREE_BUF_AND_NULL_PTR(acsState.rebootCommandKey);
-      }
-      acsState.rebootCommandKey = pRpcAction->commandKey;
-      pRpcAction->commandKey = NULL;
-   }
-   if (pRpcAction->rpcMethod==rpcScheduleInform && pRpcAction->commandKey)
-   {
-      if (acsState.scheduleInformCommandKey)
-      {
-         VOS_MEM_FREE_BUF_AND_NULL_PTR(acsState.scheduleInformCommandKey);
-      }
-      acsState.scheduleInformCommandKey = pRpcAction->commandKey;
-      pRpcAction->commandKey = NULL;
-   }
+    if (pRpcAction->parameterKey)
+    {
+        if (rebootFlag == NOREBOOT)
+        {
+            /* not rebooting also copy to current parameter key */
+            VOS_MEM_FREE_BUF_AND_NULL_PTR(acsState.parameterKey);
+            acsState.parameterKey = VOS_STRDUP(pRpcAction->parameterKey);
+        }
+        if (acsState.newParameterKey)
+        {
+            VOS_MEM_FREE_BUF_AND_NULL_PTR(acsState.newParameterKey);
+        }
+        acsState.newParameterKey = pRpcAction->parameterKey;
+        CMC_tr69cSetMgmtServerParameterKey(pRpcAction->parameterKey);
+        pRpcAction->parameterKey = NULL;
+    }
+    if (pRpcAction->rpcMethod == rpcReboot && pRpcAction->commandKey)
+    {
+        if (acsState.rebootCommandKey)
+        {
+            VOS_MEM_FREE_BUF_AND_NULL_PTR(acsState.rebootCommandKey);
+        }
+        acsState.rebootCommandKey = pRpcAction->commandKey;
+        pRpcAction->commandKey = NULL;
+    }
+    if (pRpcAction->rpcMethod == rpcScheduleInform && pRpcAction->commandKey)
+    {
+        if (acsState.scheduleInformCommandKey)
+        {
+            VOS_MEM_FREE_BUF_AND_NULL_PTR(acsState.scheduleInformCommandKey);
+        }
+        acsState.scheduleInformCommandKey = pRpcAction->commandKey;
+        pRpcAction->commandKey = NULL;
+    }
 }  /* End of updateKeys() */
 
 
@@ -5325,7 +5358,7 @@ static void tr69c_initCtcLoidAuthenticationStatus(void)
         fprintf(fp, "%d", 0);
         fclose(fp);
     }
-} 
+}
 
 
 static VOS_RET_E tr69c_sendMsgToRegister(void)
@@ -5397,218 +5430,218 @@ static VOS_RET_E tr69c_sendMsgToRegister(void)
 
 RunRPCStatus runRPC(void)
 {
-   RunRPCStatus rpcStatus = eRPCRunOK;
-   VOS_RET_E ret = VOS_RET_SUCCESS;
-   UBOOL8 writecard_flag = FALSE;
-   RPCAction *rpcAction = getAction();
+    RunRPCStatus rpcStatus = eRPCRunOK;
+    VOS_RET_E ret = VOS_RET_SUCCESS;
+    UBOOL8 writecard_flag = FALSE;
+    RPCAction *rpcAction = getAction();
 
-   if (rpcAction != NULL)
-   {
-      vosLog_debug("=====>ENTER: rcpMethod=%d", rpcAction->rpcMethod);
-   }
-   else
-   {
-      vosLog_debug("=====>ENTER: NULL acsRpcAction pointer!");
-   }
+    if (rpcAction != NULL)
+    {
+        vosLog_debug("=====>ENTER: rcpMethod=%d", rpcAction->rpcMethod);
+    }
+    else
+    {
+        vosLog_debug("=====>ENTER: NULL acsRpcAction pointer!");
+    }
 
-   acsState.fault = 0;
-  
-   if (!isAcsConnected())
-   {
-      vosLog_debug("Not connected to ACS");
-      rpcStatus = eRPCRunFail;
-   }
-   
-   rpcStatus = eRPCRunOK;
+    acsState.fault = 0;
 
-   if ((rpcStatus == eRPCRunOK) && (rpcAction != NULL))
-   {
-      /*
-       * Acquire lock before doing any RPC method.
-       */
-      if (ret != VOS_RET_SUCCESS)
-      {
-         rpcStatus = eRPCRunFail;
-         acsState.fault = VOS_RET_INTERNAL_ERROR;
-         writeSoapFault(rpcAction, acsState.fault);
-      }
-      else
-      {
-         /* after Inform is sent, no other RPCs should be sent before CPE receives InformResponse
-          * if any RPC is sent before InformResponse (before sessionState is set to eSessionDeliveryConfirm)
-          * then CPE should cancel current session and retry another session
-          */
-         if (rpcAction->rpcMethod != rpcInformResponse 
-          && sessionState != eSessionDeliveryConfirm 
-          && (NULL == simRpcAction))
-         {
-            vosLog_error("state machine wrong state, fail conn");
+    if (!isAcsConnected())
+    {
+        vosLog_debug("Not connected to ACS");
+        rpcStatus = eRPCRunFail;
+    }
+
+    rpcStatus = eRPCRunOK;
+
+    if ((rpcStatus == eRPCRunOK) && (rpcAction != NULL))
+    {
+        /*
+         * Acquire lock before doing any RPC method.
+         */
+        if (ret != VOS_RET_SUCCESS)
+        {
             rpcStatus = eRPCRunFail;
-            acsState.retryCount++;
-            retrySessionConnection();
-            saveTR69StatusItems();   // save retryCount to scratchpad
-         }
-         else
-         {
-            switch (rpcAction->rpcMethod)
+            acsState.fault = VOS_RET_INTERNAL_ERROR;
+            writeSoapFault(rpcAction, acsState.fault);
+        }
+        else
+        {
+            /* after Inform is sent, no other RPCs should be sent before CPE receives InformResponse
+             * if any RPC is sent before InformResponse (before sessionState is set to eSessionDeliveryConfirm)
+             * then CPE should cancel current session and retry another session
+             */
+            if (rpcAction->rpcMethod != rpcInformResponse
+                    && sessionState != eSessionDeliveryConfirm
+                    && (NULL == simRpcAction))
             {
-            case rpcGetRPCMethods:
-               doGetRPCMethods(rpcAction);
-               break;
-            case rpcSetParameterValues:
-               doSetParameterValues(rpcAction);
-               if (SF_FEATURE_SUPPORT_CARD)
-               {
-                   writecard_flag = TRUE;
-               }
-               break;
-            case rpcGetParameterValues:
-               doGetParameterValues(rpcAction);
-               break;
-            case rpcGetParameterNames:
-               doGetParameterNames(rpcAction);
-               break;
-            case rpcGetParameterAttributes:
-               doGetParameterAttributes(rpcAction);
-               break;
-            case rpcSetParameterAttributes:
-               doSetParameterAttributes(rpcAction);
-               break;
-            case rpcAddObject:
-               doAddObject(rpcAction);
-               if (SF_FEATURE_SUPPORT_CARD)
-               {
-                   writecard_flag = TRUE;
-               }
-               break;
-            case rpcDeleteObject:
-               doDeleteObject(rpcAction);
-               if (SF_FEATURE_SUPPORT_CARD)
-               {
-                   writecard_flag = TRUE;
-               }
-               break;
-            case rpcReboot:
-               doRebootRPC(rpcAction);
-               break;
-            case rpcFactoryReset:
-               doFactoryResetRPC(rpcAction);
-               break;
-            case rpcDownload:
-               doDownload(rpcAction);
-               break;
-            case rpcUpload:
-               doUpload(rpcAction);
-               break;
-            case rpcScheduleInform:
-               doScheduleInform(rpcAction);
-               break;            
-            case rpcGetQueuedTransfers:
-               doGetQueuedTransfers(rpcAction);
-               break;
-            case rpcInformResponse:
-               // event delivery is confirmed by receiving InformResponse            
-               sessionState = eSessionDeliveryConfirm;
-               acsState.retryCount = 0;
-               /* move inform success to here */
-               CMC_tr69cSetRemoteInform(CMC_TR69C_DIAG_INFORM_SUCCESS, CMC_TR69C_REMOTE_INFORM_STATUS);    //inform success
+                vosLog_error("state machine wrong state, fail conn");
+                rpcStatus = eRPCRunFail;
+                acsState.retryCount++;
+                retrySessionConnection();
+                saveTR69StatusItems();   // save retryCount to scratchpad
+            }
+            else
+            {
+                switch (rpcAction->rpcMethod)
+                {
+                    case rpcGetRPCMethods:
+                        doGetRPCMethods(rpcAction);
+                        break;
+                    case rpcSetParameterValues:
+                        doSetParameterValues(rpcAction);
+                        if (SF_FEATURE_SUPPORT_CARD)
+                        {
+                            writecard_flag = TRUE;
+                        }
+                        break;
+                    case rpcGetParameterValues:
+                        doGetParameterValues(rpcAction);
+                        break;
+                    case rpcGetParameterNames:
+                        doGetParameterNames(rpcAction);
+                        break;
+                    case rpcGetParameterAttributes:
+                        doGetParameterAttributes(rpcAction);
+                        break;
+                    case rpcSetParameterAttributes:
+                        doSetParameterAttributes(rpcAction);
+                        break;
+                    case rpcAddObject:
+                        doAddObject(rpcAction);
+                        if (SF_FEATURE_SUPPORT_CARD)
+                        {
+                            writecard_flag = TRUE;
+                        }
+                        break;
+                    case rpcDeleteObject:
+                        doDeleteObject(rpcAction);
+                        if (SF_FEATURE_SUPPORT_CARD)
+                        {
+                            writecard_flag = TRUE;
+                        }
+                        break;
+                    case rpcReboot:
+                        doRebootRPC(rpcAction);
+                        break;
+                    case rpcFactoryReset:
+                        doFactoryResetRPC(rpcAction);
+                        break;
+                    case rpcDownload:
+                        doDownload(rpcAction);
+                        break;
+                    case rpcUpload:
+                        doUpload(rpcAction);
+                        break;
+                    case rpcScheduleInform:
+                        doScheduleInform(rpcAction);
+                        break;
+                    case rpcGetQueuedTransfers:
+                        doGetQueuedTransfers(rpcAction);
+                        break;
+                    case rpcInformResponse:
+                        // event delivery is confirmed by receiving InformResponse
+                        sessionState = eSessionDeliveryConfirm;
+                        acsState.retryCount = 0;
+                        /* move inform success to here */
+                        CMC_tr69cSetRemoteInform(CMC_TR69C_DIAG_INFORM_SUCCESS, CMC_TR69C_REMOTE_INFORM_STATUS);    //inform success
 
-               /* we have received an informResponse, clear inform event list */
-               clearInformEventList();
+                        /* we have received an informResponse, clear inform event list */
+                        clearInformEventList();
 
-               /* we have Inform , we need clear upgradeDownloadFlag */
-               if (SF_FEATURE_SUPPORT_PLUGIN)
-               {
-                  acsState.upgradeDownloadFlag = 0;
-                  if (!util_strcmp(alarmNumber, "104006"))
-                  {
-                     UTIL_DO_SYSTEM_ACTION("rm /tmp/lanEthDisavailable -rf; rm /tmp/lanEthAvailable -rf");
-                  }
-               }
+                        /* we have Inform , we need clear upgradeDownloadFlag */
+                        if (SF_FEATURE_SUPPORT_PLUGIN)
+                        {
+                            acsState.upgradeDownloadFlag = 0;
+                            if (!util_strcmp(alarmNumber, "104006"))
+                            {
+                                UTIL_DO_SYSTEM_ACTION("rm /tmp/lanEthDisavailable -rf; rm /tmp/lanEthAvailable -rf");
+                            }
+                        }
 
-               {
-                  FILE *managementserver_url = fopen("/var/ms_url", "w");
-                  if (managementserver_url != NULL)
-                  {
-                     int urlchanged = 0;
-                     fwrite((void *)&urlchanged, sizeof(urlchanged), 1, managementserver_url);
-                     fclose(managementserver_url);
-                  }
-               }
-               
-               CMC_tr69cSetLastConnectedURL(&saveConfigFlag);
+                        {
+                            FILE *managementserver_url = fopen("/var/ms_url", "w");
+                            if (managementserver_url != NULL)
+                            {
+                                int urlchanged = 0;
+                                fwrite((void *)&urlchanged, sizeof(urlchanged), 1, managementserver_url);
+                                fclose(managementserver_url);
+                            }
+                        }
 
-               if (acsState.holdRequests == 0)
-               {
-                  // only send pending request when holdrequests is false
-                  if (transferCompletePending == 1)
-                  {
-                     /* make any callbacks that were setup when RPC started */
-                     sendTransferComplete();
-                     transferCompletePending = 0;
-                     // setACSContactedState to eACSInformed for clearing 
-                     // previous state which is eACSDownloadReboot or eACSUpload
-                     setInformState(eACSInformed);
-                  }
-                  else if (sendGETRPC)
-                  {
-                     sendGetRPCMethods();
-                     sendGETRPC = 0;
-                  }
-                  else
-                  {
-                     /* send empty message to indcate no more requests */
-                     sendNullHttp(TRUE);
-                     rpcStatus=eRPCRunEnd;
-                  }
-               }
-               else
-               { 
-                  // only send NULL msg when holdrequests is true
-                  sendNullHttp(TRUE);
-                  rpcStatus = eRPCRunEnd;
-               }
-               resetNotification();  /* update notifications following informResponse*/
-               setInformState(eACSInformed);
-               break;
-            case rpcTransferCompleteResponse:
-               sendNullHttp(TRUE);
-               rpcStatus = eRPCRunEnd;
-               setInformState(eACSInformed);
-               break;
-            case rpcGetRPCMethodsResponse:
-               sendNullHttp(TRUE);
-               rpcStatus = eRPCRunEnd;
-               break;
-            case rpcFault:
-            default:
-               rpcStatus = eRPCRunFail;
-               break;
-            }  /* end of switch(acsRpcAction->rpcMethod) */
-          }
-       }
+                        CMC_tr69cSetLastConnectedURL(&saveConfigFlag);
+
+                        if (acsState.holdRequests == 0)
+                        {
+                            // only send pending request when holdrequests is false
+                            if (transferCompletePending == 1)
+                            {
+                                /* make any callbacks that were setup when RPC started */
+                                sendTransferComplete();
+                                transferCompletePending = 0;
+                                // setACSContactedState to eACSInformed for clearing
+                                // previous state which is eACSDownloadReboot or eACSUpload
+                                setInformState(eACSInformed);
+                            }
+                            else if (sendGETRPC)
+                            {
+                                sendGetRPCMethods();
+                                sendGETRPC = 0;
+                            }
+                            else
+                            {
+                                /* send empty message to indcate no more requests */
+                                sendNullHttp(TRUE);
+                                rpcStatus = eRPCRunEnd;
+                            }
+                        }
+                        else
+                        {
+                            // only send NULL msg when holdrequests is true
+                            sendNullHttp(TRUE);
+                            rpcStatus = eRPCRunEnd;
+                        }
+                        resetNotification();  /* update notifications following informResponse*/
+                        setInformState(eACSInformed);
+                        break;
+                    case rpcTransferCompleteResponse:
+                        sendNullHttp(TRUE);
+                        rpcStatus = eRPCRunEnd;
+                        setInformState(eACSInformed);
+                        break;
+                    case rpcGetRPCMethodsResponse:
+                        sendNullHttp(TRUE);
+                        rpcStatus = eRPCRunEnd;
+                        break;
+                    case rpcFault:
+                    default:
+                        rpcStatus = eRPCRunFail;
+                        break;
+                }  /* end of switch(acsRpcAction->rpcMethod) */
+            }
+        }
 
 #ifdef DMP_X_CT_COM_SUPPORTCARDMON_1
-      if (SF_FEATURE_SUPPORT_CARD)
-      {
-          //支持写卡
-          UINT32 cardtype = 0;
-          CMC_cardGetCardType(&cardtype);
-          if ((TRUE == writecard_flag) && (1 == cardtype))
-          {
-             writecard_flag = FALSE;
-             switch (rpcAction->rpcMethod)
-             {
-                case rpcAddObject:
-                case rpcSetParameterValues:
-                case rpcDeleteObject:
-                   dealcardinfo(rpcAction);
-                   break;
-                default:
-                   break;
-             }
-          }
-      }
+        if (SF_FEATURE_SUPPORT_CARD)
+        {
+            //支持写卡
+            UINT32 cardtype = 0;
+            CMC_cardGetCardType(&cardtype);
+            if ((TRUE == writecard_flag) && (1 == cardtype))
+            {
+                writecard_flag = FALSE;
+                switch (rpcAction->rpcMethod)
+                {
+                    case rpcAddObject:
+                    case rpcSetParameterValues:
+                    case rpcDeleteObject:
+                        dealcardinfo(rpcAction);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
 #endif
 
         if (SF_FEATURE_LOCATION_JIANGSU || SF_FEATURE_LOCATION_SUZHOU)
@@ -5656,46 +5689,46 @@ RunRPCStatus runRPC(void)
             CMC_tr69cSetUploadDiagState(NONE);
         }
 
-      /* if no faults then update ACS state with parameter key or command key. */
-      if (rpcStatus != eRPCRunFail && acsState.fault == NO_FAULT && acsRpcAction != NULL)
-      {
-         /* in the case of download this must wait until the download completes*/
-         updateKeys(acsRpcAction);
-      }
+        /* if no faults then update ACS state with parameter key or command key. */
+        if (rpcStatus != eRPCRunFail && acsState.fault == NO_FAULT && acsRpcAction != NULL)
+        {
+            /* in the case of download this must wait until the download completes*/
+            updateKeys(acsRpcAction);
+        }
 
-      /* 
-       * Possibly write config here?
-       * Release lock after updateKeys() since updateKeys() needs lock to read/write parameterKey.
-       */
-   } /* end of if ((rpcStatus == eRPCRunOK) && (acsRpcAction != NULL)) */
+        /*
+         * Possibly write config here?
+         * Release lock after updateKeys() since updateKeys() needs lock to read/write parameterKey.
+         */
+    } /* end of if ((rpcStatus == eRPCRunOK) && (acsRpcAction != NULL)) */
 
 
 
-   vosLog_debug("=====>EXIT, rpcStatus=%d", rpcStatus);
+    vosLog_debug("=====>EXIT, rpcStatus=%d", rpcStatus);
 
 #ifdef verbose_mem_stats
-   {
-      /*
-       * This bit of code can be used to detect whether tr69c memory use
-       * is increasing after each RPC.  Increasing memory usage most likely
-       * means memory leak.
-       */
-      VosMemStats stats;
+    {
+        /*
+         * This bit of code can be used to detect whether tr69c memory use
+         * is increasing after each RPC.  Increasing memory usage most likely
+         * means memory leak.
+         */
+        VosMemStats stats;
 
-      vosMem_getStats(&stats);
+        vosMem_getStats(&stats);
 
-      printf("\n\n=========== tr69c (pid=%d) mem stats after RPC =================\n", getpid());
-      printf("shmBytesAllocd=%u (total=%u) shmNumAllocs=%u shmNumFrees=%u delta=%u\n",
-             stats.shmBytesAllocd, stats.shmTotalBytes,
-             stats.shmNumAllocs, stats.shmNumFrees, stats.shmNumAllocs - stats.shmNumFrees);
-      printf("bytesAllocd=%u numAllocs=%u numFrees=%u delta=%u\n",
-             stats.bytesAllocd, stats.numAllocs, stats.numFrees,
-             stats.numAllocs-stats.numFrees);
-      printf("============================================\n\n");
-   }
+        printf("\n\n=========== tr69c (pid=%d) mem stats after RPC =================\n", getpid());
+        printf("shmBytesAllocd=%u (total=%u) shmNumAllocs=%u shmNumFrees=%u delta=%u\n",
+               stats.shmBytesAllocd, stats.shmTotalBytes,
+               stats.shmNumAllocs, stats.shmNumFrees, stats.shmNumAllocs - stats.shmNumFrees);
+        printf("bytesAllocd=%u numAllocs=%u numFrees=%u delta=%u\n",
+               stats.bytesAllocd, stats.numAllocs, stats.numFrees,
+               stats.numAllocs - stats.numFrees);
+        printf("============================================\n\n");
+    }
 #endif
 
-   return rpcStatus;
+    return rpcStatus;
 }  /* End of runRPC() */
 
 
@@ -5749,7 +5782,7 @@ void dealcardinfo(RPCAction *a)
             CMC_cardFilesReadSaveResultFlag(&resiult);
         }
         else if ((util_strstr(pp, STR_CARD_KEYPARAM) && g_keyhaveset == 0)
-            || (util_strstr(pp, CHECK_LOID_STATUSPARAM) && g_statushaveset == 1))
+                 || (util_strstr(pp, CHECK_LOID_STATUSPARAM) && g_statushaveset == 1))
         {
             /*send alarm to tr069 for auth failed*/
             if (g_statusautheachother == 1)
@@ -5766,8 +5799,8 @@ void dealcardinfo(RPCAction *a)
                 CMC_cardCheckFailedFlicker();
                 CMC_cardBusinessLedOff();
             }
-         
-            /*remember deal with web page*/    
+
+            /*remember deal with web page*/
 
             /*stop all business*/
             char buf[sizeof(VosMsgHeader)] = {0};
@@ -5780,19 +5813,19 @@ void dealcardinfo(RPCAction *a)
             {
                 vosLog_error("Could not send out CMS_MSG_UPNP_GETALL ret=%d", ret);
             }
-            
+
         }
         else
         {
             if (util_strstr(pp, CHECK_LOID_STATUSPARAM))
             {
-                return;       
+                return;
             }
-            
+
             doWriteintoCard(a);
         }
     }
-#endif    
+#endif
 }
 /*end and by hehulin*/
 
@@ -5832,267 +5865,270 @@ void handle_upload_diag()
 
 void resetNotification(void)
 {
-   vosLog_debug("============>ENTER");
-   /* we must be inside an RPC method function because we have the lock at this point. */
-   CMC_phlClearAllParamValueChanges();
+    vosLog_debug("============>ENTER");
+    /* we must be inside an RPC method function because we have the lock at this point. */
+    CMC_phlClearAllParamValueChanges();
 }
 
 int checkActiveNotifications(void)
 {
-   int active = 0;
-   return active;
+    int active = 0;
+    return active;
 }
 
 void initTransferList(void)
 {
-   UINT16 size, i, queueEntryCount;
-   DownloadReq *q;
-   RPCAction *a;
-   DownloadReqInfo savedList[TRANSFER_QUEUE_SIZE], *saved;
+    UINT16 size, i, queueEntryCount;
+    DownloadReq *q;
+    RPCAction *a;
+    DownloadReqInfo savedList[TRANSFER_QUEUE_SIZE], *saved;
 
-   memset((void*)&transferList,0,sizeof(TransferInfo));
-   size = i = queueEntryCount = 0;
+    memset((void *)&transferList, 0, sizeof(TransferInfo));
+    size = i = queueEntryCount = 0;
 
-   /* if retrieve fails because nothing was read or error occured, clear list */
-   if (tr69RetrieveTransferListFromStore(savedList, &size) == VOS_RET_SUCCESS && size > 0)
-   {
-      /* remove the tr69c_transfer list from scratch pad by setting it again with len=0 */
-      if (VOS_RET_SUCCESS != HAL_sysSetTr69cData("tr69c_transfer", NULL, 0))
-      {
-         vosLog_error("Unable to save tr69c_transfer in scratch PAD");
-      }
+    /* if retrieve fails because nothing was read or error occured, clear list */
+    if (tr69RetrieveTransferListFromStore(savedList, &size) == VOS_RET_SUCCESS && size > 0)
+    {
+        /* remove the tr69c_transfer list from scratch pad by setting it again with len=0 */
+        if (VOS_RET_SUCCESS != HAL_sysSetTr69cData("tr69c_transfer", NULL, 0))
+        {
+            vosLog_error("Unable to save tr69c_transfer in scratch PAD");
+        }
 
-      queueEntryCount = size / sizeof(DownloadReqInfo);
-      for (i = 0; i < queueEntryCount; i++)
-      {
-         saved = &savedList[i];
-         q = &transferList.queue[i].request;
-         
-         q->efileType = saved->efileType;
-         q->commandKey = (saved->commandKey != NULL) ? VOS_STRDUP(saved->commandKey) : NULL;
-         q->url = (saved->url != NULL) ? VOS_STRDUP(saved->url) : VOS_STRDUP("");
-         q->user = (saved->user != NULL) ? VOS_STRDUP(saved->user) : VOS_STRDUP("");
-         q->pwd = (saved->pwd != NULL) ? VOS_STRDUP(saved->pwd) : VOS_STRDUP("");
-         q->fileSize = saved->fileSize;
-         q->fileName = (saved->fileName != NULL) ? VOS_STRDUP(saved->fileName) : VOS_STRDUP("");
-         q->delaySec = saved->delaySec;
-         q->state = saved->state;
-         transferList.queue[i].rpcMethod = saved->rpcMethod;
-         if (q->state == eTransferNotYetStarted)
-         {
-            a = newRPCAction(); /* need to be freed somewhere? */
-            memcpy(&a->ud.downloadReq,q,sizeof(DownloadReq));
-            a->rpcMethod = transferList.queue[i].rpcMethod;
-            if (transferList.queue[i].rpcMethod == rpcDownload)
+        queueEntryCount = size / sizeof(DownloadReqInfo);
+        for (i = 0; i < queueEntryCount; i++)
+        {
+            saved = &savedList[i];
+            q = &transferList.queue[i].request;
+
+            q->efileType = saved->efileType;
+            q->commandKey = (saved->commandKey != NULL) ? VOS_STRDUP(saved->commandKey) : NULL;
+            q->url = (saved->url != NULL) ? VOS_STRDUP(saved->url) : VOS_STRDUP("");
+            q->user = (saved->user != NULL) ? VOS_STRDUP(saved->user) : VOS_STRDUP("");
+            q->pwd = (saved->pwd != NULL) ? VOS_STRDUP(saved->pwd) : VOS_STRDUP("");
+            q->fileSize = saved->fileSize;
+            q->fileName = (saved->fileName != NULL) ? VOS_STRDUP(saved->fileName) : VOS_STRDUP("");
+            q->delaySec = saved->delaySec;
+            q->state = saved->state;
+            transferList.queue[i].rpcMethod = saved->rpcMethod;
+            if (q->state == eTransferNotYetStarted)
             {
-               utilTmr_set(tmrHandle, downloadStart, (void *)a, (UINT32)(1+q->delaySec)*1000, "download");
-            }
-            else
-            {
-               utilTmr_set(tmrHandle, uploadStart, (void *)a, (UINT32)(1+q->delaySec)*1000, "upload");
-            }
-         } /* eTransferNotYetStarted */         
-      } /* for */
-   } /* read from scratch pad */
-   else
-   {
+                a = newRPCAction(); /* need to be freed somewhere? */
+                memcpy(&a->ud.downloadReq, q, sizeof(DownloadReq));
+                a->rpcMethod = transferList.queue[i].rpcMethod;
+                if (transferList.queue[i].rpcMethod == rpcDownload)
+                {
+                    utilTmr_set(tmrHandle, downloadStart, (void *)a, (UINT32)(1 + q->delaySec) * 1000, "download");
+                }
+                else
+                {
+                    utilTmr_set(tmrHandle, uploadStart, (void *)a, (UINT32)(1 + q->delaySec) * 1000, "upload");
+                }
+            } /* eTransferNotYetStarted */
+        } /* for */
+    } /* read from scratch pad */
+    else
+    {
 #ifdef DEBUG
-      printf("initTransferList(): no list read from persistent storage.\n");
+        printf("initTransferList(): no list read from persistent storage.\n");
 #endif
-   }
+    }
 } /* initTransferList */
 
 /* return true if a transfer transaction is in progess; 0 if not.*/
 int isTransferInProgress(void)
 {
-   int i;
-   DownloadReq *q;
-   
-   for (i = 0; i < TRANSFER_QUEUE_SIZE; i++)
-   {
-      q = &transferList.queue[i].request;
-      if (q->state == eTransferInProgress)
-      {
-         return 1;
-      }
-   }
-   return (0);
+    int i;
+    DownloadReq *q;
+
+    for (i = 0; i < TRANSFER_QUEUE_SIZE; i++)
+    {
+        q = &transferList.queue[i].request;
+        if (q->state == eTransferInProgress)
+        {
+            return 1;
+        }
+    }
+    return (0);
 }
 
 void transferListEnqueueCopy(DownloadReq *q, DownloadReq *r)
 {
-   if ((q != NULL) && (r != NULL))
-   {
-      q->efileType = r->efileType;
-      q->commandKey = (r->commandKey != NULL) ? VOS_STRDUP(r->commandKey) : NULL;
-      q->url = (r->url != NULL) ? VOS_STRDUP(r->url) : VOS_STRDUP("");
-      q->user = (r->user != NULL) ? VOS_STRDUP(r->user) : VOS_STRDUP("");
-      q->pwd = (r->pwd != NULL) ? VOS_STRDUP(r->pwd) : VOS_STRDUP("");
-      q->fileSize = r->fileSize;
-      q->fileName = (r->fileName != NULL) ? VOS_STRDUP(r->fileName) : VOS_STRDUP("");
-      q->delaySec = r->delaySec;
-      q->state = eTransferNotYetStarted;
-   }
+    if ((q != NULL) && (r != NULL))
+    {
+        q->efileType = r->efileType;
+        q->commandKey = (r->commandKey != NULL) ? VOS_STRDUP(r->commandKey) : NULL;
+        q->url = (r->url != NULL) ? VOS_STRDUP(r->url) : VOS_STRDUP("");
+        q->user = (r->user != NULL) ? VOS_STRDUP(r->user) : VOS_STRDUP("");
+        q->pwd = (r->pwd != NULL) ? VOS_STRDUP(r->pwd) : VOS_STRDUP("");
+        q->fileSize = r->fileSize;
+        q->fileName = (r->fileName != NULL) ? VOS_STRDUP(r->fileName) : VOS_STRDUP("");
+        q->delaySec = r->delaySec;
+        q->state = eTransferNotYetStarted;
+    }
 }
 
 void transferListDequeueFree(DownloadReq *q)
 {
-   if (q->commandKey)
-      VOS_FREE(q->commandKey);
-   if (q->url)
-      VOS_FREE(q->url);
-   if (q->user)
-      VOS_FREE(q->user);
-   if (q->pwd)
-      VOS_FREE(q->pwd);
-   if (q->fileName)
-      VOS_FREE(q->fileName);
-   memset((void*)q,0,sizeof(DownloadReq));
+    if (q->commandKey)
+        VOS_FREE(q->commandKey);
+    if (q->url)
+        VOS_FREE(q->url);
+    if (q->user)
+        VOS_FREE(q->user);
+    if (q->pwd)
+        VOS_FREE(q->pwd);
+    if (q->fileName)
+        VOS_FREE(q->fileName);
+    memset((void *)q, 0, sizeof(DownloadReq));
 }
 
 /* This function queue the request if there is room and return 1, otherwise, return 0 */
 int requestQueued(DownloadReq *r, eRPCMethods method)
 {
-   int i, j;
-   DownloadReq *q;
-   
-   for (i = 0; i < TRANSFER_QUEUE_SIZE; i++)
-   {
-      q = &transferList.queue[i].request;
-      if (q->state == eTransferNotInitialized)
-      {
-         transferListEnqueueCopy(q,r);
-         transferList.queue[i].rpcMethod = method;
-         /* request is queued */
+    int i, j;
+    DownloadReq *q;
 
-         return (1); 
-      }
-   } /* for */
-   /* queue is full; purge the completed one for this new request */
-   /* the goal is to leave the recently completed ones for ACS to queried, overwrite the oldest
-      completed entries when when purged */
-   for (i = transferList.mostRecentCompleteIndex+1, j=0; j < TRANSFER_QUEUE_SIZE; i++, j++)
-   {
-      q = &transferList.queue[i%TRANSFER_QUEUE_SIZE].request;
-      if (q->state == eTransferCompleted)
-      {
-         transferListDequeueFree(q);
-         transferListEnqueueCopy(q,r);
-         transferList.queue[i%TRANSFER_QUEUE_SIZE].rpcMethod = method;
+    for (i = 0; i < TRANSFER_QUEUE_SIZE; i++)
+    {
+        q = &transferList.queue[i].request;
+        if (q->state == eTransferNotInitialized)
+        {
+            transferListEnqueueCopy(q, r);
+            transferList.queue[i].rpcMethod = method;
+            /* request is queued */
 
-         return (1); 
-      }
-   } /* for */
-   /* queue is full; we have to reject this request; there is no room to queue it */
-   /* return 9004, resource exceeded: how?
-      acsState.fault is a global flag and if a transfer is in progress, this doesn't work */
-   
-   return (0);
+            return (1);
+        }
+    } /* for */
+    /* queue is full; purge the completed one for this new request */
+    /* the goal is to leave the recently completed ones for ACS to queried, overwrite the oldest
+       completed entries when when purged */
+    for (i = transferList.mostRecentCompleteIndex + 1, j = 0; j < TRANSFER_QUEUE_SIZE; i++, j++)
+    {
+        q = &transferList.queue[i % TRANSFER_QUEUE_SIZE].request;
+        if (q->state == eTransferCompleted)
+        {
+            transferListDequeueFree(q);
+            transferListEnqueueCopy(q, r);
+            transferList.queue[i % TRANSFER_QUEUE_SIZE].rpcMethod = method;
+
+            return (1);
+        }
+    } /* for */
+    /* queue is full; we have to reject this request; there is no room to queue it */
+    /* return 9004, resource exceeded: how?
+       acsState.fault is a global flag and if a transfer is in progress, this doesn't work */
+
+    return (0);
 }
 
 void updateTransferState(char *commandKey, eTransferState state)
 {
-   int i;
-   DownloadReq *q;
+    int i;
+    DownloadReq *q;
 
-   for (i = 0; i < TRANSFER_QUEUE_SIZE; i++)
-   {
-      q = &transferList.queue[i].request;
-      if (q->state != eTransferNotInitialized)
-      {
-         if ((commandKey == NULL && q->commandKey == NULL) ||
-             (commandKey != NULL && q->commandKey != NULL && 
-              util_strcmp(commandKey,q->commandKey) == 0))
-         {
-            q->state = state;
-            if (state == eTransferCompleted)
+    for (i = 0; i < TRANSFER_QUEUE_SIZE; i++)
+    {
+        q = &transferList.queue[i].request;
+        if (q->state != eTransferNotInitialized)
+        {
+            if ((commandKey == NULL && q->commandKey == NULL) ||
+                    (commandKey != NULL && q->commandKey != NULL &&
+                     util_strcmp(commandKey, q->commandKey) == 0))
             {
-               transferList.mostRecentCompleteIndex = i;
+                q->state = state;
+                if (state == eTransferCompleted)
+                {
+                    transferList.mostRecentCompleteIndex = i;
+                }
+                break;
             }
-            break;
-         }
-      }
-   } /* for */
+        }
+    } /* for */
 }
 
 static void doGetQueuedTransfers(RPCAction *a)
 {
-   int i;
-   tProtoCtx *pc = NULL;
-   DownloadReq *q;
-   TransferInfo list;
-   int qEntryCount = 0;
+    int i;
+    tProtoCtx *pc = NULL;
+    DownloadReq *q;
+    TransferInfo list;
+    int qEntryCount = 0;
 
-   memcpy(&list,&transferList,sizeof(TransferInfo));
+    memcpy(&list, &transferList, sizeof(TransferInfo));
 
-   for (i = 0; i < TRANSFER_QUEUE_SIZE; i++) {
-      q = &list.queue[i].request;
-      if (q->state != eTransferNotInitialized)
-      {
-         qEntryCount++;
-      }
-   } /* for */
+    for (i = 0; i < TRANSFER_QUEUE_SIZE; i++)
+    {
+        q = &list.queue[i].request;
+        if (q->state != eTransferNotInitialized)
+        {
+            qEntryCount++;
+        }
+    } /* for */
 
-   tr69c_initAllocBuf();
-   
-   do 
-   {
+    tr69c_initAllocBuf();
 
-      int   bufsz = 0;
-   
-      openEnvWithHeader(a->ID, pc, &bufsz);
-      openBody(pc, &bufsz);
-      xml_mIndent(pc, &bufsz, 3);
-      mprintf(pc, &bufsz, "<%sGetQueuedTransfersResponse>\n", nsCWMP);
-      xml_mIndent(pc, &bufsz, 4);
-      #ifdef SUPPRESS_SOAP_ARRAYTYPE
-      mprintf(pc, &bufsz, "<TransferList>\n");
-      #else
-      mprintf(pc, &bufsz, "<TransferList %sarrayType=\"%sQueuedTransferStruct[%d]\">\n",
-              nsSOAP_ENC, nsCWMP, qEntryCount );
-      #endif
+    do
+    {
 
-      
-      for (i = 0; i < qEntryCount; i++) {
-         q = &list.queue[i].request;
-         xml_mIndent(pc, &bufsz, 5);
-         mprintf(pc, &bufsz, "<QueuedTransferStruct>\n");
-         if (q->state != eTransferNotInitialized)
-         {
-            xml_mIndent(pc, &bufsz, 6);
-            if (q->commandKey != NULL)
-               mprintf(pc, &bufsz, "<CommandKey>%s</CommandKey>\n", q->commandKey);
+        int   bufsz = 0;
+
+        openEnvWithHeader(a->ID, pc, &bufsz);
+        openBody(pc, &bufsz);
+        xml_mIndent(pc, &bufsz, 3);
+        mprintf(pc, &bufsz, "<%sGetQueuedTransfersResponse>\n", nsCWMP);
+        xml_mIndent(pc, &bufsz, 4);
+#ifdef SUPPRESS_SOAP_ARRAYTYPE
+        mprintf(pc, &bufsz, "<TransferList>\n");
+#else
+        mprintf(pc, &bufsz, "<TransferList %sarrayType=\"%sQueuedTransferStruct[%d]\">\n",
+                nsSOAP_ENC, nsCWMP, qEntryCount);
+#endif
+
+
+        for (i = 0; i < qEntryCount; i++)
+        {
+            q = &list.queue[i].request;
+            xml_mIndent(pc, &bufsz, 5);
+            mprintf(pc, &bufsz, "<QueuedTransferStruct>\n");
+            if (q->state != eTransferNotInitialized)
+            {
+                xml_mIndent(pc, &bufsz, 6);
+                if (q->commandKey != NULL)
+                    mprintf(pc, &bufsz, "<CommandKey>%s</CommandKey>\n", q->commandKey);
+                else
+                    mprintf(pc, &bufsz, "<CommandKey></CommandKey>\n");
+                xml_mIndent(pc, &bufsz, 6);
+                mprintf(pc, &bufsz, "<State>%d</State>\n", q->state);
+            }
             else
-               mprintf(pc, &bufsz, "<CommandKey></CommandKey>\n");
-            xml_mIndent(pc, &bufsz, 6);
-            mprintf(pc, &bufsz, "<State>%d</State>\n", q->state);
-         }
-         else
-         {
-            xml_mIndent(pc, &bufsz, 6);
-            mprintf(pc, &bufsz, "<CommandKey></CommandKey>\n");
-            xml_mIndent(pc, &bufsz, 6);
-            mprintf(pc, &bufsz, "<State></State>\n");
-         }
-         xml_mIndent(pc, &bufsz, 5);
-         mprintf(pc, &bufsz, "</QueuedTransferStruct>\n");
-      } /* for all queued entries */
-      xml_mIndent(pc, &bufsz, 4);
-      mprintf(pc, &bufsz, "</TransferList>\n");
-      xml_mIndent(pc, &bufsz, 3);
-      mprintf(pc, &bufsz, "</%sGetQueuedTransfersResponse>\n", nsCWMP);
-      closeBodyEnvelope(pc, &bufsz);
+            {
+                xml_mIndent(pc, &bufsz, 6);
+                mprintf(pc, &bufsz, "<CommandKey></CommandKey>\n");
+                xml_mIndent(pc, &bufsz, 6);
+                mprintf(pc, &bufsz, "<State></State>\n");
+            }
+            xml_mIndent(pc, &bufsz, 5);
+            mprintf(pc, &bufsz, "</QueuedTransferStruct>\n");
+        } /* for all queued entries */
+        xml_mIndent(pc, &bufsz, 4);
+        mprintf(pc, &bufsz, "</TransferList>\n");
+        xml_mIndent(pc, &bufsz, 3);
+        mprintf(pc, &bufsz, "</%sGetQueuedTransfersResponse>\n", nsCWMP);
+        closeBodyEnvelope(pc, &bufsz);
 
-      /* send the HTTP message header*/
-      sendToAcs(bufsz, NULL);
-      
-      /* send the HTTP message body*/
-      pc = getAcsConnDesc();
-      proto_SendRaw(pc, sg_tr69cAllocBuf.buf, bufsz);
-      
-   } while (0);
-   
-   tr69c_freeAllocBuf();
+        /* send the HTTP message header*/
+        sendToAcs(bufsz, NULL);
+
+        /* send the HTTP message body*/
+        pc = getAcsConnDesc();
+        proto_SendRaw(pc, sg_tr69cAllocBuf.buf, bufsz);
+
+    }
+    while (0);
+
+    tr69c_freeAllocBuf();
 
 }  /* End of doGetQueuedTransfers() */
 
@@ -6103,16 +6139,16 @@ static void doGetQueuedTransfers(RPCAction *a)
 
 void setDefaultActiveNotification(void)
 {
-   CMC_tr69cSetDefaultActiveNotification(&saveConfigFlag);
-   saveConfigurations();
+    CMC_tr69cSetDefaultActiveNotification(&saveConfigFlag);
+    saveConfigurations();
 }
 
 
 void ctmdw_resetNotification(UINT8 cleanflag)
 {
-   vosLog_debug("============>ENTER");
-   /* we must be inside an RPC method function because we have the lock at this point. */
-   CMC_phlMdwClearAllParamValueChanges(cleanflag);
+    vosLog_debug("============>ENTER");
+    /* we must be inside an RPC method function because we have the lock at this point. */
+    CMC_phlMdwClearAllParamValueChanges(cleanflag);
 }
 
 
@@ -6121,12 +6157,12 @@ int ctmdw_getAllMDWNotifications(char *pc)
     int i;
     //int a;
     //UINT32 paramNum = 0;
-    
+
     char  *fullpath = NULL;
     int ret = VOS_RET_SUCCESS;
     CMC_PHL_GET_PARAM_ATTR_T paramAttr;
     char tmpbuf[BUFLEN_512];
-    char tmpctname[BUFLEN_512];        
+    char tmpctname[BUFLEN_512];
     char skip = 0;
     UBOOL8 change = FALSE;
     UBOOL8 isExist = FALSE;
@@ -6135,18 +6171,19 @@ int ctmdw_getAllMDWNotifications(char *pc)
 
     memset(&paramAttr, 0, sizeof(paramAttr));
 
-    for (i = 0 ; i < ARRAY_SIZE(ctdefaultvalue); i++) 
+    for (i = 0 ; i < ARRAY_SIZE(ctdefaultvalue); i++)
     {
-        char*  paramValue;
+        char  *paramValue;
 
         ret = tr69c_getParamValue(ctdefaultvalue[i].paraName, &paramValue);
         if (ret == VOS_RET_SUCCESS)
         {
             if (paramValue[0] != '\0' && ((util_strcmp(paramValue, ctdefaultvalue[i].pvalue) != 0)
-            || (wanChangeNotification && ( !util_strcmp(ctdefaultvalue[i].paraName, "InternetGatewayDevice.ManagementServer.InternetPvc")))))
+                                          || (wanChangeNotification &&
+                                              (!util_strcmp(ctdefaultvalue[i].paraName, "InternetGatewayDevice.ManagementServer.InternetPvc")))))
             {
                 UTIL_STRNCPY(ctdefaultvalue[i].pvalue, paramValue, BUFLEN_256);
-                
+
                 if (pc)
                 {
                     memset(tmpbuf, 0, 512);
@@ -6168,13 +6205,13 @@ int ctmdw_getAllMDWNotifications(char *pc)
                     }
 
                     CTMDW_DEBUG("ctmdw: ctmdw_getAllMDWNotifications found %s \n", tmpbuf);
-                }    
+                }
             }
-            
+
             VOS_MEM_FREE_BUF_AND_NULL_PTR(paramValue);
-        }                    
+        }
         else
-        {                
+        {
             CTMDW_DEBUG("ctmdw: ctmdw_getAllMDWNotifications can't find ctdefaultvalue from the TR069 Object Tree!!!\n");
         }
     }
@@ -6199,26 +6236,26 @@ int ctmdw_getAllMDWNotifications(char *pc)
                 {
                     memset(tmpbuf, 0, BUFLEN_512);
                     memset(tmpctname, 0, BUFLEN_512);
-    
+
                     CMC_phlGetParamAttr(nextPath, &paramAttr);
-    
+
                     if (paramAttr.notification >= CTMDW_NOTIFICATION_READABLE)
                     {
                         if (CMC_phlIsParamValueChanged(nextPath, &change))
-                        {                        
+                        {
                             char *paramValue = NULL;
                             if (tr69c_getParamValue(nextPath, &paramValue) == VOS_RET_SUCCESS)
                             {
                                 if ((paramValue[0] != '\0') && pc)
                                 {
-                                    if(0 != mappingTR69NameToCTName(paramAttr.paramPath, tmpctname, sizeof(paramAttr.paramPath)))
+                                    if (0 != mappingTR69NameToCTName(paramAttr.paramPath, tmpctname, sizeof(paramAttr.paramPath)))
                                     {
                                         UTIL_STRNCPY(tmpctname, paramAttr.paramPath, BUFLEN_512);
                                     }
-    
+
                                     UTIL_SNPRINTF(tmpbuf, sizeof(tmpbuf), "&%s=%s", tmpctname, paramValue);
                                     UTIL_STRNCAT(pc, tmpbuf, CTMDW_PACKET_MAXLEN);
-                                }                              
+                                }
                             }
                         }
                     }
@@ -6240,388 +6277,389 @@ int ctmdw_getAllMDWNotifications(char *pc)
             }
         }
 #if 0
-    ret = CMC_phlGetParamAttrList("InternetGatewayDevice",TRUE, FALSE, paramAttr, &paramNum);
-    if (ret == VOS_RET_SUCCESS)
-    {
-        for (a = 0; a < paramNum; a++)
+        ret = CMC_phlGetParamAttrList("InternetGatewayDevice", TRUE, FALSE, paramAttr, &paramNum);
+        if (ret == VOS_RET_SUCCESS)
         {
-            for (i=0 ; i < ARRAY_SIZE(ctdefaultvalue); i++ ) 
+            for (a = 0; a < paramNum; a++)
             {
-                if (util_strcmp(ctdefaultvalue[i].paraName, "InternetGatewayDevice") == 0);
-                skip = 1;
-            }
-
-            if (skip == 0)
-            {
-                memset(tmpbuf, 0, BUFLEN_512);
-                memset(tmpctname, 0, BUFLEN_512);
-
-                if (paramAttr->notification >= CTMDW_NOTIFICATION_READABLE)
+                for (i = 0 ; i < ARRAY_SIZE(ctdefaultvalue); i++)
                 {
-                    CMC_phlIsParamValueChanged(paramAttr->paramPath, &change);
-                    if (TRUE == change)
+                    if (util_strcmp(ctdefaultvalue[i].paraName, "InternetGatewayDevice") == 0);
+                    skip = 1;
+                }
+
+                if (skip == 0)
+                {
+                    memset(tmpbuf, 0, BUFLEN_512);
+                    memset(tmpctname, 0, BUFLEN_512);
+
+                    if (paramAttr->notification >= CTMDW_NOTIFICATION_READABLE)
                     {
-                        ret = tr69c_getParamValue(paramAttr->paramPath, &paramValue);
-                        if (ret == VOS_RET_SUCCESS)
+                        CMC_phlIsParamValueChanged(paramAttr->paramPath, &change);
+                        if (TRUE == change)
                         {
-                            if ((paramValue != NULL) && pc)
+                            ret = tr69c_getParamValue(paramAttr->paramPath, &paramValue);
+                            if (ret == VOS_RET_SUCCESS)
                             {
-                                if (0 != mappingTR69NameToCTName(paramAttr->paramPath, tmpctname, sizeof(paramAttr->paramPath)))
+                                if ((paramValue != NULL) && pc)
                                 {
-                                    UTIL_STRNCPY(tmpctname, paramAttr->paramPath, BUFLEN_512);
+                                    if (0 != mappingTR69NameToCTName(paramAttr->paramPath, tmpctname, sizeof(paramAttr->paramPath)))
+                                    {
+                                        UTIL_STRNCPY(tmpctname, paramAttr->paramPath, BUFLEN_512);
+                                    }
+
+                                    UTIL_SNPRINTF(tmpbuf, sizeof(tmpbuf), "&%s=%s", tmpctname, paramValue);
+                                    UTIL_STRNCAT(*pc, tmpbuf, CTMDW_PACKET_MAXLEN - util_strlen(*pc));
                                 }
 
-                                UTIL_SNPRINTF(tmpbuf, sizeof(tmpbuf), "&%s=%s", tmpctname, paramValue);
-                                UTIL_STRNCAT(*pc, tmpbuf, CTMDW_PACKET_MAXLEN - util_strlen(*pc));
-                            } 
-                            
-                            VOS_MEM_FREE_BUF_AND_NULL_PTR(paramValue);
-                        }
-                    }
-                }
-            }
-            else
-            {
-                skip = 0;
-                vosLog_debug("CMC_phlGetParamAttrList skip default param");
-            }
-
-            paramAttr ++;
-        }
-#endif
-    }
-    else
-    {
-        vosLog_error("CMC_phlGetParamAttrList run failed!");
-    }
-
-    return ret;
-}
-
-int ctmdw_getAllITMSNotifications(char *pc)
-{
-    char   *paramValue = NULL;
-    VOS_RET_E ret = VOS_RET_SUCCESS;
-    char nextPath[TR69C_PARAM_FULL_PATH_LENGTH] = {0};
-    UBOOL8 change = FALSE;
-    UBOOL8 isExist;
-    UBOOL8 isFirst = TRUE;
-    int   cnt = 0;
-
-    ret = CMC_phlIsPathExist("InternetGatewayDevice.", &isExist);
-
-    if (isExist)
-    {
-        while (ret == VOS_RET_SUCCESS)
-        {
-            ret = CMC_phlGetNextPath(TRUE, FALSE, "InternetGatewayDevice.", nextPath, sizeof(nextPath));
-            if (ret == VOS_RET_SUCCESS)
-            {
-                CMC_PHL_GET_PARAM_ATTR_T paramAttr;
-                char tmpbuf[512];
-                char tmpctname[512];
-                VOS_RET_E ret1 = VOS_RET_SUCCESS;
-                memset(tmpbuf, 0, 512);
-                memset(tmpctname, 0, 512);
-                memset(&paramAttr, 0, sizeof(CMC_PHL_GET_PARAM_ATTR_T));
-
-                ret1 = CMC_phlGetParamAttr(nextPath, &paramAttr);
-                if (ret1 == VOS_RET_SUCCESS && (paramAttr.notification & (PASSIVE_NOTIFICATION|ACTIVE_NOTIFICATION)) > NOTIFICATION_OFF)
-                {
-                    CMC_phlIsParamValueChanged(paramAttr.paramPath, &change);
-                    if (TRUE == change)
-                    {
-                        ret = tr69c_getParamValue(paramAttr.paramPath, &paramValue);
-                        if (ret == VOS_RET_SUCCESS)
-                        {
-                            if(0 == util_strcmp(paramAttr.paramPath, "InternetGatewayDevice.ManagementServer.ConnectionRequestURL"))
-                            {
-                                continue;
+                                VOS_MEM_FREE_BUF_AND_NULL_PTR(paramValue);
                             }
-                            if ((paramValue!= NULL) && pc)
-                            {
-                                if (0 != mappingTR69NameToCTName(paramAttr.paramPath, tmpctname, sizeof(paramAttr.paramPath)))
-                                {
-                                    UTIL_STRNCPY(tmpctname, paramAttr.paramPath, BUFLEN_512);
-                                }
-                                if (isFirst)
-                                {
-                                    UTIL_SNPRINTF(pc, CTMDW_PACKET_MAXLEN, "&%s=%s", tmpctname, paramValue); 
-                                    isFirst = FALSE;
-                                }
-                                else
-                                {
-                                    UTIL_SNPRINTF(tmpbuf, sizeof(tmpbuf), "&%s=%s", tmpctname, paramValue); 
-                                    UTIL_STRNCAT(pc,tmpbuf, CTMDW_PACKET_MAXLEN);
-                                }
-                                
-                                cnt ++;
-                            } 
-
                         }
                     }
                 }
-            }
-            else if (ret == VOS_RET_NO_MORE_INSTANCES)
-            {
-                ret = VOS_RET_SUCCESS;
-                break;
-            }
-            else
-            {
-                vosLog_error("CMC_phlGetNextPath error, ret = %d", ret);
-            }
-        }
-    }
-
-    return ret;
-}
-
-static void ctmdw_writeGetPName(CMC_PHL_GET_PARAM_NAME_T *paramName, char **pc)
-{
-   int   writeable    = 0;
-   int   makeFragName = 0;
-   char *p = NULL;
-   char *param = NULL; 
-   char tmpbuf[512];
-   char tmpctname[512];
-   
-   memset(tmpbuf, 0, 512);
-   memset(tmpctname, 0, 512);
-
-  if (paramName->paramPath[util_strlen(paramName->paramPath)-1] == '.')
-  {
-      paramName->paramPath[util_strlen(paramName->paramPath)-1] = '\0';
-      makeFragName = 1;
-  }
-  
-  param = p = paramName->paramPath;
-
-  while((p = util_strstr(p, ".")) != NULL)
-  {
-      p++;
-      param = p;
-  }
-
-   if (paramName->writable == 1)
-   {
-    writeable = 1;
-   }
-   
-   UTIL_SNPRINTF(tmpbuf, sizeof(tmpbuf), "&%s%s=%s", param, (makeFragName)?".":"", writeable?"1":"0");
-   if (pc)
-   {
-      UTIL_STRNCAT(*pc, tmpbuf, CTMDW_PACKET_MAXLEN+CTMDW_PACKET_MAXLEN+CTMDW_PACKET_MAXLEN);
-   }
-}  /* End of ctmdw_writeGetPName() */
-
-
-/* 
-* ctmdw_doGetParameterNames requests a single parameter path or single parameter path fragment 
-*/
-int ctmdw_doGetParameterNamesFromTR69(char *name, char *retbuf)
-{
-    VOS_RET_E ret = VOS_RET_SUCCESS;
-    VOS_RET_E ret1 = VOS_RET_SUCCESS;
-    const char *pp = name;
-    UBOOL8 nextLevelOnly = TRUE;
-    UBOOL8 pathIsEmpty = FALSE;
-//    UBOOL8 isParamPath = FALSE;
-    UBOOL8 isPathExists = FALSE;
-    CMC_PHL_GET_PARAM_NAME_T paramName; 
-//    UINT32 paramNum = 0;
-    char nextPath[TR69C_PARAM_FULL_PATH_LENGTH] = {0};
-    memset(&paramName, 0, sizeof(CMC_PHL_GET_PARAM_NAME_T));
-
-    if (pp == NULL || util_strlen(pp) == 0)
-    {
-        ret = CMC_phlIsPathExist("InternetGatewayDevice.", &isPathExists);
-        pathIsEmpty = TRUE;
-    }
-    else
-    {
-        ret = CMC_phlIsPathExist(pp, &isPathExists);
-    }
-
-    if ( ret != VOS_RET_SUCCESS)
-    {
-        vosLog_error("invalid param: %s!", pp);
-        return -1;
-    }
-
-    ret = CMC_phlGetParamName(pp, &paramName);
-
-    if (paramName.paramPath[util_strlen(paramName.paramPath) - 1] != '.')
-    {
-            ctmdw_writeGetPName(&paramName, (char **)&retbuf);
-            ret = 1;
-    }
-    else
-    {
-        /* this is an object path */
-        /* traverse the sub-tree below the object node */
-        UBOOL8 firstParam = TRUE;
-
-        while (ret1 == VOS_RET_SUCCESS)
-        {
-            ret1 = CMC_phlGetNextPath(FALSE, nextLevelOnly, pp, nextPath, sizeof(nextPath));
-
-            if (ret1 == VOS_RET_SUCCESS)
-            {
-                ret1 = CMC_phlGetParamName(nextPath, &paramName);
-                if (ret1 == VOS_RET_SUCCESS)
+                else
                 {
-                    if (!firstParam || !nextLevelOnly)
-                    {
-                        ctmdw_writeGetPName(&paramName, (char **)&retbuf);
-                    }
-                    else if (pathIsEmpty)
-                    {
-                        ctmdw_writeGetPName(&paramName, (char **)&retbuf);   
-                    }
-                    firstParam=FALSE;
-                    ret = 1;
+                    skip = 0;
+                    vosLog_debug("CMC_phlGetParamAttrList skip default param");
                 }
 
-                if (pathIsEmpty && nextLevelOnly)
+                paramAttr ++;
+            }
+#endif
+        }
+        else
+        {
+            vosLog_error("CMC_phlGetParamAttrList run failed!");
+        }
+
+        return ret;
+    }
+
+    int ctmdw_getAllITMSNotifications(char *pc)
+    {
+        char   *paramValue = NULL;
+        VOS_RET_E ret = VOS_RET_SUCCESS;
+        char nextPath[TR69C_PARAM_FULL_PATH_LENGTH] = {0};
+        UBOOL8 change = FALSE;
+        UBOOL8 isExist;
+        UBOOL8 isFirst = TRUE;
+        int   cnt = 0;
+
+        ret = CMC_phlIsPathExist("InternetGatewayDevice.", &isExist);
+
+        if (isExist)
+        {
+            while (ret == VOS_RET_SUCCESS)
+            {
+                ret = CMC_phlGetNextPath(TRUE, FALSE, "InternetGatewayDevice.", nextPath, sizeof(nextPath));
+                if (ret == VOS_RET_SUCCESS)
                 {
+                    CMC_PHL_GET_PARAM_ATTR_T paramAttr;
+                    char tmpbuf[512];
+                    char tmpctname[512];
+                    VOS_RET_E ret1 = VOS_RET_SUCCESS;
+                    memset(tmpbuf, 0, 512);
+                    memset(tmpctname, 0, 512);
+                    memset(&paramAttr, 0, sizeof(CMC_PHL_GET_PARAM_ATTR_T));
+
+                    ret1 = CMC_phlGetParamAttr(nextPath, &paramAttr);
+                    if (ret1 == VOS_RET_SUCCESS &&
+                            (paramAttr.notification & (PASSIVE_NOTIFICATION | ACTIVE_NOTIFICATION)) > NOTIFICATION_OFF)
+                    {
+                        CMC_phlIsParamValueChanged(paramAttr.paramPath, &change);
+                        if (TRUE == change)
+                        {
+                            ret = tr69c_getParamValue(paramAttr.paramPath, &paramValue);
+                            if (ret == VOS_RET_SUCCESS)
+                            {
+                                if (0 == util_strcmp(paramAttr.paramPath, "InternetGatewayDevice.ManagementServer.ConnectionRequestURL"))
+                                {
+                                    continue;
+                                }
+                                if ((paramValue != NULL) && pc)
+                                {
+                                    if (0 != mappingTR69NameToCTName(paramAttr.paramPath, tmpctname, sizeof(paramAttr.paramPath)))
+                                    {
+                                        UTIL_STRNCPY(tmpctname, paramAttr.paramPath, BUFLEN_512);
+                                    }
+                                    if (isFirst)
+                                    {
+                                        UTIL_SNPRINTF(pc, CTMDW_PACKET_MAXLEN, "&%s=%s", tmpctname, paramValue);
+                                        isFirst = FALSE;
+                                    }
+                                    else
+                                    {
+                                        UTIL_SNPRINTF(tmpbuf, sizeof(tmpbuf), "&%s=%s", tmpctname, paramValue);
+                                        UTIL_STRNCAT(pc, tmpbuf, CTMDW_PACKET_MAXLEN);
+                                    }
+
+                                    cnt ++;
+                                }
+
+                            }
+                        }
+                    }
+                }
+                else if (ret == VOS_RET_NO_MORE_INSTANCES)
+                {
+                    ret = VOS_RET_SUCCESS;
                     break;
                 }
-            }
-            else if (ret1 == VOS_RET_NO_MORE_INSTANCES)
-            {
-                break;
-            }
-            else
-            {
-                vosLog_error("CMC_phlGetNextPath error! ret = %d", ret);
-                return ret;
+                else
+                {
+                    vosLog_error("CMC_phlGetNextPath error, ret = %d", ret);
+                }
             }
         }
-#if 0
-        for (; i < paramNum; i++)
-        {
-            if (ret == VOS_RET_SUCCESS)
-            {
-                /* if nextLevelOnly is true, the first parameter name that matches
-                the given partial path object name should NOT be included
-                in the GetParameterNamesResponse */
-                if (!firstParam || nextLevelOnly == FALSE)
-                {
-                    ctmdw_writeGetPName(paramName, (char **)&retbuf);                     
-                }
-                else if (pathIsEmpty && nextLevelOnly)
-                {
-                    /* However, for the special case where ACS does a GetParameterNames
-                    with a blank name, then return the first name,
-                    which is InternetGatewayDevice. */
-                    ctmdw_writeGetPName(paramName, (char **)&retbuf);                     
-                }
 
-                ret = 1;
-            }
-            /* if ParameterPath is empty, with NextLevel is true, the response
-            * should list only "InternetGatewayDevice.".
-            */
-            if (pathIsEmpty && nextLevelOnly)
-            {
-                /* out of while loop after write out the first object "InternetGatewayDevice."*/
-                break; 
-            }
-        }
-#endif
+        return ret;
     }
-    return ret;
-}
 
-int ctmdw_doAddObjectFromTR69(char *name, char **value)
-{
-    char *pp = name;
-    int ret = -1;
-    int len = 0;
-    VOS_RET_E fault = VOS_RET_SUCCESS;;
-    UINT32 instanceNum = 0;
+    static void ctmdw_writeGetPName(CMC_PHL_GET_PARAM_NAME_T * paramName, char **pc)
+    {
+        int   writeable    = 0;
+        int   makeFragName = 0;
+        char *p = NULL;
+        char *param = NULL;
+        char tmpbuf[512];
+        char tmpctname[512];
 
-    /* The path name must end with a "." (dot) after the last node
-    * in the hierarchical name of the object.
+        memset(tmpbuf, 0, 512);
+        memset(tmpctname, 0, 512);
+
+        if (paramName->paramPath[util_strlen(paramName->paramPath) - 1] == '.')
+        {
+            paramName->paramPath[util_strlen(paramName->paramPath) - 1] = '\0';
+            makeFragName = 1;
+        }
+
+        param = p = paramName->paramPath;
+
+        while ((p = util_strstr(p, ".")) != NULL)
+        {
+            p++;
+            param = p;
+        }
+
+        if (paramName->writable == 1)
+        {
+            writeable = 1;
+        }
+
+        UTIL_SNPRINTF(tmpbuf, sizeof(tmpbuf), "&%s%s=%s", param, (makeFragName) ? "." : "", writeable ? "1" : "0");
+        if (pc)
+        {
+            UTIL_STRNCAT(*pc, tmpbuf, CTMDW_PACKET_MAXLEN + CTMDW_PACKET_MAXLEN + CTMDW_PACKET_MAXLEN);
+        }
+    }  /* End of ctmdw_writeGetPName() */
+
+
+    /*
+    * ctmdw_doGetParameterNames requests a single parameter path or single parameter path fragment
     */
-    if ((pp != NULL) && ((len = util_strlen(pp)) > 0) && (len <= 256) && (pp[len-1] == '.'))
+    int ctmdw_doGetParameterNamesFromTR69(char *name, char *retbuf)
     {
-        char  *pLastToken;
+        VOS_RET_E ret = VOS_RET_SUCCESS;
+        VOS_RET_E ret1 = VOS_RET_SUCCESS;
+        const char *pp = name;
+        UBOOL8 nextLevelOnly = TRUE;
+        UBOOL8 pathIsEmpty = FALSE;
+        //    UBOOL8 isParamPath = FALSE;
+        UBOOL8 isPathExists = FALSE;
+        CMC_PHL_GET_PARAM_NAME_T paramName;
+        //    UINT32 paramNum = 0;
+        char nextPath[TR69C_PARAM_FULL_PATH_LENGTH] = {0};
+        memset(&paramName, 0, sizeof(CMC_PHL_GET_PARAM_NAME_T));
 
-        pp[len-1] = 0;
-        if (((pLastToken = strrchr(pp, (int)'.')) != NULL) && (isalpha(*(++pLastToken))))
+        if (pp == NULL || util_strlen(pp) == 0)
         {
-            fault = VOS_RET_SUCCESS;
+            ret = CMC_phlIsPathExist("InternetGatewayDevice.", &isPathExists);
+            pathIsEmpty = TRUE;
         }
-        pp[len-1] = '.';
-    }
-    else
-    {
-        fault = VOS_RET_INVALID_PARAM_NAME;
-    }
-
-    if (fault == VOS_RET_SUCCESS)
-    {
-        fault = CMC_phlAddInstance(pp, &instanceNum);
-        if (fault == VOS_RET_SUCCESS_REBOOT_REQUIRED)
+        else
         {
-            ret = 2;
-        }
-        else if (fault == VOS_RET_SUCCESS)
-        {
-            ret = 1;
-        }
-        else if (fault == VOS_RET_INVALID_PARAM_NAME)
-        {
-            ret = -1;
+            ret = CMC_phlIsPathExist(pp, &isPathExists);
         }
 
-        if (ret != -1)
+        if (ret != VOS_RET_SUCCESS)
         {
-            *value = VOS_STRDUP(itoa(instanceNum));
+            vosLog_error("invalid param: %s!", pp);
+            return -1;
         }
-    }
-    
-    return ret;
-}
 
-int ctmdw_doDeleteObjectFromTR69(char *name)
-{
-    char *pp = name;
-    int  ret = -1;
-    int len = 0;
-    VOS_RET_E fault = VOS_RET_INVALID_PARAM_NAME;
+        ret = CMC_phlGetParamName(pp, &paramName);
 
-    if ((pp != NULL) &&
-    ((len = util_strlen(pp)) > 1) && (len <= 256) &&
-    (pp[len-1] == '.') && (isdigit(pp[len-2])))
-    {
-        fault = VOS_RET_SUCCESS;
-    }
-    else
-    {
-        fault = VOS_RET_INVALID_PARAM_NAME;
-    }
-
-    if (fault == VOS_RET_SUCCESS)
-    {
-        fault = CMC_phlDelInstance(pp);
-        if (fault == VOS_RET_SUCCESS_REBOOT_REQUIRED)
+        if (paramName.paramPath[util_strlen(paramName.paramPath) - 1] != '.')
         {
-            ret = 2;
-        }
-        else if (fault == VOS_RET_SUCCESS)
-        {
+            ctmdw_writeGetPName(&paramName, (char **)&retbuf);
             ret = 1;
         }
         else
         {
-            ret = -1;
+            /* this is an object path */
+            /* traverse the sub-tree below the object node */
+            UBOOL8 firstParam = TRUE;
+
+            while (ret1 == VOS_RET_SUCCESS)
+            {
+                ret1 = CMC_phlGetNextPath(FALSE, nextLevelOnly, pp, nextPath, sizeof(nextPath));
+
+                if (ret1 == VOS_RET_SUCCESS)
+                {
+                    ret1 = CMC_phlGetParamName(nextPath, &paramName);
+                    if (ret1 == VOS_RET_SUCCESS)
+                    {
+                        if (!firstParam || !nextLevelOnly)
+                        {
+                            ctmdw_writeGetPName(&paramName, (char **)&retbuf);
+                        }
+                        else if (pathIsEmpty)
+                        {
+                            ctmdw_writeGetPName(&paramName, (char **)&retbuf);
+                        }
+                        firstParam = FALSE;
+                        ret = 1;
+                    }
+
+                    if (pathIsEmpty && nextLevelOnly)
+                    {
+                        break;
+                    }
+                }
+                else if (ret1 == VOS_RET_NO_MORE_INSTANCES)
+                {
+                    break;
+                }
+                else
+                {
+                    vosLog_error("CMC_phlGetNextPath error! ret = %d", ret);
+                    return ret;
+                }
+            }
+#if 0
+            for (; i < paramNum; i++)
+            {
+                if (ret == VOS_RET_SUCCESS)
+                {
+                    /* if nextLevelOnly is true, the first parameter name that matches
+                    the given partial path object name should NOT be included
+                    in the GetParameterNamesResponse */
+                    if (!firstParam || nextLevelOnly == FALSE)
+                    {
+                        ctmdw_writeGetPName(paramName, (char **)&retbuf);
+                    }
+                    else if (pathIsEmpty && nextLevelOnly)
+                    {
+                        /* However, for the special case where ACS does a GetParameterNames
+                        with a blank name, then return the first name,
+                        which is InternetGatewayDevice. */
+                        ctmdw_writeGetPName(paramName, (char **)&retbuf);
+                    }
+
+                    ret = 1;
+                }
+                /* if ParameterPath is empty, with NextLevel is true, the response
+                * should list only "InternetGatewayDevice.".
+                */
+                if (pathIsEmpty && nextLevelOnly)
+                {
+                    /* out of while loop after write out the first object "InternetGatewayDevice."*/
+                    break;
+                }
+            }
+#endif
         }
+        return ret;
     }
 
-    return ret;
-}  /* End of doDeleteObject() */
+    int ctmdw_doAddObjectFromTR69(char *name, char **value)
+    {
+        char *pp = name;
+        int ret = -1;
+        int len = 0;
+        VOS_RET_E fault = VOS_RET_SUCCESS;;
+        UINT32 instanceNum = 0;
+
+        /* The path name must end with a "." (dot) after the last node
+        * in the hierarchical name of the object.
+        */
+        if ((pp != NULL) && ((len = util_strlen(pp)) > 0) && (len <= 256) && (pp[len - 1] == '.'))
+        {
+            char  *pLastToken;
+
+            pp[len - 1] = 0;
+            if (((pLastToken = strrchr(pp, (int)'.')) != NULL) && (isalpha(*(++pLastToken))))
+            {
+                fault = VOS_RET_SUCCESS;
+            }
+            pp[len - 1] = '.';
+        }
+        else
+        {
+            fault = VOS_RET_INVALID_PARAM_NAME;
+        }
+
+        if (fault == VOS_RET_SUCCESS)
+        {
+            fault = CMC_phlAddInstance(pp, &instanceNum);
+            if (fault == VOS_RET_SUCCESS_REBOOT_REQUIRED)
+            {
+                ret = 2;
+            }
+            else if (fault == VOS_RET_SUCCESS)
+            {
+                ret = 1;
+            }
+            else if (fault == VOS_RET_INVALID_PARAM_NAME)
+            {
+                ret = -1;
+            }
+
+            if (ret != -1)
+            {
+                *value = VOS_STRDUP(itoa(instanceNum));
+            }
+        }
+
+        return ret;
+    }
+
+    int ctmdw_doDeleteObjectFromTR69(char *name)
+    {
+        char *pp = name;
+        int  ret = -1;
+        int len = 0;
+        VOS_RET_E fault = VOS_RET_INVALID_PARAM_NAME;
+
+        if ((pp != NULL) &&
+                ((len = util_strlen(pp)) > 1) && (len <= 256) &&
+                (pp[len - 1] == '.') && (isdigit(pp[len - 2])))
+        {
+            fault = VOS_RET_SUCCESS;
+        }
+        else
+        {
+            fault = VOS_RET_INVALID_PARAM_NAME;
+        }
+
+        if (fault == VOS_RET_SUCCESS)
+        {
+            fault = CMC_phlDelInstance(pp);
+            if (fault == VOS_RET_SUCCESS_REBOOT_REQUIRED)
+            {
+                ret = 2;
+            }
+            else if (fault == VOS_RET_SUCCESS)
+            {
+                ret = 1;
+            }
+            else
+            {
+                ret = -1;
+            }
+        }
+
+        return ret;
+    }  /* End of doDeleteObject() */
 
 

@@ -106,16 +106,18 @@
 #define TAG_NATULANG         0x48	/* naturalLanguage */
 #define TAG_MIMETYPE         0x49	/* mimeMediaType */
 
-struct ipp_hdr {
-	int8_t  major_version;	/* always 1 */
-	int8_t  minor_version;	/* always 1 */
-	union {
-		int16_t op;	/* operation ID */
-		int16_t st;	/* status */
-	} u;
-	int32_t request_id;		/* request ID */
-	char    attr_group[1];	/* start of optional attributes group */
-	/* optional data follows */
+struct ipp_hdr
+{
+    int8_t  major_version;	/* always 1 */
+    int8_t  minor_version;	/* always 1 */
+    union
+    {
+        int16_t op;	/* operation ID */
+        int16_t st;	/* status */
+    } u;
+    int32_t request_id;		/* request ID */
+    char    attr_group[1];	/* start of optional attributes group */
+    /* optional data follows */
 };
 
 #define operation u.op

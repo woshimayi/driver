@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-static const char table64[]="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+static const char table64[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
 size_t b64_encode(const char *inp, size_t insize, char **outptr)
 {
@@ -20,18 +20,22 @@ size_t b64_encode(const char *inp, size_t insize, char **outptr)
     if (0 == insize)
         insize = strlen(indata);
 
-    base64data = output = (char*)malloc(insize*4/3+4);
+    base64data = output = (char *)malloc(insize * 4 / 3 + 4);
     if (NULL == output)
         return 0;
 
-    while (insize > 0) {
-        for (i = inputparts = 0; i < 3; i++) {
-            if (insize > 0) {
+    while (insize > 0)
+    {
+        for (i = inputparts = 0; i < 3; i++)
+        {
+            if (insize > 0)
+            {
                 inputparts++;
                 ibuf[i] = *indata;
                 indata++;
                 insize--;
-            } else
+            }
+            else
                 ibuf[i] = 0;
         }
 
@@ -40,29 +44,30 @@ size_t b64_encode(const char *inp, size_t insize, char **outptr)
         obuf [2] = ((ibuf [1] & 0x0F) << 2) | ((ibuf [2] & 0xC0) >> 6);
         obuf [3] = ibuf [2] & 0x3F;
 
-        switch (inputparts) {
-        case 1: /* only one byte read */
-            snprintf(output, 5, "%c%c==",
-                     table64[obuf[0]],
-                     table64[obuf[1]]);
-            break;
-        case 2: /* two bytes read */
-            snprintf(output, 5, "%c%c%c=",
-                     table64[obuf[0]],
-                     table64[obuf[1]],
-                     table64[obuf[2]]);
-            break;
-        default:
-            snprintf(output, 5, "%c%c%c%c",
-                     table64[obuf[0]],
-                     table64[obuf[1]],
-                     table64[obuf[2]],
-                     table64[obuf[3]] );
-            break;
+        switch (inputparts)
+        {
+            case 1: /* only one byte read */
+                snprintf(output, 5, "%c%c==",
+                         table64[obuf[0]],
+                         table64[obuf[1]]);
+                break;
+            case 2: /* two bytes read */
+                snprintf(output, 5, "%c%c%c=",
+                         table64[obuf[0]],
+                         table64[obuf[1]],
+                         table64[obuf[2]]);
+                break;
+            default:
+                snprintf(output, 5, "%c%c%c%c",
+                         table64[obuf[0]],
+                         table64[obuf[1]],
+                         table64[obuf[2]],
+                         table64[obuf[3]]);
+                break;
         }
         output += 4;
     }
-    *output=0;
+    *output = 0;
     *outptr = base64data; /* make it return the actual data memory */
 
     return strlen(base64data); /* return the length of the new data */
@@ -78,7 +83,7 @@ static void generateBasicAuth(char *user, char *pwd)
     strncpy(raw, user, sizeof(raw));
     strncat(raw, ":", sizeof(raw));
     strncat(raw, pwd, sizeof(raw));
-    dataLen=strlen(raw);
+    dataLen = strlen(raw);
     b64Len = b64_encode(raw, dataLen, &b64Buf);
     printf("%s\n", b64Buf);
 }
@@ -88,10 +93,10 @@ static void generateBasicAuth(char *user, char *pwd)
 
 int main()
 {
-	char usr[] = "";
-	char pwd[] = "";
-	generateBasicAuth(usr, pwd);
-	return 0;
+    char usr[] = "";
+    char pwd[] = "";
+    generateBasicAuth(usr, pwd);
+    return 0;
 }
 
 

@@ -1,22 +1,22 @@
 
 /*----------------------------------------------------------------------*
-<:copyright-broadcom 
- 
- Copyright (c) 2005 Broadcom Corporation 
- All Rights Reserved 
- No portions of this material may be reproduced in any form without the 
- written permission of: 
-          Broadcom Corporation 
-          16215 Alton Parkway 
-          Irvine, California 92619 
- All information contained in this document is Broadcom Corporation 
- company private, proprietary, and trade secret. 
- 
+<:copyright-broadcom
+
+ Copyright (c) 2005 Broadcom Corporation
+ All Rights Reserved
+ No portions of this material may be reproduced in any form without the
+ written permission of:
+          Broadcom Corporation
+          16215 Alton Parkway
+          Irvine, California 92619
+ All information contained in this document is Broadcom Corporation
+ company private, proprietary, and trade secret.
+
 :>
  *----------------------------------------------------------------------*
- * File Name  : 
+ * File Name  :
  *
- * Description:  
+ * Description:
  * $Revision: 1.20 $
  * $Id: protocol.c,v 1.20 2006/01/31 23:19:54 dmounday Exp $
  *----------------------------------------------------------------------*/
@@ -52,7 +52,7 @@
     #include <dmalloc.h>
 #endif
 
-static UBOOL8 firstEagain=FALSE;   /* true means had a EAGAIN for errno */
+static UBOOL8 firstEagain = FALSE; /* true means had a EAGAIN for errno */
 static UtilTimestamp socketErrorTimeStamp = {0, 0};
 #define SOCKET_ERROR_TIMEOUT (3 * MSECS_IN_SEC)
 
@@ -70,24 +70,24 @@ static UtilTimestamp socketErrorTimeStamp = {0, 0};
 #define DBGSSLC(X)
 //#define DEBUGHDRS /* log html headers */
 
-#ifdef DEBUGSSL 
-    #define mkstr(S) # S
-    #define setListener(A,B,C) {fprintf(stderr,mkstr(%s setListener B fd=%d\n), getticks(), A);\
-setListener( A,B,C);}
+#ifdef DEBUGSSL
+#define mkstr(S) # S
+#define setListener(A,B,C) {fprintf(stderr,mkstr(%s setListener B fd=%d\n), getticks(), A);\
+        setListener( A,B,C);}
 
-    #define setListenerType(A,B,C,E) {fprintf(stderr,mkstr(%s setListenerType B-E fd=%d\n), getticks(), A);\
-setListenerType( A,B,C,E);}
+#define setListenerType(A,B,C,E) {fprintf(stderr,mkstr(%s setListenerType B-E fd=%d\n), getticks(), A);\
+        setListenerType( A,B,C,E);}
 
-    #define stopListener(A) {fprintf(stderr,"%s stopListener fd=%d\n", getticks(), A);\
-stopListener( A );}
+#define stopListener(A) {fprintf(stderr,"%s stopListener fd=%d\n", getticks(), A);\
+        stopListener( A );}
 #endif
 #ifdef DEBUGSSL
 char timestr[40];
 char *getticks()
 {
     struct timeval now;
-    gettimeofday( &now,NULL);
-    sprintf(timestr,"%04ld.%06ld", now.tv_sec%1000, now.tv_usec);
+    gettimeofday(&now, NULL);
+    sprintf(timestr, "%04ld.%06ld", now.tv_sec % 1000, now.tv_usec);
     return timestr;
 }
 
@@ -98,7 +98,8 @@ char *getticks()
 /*======================================================================*
  * Util
  *======================================================================*/
-typedef struct {
+typedef struct
+{
     tProtoCtx *pc;
     tSSLIO    iofunc;
     char *ptr;
@@ -113,16 +114,16 @@ typedef struct {
   * This flag is initialize, enabled or disabled in main.c,
   * and perform action in protocol.c
   */
-  
+
 extern ACSState acsState;
 
 static SSL_CTX *ssl_ctx = NULL;
 
-extern void writeLog(const char * buf, int bufLen);
+extern void writeLog(const char *buf, int bufLen);
 
 
 #ifdef DEBUGSSL
-static void showSocketStatus( unsigned fd)
+static void showSocketStatus(unsigned fd)
 {
 
     struct pollfd fdl[1];
@@ -130,10 +131,10 @@ static void showSocketStatus( unsigned fd)
 
     fdl[0].fd = fd;
     fdl[0].events = 0xff;
-    if ( (e=poll(fdl,1,0))<0)
-        fprintf(stderr,"*poll() error\n");
+    if ((e = poll(fdl, 1, 0)) < 0)
+        fprintf(stderr, "*poll() error\n");
     else
-        fprintf(stderr, "poll=%0x\n",fdl[0].revents);
+        fprintf(stderr, "poll=%0x\n", fdl[0].revents);
 }
 #endif
 
@@ -165,13 +166,13 @@ static int verify_callback(int ok, X509_STORE_CTX *store __attribute__((unused))
 
         if (0 == ok)
         {
-            vosLog_error("error_num = %d, err_msg = %s, depth = %d,\nsubject = %s,\nissuer = %s\n", 
-                err, X509_verify_cert_error_string(err), depth, subject, issuer);
+            vosLog_error("error_num = %d, err_msg = %s, depth = %d,\nsubject = %s,\nissuer = %s\n",
+                         err, X509_verify_cert_error_string(err), depth, subject, issuer);
         }
         else
         {
-            vosLog_debug("error_num = %d, err_msg = %s, depth = %d,\nsubject = %s,\nissuer = %s\n", 
-                err, X509_verify_cert_error_string(err), depth, subject, issuer);
+            vosLog_debug("error_num = %d, err_msg = %s, depth = %d,\nsubject = %s,\nissuer = %s\n",
+                         err, X509_verify_cert_error_string(err), depth, subject, issuer);
         }
 
         if (subject != NULL)
@@ -197,7 +198,7 @@ static int verify_callback(int ok, X509_STORE_CTX *store __attribute__((unused))
             }
         }
     }
-    
+
     return ok;
 }
 
@@ -208,7 +209,7 @@ static int verify_callback(int ok, X509_STORE_CTX *store __attribute__((unused))
 void proto_Init()
 {
     vosLog_debug("=====>ENTER");
-    
+
     if (SF_FEATURE_SUPPORT_TR69C_SSL)
     {
 #ifdef USE_DMALLOC
@@ -219,12 +220,12 @@ void proto_Init()
         SSL_load_error_strings();
         SSL_library_init();
         ssl_ctx = SSL_CTX_new(SSLv3_client_method());
-        if (NULL == ssl_ctx) 
+        if (NULL == ssl_ctx)
         {
             vosLog_error("Could not create SSL context");
             exit(1);
         }
-        
+
         if (SF_FEATURE_SUPPORT_TR69C_ORIGINAL_OPENSSL)
         {
             /* bcm ssl setup cipher list by default, so skip the error log */
@@ -233,44 +234,44 @@ void proto_Init()
                 vosLog_error("Could not set cipher list for SSL");
             }
         }
-    
+
 #ifdef USE_CERTIFICATES
         {
             struct stat filestat;
             /* PT: add to support client certificate*/
-            if (SF_FEATURE_SUPPORT_TR69C_ORIGINAL_OPENSSL)        
+            if (SF_FEATURE_SUPPORT_TR69C_ORIGINAL_OPENSSL)
             {
-                if (0 == lstat(CLIENT_CERT_FILE, &filestat)) 
+                if (0 == lstat(CLIENT_CERT_FILE, &filestat))
                 {
                     if (0 == lstat(CLIENT_PRIVATE_KEY_FILE, &filestat))
-                    {         
-                        if (SSL_CTX_use_certificate_file(ssl_ctx, CLIENT_CERT_FILE, SSL_FILETYPE_PEM) <= 0) 
+                    {
+                        if (SSL_CTX_use_certificate_file(ssl_ctx, CLIENT_CERT_FILE, SSL_FILETYPE_PEM) <= 0)
                         {
                             vosLog_error("Error loading the client certificate");
                         }
-                        
-                        if (SSL_CTX_use_PrivateKey_file(ssl_ctx, CLIENT_PRIVATE_KEY_FILE, SSL_FILETYPE_PEM) <= 0) 
+
+                        if (SSL_CTX_use_PrivateKey_file(ssl_ctx, CLIENT_PRIVATE_KEY_FILE, SSL_FILETYPE_PEM) <= 0)
                         {
                             vosLog_error("Error loading the client private key");
                         }
-                        
-                        if (! SSL_CTX_check_private_key(ssl_ctx)) 
+
+                        if (! SSL_CTX_check_private_key(ssl_ctx))
                         {
-                            vosLog_error("Private key does not match the client certificate public key" );
+                            vosLog_error("Private key does not match the client certificate public key");
                         }
-                    } 
-                    else 
+                    }
+                    else
                     {
                         vosLog_error("No private key found");
                     }
-                } 
-                else 
+                }
+                else
                 {
                     vosLog_notice("No client certificate found");
                 }
-            } 
-            
-            if (0 == lstat(ROOT_CERT_FILE, &filestat)) 
+            }
+
+            if (0 == lstat(ROOT_CERT_FILE, &filestat))
             {
                 int retval = SSL_CTX_load_verify_locations(ssl_ctx, ROOT_CERT_FILE, CERT_PATH);
                 /* for both ssl, retval == 1 is load verified */
@@ -278,25 +279,25 @@ void proto_Init()
                 {
                     vosLog_error("Could not load verify locations");
                 }
-                
-                /* if fail to load certificate, set the certificate verify anyway */              
+
+                /* if fail to load certificate, set the certificate verify anyway */
                 SSL_CTX_set_verify(ssl_ctx, SSL_VERIFY_PEER, verify_callback);
-            } 
-            else 
+            }
+            else
             {
                 /* for bcm ssl, if no certificate in the system, just skip the certificate check */
                 vosLog_notice("No server certificate found. Skip checking on certificate.");
                 SSL_CTX_set_verify(ssl_ctx, SSL_VERIFY_NONE, 0);
             }
         }
-   
+
 #endif // USE_CERTIFICATES
-        if (SF_FEATURE_SUPPORT_TR69C_ORIGINAL_OPENSSL)        
+        if (SF_FEATURE_SUPPORT_TR69C_ORIGINAL_OPENSSL)
         {
             SSL_CTX_set_mode(ssl_ctx, SSL_MODE_AUTO_RETRY);
             ERR_print_errors_fp(stderr);
             SSL_CTX_set_session_cache_mode(ssl_ctx, SSL_SESS_CACHE_OFF);
-        }  
+        }
     }
 }  /* End of proto_Init() */
 
@@ -306,13 +307,13 @@ void proto_Init()
 /*----------------------------------------------------------------------*/
 tProtoCtx *proto_NewCtx(int fd)
 {
-   tProtoCtx *pc;
+    tProtoCtx *pc;
 
-   pc = (tProtoCtx *)VOS_MALLOC_FLAGS(sizeof(tProtoCtx), ALLOC_ZEROIZE);
-   pc->type = iNormal;
-   pc->fd   = fd;
-   
-   return pc;
+    pc = (tProtoCtx *)VOS_MALLOC_FLAGS(sizeof(tProtoCtx), ALLOC_ZEROIZE);
+    pc->type = iNormal;
+    pc->fd   = fd;
+
+    return pc;
 
 }  /* End of proto_NewCtx() */
 
@@ -320,49 +321,49 @@ tProtoCtx *proto_NewCtx(int fd)
 /*----------------------------------------------------------------------*/
 static void server_wait_for_ssl(void *handle)
 {
-   tProtoCtx *pc = handle;
+    tProtoCtx *pc = handle;
 
 #ifdef DEBUGSSL
-   vosLog_debug("%s server_wait_for_ssl() SSL connect fd=%d ", getticks(), pc->fd);
-   showSocketStatus(pc->fd);
+    vosLog_debug("%s server_wait_for_ssl() SSL connect fd=%d ", getticks(), pc->fd);
+    showSocketStatus(pc->fd);
 #endif
-   /*stopListener(pc->fd);*/
-   if ((pc->sslConn = SSL_connect(pc->ssl)) <= 0)
-   {
-      int sslres;
-      sslres = SSL_get_error(pc->ssl, pc->sslConn);
-      if (sslres == SSL_ERROR_WANT_READ)
-      {
+    /*stopListener(pc->fd);*/
+    if ((pc->sslConn = SSL_connect(pc->ssl)) <= 0)
+    {
+        int sslres;
+        sslres = SSL_get_error(pc->ssl, pc->sslConn);
+        if (sslres == SSL_ERROR_WANT_READ)
+        {
 #ifdef DEBUGSSL
-         vosLog_debug("%s SSL connection wants to read fd=%d", getticks(), pc->fd);
+            vosLog_debug("%s SSL connection wants to read fd=%d", getticks(), pc->fd);
 #endif
-         setListener(pc->fd, server_wait_for_ssl, pc);
-      }
-      else if (sslres == SSL_ERROR_WANT_WRITE)
-      {
+            setListener(pc->fd, server_wait_for_ssl, pc);
+        }
+        else if (sslres == SSL_ERROR_WANT_WRITE)
+        {
 #ifdef DEBUGSSL
-         vosLog_debug("%s SSL connection wants to write fd=%d",getticks(), pc->fd);
+            vosLog_debug("%s SSL connection wants to write fd=%d", getticks(), pc->fd);
 #endif
-         setListenerType(pc->fd, server_wait_for_ssl, pc, iListener_Write);      
-      }
-      else
-      {
-         char errstr[256];
-         ERR_error_string_n(sslres, errstr, 256);
-         vosLog_debug("Error connecting to server(Possible certificate error): (res=%d,sslres=%d) %s",
-                        pc->sslConn, sslres, errstr);
-         (*(pc->cb))(pc->data, PROTO_ERROR_SSL);
-         /* Note: pc may have been freed by the callback */
-         return;
-      }
-   }
-   else
-   {
+            setListenerType(pc->fd, server_wait_for_ssl, pc, iListener_Write);
+        }
+        else
+        {
+            char errstr[256];
+            ERR_error_string_n(sslres, errstr, 256);
+            vosLog_debug("Error connecting to server(Possible certificate error): (res=%d,sslres=%d) %s",
+                         pc->sslConn, sslres, errstr);
+            (*(pc->cb))(pc->data, PROTO_ERROR_SSL);
+            /* Note: pc may have been freed by the callback */
+            return;
+        }
+    }
+    else
+    {
 #ifdef DEBUGSSL
-      vosLog_debug("%s SSL server_wait_for_ssl callback fd=%d",getticks(), pc->fd);
+        vosLog_debug("%s SSL server_wait_for_ssl callback fd=%d", getticks(), pc->fd);
 #endif
-      (*(pc->cb))(pc->data, PROTO_OK);
-   }
+        (*(pc->cb))(pc->data, PROTO_OK);
+    }
 }  /* End of server_wait_for_ssl() */
 
 /*----------------------------------------------------------------------*
@@ -373,107 +374,107 @@ static void server_wait_for_ssl(void *handle)
  */
 void proto_SetSslCtx(tProtoCtx *pc, tProtoHandler cb, void *data)
 {
-   vosLog_debug("=====>ENTER");
-   pc->type = iSsl;
-   
-   if (pc->ssl == NULL)
-   {
-      pc->ssl = SSL_new(ssl_ctx);
-   }
+    vosLog_debug("=====>ENTER");
+    pc->type = iSsl;
 
-   if (pc->ssl != NULL)
-   {
-      DBGSSLC((stderr, "%s proto_SetSslCtx() ssl_ctx=%p ssl=%p fd=%d\n",
-               getticks(), ssl_ctx, pc->ssl, pc->fd));
-      if (SSL_set_fd(pc->ssl, pc->fd) > 0)
-      {
-         pc->cb   = cb;
-         pc->data = data;
-         /* TBD: add a timeout */
-         server_wait_for_ssl(pc);
-      }
-      else
-      {
-         vosLog_error("SSL_set_fd failed");
-      }
-   }
-   else
-   {
-      vosLog_error("SSL_new failed");
-   }
+    if (pc->ssl == NULL)
+    {
+        pc->ssl = SSL_new(ssl_ctx);
+    }
+
+    if (pc->ssl != NULL)
+    {
+        DBGSSLC((stderr, "%s proto_SetSslCtx() ssl_ctx=%p ssl=%p fd=%d\n",
+                 getticks(), ssl_ctx, pc->ssl, pc->fd));
+        if (SSL_set_fd(pc->ssl, pc->fd) > 0)
+        {
+            pc->cb   = cb;
+            pc->data = data;
+            /* TBD: add a timeout */
+            server_wait_for_ssl(pc);
+        }
+        else
+        {
+            vosLog_error("SSL_set_fd failed");
+        }
+    }
+    else
+    {
+        vosLog_error("SSL_new failed");
+    }
 }  /* End of proto_SetSslCtx() */
 
-static void postShutdownCleanUp( void *handle)
-{ 
-   tProtoCtx   *pc = (tProtoCtx *)handle;
+static void postShutdownCleanUp(void *handle)
+{
+    tProtoCtx   *pc = (tProtoCtx *)handle;
 
-   DBGSSLC( (stderr,"%s  postShutdownCleanUp() ssl=%p fd=%d\n", getticks(), pc->ssl, pc->fd) );
-   utilTmr_cancel(tmrHandle, postShutdownCleanUp, (void*)pc);
-   stopListener(pc->fd);
-   close(pc->fd);
-   if (pc->ssl)
-   {
-      SSL_free(pc->ssl);
-   }
-   pc->sslConn = 0;
-   VOS_FREE(pc);
-   return;
+    DBGSSLC((stderr, "%s  postShutdownCleanUp() ssl=%p fd=%d\n", getticks(), pc->ssl, pc->fd));
+    utilTmr_cancel(tmrHandle, postShutdownCleanUp, (void *)pc);
+    stopListener(pc->fd);
+    close(pc->fd);
+    if (pc->ssl)
+    {
+        SSL_free(pc->ssl);
+    }
+    pc->sslConn = 0;
+    VOS_FREE(pc);
+    return;
 
 }  /* End of postShutdownCleanUp() */
 
-static void wait_for_sslShutdown( void *handle)
+static void wait_for_sslShutdown(void *handle)
 {
-   tProtoCtx   *pc = (tProtoCtx *)handle;
-   int         r;
+    tProtoCtx   *pc = (tProtoCtx *)handle;
+    int         r;
 
-   DBGSSLC((stderr, "%s  wait_for_sslShutdown()fd=%d\n", getticks(), pc->fd));
-   r= SSL_shutdown(pc->ssl);
-   DBGSSLC((stderr, "%s  SSL_shutdown= %d ssl=%p fd=%d\n",
-            getticks(), r, pc->ssl, pc->fd ));
-   if (r == 0)
-   {
-      /* started shutdown -- now call again */
-      r= SSL_shutdown(pc->ssl);
-      DBGSSLC((stderr, "%s  2nd SSL_shutdown= %d ssl=%p fd=%d\n",
-               getticks(), r, pc->ssl, pc->fd) );
-   }
-   if (r == 1)
-   {
-      postShutdownCleanUp(pc);
-   }
-   else if (r == -1)
-   {
-      int sslres;
+    DBGSSLC((stderr, "%s  wait_for_sslShutdown()fd=%d\n", getticks(), pc->fd));
+    r = SSL_shutdown(pc->ssl);
+    DBGSSLC((stderr, "%s  SSL_shutdown= %d ssl=%p fd=%d\n",
+             getticks(), r, pc->ssl, pc->fd));
+    if (r == 0)
+    {
+        /* started shutdown -- now call again */
+        r = SSL_shutdown(pc->ssl);
+        DBGSSLC((stderr, "%s  2nd SSL_shutdown= %d ssl=%p fd=%d\n",
+                 getticks(), r, pc->ssl, pc->fd));
+    }
+    if (r == 1)
+    {
+        postShutdownCleanUp(pc);
+    }
+    else if (r == -1)
+    {
+        int sslres;
 
-      sslres = SSL_get_error(pc->ssl, r );
-      if (sslres == SSL_ERROR_WANT_READ)
-      {
-         DBGSSLC((stderr,"%s SSL_shutdown wants to read fd=%d\n", getticks(), pc->fd));
-         setListener(pc->fd, wait_for_sslShutdown, pc);
-      }
-      else if (sslres == SSL_ERROR_WANT_WRITE)
-      {
-         DBGSSLC((stderr,"%s SSL_shutdown wants to write fd=%d\n",getticks(), pc->fd));
-         setListenerType(pc->fd, wait_for_sslShutdown, pc, iListener_Write);      
-      }
-      else
-      {
-         char errstr[256];
-         ERR_error_string_n(sslres,errstr,256);
-         vosLog_error("SSL_shutdown server: (r=%d,sslres=%d) %s", r, sslres, errstr );
-         postShutdownCleanUp( pc );
-         return;
-      }
-   }
-   else
-   {
-      DBGSSLC((stderr, "%s  SSL_shutdown state error ssl=%p fd=%d\n",
-               getticks(), pc->ssl, pc->fd));
-      postShutdownCleanUp(pc);
-   }
-   return;
+        sslres = SSL_get_error(pc->ssl, r);
+        if (sslres == SSL_ERROR_WANT_READ)
+        {
+            DBGSSLC((stderr, "%s SSL_shutdown wants to read fd=%d\n", getticks(), pc->fd));
+            setListener(pc->fd, wait_for_sslShutdown, pc);
+        }
+        else if (sslres == SSL_ERROR_WANT_WRITE)
+        {
+            DBGSSLC((stderr, "%s SSL_shutdown wants to write fd=%d\n", getticks(), pc->fd));
+            setListenerType(pc->fd, wait_for_sslShutdown, pc, iListener_Write);
+        }
+        else
+        {
+            char errstr[256];
+            ERR_error_string_n(sslres, errstr, 256);
+            vosLog_error("SSL_shutdown server: (r=%d,sslres=%d) %s", r, sslres, errstr);
+            postShutdownCleanUp(pc);
+            return;
+        }
+    }
+    else
+    {
+        DBGSSLC((stderr, "%s  SSL_shutdown state error ssl=%p fd=%d\n",
+                 getticks(), pc->ssl, pc->fd));
+        postShutdownCleanUp(pc);
+    }
+    return;
 
-}  /* End of wait_for_sslShutdown() */ 
+}  /* End of wait_for_sslShutdown() */
 
 
 /*----------------------------------------------------------------------*/
@@ -484,111 +485,124 @@ void proto_FreeCtx(tProtoCtx *pc)
 {
     VOS_RET_E ret = VOS_RET_SUCCESS;
 
-   switch (pc->type)
-   {
-      case iNormal:
-         stopListener(pc->fd);
-         close(pc->fd);
-         VOS_FREE(pc);
-         break;
-         
-      case iSsl:
-        if (SF_FEATURE_SUPPORT_TR69C_SSL)
-        {
+    switch (pc->type)
+    {
+        case iNormal:
             stopListener(pc->fd);
-            DBGSSLC((stderr, "%s   proto_FreeCtx()ssl=%p fd=%d\n",
-            getticks(), pc->ssl, pc->fd));
-            ret = utilTmr_set(tmrHandle, postShutdownCleanUp, (void *)pc, 3000, "postShutdownCleanUp");
-            if (ret != VOS_RET_SUCCESS)
+            close(pc->fd);
+            VOS_FREE(pc);
+            break;
+
+        case iSsl:
+            if (SF_FEATURE_SUPPORT_TR69C_SSL)
             {
-                vosLog_error("could not set postShutdownCleanUp timer, ret=%d", ret);
+                stopListener(pc->fd);
+                DBGSSLC((stderr, "%s   proto_FreeCtx()ssl=%p fd=%d\n",
+                         getticks(), pc->ssl, pc->fd));
+                ret = utilTmr_set(tmrHandle, postShutdownCleanUp, (void *)pc, 3000, "postShutdownCleanUp");
+                if (ret != VOS_RET_SUCCESS)
+                {
+                    vosLog_error("could not set postShutdownCleanUp timer, ret=%d", ret);
+                }
+
+                if (pc->ssl)
+                {
+                    /* not completed */
+                    wait_for_sslShutdown(pc);
+                }
+                else
+                {
+                    postShutdownCleanUp(pc);
+                }
             }
-            
-            if (pc->ssl)
-            {
-                /* not completed */
-                wait_for_sslShutdown(pc);
-            }
-            else
-            {
-                postShutdownCleanUp(pc);
-            }
-        }
-        break;
-         
-      default:
-         vosLog_error("Impossible error; proto_FreeCtx() illegal ProtoCtx type (%d)",
-                        pc->type);
-         VOS_FREE(pc);
-         break;
-   }
+            break;
+
+        default:
+            vosLog_error("Impossible error; proto_FreeCtx() illegal ProtoCtx type (%d)",
+                         pc->type);
+            VOS_FREE(pc);
+            break;
+    }
 }  /* End of proto_FreeCtx() */
 
 
 /*
 * The following SSL io routines ensure that the parameters are saved
- * and restored in the subsequent call to SSL_read/write whenever the 
+ * and restored in the subsequent call to SSL_read/write whenever the
  * functions return a -1 indicating non-blocking inprogress io.
  */
-static void SSL_io_handler(void *handle) {
+static void SSL_io_handler(void *handle)
+{
     SSL_io_ctx *rc = handle;
     int nresult;
     int sslres;
-    if (rc->iofunc == sslRead ) {
+    if (rc->iofunc == sslRead)
+    {
         nresult = SSL_read(rc->pc->ssl, (void *)rc->ptr, rc->nbytes);
 #ifdef DEBUGSSL
         vosLog_debug("%s SSL_io_handler read ssl=%x socket=%d nresult=%d", getticks(), rc->pc->ssl, rc->pc->fd, nresult);
 #endif
-    } else {
+    }
+    else
+    {
         nresult = SSL_write(rc->pc->ssl, (void *)rc->ptr, rc->nbytes);
 #ifdef DEBUGSSL
-        vosLog_debug("%s SSL_io_handler write ssl=%x socket=%d nresult=%d", getticks(),rc->pc->ssl, rc->pc->fd, nresult);
+        vosLog_debug("%s SSL_io_handler write ssl=%x socket=%d nresult=%d", getticks(), rc->pc->ssl, rc->pc->fd, nresult);
 #endif
     }
-    if (nresult < 0) {
+    if (nresult < 0)
+    {
         sslres = SSL_get_error(rc->pc->ssl, nresult);
-        if (sslres == SSL_ERROR_WANT_READ) {
+        if (sslres == SSL_ERROR_WANT_READ)
+        {
 #ifdef DEBUGSSL
             vosLog_debug("%s SSL connection listen to read fd=%d", getticks(), rc->pc->fd);
 #endif
             setListener(rc->pc->fd, SSL_io_handler, rc);
             return;
-        } else if (sslres == SSL_ERROR_WANT_WRITE) {
+        }
+        else if (sslres == SSL_ERROR_WANT_WRITE)
+        {
 #ifdef DEBUGSSL
-            vosLog_debug("%s SSL connection listen to write fd=%d",getticks(), rc->pc->fd);
+            vosLog_debug("%s SSL connection listen to write fd=%d", getticks(), rc->pc->fd);
 #endif
             setListenerType(rc->pc->fd, SSL_io_handler, rc, iListener_Write);
             return;
         }
         vosLog_debug("SSL_io_handler %s error fd=%d errcode=%d",
-             rc->iofunc==sslRead? "read": "write", rc->pc->fd, sslres);
+                     rc->iofunc == sslRead ? "read" : "write", rc->pc->fd, sslres);
         return;
     }
     /* If we get here, we're done */
 
     stopListener(rc->pc->fd);
-    (*(rc->cb))((void*)rc->userdata, nresult);
+    (*(rc->cb))((void *)rc->userdata, nresult);
     VOS_FREE(rc);
 }
 
 /*----------------------------------------------------------------------*/
-int proto_SSL_IO(tSSLIO func, tProtoCtx *pc, char *ptr, int nbytes, tProtoHandler cb, void *data) {
+int proto_SSL_IO(tSSLIO func, tProtoCtx *pc, char *ptr, int nbytes, tProtoHandler cb, void *data)
+{
 
     SSL_io_ctx *rc;
-    int nresult=0;
+    int nresult = 0;
 
-    if (func == sslRead) {
+    if (func == sslRead)
+    {
         nresult = SSL_read(pc->ssl, ptr, nbytes);
 #ifdef DEBUGSSL
-        vosLog_debug("%s proto_SSL_io read fd=%d nresult=%d", getticks(), pc->fd,nresult);
-#endif
-    } else if (func == sslWrite) {
-        nresult = SSL_write(pc->ssl, ptr, nbytes);
-#ifdef DEBUGSSL
-        vosLog_debug("%s proto_SSL_io write fd=%d nresult=%d",getticks(), pc->fd,nresult);
+        vosLog_debug("%s proto_SSL_io read fd=%d nresult=%d", getticks(), pc->fd, nresult);
 #endif
     }
-    if (nresult < 0) {
+    else if (func == sslWrite)
+    {
+        nresult = SSL_write(pc->ssl, ptr, nbytes);
+#ifdef DEBUGSSL
+        vosLog_debug("%s proto_SSL_io write fd=%d nresult=%d", getticks(), pc->fd, nresult);
+#endif
+    }
+    if (nresult < 0)
+    {
         int sslres = SSL_get_error(pc->ssl, nresult);
         rc = (SSL_io_ctx *)VOS_MALLOC_FLAGS(sizeof(SSL_io_ctx), ALLOC_ZEROIZE);
         if (!rc)
@@ -599,21 +613,26 @@ int proto_SSL_IO(tSSLIO func, tProtoCtx *pc, char *ptr, int nbytes, tProtoHandle
         rc->nbytes = nbytes;
         rc->cb = cb;
         rc->userdata = data;
-        if (sslres == SSL_ERROR_WANT_READ) {
+        if (sslres == SSL_ERROR_WANT_READ)
+        {
 #ifdef DEBUGSSL
-            vosLog_debug("%s SSL_IO connection listen to read fd=%d", getticks(),rc->pc->fd);
+            vosLog_debug("%s SSL_IO connection listen to read fd=%d", getticks(), rc->pc->fd);
 #endif
-            setListenerType(rc->pc->fd, SSL_io_handler, rc,iListener_ReadWrite);
-        } else if (sslres == SSL_ERROR_WANT_WRITE) {
+            setListenerType(rc->pc->fd, SSL_io_handler, rc, iListener_ReadWrite);
+        }
+        else if (sslres == SSL_ERROR_WANT_WRITE)
+        {
 #ifdef DEBUGSSL
-            vosLog_debug("%s SSL_IO connection listen to write fd=%d", getticks(),rc->pc->fd);
+            vosLog_debug("%s SSL_IO connection listen to write fd=%d", getticks(), rc->pc->fd);
 #endif
             setListenerType(rc->pc->fd, SSL_io_handler, rc, iListener_Write);
-        } else {
+        }
+        else
+        {
 #ifdef DEBUGSSL
-            vosLog_debug("%s SSL_IO fd=%d error=%d", getticks(),rc->pc->fd, sslres);
+            vosLog_debug("%s SSL_IO fd=%d error=%d", getticks(), rc->pc->fd, sslres);
 #endif
-            VOS_FREE (rc);
+            VOS_FREE(rc);
         }
     }
     return nresult;
@@ -624,7 +643,7 @@ int proto_SSL_IO(tSSLIO func, tProtoCtx *pc, char *ptr, int nbytes, tProtoHandle
 /* blocking read */
 int proto_ReadWait(tProtoCtx *pc, char *ptr, int nbytes)
 {
-    int nread=0;
+    int nread = 0;
     int flags, bflags;
 
     /* turn on synchroneous I/O, this call will block. */
@@ -635,28 +654,30 @@ int proto_ReadWait(tProtoCtx *pc, char *ptr, int nbytes)
     }
 
     errno = 0;
-    switch (pc->type) {
-    case iNormal:
-        nread = read(pc->fd, ptr, nbytes);
-        break;
-    case iSsl:
-        if (SF_FEATURE_SUPPORT_TR69C_SSL)
-        {
+    switch (pc->type)
+    {
+        case iNormal:
+            nread = read(pc->fd, ptr, nbytes);
+            break;
+        case iSsl:
+            if (SF_FEATURE_SUPPORT_TR69C_SSL)
+            {
 #ifdef DEBUGSSL
-            vosLog_debug("%s read_SSL(%d, lth=%d)", getticks(),pc->fd, nbytes);
-            vosLog_debug(" result=%d", nread = SSL_read(pc->ssl, (void *) ptr, nbytes));
+                vosLog_debug("%s read_SSL(%d, lth=%d)", getticks(), pc->fd, nbytes);
+                vosLog_debug(" result=%d", nread = SSL_read(pc->ssl, (void *) ptr, nbytes));
 #else
-            nread = SSL_read(pc->ssl, (void *) ptr, nbytes);
+                nread = SSL_read(pc->ssl, (void *) ptr, nbytes);
 #endif
-        }
-        
-        break;
-        
-    default:
-        vosLog_error("Impossible error; readn() illegal ProtoCtx type (%d)", pc->type);
-        break;
+            }
+
+            break;
+
+        default:
+            vosLog_error("Impossible error; readn() illegal ProtoCtx type (%d)", pc->type);
+            break;
     }
-    if (nread > nbytes) {
+    if (nread > nbytes)
+    {
         vosLog_error("proto_READ of %d returned %d", nbytes, nread);
     }
 
@@ -667,15 +688,15 @@ int proto_ReadWait(tProtoCtx *pc, char *ptr, int nbytes)
 
 int read_timeout(int socket_, int timeOutSec_)
 {
-   fd_set readSet;
+    fd_set readSet;
 
-   FD_ZERO(&readSet);
-   FD_SET(socket_, &readSet);
-   if (timeOutSec_ == 0)
-   {
-      // zero means BLOCKING operation (will wait indefinitely)
-      return (select(socket_ + 1, &readSet, NULL, NULL, NULL));
-   }
+    FD_ZERO(&readSet);
+    FD_SET(socket_, &readSet);
+    if (timeOutSec_ == 0)
+    {
+        // zero means BLOCKING operation (will wait indefinitely)
+        return (select(socket_ + 1, &readSet, NULL, NULL, NULL));
+    }
     // otherwise, wait up to the specified time period
     struct timeval tv;
 
@@ -691,51 +712,56 @@ int read_timeout(int socket_, int timeOutSec_)
 /*----------------------------------------------------------------------*/
 int proto_Readn(tProtoCtx *pc, char *ptr, int nbytes)
 {
-    int nleft, nread=0;
+    int nleft, nread = 0;
     int   errnoval;
 
     nleft = nbytes;
-    while (nleft > 0) {
-        errno =0;
-        switch (pc->type) {
-        case iNormal:
-           if (read_timeout(pc->fd, 60) <= 0) 
-           {
-              vosLog_error("read packet timeout");
-              return -99; //timeout!!!
-           }                   
+    while (nleft > 0)
+    {
+        errno = 0;
+        switch (pc->type)
+        {
+            case iNormal:
+                if (read_timeout(pc->fd, 60) <= 0)
+                {
+                    vosLog_error("read packet timeout");
+                    return -99; //timeout!!!
+                }
 
-           nread = read(pc->fd, ptr, nleft);
-           break;
-        case iSsl:
-            if (SF_FEATURE_SUPPORT_TR69C_SSL)
-            {
+                nread = read(pc->fd, ptr, nleft);
+                break;
+            case iSsl:
+                if (SF_FEATURE_SUPPORT_TR69C_SSL)
+                {
 #ifdef DEBUGSSL
-                vosLog_debug("%s SSL_read(%d, lth=%d)", getticks(),pc->fd, nleft);
-                nread = SSL_read(pc->ssl, (void *) ptr, nleft);
-                vosLog_debug(" result=%d", nread);
+                    vosLog_debug("%s SSL_read(%d, lth=%d)", getticks(), pc->fd, nleft);
+                    nread = SSL_read(pc->ssl, (void *) ptr, nleft);
+                    vosLog_debug(" result=%d", nread);
 #else
-                nread = SSL_read(pc->ssl, (void *) ptr, nleft);
+                    nread = SSL_read(pc->ssl, (void *) ptr, nleft);
 #endif
-            }
-            break;
-        default:
-            vosLog_error("Impossible error; readn() illegal ProtoCtx type (%d)", pc->type);
-            break;
+                }
+                break;
+            default:
+                vosLog_error("Impossible error; readn() illegal ProtoCtx type (%d)", pc->type);
+                break;
         }
 
-        if (nread < 0) {                            /* This function will read until the byte cnt*/
-            errnoval=errno;                         /* is reached or the return is <0. In the case*/
-            if (errnoval==EAGAIN )                  /* of non-blocking reads this may happen after*/
-                return nbytes-nleft;                /* some bytes have been retrieved. The EAGAIN*/
+        if (nread < 0)                              /* This function will read until the byte cnt*/
+        {
+            errnoval = errno;                       /* is reached or the return is <0. In the case*/
+            if (errnoval == EAGAIN)                 /* of non-blocking reads this may happen after*/
+                return nbytes - nleft;              /* some bytes have been retrieved. The EAGAIN*/
             else                                    /* status indicates that more are coming */
-                                                    /* Other possibilites are ECONNRESET indicating*/
+                /* Other possibilites are ECONNRESET indicating*/
                 /* that the tcp connection is broken */
-                fprintf(stderr,"!!!!!!!! read(fd=%d) error=%d\n",
+                fprintf(stderr, "!!!!!!!! read(fd=%d) error=%d\n",
                         pc->fd, errnoval);
             return nread; /* error, return < 0 */
 
-        } else if (nread == 0) {
+        }
+        else if (nread == 0)
+        {
             break; /* EOF */
         }
 
@@ -751,52 +777,52 @@ int proto_Readn(tProtoCtx *pc, char *ptr, int nbytes)
  *----------------------------------------------------------------------*/
 int proto_Writen(tProtoCtx *pc, const char *ptr, int nbytes)
 {
-   int  nwritten=0;
+    int  nwritten = 0;
 
-   errno = 0;
-   switch (pc->type)
-   {
-      case iNormal:
+    errno = 0;
+    switch (pc->type)
+    {
+        case iNormal:
 #ifdef DUMPSOAPOUT
-         fprintf(stderr, "%s", ptr); 
+            fprintf(stderr, "%s", ptr);
 #endif
-         nwritten = write(pc->fd, ptr, nbytes);
-         break;
-      case iSsl:
-        if (SF_FEATURE_SUPPORT_TR69C_SSL)
-        {
+            nwritten = write(pc->fd, ptr, nbytes);
+            break;
+        case iSsl:
+            if (SF_FEATURE_SUPPORT_TR69C_SSL)
+            {
 #ifdef DEBUGSSL
-            vosLog_debug("%s SSL_write(%d, lth=%d)", getticks(),pc->fd, nbytes);
-            nwritten = SSL_write(pc->ssl, ptr, nbytes);
-            vosLog_debug("result=%d", nwritten);
+                vosLog_debug("%s SSL_write(%d, lth=%d)", getticks(), pc->fd, nbytes);
+                nwritten = SSL_write(pc->ssl, ptr, nbytes);
+                vosLog_debug("result=%d", nwritten);
 #else
-            nwritten = SSL_write(pc->ssl, ptr, nbytes);
+                nwritten = SSL_write(pc->ssl, ptr, nbytes);
 #endif
-        }
-        break;
-      default:
-         vosLog_error("Impossible error; writen() illegal ProtoCtx type (%d)", pc->type);
-         break;
+            }
+            break;
+        default:
+            vosLog_error("Impossible error; writen() illegal ProtoCtx type (%d)", pc->type);
+            break;
     }
 
     writeLog(ptr, nbytes);
- 
-   if (nwritten <= 0)
-   {
-      if (errno!=EAGAIN)
-/*            fprintf(stderr,"proto_Writen() status = %d Error%s(%d)\n",nwritten,strerror(errno),errno);  */
+
+    if (nwritten <= 0)
+    {
+        if (errno != EAGAIN)
+            /*            fprintf(stderr,"proto_Writen() status = %d Error%s(%d)\n",nwritten,strerror(errno),errno);  */
             return nwritten;
-      /*
-      else
-            fprintf(stderr,"proto_Writen() status = %d Error%s(%d)\n",nwritten,strerror(errno),errno);
-        */
-   }
-   /*
-    if (nwritten != nbytes) {
-        fprintf(stderr,"proto_Writen() short write rlth=%d actual=%d\n", nbytes, nwritten);
+        /*
+        else
+              fprintf(stderr,"proto_Writen() status = %d Error%s(%d)\n",nwritten,strerror(errno),errno);
+          */
     }
-   */
-   return nwritten;
+    /*
+     if (nwritten != nbytes) {
+         fprintf(stderr,"proto_Writen() short write rlth=%d actual=%d\n", nbytes, nwritten);
+     }
+    */
+    return nwritten;
 
 }  /* End of proto_Writen() */
 
@@ -822,19 +848,27 @@ int proto_Readline(tProtoCtx *pc, char *buf, int maxlen)
         fcntl(pc->fd, F_SETFL, bflags);
     }
 
-    for (n = 1; n < maxlen; n++) {
+    for (n = 1; n < maxlen; n++)
+    {
         rc = proto_Readn(pc, &c, 1);
-        if (rc == 1) {
+        if (rc == 1)
+        {
             *ptr++ = c;
             if (c == '\n')
                 break;
-        } else if (rc == 0) {
-            if (n == 1) {
+        }
+        else if (rc == 0)
+        {
+            if (n == 1)
+            {
                 fcntl(pc->fd, F_SETFL, flags); /* TBD: fix part2, remove blocking flags */
                 return 0; /* EOF, no data read */
-            } else
+            }
+            else
                 break;    /* EOF, some data was read */
-        } else {
+        }
+        else
+        {
             vosLog_debug("ERROR: proto_Readline fd=%d (%d)", pc->fd, errno);
             fcntl(pc->fd, F_SETFL, flags); /* remove blocking flags */
             return -1; /* ERROR */
@@ -842,7 +876,7 @@ int proto_Readline(tProtoCtx *pc, char *buf, int maxlen)
     }
 
     *ptr = '\0';
-    
+
     writeLog(buf, util_strlen(buf));
 
     fcntl(pc->fd, F_SETFL, flags); /* remove blocking flags */
@@ -859,30 +893,38 @@ void proto_Printline(tProtoCtx *pc, const char *fmt, ...)
     int size;
 
     size = 1024;
-    if ((p = VOS_MALLOC_FLAGS((UINT32)size, 0)) == NULL) {
+    if ((p = VOS_MALLOC_FLAGS((UINT32)size, 0)) == NULL)
+    {
         vosLog_error("failed to malloc(%d)", size);
         return;
     }
 
-    while (1) {
+    while (1)
+    {
         /* try to print in the allocated space */
         va_start(ap, fmt);
         n = vsnprintf(p, size, fmt, ap);
         va_end(ap);
 
-        if (n < 0) {
+        if (n < 0)
+        {
             vosLog_notice("fdprintf() vsnprintf failed *%d): %s (%d) fmt=\"%s\"", n, strerror(errno), errno, fmt);
             return;
-        } else if (n >= 0 && n < size) {
+        }
+        else if (n >= 0 && n < size)
+        {
             /* print succeeded, let's write it on outstream */
             proto_Writen(pc, p, n);
             VOS_FREE(p);
             return;
-        } else {
+        }
+        else
+        {
             vosLog_debug("vsnprintf, only wrote %d bytes, retrying: fmt=\"%s\" strlen(fmt)=%d size=%d",
-                    n, fmt, strlen(fmt), size);
+                         n, fmt, strlen(fmt), size);
             size *= 2;
-            if ((p = VOS_REALLOC(p, (UINT32)size)) == NULL) {
+            if ((p = VOS_REALLOC(p, (UINT32)size)) == NULL)
+            {
                 vosLog_error("failed to realloc(%d)", size);
                 return;
             }
@@ -895,37 +937,37 @@ void proto_Printline(tProtoCtx *pc, const char *fmt, ...)
  *======================================================================*/
 tHttpHdrs *proto_NewHttpHdrs()
 {
-   return ((tHttpHdrs *)VOS_MALLOC_FLAGS(sizeof(tHttpHdrs), ALLOC_ZEROIZE));
+    return ((tHttpHdrs *)VOS_MALLOC_FLAGS(sizeof(tHttpHdrs), ALLOC_ZEROIZE));
 
 }  /* End of proto_NewHttpHdrs() */
 
 /*----------------------------------------------------------------------*/
 void proto_FreeHttpHdrs(tHttpHdrs *p)
 {
-   CookieHdr   *cp, *last;
-   VOS_FREE(p->content_type);
-   VOS_FREE(p->protocol);
-   VOS_FREE(p->wwwAuthenticate);
-   VOS_FREE(p->Authorization);
-   VOS_FREE(p->TransferEncoding);
-   VOS_FREE(p->Connection);
-   VOS_FREE(p->method);
-   VOS_FREE(p->path);
-   VOS_FREE(p->host);
-   cp = p->setCookies;
-   while (cp)
-   {
-      last = cp->next;
-      VOS_FREE(cp->name);
-      VOS_FREE(cp->value);
-      VOS_FREE(cp);
-      cp = last;
-   }
-   VOS_FREE(p->message);
-   VOS_FREE(p->locationHdr);
-   VOS_FREE(p->filename);
-   VOS_FREE(p->arg);
-   VOS_FREE(p);
+    CookieHdr   *cp, *last;
+    VOS_FREE(p->content_type);
+    VOS_FREE(p->protocol);
+    VOS_FREE(p->wwwAuthenticate);
+    VOS_FREE(p->Authorization);
+    VOS_FREE(p->TransferEncoding);
+    VOS_FREE(p->Connection);
+    VOS_FREE(p->method);
+    VOS_FREE(p->path);
+    VOS_FREE(p->host);
+    cp = p->setCookies;
+    while (cp)
+    {
+        last = cp->next;
+        VOS_FREE(cp->name);
+        VOS_FREE(cp->value);
+        VOS_FREE(cp);
+        cp = last;
+    }
+    VOS_FREE(p->message);
+    VOS_FREE(p->locationHdr);
+    VOS_FREE(p->filename);
+    VOS_FREE(p->arg);
+    VOS_FREE(p);
 
 }  /* End of proto_FreeHttpHdrs() */
 
@@ -935,36 +977,36 @@ void proto_FreeHttpHdrs(tHttpHdrs *p)
 /*----------------------------------------------------------------------*/
 void proto_SendRequest(tProtoCtx *pc, const char *method, const char *url)
 {
-   char buf[BUF_SIZE_MAX] = {0};
-   int len;
+    char buf[BUF_SIZE_MAX] = {0};
+    int len;
 
-   len = UTIL_SNPRINTF(buf, BUF_SIZE_MAX, "%s %s HTTP/1.1\r\n", method, url);
-   if (len != proto_Writen(pc, buf, len))
-   {
-      /* error in sending */
-      ;
-   }
-   vosLog_debug("proto_SendRequest(%s)", buf);
+    len = UTIL_SNPRINTF(buf, BUF_SIZE_MAX, "%s %s HTTP/1.1\r\n", method, url);
+    if (len != proto_Writen(pc, buf, len))
+    {
+        /* error in sending */
+        ;
+    }
+    vosLog_debug("proto_SendRequest(%s)", buf);
 
 }  /* End of proto_SendRequest() */
 
 /*----------------------------------------------------------------------*/
 void proto_SendCookie(tProtoCtx *pc, CookieHdr *c)
 {
-   char buf[BUF_SIZE_MAX];
-   int len;
+    char buf[BUF_SIZE_MAX];
+    int len;
 
-   len = UTIL_SNPRINTF(buf,BUF_SIZE_MAX, "Cookie: %s=%s\r\n", c->name, c->value);
-   if (len != proto_Writen(pc, buf, len))
-   {
-      /* error in sending */
-      ;
-   }
-/*
-#ifdef DEBUGHDRS
-   vosLog_debug("proto_SendCookie -> %s", buf);
-#endif
-*/
+    len = UTIL_SNPRINTF(buf, BUF_SIZE_MAX, "Cookie: %s=%s\r\n", c->name, c->value);
+    if (len != proto_Writen(pc, buf, len))
+    {
+        /* error in sending */
+        ;
+    }
+    /*
+    #ifdef DEBUGHDRS
+       vosLog_debug("proto_SendCookie -> %s", buf);
+    #endif
+    */
 }  /* End of proto_SendCookie() */
 
 /*----------------------------------------------------------------------*/
@@ -977,88 +1019,88 @@ void proto_SendHeader(tProtoCtx *pc,  const char *header, const char *value)
     {
         return;
     }
-    
+
     len = UTIL_SNPRINTF(buf, BUF_SIZE_MAX, "%s: %s\r\n", header, value);
     if (len != proto_Writen(pc, buf, len))
     {
         /* error in sending */
         ;
     }
-/*
-#ifdef DEBUGHDRS
-   vosLog_debug("proto_SendHeader -> %s", buf);
-#endif
-*/
+    /*
+    #ifdef DEBUGHDRS
+       vosLog_debug("proto_SendHeader -> %s", buf);
+    #endif
+    */
 }  /* End of proto_SendHeader() */
 
 
 /*----------------------------------------------------------------------*/
 void proto_SendRaw(tProtoCtx *pc, const char *arg, int len)
 {
-   int   wlth;
-   int   totWlth = 0;
-   int   fault = VOS_RET_SUCCESS;
+    int   wlth;
+    int   totWlth = 0;
+    int   fault = VOS_RET_SUCCESS;
 #ifdef DEBUGHDRS
-   if (*arg!='<' && *arg!= '\r')
-   {
-      /* debuggging*/
-      vosLog_debug("!!%10.10s!!", arg);
-   }
+    if (*arg != '<' && *arg != '\r')
+    {
+        /* debuggging*/
+        vosLog_debug("!!%10.10s!!", arg);
+    }
 #endif
 
-   firstEagain = FALSE;
+    firstEagain = FALSE;
 
-   while ((totWlth < len) && (fault == VOS_RET_SUCCESS))
-   {
-      if ((wlth = proto_Writen(pc, arg+totWlth, len-totWlth)) >= 0)
-      {
-         /* some or all data sent*/
-         totWlth += wlth;
-         firstEagain = FALSE;
-         continue;
-      }
-      else
-      {
-         if (errno == EAGAIN)
-         {
-            if (firstEagain == FALSE)
+    while ((totWlth < len) && (fault == VOS_RET_SUCCESS))
+    {
+        if ((wlth = proto_Writen(pc, arg + totWlth, len - totWlth)) >= 0)
+        {
+            /* some or all data sent*/
+            totWlth += wlth;
+            firstEagain = FALSE;
+            continue;
+        }
+        else
+        {
+            if (errno == EAGAIN)
             {
-               firstEagain = TRUE;
-               utilTms_get(&socketErrorTimeStamp);
-               continue;
+                if (firstEagain == FALSE)
+                {
+                    firstEagain = TRUE;
+                    utilTms_get(&socketErrorTimeStamp);
+                    continue;
+                }
+                else
+                {
+                    UtilTimestamp nowTimestamp;
+                    UINT32 deltaMs;
+
+                    utilTms_get(&nowTimestamp);
+                    deltaMs = utilTms_deltaInMilliSeconds(&nowTimestamp, &socketErrorTimeStamp);
+
+                    if (deltaMs < SOCKET_ERROR_TIMEOUT)
+                    {
+                        /* can't send is all keep trying -- busy wait on writes while still in acs retry interval */
+                        continue;
+                    }
+                    else
+                    {
+                        /* data send error and reset firstEagain to FALSE
+                         * and set acsState.fault to VOS_RET_INTERNAL_ERROR
+                         */
+                        fault = VOS_RET_INTERNAL_ERROR;
+                        acsState.fault = fault;
+                        vosLog_error("Spent %d milliseconds on write retry and give up.", deltaMs);
+                    }
+                }
             }
-            else
+            else /* must be a socket error, just set acsState.fault to VOS_RET_INTERNAL_ERROR */
             {
-               UtilTimestamp nowTimestamp;
-               UINT32 deltaMs;
-
-               utilTms_get(&nowTimestamp);
-               deltaMs = utilTms_deltaInMilliSeconds(&nowTimestamp, &socketErrorTimeStamp);
-
-               if (deltaMs < SOCKET_ERROR_TIMEOUT) 
-               {
-                  /* can't send is all keep trying -- busy wait on writes while still in acs retry interval */
-                  continue; 
-               }
-               else
-               {
-                  /* data send error and reset firstEagain to FALSE
-                   * and set acsState.fault to VOS_RET_INTERNAL_ERROR
-                   */
-                   fault = VOS_RET_INTERNAL_ERROR;
-                   acsState.fault = fault;
-                  vosLog_error("Spent %d milliseconds on write retry and give up.", deltaMs);
-               }
+                fault = VOS_RET_INTERNAL_ERROR;
+                acsState.fault = fault;
+                vosLog_error("Serious socket error.  errno=%d", errno);
             }
-         }
-         else /* must be a socket error, just set acsState.fault to VOS_RET_INTERNAL_ERROR */
-         {
-             fault = VOS_RET_INTERNAL_ERROR;
-             acsState.fault = fault;
-             vosLog_error("Serious socket error.  errno=%d", errno);
-         }
-      }
-   }
+        }
+    }
 
 }  /* End of proto_SendRaw() */
 
@@ -1066,33 +1108,33 @@ void proto_SendRaw(tProtoCtx *pc, const char *arg, int len)
 void proto_SendEndHeaders(tProtoCtx *pc)
 {
 #ifdef DEBUGHDRS
-   vosLog_debug("proto_SendEndHeaders()");
+    vosLog_debug("proto_SendEndHeaders()");
 #endif
-   proto_SendRaw(pc, "\r\n", 2);
+    proto_SendRaw(pc, "\r\n", 2);
 }
 
 /*----------------------------------------------------------------------*/
-void proto_SendHeaders(tProtoCtx *pc, int status, const char* title, const char* extra_header, const char* content_type)
+void proto_SendHeaders(tProtoCtx *pc, int status, const char *title, const char *extra_header, const char *content_type)
 {
     time_t now;
     char timebuf[100];
 
     proto_Printline(pc, "%s %d %s\r\n", PROTOCOL, status, title);
-    now = time((time_t*) 0);
+    now = time((time_t *) 0);
     (void) strftime(timebuf, sizeof(timebuf), RFC1123FMT, gmtime(&now));
     proto_Printline(pc, "Date: %s\r\n", timebuf);
     proto_Printline(pc, "MIME-Version: 1.0\r\n");
     proto_Printline(pc, "Server: %s\r\n", SERVER_NAME);
-    proto_Printline(pc, "Connection: Close\r\n" );
+    proto_Printline(pc, "Connection: Close\r\n");
     if (extra_header != NULL)
-        proto_Printline(pc, "%s\r\n", extra_header );
+        proto_Printline(pc, "%s\r\n", extra_header);
     if (content_type != NULL)
         proto_Printline(pc, "Content-Type: %s\r\n", content_type);
-    proto_Printline(pc, "\r\n" );
+    proto_Printline(pc, "\r\n");
 }
 
 /*----------------------------------------------------------------------*/
-void proto_SendRedirect(tProtoCtx *pc, const char *host, const char* location)
+void proto_SendRedirect(tProtoCtx *pc, const char *host, const char *location)
 {
     char header[BUF_SIZE_MAX];
     char slash[2];
@@ -1101,7 +1143,7 @@ void proto_SendRedirect(tProtoCtx *pc, const char *host, const char* location)
         UTIL_STRNCPY(slash, "", sizeof(slash));
     else
         UTIL_STRNCPY(slash, "/", sizeof(slash));
-    vosLog_debug("web: proto_SEndRedirect: host=%s location=%s",host, location);
+    vosLog_debug("web: proto_SEndRedirect: host=%s location=%s", host, location);
     (void) UTIL_SNPRINTF(header, sizeof(header), "Location: http://%s%s%s", host, slash, location);
     proto_SendHeaders(pc, 307, "Redirect", header, "text/html");
     vosLog_debug("web: proto_SEndRedirect: %s", header);
@@ -1109,7 +1151,7 @@ void proto_SendRedirect(tProtoCtx *pc, const char *host, const char* location)
 
 
 /*----------------------------------------------------------------------*/
-void proto_SendRedirectProtoHost(tProtoCtx *pc, const char *protohost, const char* location)
+void proto_SendRedirectProtoHost(tProtoCtx *pc, const char *protohost, const char *location)
 {
     char header[BUF_SIZE_MAX];
 
@@ -1119,7 +1161,7 @@ void proto_SendRedirectProtoHost(tProtoCtx *pc, const char *protohost, const cha
 }
 
 /*----------------------------------------------------------------------*/
-void proto_SendRedirectViaRefresh(tProtoCtx *pc, const char *host, const char* location)
+void proto_SendRedirectViaRefresh(tProtoCtx *pc, const char *host, const char *location)
 {
     char slash[2];
 
@@ -1135,12 +1177,12 @@ void proto_SendRedirectViaRefresh(tProtoCtx *pc, const char *host, const char* l
 }
 
 /*----------------------------------------------------------------------*/
-void proto_SendError(tProtoCtx *pc, int status, const char* title, const char* extra_header, const char* text)
+void proto_SendError(tProtoCtx *pc, int status, const char *title, const char *extra_header, const char *text)
 {
     proto_SendHeaders(pc, status, title, extra_header, "text/html");
     proto_Printline(pc, "<HTML><HEAD><TITLE>%d %s</TITLE></HEAD>\n", status, title);
     proto_Printline(pc, "<BODY BGCOLOR=\"#cc9999\"><H4>%d %s</H4>\n", status, title);
-    proto_Printline(pc, "%s\n", text );
+    proto_Printline(pc, "%s\n", text);
     proto_Printline(pc, "</BODY></HTML>\n");
 }
 
@@ -1160,13 +1202,15 @@ int proto_ParseRequest(tProtoCtx *pc, tHttpHdrs *hdrs)
     char protocol[BUF_SIZE_MAX];
 
     /* Parse the first line of the request. */
-    if (proto_Readline(pc, buf, BUF_SIZE_MAX) <= 0) {
+    if (proto_Readline(pc, buf, BUF_SIZE_MAX) <= 0)
+    {
         vosLog_debug("error =%d proto_ParseRequest() proto_Readline() rtns empty",
-                errno);
+                     errno);
         return -1;
     }
-    if (sscanf(buf, "%[^ ] %[^ ] %[^ ]", method, path, protocol) != 3) {
-        vosLog_debug("sscanf error on >>%s<<",buf);
+    if (sscanf(buf, "%[^ ] %[^ ] %[^ ]", method, path, protocol) != 3)
+    {
+        vosLog_debug("sscanf error on >>%s<<", buf);
         return -1;
     }
 
@@ -1182,8 +1226,8 @@ int proto_ParseRequest(tProtoCtx *pc, tHttpHdrs *hdrs)
 
 #ifdef DEBUGHDRS
     vosLog_debug("proto_ParseRequest method=\"%s\" path=\"%s\" protocol=\"%s\"",
-         hdrs->method, hdrs->path, hdrs->protocol);
-#endif    
+                 hdrs->method, hdrs->path, hdrs->protocol);
+#endif
     return 0; /* OK */
 }
 
@@ -1203,12 +1247,14 @@ int proto_ParseResponse(tProtoCtx *pc, tHttpHdrs *hdrs)
     vosLog_debug("%s proto_ParseResponse()", getticks());
 #endif
     /* Parse the first line of the request. */
-    if (proto_Readline(pc, buf, BUF_SIZE_MAX) <= 0) {
+    if (proto_Readline(pc, buf, BUF_SIZE_MAX) <= 0)
+    {
         return -1;
     }
 
-    if (sscanf(buf, "%[^ ] %[^ ] %[^\r]", protocol, status, message ) != 3) {
-        vosLog_debug("sscanf error on >>%s<<",buf);
+    if (sscanf(buf, "%[^ ] %[^ ] %[^\r]", protocol, status, message) != 3)
+    {
+        vosLog_debug("sscanf error on >>%s<<", buf);
         return -1;
     }
 
@@ -1221,34 +1267,34 @@ int proto_ParseResponse(tProtoCtx *pc, tHttpHdrs *hdrs)
     VOS_FREE(hdrs->message);
     hdrs->message = VOS_STRDUP(message);
     vosLog_debug("proto_ParseResponse(protocol=\"%s\", status=%d message=\"%s\")",
-            hdrs->protocol, hdrs->status_code, hdrs->message);
+                 hdrs->protocol, hdrs->status_code, hdrs->message);
 
     return 0; /* OK */
 }
 
-static char HostStr[]="Host:";
-static char ConnectionStr[]="Connection:";
-static char SetCookieStr[]="Set-Cookie:";
-static char SetCookieStr2[]="Set-Cookie2:";
-static char ContentLthStr[]="Content-Length:";
-static char ContentTypeStr[]="Content-Type:";
-static char WWWAuthenticateStr[]="WWW-Authenticate:";
-static char AuthorizationStr[]="Authorization:";
-static char TransferEncoding[]="Transfer-Encoding:";
-static char LocationStr[]="Location:";
+static char HostStr[] = "Host:";
+static char ConnectionStr[] = "Connection:";
+static char SetCookieStr[] = "Set-Cookie:";
+static char SetCookieStr2[] = "Set-Cookie2:";
+static char ContentLthStr[] = "Content-Length:";
+static char ContentTypeStr[] = "Content-Type:";
+static char WWWAuthenticateStr[] = "WWW-Authenticate:";
+static char AuthorizationStr[] = "Authorization:";
+static char TransferEncoding[] = "Transfer-Encoding:";
+static char LocationStr[] = "Location:";
 
-static void addCookieHdr( CookieHdr **p, char *c)
+static void addCookieHdr(CookieHdr **p, char *c)
 {
-    CookieHdr   *newCookie = (CookieHdr*)VOS_MALLOC_FLAGS(sizeof (CookieHdr), 0);
+    CookieHdr   *newCookie = (CookieHdr *)VOS_MALLOC_FLAGS(sizeof(CookieHdr), 0);
     char   *cp;
 
     if ((cp = strchr(c, '=')) != NULL)
     {
         newCookie->next = *p;
         newCookie->name = (char *)VOS_STRNDUP(c, (UINT32)(cp - c));
-        newCookie->value = VOS_STRDUP(cp+1);
+        newCookie->value = VOS_STRDUP(cp + 1);
         *p = newCookie;
-    } 
+    }
     else
     {
         VOS_FREE(newCookie);
@@ -1270,63 +1316,83 @@ void proto_ParseHdrs(tProtoCtx *pc, tHttpHdrs *hdrs)
 #endif
 
     /* Parse the rest of the request headers. */
-    while ((n = proto_Readline(pc, buf, BUF_SIZE_MAX)) > 0) {
+    while ((n = proto_Readline(pc, buf, BUF_SIZE_MAX)) > 0)
+    {
         www_StripTail(buf);
 #ifdef DEBUGHDRS
         vosLog_debug("  read \"%s\"", buf);
 #endif
-        if (strcmp(buf, "") == 0) {
+        if (strcmp(buf, "") == 0)
+        {
             break;
-        } else if (strncasecmp(buf, HostStr,sizeof(HostStr)-1) == 0) {
-            cp = &buf[sizeof(HostStr)-1];
+        }
+        else if (strncasecmp(buf, HostStr, sizeof(HostStr) - 1) == 0)
+        {
+            cp = &buf[sizeof(HostStr) - 1];
             cp += strspn(cp, " \t");
             VOS_FREE(hdrs->host);
             hdrs->host = VOS_STRDUP(cp);
-        } else if (strncasecmp(buf, ContentLthStr,sizeof(ContentLthStr)-1) == 0) {
-            cp = &buf[sizeof(ContentLthStr)-1];
+        }
+        else if (strncasecmp(buf, ContentLthStr, sizeof(ContentLthStr) - 1) == 0)
+        {
+            cp = &buf[sizeof(ContentLthStr) - 1];
             cp += strspn(cp, " \t");
             hdrs->content_length = atoi(cp);
-        } else if (strncasecmp(buf, ContentTypeStr,sizeof(ContentTypeStr)-1) == 0) {
-            cp = &buf[sizeof(ContentTypeStr)-1];
+        }
+        else if (strncasecmp(buf, ContentTypeStr, sizeof(ContentTypeStr) - 1) == 0)
+        {
+            cp = &buf[sizeof(ContentTypeStr) - 1];
             cp += strspn(cp, " \t");
             VOS_FREE(hdrs->content_type);
             hdrs->content_type = VOS_STRDUP(cp);
-        } else if (strncasecmp(buf, ConnectionStr,sizeof(ConnectionStr)-1) == 0) {
-            cp = &buf[sizeof(ConnectionStr)-1];
+        }
+        else if (strncasecmp(buf, ConnectionStr, sizeof(ConnectionStr) - 1) == 0)
+        {
+            cp = &buf[sizeof(ConnectionStr) - 1];
             cp += strspn(cp, " \t");
             VOS_FREE(hdrs->Connection);
             hdrs->Connection = VOS_STRDUP(cp);
-        } else if (strncasecmp(buf, WWWAuthenticateStr, sizeof(WWWAuthenticateStr)-1)==0) {
-            cp =&buf[sizeof(WWWAuthenticateStr)-1];
+        }
+        else if (strncasecmp(buf, WWWAuthenticateStr, sizeof(WWWAuthenticateStr) - 1) == 0)
+        {
+            cp = &buf[sizeof(WWWAuthenticateStr) - 1];
             cp += strspn(cp, " \t");
             VOS_FREE(hdrs->wwwAuthenticate);
             hdrs->wwwAuthenticate = VOS_STRDUP(cp);
-        } else if (strncasecmp(buf, AuthorizationStr, sizeof(AuthorizationStr)-1)==0) {
-            cp =&buf[sizeof(AuthorizationStr)-1];
+        }
+        else if (strncasecmp(buf, AuthorizationStr, sizeof(AuthorizationStr) - 1) == 0)
+        {
+            cp = &buf[sizeof(AuthorizationStr) - 1];
             cp += strspn(cp, " \t");
             VOS_FREE(hdrs->Authorization);
             hdrs->Authorization = VOS_STRDUP(cp);
-        } else if (strncasecmp(buf, TransferEncoding, sizeof(TransferEncoding)-1)==0) {
-            cp =&buf[sizeof(TransferEncoding)-1];
+        }
+        else if (strncasecmp(buf, TransferEncoding, sizeof(TransferEncoding) - 1) == 0)
+        {
+            cp = &buf[sizeof(TransferEncoding) - 1];
             cp += strspn(cp, " \t");
             VOS_FREE(hdrs->TransferEncoding);
             hdrs->TransferEncoding = VOS_STRDUP(cp);
-        } else if (strncasecmp(buf, LocationStr, sizeof(LocationStr)-1)==0) {
-            cp =&buf[sizeof(LocationStr)-1];
+        }
+        else if (strncasecmp(buf, LocationStr, sizeof(LocationStr) - 1) == 0)
+        {
+            cp = &buf[sizeof(LocationStr) - 1];
             cp += strspn(cp, " \t");
             VOS_FREE(hdrs->locationHdr);
             hdrs->locationHdr = VOS_STRDUP(cp);
-        }  else if ( (strncasecmp(buf, SetCookieStr, sizeof(SetCookieStr)-1)==0)
-               || (strncasecmp(buf, SetCookieStr2, sizeof(SetCookieStr2)-1)==0) ) {
+        }
+        else if ((strncasecmp(buf, SetCookieStr, sizeof(SetCookieStr) - 1) == 0)
+                 || (strncasecmp(buf, SetCookieStr2, sizeof(SetCookieStr2) - 1) == 0))
+        {
             char *c;
-            cp =&buf[sizeof(SetCookieStr)-1];
+            cp = &buf[sizeof(SetCookieStr) - 1];
             cp += strspn(cp, " \t:");   /* colon is added to skip : in SetCookieStr2 str*/
             /* don't need anything after ";" if it exists */
-            if ((c = strstr(cp,";")) != NULL)
+            if ((c = strstr(cp, ";")) != NULL)
             {
                 *c = '\0';
             }
-            addCookieHdr( &hdrs->setCookies, cp );
+            addCookieHdr(&hdrs->setCookies, cp);
         }
 
 
@@ -1381,28 +1447,32 @@ int proto_Skip(tProtoCtx *pc)
     nbflags = flags | O_NONBLOCK;
     fcntl(pc->fd, F_SETFL, nbflags);
 
-    do {
-      switch (pc->type) {
-      case iNormal:
-         nread = read(pc->fd, &c, 1);
-         break;
-      case iSsl:
-        if (SF_FEATURE_SUPPORT_TR69C_SSL)
+    do
+    {
+        switch (pc->type)
         {
-         nread = SSL_read(pc->ssl, &c, 1);
+            case iNormal:
+                nread = read(pc->fd, &c, 1);
+                break;
+            case iSsl:
+                if (SF_FEATURE_SUPPORT_TR69C_SSL)
+                {
+                    nread = SSL_read(pc->ssl, &c, 1);
+                }
+                break;
+            default:
+                vosLog_error("Impossible error; illegal ProtoCtx type (%d)", pc->type);
+                break;
         }
-        break;
-      default:
-         vosLog_error("Impossible error; illegal ProtoCtx type (%d)", pc->type);
-         break;
-      }
-      if (nread<0) {
-         ret = errno == EAGAIN? 1: -1;
-         break;
-         }
-   } while (nread>0);
+        if (nread < 0)
+        {
+            ret = errno == EAGAIN ? 1 : -1;
+            break;
+        }
+    }
+    while (nread > 0);
     fcntl(pc->fd, F_SETFL, flags);
 
     vosLog_debug("proto_Skip() done.ret=%d", ret);
-   return ret;
+    return ret;
 }

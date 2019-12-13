@@ -4,21 +4,21 @@
 
 int main()
 {
-	FILE *fd=NULL;
+    FILE *fd = NULL;
     char  tmp[100] = {0};
     int num = 0;
 
     fd = fopen("wlanNum", "r");
-    if(fd != NULL)
+    if (fd != NULL)
     {
-    	printf("qwe\n");
+        printf("qwe\n");
         fgets(tmp, sizeof(tmp), fd);
         printf("tmp: %s\n", tmp);
         sscanf(tmp, "%*s%d", &num);
     }
     fclose(fd);
     printf("num: %d", num);
-	return 0;
+    return 0;
 }
 
 

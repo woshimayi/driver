@@ -1,1 +1,1 @@
-wlanNum=3
+wlanNum = 3

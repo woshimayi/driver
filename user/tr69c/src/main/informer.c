@@ -1,16 +1,16 @@
 /*----------------------------------------------------------------------*
-<:copyright-broadcom 
- 
- Copyright (c) 2005 Broadcom Corporation 
- All Rights Reserved 
- No portions of this material may be reproduced in any form without the 
- written permission of: 
-          Broadcom Corporation 
-          16215 Alton Parkway 
-          Irvine, California 92619 
- All information contained in this document is Broadcom Corporation 
- company private, proprietary, and trade secret. 
- 
+<:copyright-broadcom
+
+ Copyright (c) 2005 Broadcom Corporation
+ All Rights Reserved
+ No portions of this material may be reproduced in any form without the
+ written permission of:
+          Broadcom Corporation
+          16215 Alton Parkway
+          Irvine, California 92619
+ All information contained in this document is Broadcom Corporation
+ company private, proprietary, and trade secret.
+
 :>
  *----------------------------------------------------------------------*
  * File Name  : informer.c
@@ -68,14 +68,14 @@ typedef struct TR69C_ALARM
 {
     CMC_TR69C_AlARM_T alarmCfg;
     struct TR69C_ALARM *next;
-}TR69C_ALARM_T;
+} TR69C_ALARM_T;
 
 
 typedef struct TR69C_MONITOR
 {
     CMC_TR69C_ALARM_MONITOR_T monitorCfg;
     struct TR69C_MONITOR *next;
-}TR69C_MONITOR_T;
+} TR69C_MONITOR_T;
 
 
 /** external functions **/
@@ -86,7 +86,7 @@ extern ACSState      acsState;
 extern int transferCompletePending;
 extern int sendGETRPC;                  /* send a GetRPCMetods */
 extern int tr69cTerm;                   /* TR69C termination flag */
-  
+
 extern RPCAction *simRpcAction;
 extern RPCAction *acsRpcAction;
 
@@ -105,7 +105,7 @@ HttpTask      httpTask;                 /* http io desc */
 HttpTask      simHttpTask;
 static SessionAuth   sessionAuth;
 static int  sentACSNull;                /* set if last msg to ACS was NULL, cleared if non-null */
-                                        /* response received from ACS */
+/* response received from ACS */
 static UBOOL8 rebootingFlag = FALSE;    /*set if we are doing system reboot or factoryreset*/
 
 extern UBOOL8 g_writeLog;
@@ -119,7 +119,7 @@ int alarmStatus = 0;
 int send_alarm_number = 0;
 int send_monitor_number = 0;
 int send_clean_alarm_number = 0;
-int glbflag = 3; 
+int glbflag = 3;
 
 CT_ALARMORMONITOR_SEND alarmSend[50];
 CT_ALARMORMONITOR_SEND monitorSend[50];
@@ -151,8 +151,8 @@ int ReadRandomInformEnaleFromFile()
 {
     FILE *fp = NULL;
     int EnableFlag = 0;
-    
-    fp = fopen("/var/config/RandomInform","r");
+
+    fp = fopen("/var/config/RandomInform", "r");
     if (NULL == fp)
     {
         printf("open file error");
@@ -162,7 +162,7 @@ int ReadRandomInformEnaleFromFile()
     {
         fscanf(fp, "%d", &EnableFlag);
     }
-    
+
     fclose(fp);
     return EnableFlag;
 }
@@ -171,18 +171,18 @@ int ReadRandomInformEnaleFromFile()
 void WriteRandomInformEnableTofile(int RandomEnable)
 {
     FILE *fp;
-    
+
     fp = fopen("/var/config/RandomInform", "w");
     if (NULL == fp)
     {
-        printf("open file error");  
+        printf("open file error");
         return;
     }
     else
     {
         fprintf(fp, "%d", RandomEnable);
     }
-    
+
     fclose(fp);
 }
 
@@ -194,9 +194,9 @@ unsigned int new_random(void)
 
     fd = open("/dev/urandom", O_RDONLY);
 
-    if (fd>0)
+    if (fd > 0)
     {
-        read(fd,&n,sizeof(n));
+        read(fd, &n, sizeof(n));
         close(fd);
     }
 
@@ -213,17 +213,17 @@ int getRangeNumber(int maxNum)
     int fd;
     unsigned int r;
     int i;
-    
+
     max = maxNum;
 
-    if (maxNum <2)
+    if (maxNum < 2)
     {
         return 1;
     }
 
-    gettimeofday(&tv,NULL);
+    gettimeofday(&tv, NULL);
     ticks = tv.tv_sec + tv.tv_usec;
-    
+
     fd = open("/dev/urandom", O_RDONLY);
 
     if (fd == -1)
@@ -231,7 +231,7 @@ int getRangeNumber(int maxNum)
         return 1;
     }
 
-    for(i = 0; i< 512; i++)
+    for (i = 0; i < 512; i++)
     {
         read(fd, &r, sizeof(r));
         ticks += r;
@@ -243,14 +243,14 @@ int getRangeNumber(int maxNum)
 
     if (max > 40)
     {
-        num = new_random()%(max-40)+30; //减小10秒，防止出现时间超出最大。
+        num = new_random() % (max - 40) + 30; //减小10秒，防止出现时间超出最大。
     }
     else
     {
         num = 30;
     }
 
-    printf("Delay seconds:%d\n",num);
+    printf("Delay seconds:%d\n", num);
     return num;
 }
 
@@ -276,45 +276,45 @@ int getDelayTime(int acsConnectFails)
     int delayTime = 0;
 
     vosLog_debug("acsConnectFails = %d", acsConnectFails);
-    
-   /* the following implementation is based on section
-    * 3.2.1.1 Session Retry Policy in "TR-069 Amendment 1"
-    * Table 3 - Session Retry Wait Intervals
-    */
+
+    /* the following implementation is based on section
+     * 3.2.1.1 Session Retry Policy in "TR-069 Amendment 1"
+     * Table 3 - Session Retry Wait Intervals
+     */
     switch (acsConnectFails)
     {
-      case 1:
-         delayTime = getRandomNumber(5, 10);
-         break;
-      case 2:
-         delayTime = getRandomNumber(10, 20);
-         break;
-      case 3:
-         delayTime = getRandomNumber(20, 40);
-         break;
-      case 4:
-         delayTime = getRandomNumber(40, 80);
-         break;
-      case 5:
-         delayTime = getRandomNumber(80, 160);
-         break;
-      case 6:
-         delayTime = getRandomNumber(160, 320);
-         break;
-      case 7:
-         delayTime = getRandomNumber(320, 640);
-         break;
-      case 8:
-         delayTime = getRandomNumber(640, 1280);
-         break;
-      case 9:
-         delayTime = getRandomNumber(1280, 2560);
-         break;
-      default:
-         delayTime = getRandomNumber(2560, 5120);
-         break;
+        case 1:
+            delayTime = getRandomNumber(5, 10);
+            break;
+        case 2:
+            delayTime = getRandomNumber(10, 20);
+            break;
+        case 3:
+            delayTime = getRandomNumber(20, 40);
+            break;
+        case 4:
+            delayTime = getRandomNumber(40, 80);
+            break;
+        case 5:
+            delayTime = getRandomNumber(80, 160);
+            break;
+        case 6:
+            delayTime = getRandomNumber(160, 320);
+            break;
+        case 7:
+            delayTime = getRandomNumber(320, 640);
+            break;
+        case 8:
+            delayTime = getRandomNumber(640, 1280);
+            break;
+        case 9:
+            delayTime = getRandomNumber(1280, 2560);
+            break;
+        default:
+            delayTime = getRandomNumber(2560, 5120);
+            break;
     }
-   
+
     return delayTime;
 }
 
@@ -333,13 +333,13 @@ void retrySessionConnection(void)
     }
 
     if (acsState.retryCount > 0)
-    {      
-       /* the following implementation is based on section
-        * 3.2.1.1 Session Retry Policy in "TR-069 Amendment 1"
-        * Table 3 - Session Retry Wait Intervals
-        * delay time for acsConnectFails that is greater than 10
-        * is the same with acsConnectFails that is equal to 10
-        */
+    {
+        /* the following implementation is based on section
+         * 3.2.1.1 Session Retry Policy in "TR-069 Amendment 1"
+         * Table 3 - Session Retry Wait Intervals
+         * delay time for acsConnectFails that is greater than 10
+         * is the same with acsConnectFails that is equal to 10
+         */
         if (acsState.retryCount > 10)
         {
             retryCount = 10;
@@ -359,7 +359,7 @@ void retrySessionConnection(void)
 }
 
 
-HttpTask* getHttpTask()
+HttpTask *getHttpTask()
 {
     if (simRpcAction != NULL)
     {
@@ -375,21 +375,21 @@ HttpTask* getHttpTask()
 
 UBOOL8 isAcsConnected(void)
 {
-    HttpTask* tempHttp = getHttpTask();
-    
+    HttpTask *tempHttp = getHttpTask();
+
     return ((tempHttp->wio != NULL) && (tempHttp->wio->pc != NULL));
 }
 
 
 tProtoCtx *getAcsConnDesc(void)
-{   
-    HttpTask* tempHttp = getHttpTask();
+{
+    HttpTask *tempHttp = getHttpTask();
 
     if (!isAcsConnected())
     {
         return NULL;
     }
-    
+
     if (SF_FEATURE_SUPPORT_TR69C_SSL)
     {
         if (tempHttp->wio->pc->type == iSsl && tempHttp->wio->pc->ssl != NULL)
@@ -423,8 +423,8 @@ void clearInformEventListNoBackup(void)
     vosLog_debug("cleared informEvList");
 
     count = informEvList.informEvCnt;
-    
-    for (i = 0; i< count; i++)
+
+    for (i = 0; i < count; i++)
     {
         informEvList.informEvList[i] = 0;
     }
@@ -450,11 +450,11 @@ void clearInformEventList(void)
     count_copy = g_tr69cInformEvListCopy.informEvCnt;
     count = informEvList.informEvCnt;
 
-    for (i = 0; i< count; i++)
+    for (i = 0; i < count; i++)
     {
         found = FALSE;
-        
-        for (i_copy = 0; i_copy< count_copy; i_copy++)
+
+        for (i_copy = 0; i_copy < count_copy; i_copy++)
         {
             if (g_tr69cInformEvListCopy.informEvList[i_copy] == informEvList.informEvList[i])
             {
@@ -462,11 +462,11 @@ void clearInformEventList(void)
                 break;
             }
         }
-        
+
         if (!found)
         {
             vosLog_debug("******Event %d was been added after information sent, retain it.\n", informEvList.informEvList[i]);
-            
+
             tempInformEvList.informEvList[tempIndex] = informEvList.informEvList[i];
             tempIndex ++;
             tempInformEvList.informEvCnt = tempIndex;
@@ -497,17 +497,17 @@ static void closeACSConnection(HttpTask *ht)
     }
 
 #ifdef later
-   /*
-    * mwang: free these pointers to make resource checker happy.
-    * I decided not to do this yet because freeing sessionAuth here may
-    * have some unintended consequences.
-    */
+    /*
+     * mwang: free these pointers to make resource checker happy.
+     * I decided not to do this yet because freeing sessionAuth here may
+     * have some unintended consequences.
+     */
     resetSessionAuth(&sessionAuth);
 
-   /*
-    * Freeing the acsRpcAction should be OK, since we are done with this transaction,
-    * but leave out for now also.
-    */
+    /*
+     * Freeing the acsRpcAction should be OK, since we are done with this transaction,
+     * but leave out for now also.
+     */
 
     freeRPCAction(acsRpcAction);
     acsRpcAction = NULL;
@@ -526,85 +526,85 @@ static void acsDisconnect(HttpTask *ht, AcsStatus acsStatus)
     ht->xfrStatus = acsStatus;
     ht->eHttpState = eClosed;
     ht->eAuthState = sIdle;
-   
+
     switch (acsStatus)
     {
-      case eAuthError:
-         ++acsState.retryCount;
-         if (acsState.informEnable)
-         {
-            if (SF_FEATURE_SUPPORT_TR69C_REMOTESTATUS)
+        case eAuthError:
+            ++acsState.retryCount;
+            if (acsState.informEnable)
             {
-                /*Auth Failed. 20100125 houweilin*/
-                CMC_tr69cSetRemoteInform(CMC_TR69C_DIAG_INFORM_VERIFY_FAIL, CMC_TR69C_REMOTE_INFORM_STATUS);
-                vosLog_error("Auth failed!");
+                if (SF_FEATURE_SUPPORT_TR69C_REMOTESTATUS)
+                {
+                    /*Auth Failed. 20100125 houweilin*/
+                    CMC_tr69cSetRemoteInform(CMC_TR69C_DIAG_INFORM_VERIFY_FAIL, CMC_TR69C_REMOTE_INFORM_STATUS);
+                    vosLog_error("Auth failed!");
+                }
+
+                cancelPeriodicInform();
             }
-            
-            cancelPeriodicInform();
-         }
-         
-         vosLog_notice("Failed authentication with ACS");
-         /*save retryCount to scratchpad*/
-         saveTR69StatusItems();   
-         break;
-      case eConnectError:
-      case eGetError:
-      case ePostError:
-         ++acsState.retryCount;
-         if (acsState.informEnable)
-         {
-            cancelPeriodicInform();
-         }
-         
-         vosLog_error("ACS Disconnect with error %d", acsStatus);
+
+            vosLog_notice("Failed authentication with ACS");
+            /*save retryCount to scratchpad*/
+            saveTR69StatusItems();
+            break;
+        case eConnectError:
+        case eGetError:
+        case ePostError:
+            ++acsState.retryCount;
+            if (acsState.informEnable)
+            {
+                cancelPeriodicInform();
+            }
+
+            vosLog_error("ACS Disconnect with error %d", acsStatus);
 
 #ifdef ALLOW_DISCONNECT_ERROR
-         vosLog_notice("Continue processing even though ACS Disconnect with error");
-         saveTR69StatusItems();
-         saveConfigurations();
-         rebootingFlag = factoryResetCompletion();  /*this will cause a reboot if factoryResetFlag==1*/
-         if (rebootingFlag)
-         {
-            rebootCompletion();
-         }
-         else
-         {
-           rebootingFlag = rebootCompletion();
-         }
+            vosLog_notice("Continue processing even though ACS Disconnect with error");
+            saveTR69StatusItems();
+            saveConfigurations();
+            rebootingFlag = factoryResetCompletion();  /*this will cause a reboot if factoryResetFlag==1*/
+            if (rebootingFlag)
+            {
+                rebootCompletion();
+            }
+            else
+            {
+                rebootingFlag = rebootCompletion();
+            }
 #endif
-         break;
-      case eAcsDone:
-      default:
-         /* should NOT clear acsState.retryCount here, only clear
-          * it after receiving InformResponse to make this value 
-          * can be shown correctly in Inform.
-          */
-         if (acsStatusPrev != eAcsDone)
-         {
-            resetPeriodicInform(acsState.informInterval);
-         }
-         
-         vosLog_debug("ACS Disconnect: ok");
-         /* if no error then run thru pending disconnect actions */
-         if (acsStatus == eAcsDone) 
-         {
-            clearInformEventList();
-         }
-         
-         saveTR69StatusItems();
-         saveConfigurations();
-         rebootingFlag = factoryResetCompletion(); /* this will cause a reboot if factoryResetFlag==1*/
-         if (rebootingFlag)
-         {
-            rebootCompletion();
-         }
-         else
-         {
-            rebootingFlag = rebootCompletion();
-         }
-         break;
-   }
-   
+            break;
+        case eAcsDone:
+        default:
+            /* should NOT clear acsState.retryCount here, only clear
+             * it after receiving InformResponse to make this value
+             * can be shown correctly in Inform.
+             */
+            if (acsStatusPrev != eAcsDone)
+            {
+                resetPeriodicInform(acsState.informInterval);
+            }
+
+            vosLog_debug("ACS Disconnect: ok");
+            /* if no error then run thru pending disconnect actions */
+            if (acsStatus == eAcsDone)
+            {
+                clearInformEventList();
+            }
+
+            saveTR69StatusItems();
+            saveConfigurations();
+            rebootingFlag = factoryResetCompletion(); /* this will cause a reboot if factoryResetFlag==1*/
+            if (rebootingFlag)
+            {
+                rebootCompletion();
+            }
+            else
+            {
+                rebootingFlag = rebootCompletion();
+            }
+            break;
+    }
+
     if (tr69cTerm)
     {
         vosLog_notice("TR69C terminated due to tr69cTerm flag");
@@ -614,21 +614,21 @@ static void acsDisconnect(HttpTask *ht, AcsStatus acsStatus)
         main_cleanup(0);
     }
 
-   /*
-    * instead of checking all these flags, just find out if there is event in
-    * informEventList 
-    */
+    /*
+     * instead of checking all these flags, just find out if there is event in
+     * informEventList
+     */
     if ((getInformEvCnt() != 0)
-      || transferCompletePending
-      || sendGETRPC
-      || (acsStatus == eAuthError)
-      || (acsStatus == eConnectError)
-      || (acsStatus == eGetError)
-      || (acsStatus == ePostError))   /*session retry policy*/
+            || transferCompletePending
+            || sendGETRPC
+            || (acsStatus == eAuthError)
+            || (acsStatus == eConnectError)
+            || (acsStatus == eGetError)
+            || (acsStatus == ePostError))   /*session retry policy*/
     {
         retrySessionConnection();
     }
-   
+
     acsStatusPrev = acsStatus;
 }  /* End of acsDisconnect() */
 
@@ -641,7 +641,7 @@ static void updateAuthorizationHdr(HttpTask *ht)
         {
             VOS_MEM_FREE_BUF_AND_NULL_PTR(ht->authHdr);
             ht->authHdr = generateNextAuthorizationHdrValue(&sessionAuth,
-                                      acsState.acsUser, acsState.acsPwd);
+                          acsState.acsUser, acsState.acsPwd);
             wget_AddPostHdr(ht->wio, "Authorization", ht->authHdr); /* replace header */
         }
         else
@@ -654,7 +654,7 @@ static void updateAuthorizationHdr(HttpTask *ht)
 
 static void nullHttpTimeout(void *handle)
 {
-    HttpTask    *ht = (HttpTask*)handle;
+    HttpTask    *ht = (HttpTask *)handle;
 
     vosLog_debug("=====>ENTER");
     acsDisconnect(ht, eAcsDone);
@@ -667,24 +667,24 @@ void sendNullHttp(UBOOL8 disconnect)
 
     if (ht->wio)
     {
-        vosLog_debug("sendNullHttp(%s) to ACS",ht->eHttpState==eClose? "close": "keepOpen");
+        vosLog_debug("sendNullHttp(%s) to ACS", ht->eHttpState == eClose ? "close" : "keepOpen");
     }
 
     if (ht->postMsg)
     {
         VOS_MEM_FREE_BUF_AND_NULL_PTR(ht->postMsg);
     }
-   
+
     sendToAcs(0, NULL);
     /*send empty POST only count when holdrequests is false*/
     if (acsState.holdRequests == FALSE)
     {
         sentACSNull = 1;
     }
-    
+
     if (disconnect == TRUE)
     {
-        ret = utilTmr_set(tmrHandle, nullHttpTimeout, (void *)ht, ACSRESPONSETIME/2, "null_http"); /* half of max */
+        ret = utilTmr_set(tmrHandle, nullHttpTimeout, (void *)ht, ACSRESPONSETIME / 2, "null_http"); /* half of max */
         if (ret != VOS_RET_SUCCESS)
         {
             vosLog_error("could not set NULL httpd timer, ret=%d", ret);
@@ -713,7 +713,7 @@ void informRspTimeout(void *handle)
 }
 #endif
 
-static void freeMsg(char *buf, int *bufSz) 
+static void freeMsg(char *buf, int *bufSz)
 {
     if (buf != NULL)
     {
@@ -723,7 +723,7 @@ static void freeMsg(char *buf, int *bufSz)
     *bufSz = 0;
 }
 
-static char *readLengthMsgDiag(tWget *wg, int readLth, int *mlth, int doFlushStream) 
+static char *readLengthMsgDiag(tWget *wg, int readLth, int *mlth, int doFlushStream)
 {
 #define MaxPacketLenth (1024*10)
     int bufCnt                = 0;
@@ -744,9 +744,9 @@ static char *readLengthMsgDiag(tWget *wg, int readLth, int *mlth, int doFlushStr
             {
                 bufCnt             += readCnt;
                 bufLth             -= readCnt;
-                headtotal          += 38; 
+                headtotal          += 38;
                 testBytesReceived   = bufCnt;
-                totalBytesReceived  = headtotal+bufCnt; 
+                totalBytesReceived  = headtotal + bufCnt;
             }
             else
             {
@@ -770,7 +770,7 @@ static char *readLengthMsgDiag(tWget *wg, int readLth, int *mlth, int doFlushStr
     return soapBuf;
 
 }
-static char *readLengthMsg(tWget *wg, int readLth, int *mlth, UBOOL8 doFlushStream) 
+static char *readLengthMsg(tWget *wg, int readLth, int *mlth, UBOOL8 doFlushStream)
 {
     int bufCnt = 0;
     int bufCnt_1M = 0;
@@ -779,26 +779,26 @@ static char *readLengthMsg(tWget *wg, int readLth, int *mlth, UBOOL8 doFlushStre
     char *soapBuf = NULL;
 
     *mlth = 0;
-    
-   /*
-    * This is the path taken when we do image download.  Don't zeroize
-    * the buffer that is allocated here because that will force linux
-    * to immediately assign physical pages to the buffer.  Intead, just
-    * let the buffer fill in as the transfer progresses.  This will give
-    * smd and the kernel more time to make physical pages available.
-    */
+
+    /*
+     * This is the path taken when we do image download.  Don't zeroize
+     * the buffer that is allocated here because that will force linux
+     * to immediately assign physical pages to the buffer.  Intead, just
+     * let the buffer fill in as the transfer progresses.  This will give
+     * smd and the kernel more time to make physical pages available.
+     */
     if ((soapBuf = (char *) VOS_MALLOC_FLAGS((UINT32)readLth + 1, 0)) != NULL)
     {
         while (bufCnt < readLth)
         {
-            if ((readCnt = proto_Readn(wg->pc, soapBuf+bufCnt, bufLth)) > 0)
+            if ((readCnt = proto_Readn(wg->pc, soapBuf + bufCnt, bufLth)) > 0)
             {
                 bufCnt += readCnt;
                 bufLth -= readCnt;
             }
             else
             {
-                if (readCnt == -99) 
+                if (readCnt == -99)
                 {
                     /* read error */
                     vosLog_error("download interrupted");
@@ -810,12 +810,12 @@ static char *readLengthMsg(tWget *wg, int readLth, int *mlth, UBOOL8 doFlushStre
                 {
                     vosLog_error("reach end of stream.");
                 }
-                
+
                 break;
             }
 
             /* send HEARTBEAT to smd */
-            if((bufCnt / (1024 * 1024)) > bufCnt_1M)
+            if ((bufCnt / (1024 * 1024)) > bufCnt_1M)
             {
                 UTIL_sendHeartbeat(g_msgHandle);
                 bufCnt_1M = bufCnt / (1024 * 1024);
@@ -823,7 +823,7 @@ static char *readLengthMsg(tWget *wg, int readLth, int *mlth, UBOOL8 doFlushStre
 
             vosLog_debug("readCnt:%u;bufCnt:%u;errno:%d.", readCnt, bufCnt, errno);
         }
-      
+
         vosLog_debug("soapBuf bufCnt=%d readLth=%d\n", bufCnt, readLth);
         if (readCnt != -99)
         {
@@ -832,29 +832,29 @@ static char *readLengthMsg(tWget *wg, int readLth, int *mlth, UBOOL8 doFlushStre
         }
         if (doFlushStream)
         {
-           /* If we are not processing a chunked message, 
-            * skip(flush) anything else
-            */
-            proto_Skip(wg->pc);         
+            /* If we are not processing a chunked message,
+             * skip(flush) anything else
+             */
+            proto_Skip(wg->pc);
         }
     }
-      
+
     return soapBuf;
 }
 
-static char *readChunkedMsg(tWget *wg, int *mlth, int maxSize) 
+static char *readChunkedMsg(tWget *wg, int *mlth, int maxSize)
 {
     char *soapBuf = NULL;
-    char chunkedBuf[128] = {0};   
+    char chunkedBuf[128] = {0};
 
     *mlth = 0;
-    
+
     /*read chunked size of first chunk*/
     if (proto_Readline(wg->pc, chunkedBuf, sizeof(chunkedBuf)) > 0)
     {
         int  chunkedSz = 0, readSz = 0;
         char *newBuf = NULL, *readBuf = NULL;
-      
+
         sscanf(chunkedBuf, "%x", &chunkedSz);
         while (chunkedSz > 0)
         {
@@ -865,13 +865,13 @@ static char *readChunkedMsg(tWget *wg, int *mlth, int maxSize)
             {
                 vosLog_error("===> readChunkedMsg, chunked size = %d, read size = %d\n", chunkedSz, readSz);
             }
-            
+
             if (readBuf == NULL)
             {
                 freeMsg(soapBuf, mlth);
                 break;
             }
-         
+
             if ((*mlth + readSz) > maxSize)
             {
                 vosLog_error("reading more data than maxSize (%d)", maxSize);
@@ -879,20 +879,20 @@ static char *readChunkedMsg(tWget *wg, int *mlth, int maxSize)
                 freeMsg(readBuf, &readSz);
                 break;
             }
-         
+
             if (NULL == soapBuf)
             {
-               /* allocate the first chunk since VOS_REALLOC
-                * does not accept soapBuf as NULL pointer.
-                */
+                /* allocate the first chunk since VOS_REALLOC
+                 * does not accept soapBuf as NULL pointer.
+                 */
                 newBuf = soapBuf = VOS_MALLOC_FLAGS((UINT32)(*mlth + readSz + 1), ALLOC_ZEROIZE);
             }
-            else 
+            else
             {
                 /* reallocate soap message size*/
                 newBuf = VOS_REALLOC(soapBuf, (UINT32)(*mlth + readSz + 1));
             }
-         
+
             if (NULL == newBuf)
             {
                 freeMsg(soapBuf, mlth);
@@ -902,7 +902,7 @@ static char *readChunkedMsg(tWget *wg, int *mlth, int maxSize)
 
             /* point soap message to new allocated memory*/
             soapBuf = newBuf;
-            /* append chunked data to soap message*/ 
+            /* append chunked data to soap message*/
             UTIL_STRNCPY(soapBuf + *mlth, readBuf, readSz + 1);
             /* increase soap message size*/
             *mlth += readSz;
@@ -914,8 +914,9 @@ static char *readChunkedMsg(tWget *wg, int *mlth, int maxSize)
             {
                 chunkedBuf[0] = '\0';
                 readSz = proto_Readline(wg->pc, chunkedBuf, sizeof(chunkedBuf));
-            } while (readSz > 0 && isxdigit(chunkedBuf[0]) == 0);
-         
+            }
+            while (readSz > 0 && isxdigit(chunkedBuf[0]) == 0);
+
             /* read chunked size of next chunk*/
             if (isxdigit(chunkedBuf[0]) != 0)
             {
@@ -926,9 +927,9 @@ static char *readChunkedMsg(tWget *wg, int *mlth, int maxSize)
                 freeMsg(soapBuf, mlth);
             }
         }
-        
+
         /* skip(flush) anything else*/
-        proto_Skip(wg->pc);         
+        proto_Skip(wg->pc);
     }
 
     return soapBuf;
@@ -944,12 +945,12 @@ void writeLog(const char *buf, int bufLen)
         vosLog_error("open logTr69 failed");
     }
     else
-    { 
+    {
         if (g_writeLog)
         {
             fwrite(buf, bufLen, 1, fd);
         }
-        
+
         fclose(fd);
     }
 }
@@ -961,7 +962,7 @@ void writeLog(const char *buf, int bufLen)
  * Returns:
  *     pointer to response buffer or NULL.
  *      *mlth contain size of buffer. Undefined if return is NULL.
- */     
+ */
 char *readResponse(tWget *wg, int *mlth, int maxBufferSize)
 {
     char *soapBuf = NULL;
@@ -986,7 +987,7 @@ char *readResponse(tWget *wg, int *mlth, int maxBufferSize)
             doFlushStream = TRUE;
         }
         /* liqingyang */
-        
+
         /* this is the path taken by image downloads */
         vosLog_debug("calling readLengthMsg with content_length=%d", maxSize);
         soapBuf = readLengthMsg(wg, maxSize, mlth, doFlushStream);
@@ -1002,20 +1003,20 @@ char *readResponse(tWget *wg, int *mlth, int maxBufferSize)
     {
         writeLog(soapBuf, strlen(soapBuf));
     }
-    
+
     return soapBuf;
 }  /* End of readResponse() */
 
-char *readResponseDiag( tWget *wg, int *mlth, int maxBufferSize)
+char *readResponseDiag(tWget *wg, int *mlth, int maxBufferSize)
 {
     char *soapBuf = NULL;
 
-    if (wg->hdrs->content_length > 0) 
+    if (wg->hdrs->content_length > 0)
     {
         int doFlushStream = TRUE;
         soapBuf = readLengthMsgDiag(wg, wg->hdrs->content_length, mlth, doFlushStream);
-    } 
-    else if (wg->hdrs->TransferEncoding && !strcasecmp(wg->hdrs->TransferEncoding, "chunked")) 
+    }
+    else if (wg->hdrs->TransferEncoding && !strcasecmp(wg->hdrs->TransferEncoding, "chunked"))
     {
         int maxSize = (maxBufferSize > 0) ? maxBufferSize : MAXWEBBUFSZ;
         soapBuf = readChunkedMsg(wg, mlth, maxSize);
@@ -1026,23 +1027,23 @@ char *readResponseDiag( tWget *wg, int *mlth, int maxBufferSize)
 
 static void addCookie(CookieHdr *hdr, CookieHdr *cookie)
 {
-    CookieHdr *curr = hdr; 
+    CookieHdr *curr = hdr;
     CookieHdr *prev = hdr;
 
     /*does cookie already exist in cookie list*/
     for (curr = hdr, prev = hdr; curr != NULL; prev = curr, curr = curr->next)
     {
-        if (0 == util_strcmp(curr->name, cookie->name) 
-         && 0 == util_strcmp(curr->value, cookie->value))
+        if (0 == util_strcmp(curr->name, cookie->name)
+                && 0 == util_strcmp(curr->value, cookie->value))
         {
             break;
         }
     }
-   
+
     /*if cookie is not in cookie list then add it*/
     if (NULL == curr)
     {
-        curr = (CookieHdr*) VOS_MALLOC_FLAGS(sizeof (CookieHdr), ALLOC_ZEROIZE);
+        curr = (CookieHdr *) VOS_MALLOC_FLAGS(sizeof(CookieHdr), ALLOC_ZEROIZE);
         curr->name = VOS_STRDUP(cookie->name);
         curr->value = VOS_STRDUP(cookie->value);
         curr->next = NULL;
@@ -1053,21 +1054,21 @@ static void addCookie(CookieHdr *hdr, CookieHdr *cookie)
 static void copyCookies(CookieHdr **dst, CookieHdr *src)
 {
     CookieHdr *cp = src;
-   
+
     /* create cookie head*/
     if (*dst == NULL && cp != NULL)
     {
-        *dst = (CookieHdr*) VOS_MALLOC_FLAGS(sizeof (CookieHdr), ALLOC_ZEROIZE);
+        *dst = (CookieHdr *) VOS_MALLOC_FLAGS(sizeof(CookieHdr), ALLOC_ZEROIZE);
         (*dst)->name = VOS_STRDUP(cp->name);
         (*dst)->value = VOS_STRDUP(cp->value);
         (*dst)->next = NULL;
         cp = cp->next;
     }
-    
+
     /* add cookie to cookie head*/
     while (cp != NULL)
     {
-        addCookie(*dst, cp);   
+        addCookie(*dst, cp);
         cp = cp->next;
     }
 }  /* End of copyCookies() */
@@ -1075,21 +1076,21 @@ static void copyCookies(CookieHdr **dst, CookieHdr *src)
 static void freeCookies(CookieHdr **p)
 {
     CookieHdr *next = *p;
-   
+
     while (next)
     {
         CookieHdr *temp;
         temp = next->next;
-        if (next->name) 
+        if (next->name)
         {
             VOS_MEM_FREE_BUF_AND_NULL_PTR(next->name);
         }
-        
+
         if (next->value)
         {
             VOS_MEM_FREE_BUF_AND_NULL_PTR(next->value);
         }
-        
+
         VOS_MEM_FREE_BUF_AND_NULL_PTR(next);
         next = temp;
     }
@@ -1098,7 +1099,7 @@ static void freeCookies(CookieHdr **p)
 static void handleSoapMessage(char *soapmsg, int len)
 {
     vosLog_debug("soapmsg = %p, len = %d", soapmsg, len);
-    
+
     if (soapmsg)
     {
         eParseStatus   status;
@@ -1116,7 +1117,7 @@ static void handleSoapMessage(char *soapmsg, int len)
         parseReq.nameSpace = nameSpaces;
         status = parseGeneric(NULL, soapmsg, len, &parseReq);
         VOS_MEM_FREE_BUF_AND_NULL_PTR(soapmsg);
-      
+
         if (status == NO_ERROR)
         {
             if (runRPC() == eRPCRunFail)
@@ -1132,14 +1133,14 @@ static void handleSoapMessage(char *soapmsg, int len)
         }
     }
     else
-    {                
+    {
         /* no response */
         vosLog_debug("status = 200, no Soapmsg. sentACSNull=%d", sentACSNull);
-        if (!sentACSNull) 
+        if (!sentACSNull)
         {
             sendNullHttp(FALSE);
         }
-        
+
         acsDisconnect(&httpTask, eAcsDone);
     }
 }
@@ -1157,7 +1158,7 @@ static void handleSoapMessageCallBack(void *handle)
         copyCookies(&(ht->wio->cookieHdrs), glbCookieHdr);
     }
 
-    handleSoapMessage(soapmsg, util_strlen(soapmsg));   
+    handleSoapMessage(soapmsg, util_strlen(soapmsg));
 }
 
 /*
@@ -1172,25 +1173,25 @@ static void postComplete(void *handle)
     int skipResult = 1;
 
     vosLog_debug("Enter>, wg = %p", wg);
-    
+
     utilTmr_cancel(tmrHandle, nullHttpTimeout, (void *)ht);
 
     if (iWgetStatus_Ok == wg->status)
     {
-        if (ht->wio->hdrs->Connection 
-        && !util_strcasecmp(ht->wio->hdrs->Connection, "close"))
+        if (ht->wio->hdrs->Connection
+                && !util_strcasecmp(ht->wio->hdrs->Connection, "close"))
         {
             ht->eHttpState = eClose;
         }
-        
-        vosLog_debug("Connection = %s", ht->eHttpState==eClose?"close": "keep-alive");
+
+        vosLog_debug("Connection = %s", ht->eHttpState == eClose ? "close" : "keep-alive");
         vosLog_debug("wg->hdrs->status_cod = %d", wg->hdrs->status_code);
         if (401 == wg->hdrs->status_code)
         {
             /* need to send authenticate */
             char *hdrvalue;
-            if (wg->hdrs->content_length > 0 
-            || (wg->hdrs->TransferEncoding && streq(wg->hdrs->TransferEncoding, "chunked")))
+            if (wg->hdrs->content_length > 0
+                    || (wg->hdrs->TransferEncoding && streq(wg->hdrs->TransferEncoding, "chunked")))
             {
                 int   mlth;
                 char *tmpBuf;
@@ -1199,7 +1200,7 @@ static void postComplete(void *handle)
                     VOS_MEM_FREE_BUF_AND_NULL_PTR(tmpBuf);
                 }
             }
-            
+
             sentACSNull = 0;
             VOS_MEM_FREE_BUF_AND_NULL_PTR(ht->authHdr); /* free in case of reauth requested during connection */
             if (ht->eAuthState == sAuthenticating)
@@ -1218,27 +1219,27 @@ static void postComplete(void *handle)
 
             vosLog_debug("WWW-Authenticate= %s", wg->hdrs->wwwAuthenticate);
             if (!(hdrvalue = generateAuthorizationHdrValue(sa, wg->hdrs->wwwAuthenticate,
-                                                    "POST", ht->wio->uri,
-                                                    acsState.acsUser,
-                                                    acsState.acsPwd)))
+                             "POST", ht->wio->uri,
+                             acsState.acsUser,
+                             acsState.acsPwd)))
             {
                 vosLog_error("WWWAuthenticate header parsing error: %s",
-                           wg->hdrs->wwwAuthenticate);
+                             wg->hdrs->wwwAuthenticate);
                 VOS_MEM_FREE_BUF_AND_NULL_PTR(ht->postMsg);
                 acsDisconnect(ht, eAuthError);
                 return;
             }
-            
+
             ht->authHdr = hdrvalue;
             if (skipResult == 0 || ht->eHttpState == eClose)
-            {  
+            {
                 /* end of data on 401 skip_Proto() */
                 /* save cookies of the current connection*/
                 if (wg->hdrs->setCookies != NULL)
                 {
                     copyCookies(&glbCookieHdr, wg->hdrs->setCookies);
                 }
-                
+
                 /* close connection and reconnect with Authorization header */
                 closeACSConnection(ht);
                 ht->wio = wget_Connect(acsState.acsURL, Connected, NULL);
@@ -1252,7 +1253,7 @@ static void postComplete(void *handle)
                 }
                 ht->eHttpState = eConnected;
                 /* copy cookies from previous connection to the new one*/
-                if (glbCookieHdr != NULL) 
+                if (glbCookieHdr != NULL)
                 {
                     copyCookies(&(ht->wio->cookieHdrs), glbCookieHdr);
                 }
@@ -1263,13 +1264,14 @@ static void postComplete(void *handle)
             {
                 CMC_tr69cSetRemoteInform(CMC_TR69C_DIAG_INFORM_VERIFY_FAIL, CMC_TR69C_REMOTE_INFORM_STATUS);
             }
-            
+
             /* now just resend the last data with the Authorization header */
             sendInformData();
             /* now we just return to wait on the response from the server */
 #ifdef FORCE_NULL_AFTER_INFORM
             vosLog_debug("set Timer to Force Null send to ACS (Cisco tool)");
-            utilTmr_set(tmrHandle, informRspTimeout, ht, 1*1000, "informRspTimeout"); /******** ?????????????CISCO TOOL ???????? send null if server doesn't respond */
+            utilTmr_set(tmrHandle, informRspTimeout, ht, 1 * 1000,
+                        "informRspTimeout"); /******** ?????????????CISCO TOOL ???????? send null if server doesn't respond */
 #endif
         }
         else if (wg->hdrs->status_code  >= 300 &&  wg->hdrs->status_code <= 307)
@@ -1297,12 +1299,12 @@ static void postComplete(void *handle)
         }
         else
         {
-           /* If status != 401 after inform, and eAuthState == sIdle,
-            * we're in the wrong authentication state.  The correct state should be from 
-            * sAuthenticating to sAutenticated so disconnect unless
-            * ACS does not have any authentications and returns status_code == 200
-            * right after CPE sends the first Inform message 
-            */
+            /* If status != 401 after inform, and eAuthState == sIdle,
+             * we're in the wrong authentication state.  The correct state should be from
+             * sAuthenticating to sAutenticated so disconnect unless
+             * ACS does not have any authentications and returns status_code == 200
+             * right after CPE sends the first Inform message
+             */
             if (SF_FEATURE_SUPPORT_TR69C_REMOTESTATUS)
             {
                 if (404 == wg->hdrs->status_code)
@@ -1325,10 +1327,10 @@ static void postComplete(void *handle)
             {
                 informState = eACSContacted;
             }
-         
+
             if ((wg->hdrs->status_code == 200) &&
-                ((wg->hdrs->content_length > 0) ||
-                (wg->hdrs->TransferEncoding && streq(wg->hdrs->TransferEncoding, "chunked")))) 
+                    ((wg->hdrs->content_length > 0) ||
+                     (wg->hdrs->TransferEncoding && streq(wg->hdrs->TransferEncoding, "chunked"))))
             {
                 /* allocate buffer and parse the response */
                 int     mlth;
@@ -1336,10 +1338,10 @@ static void postComplete(void *handle)
 
                 /* msg posted - free buffer */
                 VOS_MEM_FREE_BUF_AND_NULL_PTR(ht->postMsg);
-                soapmsg = readResponse(wg, &mlth,0);
+                soapmsg = readResponse(wg, &mlth, 0);
 
                 /* if TCP connection is closed by ACS*/
-                if (ht->eHttpState == eClose) 
+                if (ht->eHttpState == eClose)
                 {
                     /* save cookies of the current connection*/
                     if (wg->hdrs->setCookies != NULL)
@@ -1359,15 +1361,15 @@ static void postComplete(void *handle)
                     /*return here since handleSoapMessage will be called in handleSoapMessageCallBack*/
                     return;
                 }
-                
-                handleSoapMessage(soapmsg, mlth);                 
+
+                handleSoapMessage(soapmsg, mlth);
             }
-            else if ((wg->hdrs->status_code == 204) 
-                  || (wg->hdrs->status_code == 200 && !wg->hdrs->TransferEncoding))
-            { 
+            else if ((wg->hdrs->status_code == 204)
+                     || (wg->hdrs->status_code == 200 && !wg->hdrs->TransferEncoding))
+            {
                 /* only terminate session if no pending*/
                 if (transferCompletePending == 0 && sendGETRPC == 0)
-                {                     
+                {
                     /* empty ACS message -- ACS is done */
                     vosLog_debug("empty ACS msg - sentACSNull=%d", sentACSNull);
                     /* msg posted - free buffer */
@@ -1386,7 +1388,7 @@ static void postComplete(void *handle)
                         /* TR-069 session is finished*/
                         sessionState = eSessionEnd;
                         /*free cookies since tr-069 session is finished*/
-                        if (glbCookieHdr != NULL) 
+                        if (glbCookieHdr != NULL)
                         {
                             freeCookies(&glbCookieHdr);
                             glbCookieHdr = NULL;
@@ -1400,10 +1402,10 @@ static void postComplete(void *handle)
                         /* transfer complete is pending so send it when receive empty message*/
                         sendTransferComplete();
                         transferCompletePending = 0;
-                        /* setACSContactedState to eACSInformed for clearing*/ 
+                        /* setACSContactedState to eACSInformed for clearing*/
                         /* previous state which is eACSDownloadReboot or eACSUpload*/
                         setInformState(eACSInformed);
-                    } 
+                    }
                     else if (1 == sendGETRPC)
                     {
                         sendGetRPCMethods();
@@ -1417,9 +1419,9 @@ static void postComplete(void *handle)
                 /* msg posted - free buffer */
                 VOS_MEM_FREE_BUF_AND_NULL_PTR(ht->postMsg);
             }
-            else if (wg->hdrs->status_code >= 300 
-                  && wg->hdrs->status_code <= 307 
-                  && wg->hdrs->locationHdr)
+            else if (wg->hdrs->status_code >= 300
+                     && wg->hdrs->status_code <= 307
+                     && wg->hdrs->locationHdr)
             {
                 /* Redirect status with new location */
                 /* repost msg to new URL */
@@ -1439,7 +1441,7 @@ static void postComplete(void *handle)
                 /* msg posted - free buffer */
                 VOS_MEM_FREE_BUF_AND_NULL_PTR(ht->postMsg);
                 vosLog_error("Unknown status_code=%d received from ACS or encoding",
-                       wg->hdrs->status_code);
+                             wg->hdrs->status_code);
                 acsDisconnect(ht, ePostError);
             }
         }
@@ -1452,17 +1454,17 @@ static void postComplete(void *handle)
     }
 }  /* End of postComplete() */
 
-/* 
- *  This routine store an events to the informEvList. 
+/*
+ *  This routine store an events to the informEvList.
  *  sendInformData will look at this informEvList and
- *  compose the inform message when it's ready to be sent 
+ *  compose the inform message when it's ready to be sent
  */
 /*  Replace setupEventList, putInformEventMmethod and putInformEvent */
 
 UINT32 addInformEventToList(UINT8 event)
 {
     int   i;
-   
+
     vosLog_debug("entered with event=%d", event);
 
     /*
@@ -1501,7 +1503,7 @@ UINT32 addInformEventToList(UINT8 event)
  * an error has ocurred.
  */
 static void Connected(void *handle)
-{  
+{
     HttpTask *ht = &httpTask;
     tWget    *wg = (tWget *)handle;
 
@@ -1511,7 +1513,7 @@ static void Connected(void *handle)
     {
         CMC_tr69cSetRemoteInform(CMC_TR69C_DIAG_INFORM_NO_RESPONSE, CMC_TR69C_REMOTE_INFORM_STATUS);  //inform success
     }
-   
+
     if (wg->status != 0)
     {
         VOS_MEM_FREE_BUF_AND_NULL_PTR(ht->postMsg);
@@ -1519,7 +1521,7 @@ static void Connected(void *handle)
         vosLog_error("ACS Connect Status = %d %s", wg->status, wg->msg);
         return;
     }
-   
+
     if (ht->wio == NULL)
     {
         ht->eHttpState = eClosed;
@@ -1538,7 +1540,7 @@ static void Connected(void *handle)
 }  /* End of Connected() */
 
 /*
- * Send the current buffer to the ACS. This is an async call. The 
+ * Send the current buffer to the ACS. This is an async call. The
  * return status only indicates that the connection has started.
  * The httpTask structure represents the only connection to an
  * ACS. If the connection is up then it is reused; otherwise,
@@ -1555,7 +1557,7 @@ void sendToAcs(int contentLen, char *buf)
         vosLog_error("postMsg buffer not null");
         VOS_MEM_FREE_BUF_AND_NULL_PTR(ht->postMsg);
     }
-    
+
     if (getAcsConnDesc() == NULL)
     {
         vosLog_error("Try to send message to ACS while connection is NULL!");
@@ -1564,17 +1566,17 @@ void sendToAcs(int contentLen, char *buf)
 
     ht->content_len = contentLen;
     ht->postMsg     = buf;
-    ht->postLth     = buf? util_strlen(buf): 0;
+    ht->postLth     = buf ? util_strlen(buf) : 0;
     wget_ClearPostHdrs(ht->wio);
 #ifdef GENERATE_SOAPACTION_HDR
-    wget_AddPostHdr(ht->wio,"SOAPAction", "");
+    wget_AddPostHdr(ht->wio, "SOAPAction", "");
 #endif
     updateAuthorizationHdr(ht);
-  
+
     if (ht->eHttpState == eClose)
     {
         wget_PostDataClose(ht->wio, ht->postMsg, ht->postLth, "text/xml",
-                           postComplete, (void*) ht);
+                           postComplete, (void *) ht);
     }
     else
     {
@@ -1583,7 +1585,7 @@ void sendToAcs(int contentLen, char *buf)
     }
 }  /* End of sendToAcs() */
 
-/* 
+/*
  * Send an Inform message. The possible handle values are
  * eIEConnectionRequest
  * eIETransferComplete
@@ -1591,9 +1593,9 @@ void sendToAcs(int contentLen, char *buf)
  * The other possible events are set by xxxPending flags.
  * eIEPeriodix
  * eIEDiagnostics
- * 
+ *
  */
-void sendInform(void* dummy)
+void sendInform(void *dummy)
 {
     int numOfValueChanged = (int)getMdmParamValueChanges();
     UtilTimestamp now;
@@ -1639,211 +1641,211 @@ void sendInform(void* dummy)
 
     if (isAcsConnected())
     {
-#if 0  
-/* this change doesn't seem to be needed anymore.   We should just return if there is
-   a session going on.   When the session ends, we can try to call inform again.
- */
-      if (informState == eACSNeverContacted)
-      {
-         /* need to close connection to avoid system crash problem
-          * when system is booted up without URL, then its value is changed                
-          * from WEB UI, then connection request is performed, then system is crashed                
-          * ==> call closeACSConnection to fix CR #16299
-          */
-         closeACSConnection(&httpTask);
-      }
-      else
-      {
-         /* inform needs to be sent, however, there is an outstanding
-          * session going on.  Inform needs to sent in the next session.
-          * (TR69 amendment 2, section 3.7) Inform message must not occur more
-          * than once during a session unless this is retry.
-          * Interop with Commtrend ACS, it is slow in sending empty http in Ping Test.
-          */
-         utilTmr_set(tmrHandle,sendInform,NULL,5*MSECS_IN_SEC, "sendInformWhenSessionEnds");
-         return;
-      }
-#else
-      vosLog_debug(">>>>>>There is already one AcsCon exist, retry after 20000 ms.\n");
-      utilTmr_replaceIfSooner(tmrHandle, sendInform, NULL, 20000, "sendInformWhenSessionEnds");
-      return;
-#endif 
-   }
-
-   sentACSNull = 0;
-
-   if (acsState.acsURL != NULL && acsState.acsURL[0] != '\0')
-   {
-      HttpTask *ht = &httpTask;
-      UBOOL8 changed = FALSE;
-      int i;
-
-      /* Before inform is sent for valueChanged, we need to see if this is a notification that has limitNotification
-       * set by ACS.  If it is, inform should not be sent out; set a timer to send later.
-       * If this notification is sent for other purposes or
-       * valueChanged of a different parameter, the limitNotification parameter is sent anyway in the same inform.
-       * At this point, we cancel the pending notification. 
-       */
-      if (limitNotificationList.count != 0) 
-      {
-
-        /* are we sending notification for value changes? */
-         for (i = 0; i< (int)eventCount; i++)
-         {
-            if (informEvList.informEvList[i] == eIEValueChanged)
-            {
-               notificationEvent = 1;
-               break;
-            }
-         }
-
-         if (notificationEvent && (limitNotificationList.count >= numOfValueChanged))
-         {
-            /* there is a notification that needs to be sent, just to see this is one of those
-             * in limit notification list 
+#if 0
+        /* this change doesn't seem to be needed anymore.   We should just return if there is
+           a session going on.   When the session ends, we can try to call inform again.
+         */
+        if (informState == eACSNeverContacted)
+        {
+            /* need to close connection to avoid system crash problem
+             * when system is booted up without URL, then its value is changed
+             * from WEB UI, then connection request is performed, then system is crashed
+             * ==> call closeACSConnection to fix CR #16299
              */
-            ptr = limitNotificationList.limitEntry;
-            utilTms_get(&now);
+            closeACSConnection(&httpTask);
+        }
+        else
+        {
+            /* inform needs to be sent, however, there is an outstanding
+             * session going on.  Inform needs to sent in the next session.
+             * (TR69 amendment 2, section 3.7) Inform message must not occur more
+             * than once during a session unless this is retry.
+             * Interop with Commtrend ACS, it is slow in sending empty http in Ping Test.
+             */
+            utilTmr_set(tmrHandle, sendInform, NULL, 5 * MSECS_IN_SEC, "sendInformWhenSessionEnds");
+            return;
+        }
+#else
+        vosLog_debug(">>>>>>There is already one AcsCon exist, retry after 20000 ms.\n");
+        utilTmr_replaceIfSooner(tmrHandle, sendInform, NULL, 20000, "sendInformWhenSessionEnds");
+        return;
+#endif
+    }
 
-            for (; ptr != NULL; ptr = ptr->next)
+    sentACSNull = 0;
+
+    if (acsState.acsURL != NULL && acsState.acsURL[0] != '\0')
+    {
+        HttpTask *ht = &httpTask;
+        UBOOL8 changed = FALSE;
+        int i;
+
+        /* Before inform is sent for valueChanged, we need to see if this is a notification that has limitNotification
+         * set by ACS.  If it is, inform should not be sent out; set a timer to send later.
+         * If this notification is sent for other purposes or
+         * valueChanged of a different parameter, the limitNotification parameter is sent anyway in the same inform.
+         * At this point, we cancel the pending notification.
+         */
+        if (limitNotificationList.count != 0)
+        {
+
+            /* are we sending notification for value changes? */
+            for (i = 0; i < (int)eventCount; i++)
             {
-               
-                ret = CMC_phlIsParamValueChanged(ptr->parameterFullPathName, &changed);
+                if (informEvList.informEvList[i] == eIEValueChanged)
+                {
+                    notificationEvent = 1;
+                    break;
+                }
+            }
+
+            if (notificationEvent && (limitNotificationList.count >= numOfValueChanged))
+            {
+                /* there is a notification that needs to be sent, just to see this is one of those
+                 * in limit notification list
+                 */
+                ptr = limitNotificationList.limitEntry;
+                utilTms_get(&now);
+
+                for (; ptr != NULL; ptr = ptr->next)
+                {
+
+                    ret = CMC_phlIsParamValueChanged(ptr->parameterFullPathName, &changed);
+
+                    if (ret != VOS_RET_SUCCESS)
+                    {
+                        continue;
+                    }
+
+                    if (changed)
+                    {
+                        deltaMs = utilTms_deltaInMilliSeconds(&now, &ptr->lastSent);
+                        if (deltaMs < (UINT32)(ptr->limitValue))
+                        {
+                            /* it's not time to send inform yet for this event.
+                            * If there is another parameter that can send, then this event can go with it.
+                            */
+                            if (ptr->notificationPending == 0)
+                            {
+                                vosLog_debug("timerSet: deltaMs %d, limValue %d, toBeSent in %d ms",
+                                             deltaMs, ptr->limitValue, (ptr->limitValue - deltaMs));
+
+                                utilTmr_set(tmrHandle, ptr->func, NULL, ((UINT32)ptr->limitValue - deltaMs), "limitNotification");
+                                ptr->notificationPending = 1;
+                            }
+
+                            timeToSend = 0;
+                            continue;
+                        }
+                        else
+                        {
+                            /* it's time to send! */
+                            timeToSend = 1;
+                            break;
+                        }
+                    } /* param changed */
+                } /* loop notifcation list */
+            } /* notification pending */
+            if (!timeToSend)
+            {
+                return;
+            }
+        } /* limit Notification != NULL */
+
+        vosLog_debug("Connect to ACS at %s", acsState.acsURL);
+        ht->eHttpState = eStart;
+
+        ht->wio = wget_Connect(acsState.acsURL, Connected, NULL);
+
+        if (ht->wio == NULL)
+        {
+            if (SF_FEATURE_SUPPORT_TR69C_REMOTESTATUS)
+            {
+                /*wan not selected, don't send inform.*/
+                CMC_tr69cSetRemoteInform(CMC_TR69C_DIAG_INFORM_NOT_REPORT, CMC_TR69C_REMOTE_INFORM_STATUS);
+                ret = CMC_wanGetTr69cWanConnState(&checkwanresult);
 
                 if (ret != VOS_RET_SUCCESS)
                 {
-                    continue;
+                    CMC_tr69cSetRemoteInform(CMC_TR69C_DIAG_NOT_REPORT_NO_WAN_CONN, CMC_TR69C_REMOTE_STATUS_MESSAGE);
                 }
-
-                if (changed)
+                else if (0 == checkwanresult)
                 {
-                    deltaMs = utilTms_deltaInMilliSeconds(&now, &ptr->lastSent);
-                    if (deltaMs < (UINT32)(ptr->limitValue))
-                    {
-                    /* it's not time to send inform yet for this event.
-                    * If there is another parameter that can send, then this event can go with it.
-                    */
-                        if (ptr->notificationPending == 0)
-                        {
-                            vosLog_debug("timerSet: deltaMs %d, limValue %d, toBeSent in %d ms",
-                            deltaMs,ptr->limitValue,(ptr->limitValue - deltaMs));
-
-                            utilTmr_set(tmrHandle,ptr->func,NULL, ((UINT32)ptr->limitValue - deltaMs), "limitNotification");
-                            ptr->notificationPending = 1;                    
-                        } 
-
-                        timeToSend = 0;
-                        continue;
-                    }
-                    else
-                    {
-                        /* it's time to send! */
-                        timeToSend = 1;
-                        break;
-                    }
-                } /* param changed */
-            } /* loop notifcation list */
-        } /* notification pending */
-        if (!timeToSend)
-        {
-            return;
-        }
-    } /* limit Notification != NULL */   
-
-    vosLog_debug("Connect to ACS at %s", acsState.acsURL);
-    ht->eHttpState = eStart;
-
-    ht->wio = wget_Connect(acsState.acsURL, Connected, NULL);
-
-    if (ht->wio == NULL)
-    {
-        if (SF_FEATURE_SUPPORT_TR69C_REMOTESTATUS)
-        {
-            /*wan not selected, don't send inform.*/
-            CMC_tr69cSetRemoteInform(CMC_TR69C_DIAG_INFORM_NOT_REPORT, CMC_TR69C_REMOTE_INFORM_STATUS);
-            ret = CMC_wanGetTr69cWanConnState(&checkwanresult);
-            
-            if (ret != VOS_RET_SUCCESS)
-            {
-                CMC_tr69cSetRemoteInform(CMC_TR69C_DIAG_NOT_REPORT_NO_WAN_CONN, CMC_TR69C_REMOTE_STATUS_MESSAGE);
-            }
-            else if (0 == checkwanresult)
-            {
-                CMC_tr69cSetRemoteInform(CMC_TR69C_DIAG_NOT_REPORT_NO_EFFECT_WAN_CONN, CMC_TR69C_REMOTE_STATUS_MESSAGE);
-            }
-            else
-            {
-                if (1 == g_dns_resolve_ret)
-                {
-                    CMC_tr69cSetRemoteInform(CMC_TR69C_DIAG_NOT_REPORT_DNS_FAILED, CMC_TR69C_REMOTE_STATUS_MESSAGE);
-                }
-                else if (2 == g_dns_resolve_ret)
-                {
-                    CMC_tr69cSetRemoteInform(CMC_TR69C_DIAG_INFORM_NO_RESPONSE, CMC_TR69C_REMOTE_INFORM_STATUS);
+                    CMC_tr69cSetRemoteInform(CMC_TR69C_DIAG_NOT_REPORT_NO_EFFECT_WAN_CONN, CMC_TR69C_REMOTE_STATUS_MESSAGE);
                 }
                 else
                 {
-                    CMC_tr69cSetRemoteInform(CMC_TR69C_DIAG_NOT_REPORT_NO_DNS_INFORM, CMC_TR69C_REMOTE_STATUS_MESSAGE);
+                    if (1 == g_dns_resolve_ret)
+                    {
+                        CMC_tr69cSetRemoteInform(CMC_TR69C_DIAG_NOT_REPORT_DNS_FAILED, CMC_TR69C_REMOTE_STATUS_MESSAGE);
+                    }
+                    else if (2 == g_dns_resolve_ret)
+                    {
+                        CMC_tr69cSetRemoteInform(CMC_TR69C_DIAG_INFORM_NO_RESPONSE, CMC_TR69C_REMOTE_INFORM_STATUS);
+                    }
+                    else
+                    {
+                        CMC_tr69cSetRemoteInform(CMC_TR69C_DIAG_NOT_REPORT_NO_DNS_INFORM, CMC_TR69C_REMOTE_STATUS_MESSAGE);
+                    }
                 }
             }
-        }
 
-        vosLog_debug("ACS Connect Failed: %s", wget_LastErrorMsg());
-        vosLog_debug("set delayed inform timer for %d ", CHECKWANINTERVAL);
-        /* mwang: this looks a bit wrong.  The handle is used to 
-        * look up this timer.  But handle is this function is actually
-        * an eInformEvent enum.  So are we saying if we get here,
-        * the eInformEvent enum will always be the same?
-        */
-        ret = utilTmr_replaceIfSooner(tmrHandle, sendInform, NULL, CHECKWANINTERVAL, "WANCHECK_inform");
+            vosLog_debug("ACS Connect Failed: %s", wget_LastErrorMsg());
+            vosLog_debug("set delayed inform timer for %d ", CHECKWANINTERVAL);
+            /* mwang: this looks a bit wrong.  The handle is used to
+            * look up this timer.  But handle is this function is actually
+            * an eInformEvent enum.  So are we saying if we get here,
+            * the eInformEvent enum will always be the same?
+            */
+            ret = utilTmr_replaceIfSooner(tmrHandle, sendInform, NULL, CHECKWANINTERVAL, "WANCHECK_inform");
 
-        if (ret != VOS_RET_SUCCESS)
-        {
-            vosLog_error("setting delayed wan inform timer failed, ret=%d", ret);
-        }
-    }
-    else if (ht->wio->status == -6)
-    {
-        if (SF_FEATURE_SUPPORT_TR69C_REMOTESTATUS)
-        {
-            CMC_tr69cSetRemoteInform(CMC_TR69C_DIAG_INFORM_NOT_REPORT, CMC_TR69C_REMOTE_INFORM_STATUS);
-            CMC_tr69cSetRemoteInform(CMC_TR69C_DIAG_NOT_REPORT_NO_ACS_CFG, CMC_TR69C_REMOTE_STATUS_MESSAGE);
-        }
-        
-        vosLog_error("acsUrl length is 0.");
-    }
-    else if (ht->wio->status == -5)
-    {
-        if (SF_FEATURE_SUPPORT_TR69C_REMOTESTATUS)
-        {
-            CMC_tr69cSetRemoteInform(CMC_TR69C_DIAG_INFORM_NOT_REPORT, CMC_TR69C_REMOTE_INFORM_STATUS);
-            CMC_tr69cSetRemoteInform(CMC_TR69C_DIAG_NOT_REPORT_DNS_FAILED, CMC_TR69C_REMOTE_STATUS_MESSAGE);
-        }
-        vosLog_error("acsUrl format is error.");
-    }
-    else
-    {
-         /* go through the whole notification list, cancel timers because they will all be sent now */
-         /* in this case, everything will be sent out, so we cancel all timers and update lastSent field */
-         ptr = limitNotificationList.limitEntry;
-         while (ptr != NULL)
-         {
-            /* Everything will be sent, so we update our list.
-             * To simplify the whole implementation, I just update the lastSent for everyone in the list.
-             * LastSent is basically the last notification sent, not necessarily the notification of this
-             * parameter.
-             */
-            if (ptr->notificationPending)
+            if (ret != VOS_RET_SUCCESS)
             {
-               vosLog_debug("timerCancel for ptr->parameterFullPathName %s", ptr->parameterFullPathName);
-               utilTmr_cancel(tmrHandle, ptr->func, NULL);
-               ptr->notificationPending = 0;
+                vosLog_error("setting delayed wan inform timer failed, ret=%d", ret);
             }
-            
-            utilTms_get(&ptr->lastSent);
-            ptr = ptr->next;
-         } /* loop */
-      } /* inform sent */  
+        }
+        else if (ht->wio->status == -6)
+        {
+            if (SF_FEATURE_SUPPORT_TR69C_REMOTESTATUS)
+            {
+                CMC_tr69cSetRemoteInform(CMC_TR69C_DIAG_INFORM_NOT_REPORT, CMC_TR69C_REMOTE_INFORM_STATUS);
+                CMC_tr69cSetRemoteInform(CMC_TR69C_DIAG_NOT_REPORT_NO_ACS_CFG, CMC_TR69C_REMOTE_STATUS_MESSAGE);
+            }
+
+            vosLog_error("acsUrl length is 0.");
+        }
+        else if (ht->wio->status == -5)
+        {
+            if (SF_FEATURE_SUPPORT_TR69C_REMOTESTATUS)
+            {
+                CMC_tr69cSetRemoteInform(CMC_TR69C_DIAG_INFORM_NOT_REPORT, CMC_TR69C_REMOTE_INFORM_STATUS);
+                CMC_tr69cSetRemoteInform(CMC_TR69C_DIAG_NOT_REPORT_DNS_FAILED, CMC_TR69C_REMOTE_STATUS_MESSAGE);
+            }
+            vosLog_error("acsUrl format is error.");
+        }
+        else
+        {
+            /* go through the whole notification list, cancel timers because they will all be sent now */
+            /* in this case, everything will be sent out, so we cancel all timers and update lastSent field */
+            ptr = limitNotificationList.limitEntry;
+            while (ptr != NULL)
+            {
+                /* Everything will be sent, so we update our list.
+                 * To simplify the whole implementation, I just update the lastSent for everyone in the list.
+                 * LastSent is basically the last notification sent, not necessarily the notification of this
+                 * parameter.
+                 */
+                if (ptr->notificationPending)
+                {
+                    vosLog_debug("timerCancel for ptr->parameterFullPathName %s", ptr->parameterFullPathName);
+                    utilTmr_cancel(tmrHandle, ptr->func, NULL);
+                    ptr->notificationPending = 0;
+                }
+
+                utilTms_get(&ptr->lastSent);
+                ptr = ptr->next;
+            } /* loop */
+        } /* inform sent */
     } /* acs */
     else
     {
@@ -1851,7 +1853,7 @@ void sendInform(void* dummy)
         {
             CMC_tr69cSetRemoteInform(CMC_TR69C_DIAG_INFORM_NOT_REPORT, CMC_TR69C_REMOTE_INFORM_STATUS);
             ret = CMC_wanGetTr69cWanConnState(&checkwanresult);
-            
+
             if (ret != VOS_RET_SUCCESS)
             {
                 CMC_tr69cSetRemoteInform(CMC_TR69C_DIAG_NOT_REPORT_NO_WAN_CONN, CMC_TR69C_REMOTE_STATUS_MESSAGE);
@@ -1865,7 +1867,7 @@ void sendInform(void* dummy)
                 CMC_tr69cSetRemoteInform(CMC_TR69C_DIAG_NOT_REPORT_NO_ACS_CFG, CMC_TR69C_REMOTE_STATUS_MESSAGE);
             }
         }
-        
+
         vosLog_debug("acsURL is NULL!");
     }
 }  /* End of sendInform() */
@@ -1920,7 +1922,7 @@ void requestPeriodicInform(UINT32 interval)
     VOS_RET_E ret = VOS_RET_SUCCESS;
 
     msg = (VosMsgHeader *) buf;
-    body = (RegisterDelayedMsgBody *) (msg + 1);
+    body = (RegisterDelayedMsgBody *)(msg + 1);
 
     msg->type = VOS_MSG_REGISTER_DELAYED_MSG;
     msg->src = EID_TR69C;
@@ -1950,7 +1952,7 @@ void cancelPeriodicInform()
     VOS_RET_E ret = VOS_RET_SUCCESS;
 
     /*cancel local periodic inform timer in tr69c*/
-    utilTmr_cancel(tmrHandle, periodicInformTimeout, (void*)NULL);
+    utilTmr_cancel(tmrHandle, periodicInformTimeout, (void *)NULL);
 
     memset(&msg, 0, sizeof(VosMsgHeader));
 
@@ -1987,9 +1989,9 @@ void periodicInformTimeout(void *handle __attribute__((unused)))
 }  /* End of periodicInformTimeout() */
 
 
- /*
- * Called from setter function to update next inform time
- */
+/*
+* Called from setter function to update next inform time
+*/
 void resetPeriodicInform(UINT32 interval)
 {
     VOS_RET_E ret = VOS_RET_SUCCESS;
@@ -2002,26 +2004,29 @@ void resetPeriodicInform(UINT32 interval)
             int secondInformDelay;
 
             if (acsState.randomInformEnable)
-            {  
-                Inform_flag = ReadRandomInformEnaleFromFile(); 
+            {
+                Inform_flag = ReadRandomInformEnaleFromFile();
                 if (Inform_flag == 1 && glbflag == 1)
                 {
                     secondInformDelay = getRangeNumber(acsState.informInterval) % 60 + 30;
-                    ret = utilTmr_replaceIfSooner(tmrHandle, periodicInformTimeout, (void*)NULL, (UINT32)secondInformDelay*MSECS_IN_SEC, "periodic_inform");
+                    ret = utilTmr_replaceIfSooner(tmrHandle, periodicInformTimeout, (void *)NULL, (UINT32)secondInformDelay * MSECS_IN_SEC,
+                                                  "periodic_inform");
                     glbflag--;
                     Inform_flag = 0;
                     WriteRandomInformEnableTofile(Inform_flag);
                 }
                 else
                 {
-                    ret = utilTmr_replaceIfSooner(tmrHandle, periodicInformTimeout, (void*)NULL, interval*MSECS_IN_SEC, "periodic_inform");
+                    ret = utilTmr_replaceIfSooner(tmrHandle, periodicInformTimeout, (void *)NULL, interval * MSECS_IN_SEC,
+                                                  "periodic_inform");
                 }
             }
             else
             {
-                ret = utilTmr_replaceIfSooner(tmrHandle, periodicInformTimeout, (void*)NULL, interval*MSECS_IN_SEC, "periodic_inform");
+                ret = utilTmr_replaceIfSooner(tmrHandle, periodicInformTimeout, (void *)NULL, interval * MSECS_IN_SEC,
+                                              "periodic_inform");
             }
-            
+
             if (glbflag)
             {
                 glbflag --;
@@ -2029,7 +2034,8 @@ void resetPeriodicInform(UINT32 interval)
         }
         else
         {
-            ret = utilTmr_replaceIfSooner(tmrHandle, periodicInformTimeout, (void*)NULL, interval*MSECS_IN_SEC, "periodic_inform");
+            ret = utilTmr_replaceIfSooner(tmrHandle, periodicInformTimeout, (void *)NULL, interval * MSECS_IN_SEC,
+                                          "periodic_inform");
         }
 
         if (ret != VOS_RET_SUCCESS)
@@ -2039,7 +2045,7 @@ void resetPeriodicInform(UINT32 interval)
     }
     else
     {
-        utilTmr_cancel(tmrHandle, periodicInformTimeout, (void*)NULL);
+        utilTmr_cancel(tmrHandle, periodicInformTimeout, (void *)NULL);
     }
 }
 
@@ -2048,13 +2054,14 @@ void scheduleInformTimeout(void *handle __attribute__((unused)))
     addInformEventToList(INFORM_EVENT_SCHEDULED);
     addInformEventToList(INFORM_EVENT_SCHEDULE_METHOD);
     sendInform(NULL);
-}  
+}
 
 void setScheduleInform(UINT32 interval)
 {
     VOS_RET_E ret = VOS_RET_SUCCESS;
 
-    ret = utilTmr_replaceIfSooner(tmrHandle, scheduleInformTimeout, (void*)NULL, interval*MSECS_IN_SEC, "schedule_inform");
+    ret = utilTmr_replaceIfSooner(tmrHandle, scheduleInformTimeout, (void *)NULL, interval * MSECS_IN_SEC,
+                                  "schedule_inform");
 
     if (ret != VOS_RET_SUCCESS)
     {
@@ -2097,10 +2104,10 @@ void startACSComm(void *handle  __attribute__((unused)))
     startACSListener();
     sendInform(NULL);
     resetPeriodicInform((UINT32)acsState.informInterval);
-    
+
     if (SF_FEATURE_SUPPORT_PPPOE_SNOOPING)
     {
-        utilTmr_set(tmrHandle, getBridgeUsername, NULL, 20*1000, "getBridgeName");
+        utilTmr_set(tmrHandle, getBridgeUsername, NULL, 20 * 1000, "getBridgeName");
     }
 }  /* End of startACSComm() */
 
@@ -2110,13 +2117,13 @@ static UBOOL8 isAlarmOrMonitorInList(int isAlarm)
     int i = 0;
 
     vosLog_debug("isAlarm = %d", isAlarm);
-    
+
     for (i = 0; i < informEvList.informEvCnt; i++)
     {
         if (isAlarm)
         {
             if ((INFORM_EVENT_CT_ALARM == informEvList.informEvList[i])
-            || (INFORM_EVENT_CLEAR_CT_ALARM == informEvList.informEvList[i]))
+                    || (INFORM_EVENT_CLEAR_CT_ALARM == informEvList.informEvList[i]))
             {
                 vosLog_debug("isAlarm event is not inform");
                 break;
@@ -2144,7 +2151,7 @@ static UBOOL8 isAlarmOrMonitorInList(int isAlarm)
 
 
 /* chenlianzhong +: 2011-2-15 增加设备监控和告警*/
-void InsertSend(int alert, SINT64 max, SINT64 min, char* plist, int *inalarmstatus)
+void InsertSend(int alert, SINT64 max, SINT64 min, char *plist, int *inalarmstatus)
 {
     VOS_RET_E ret = VOS_RET_SUCCESS;
     char *paramValue = NULL;
@@ -2159,8 +2166,8 @@ void InsertSend(int alert, SINT64 max, SINT64 min, char* plist, int *inalarmstat
 
     if (!alert && SF_FEATURE_SUPPORT_MONITOR_COLLECTOR)
     {
-        char * p = NULL;
-        char * paralist = VOS_STRDUP(plist);
+        char *p = NULL;
+        char *paralist = VOS_STRDUP(plist);
 
         if (!isAlarmOrMonitorInList(0))
         {
@@ -2168,40 +2175,40 @@ void InsertSend(int alert, SINT64 max, SINT64 min, char* plist, int *inalarmstat
 
             if (send_monitor_number < 50 && VOS_RET_SUCCESS == tr69c_getParamValue(p, &paramValue))
             {
-                UTIL_STRNCPY(monitorSend[send_monitor_number].paralist, 
+                UTIL_STRNCPY(monitorSend[send_monitor_number].paralist,
                              p, sizeof(monitorSend[send_monitor_number].paralist));
 
-                UTIL_STRNCPY(monitorSend[send_monitor_number].value, 
+                UTIL_STRNCPY(monitorSend[send_monitor_number].value,
                              paramValue, sizeof(monitorSend[send_monitor_number].value));
                 send_monitor_number++;
             }
             VOS_MEM_FREE_BUF_AND_NULL_PTR(paramValue);
-            
-            while((p = strtok(NULL, ",")))
+
+            while ((p = strtok(NULL, ",")))
             {
                 if (send_monitor_number < 50 && VOS_RET_SUCCESS ==  tr69c_getParamValue(p, &paramValue))
                 {
-                    UTIL_STRNCPY(monitorSend[send_monitor_number].paralist, 
+                    UTIL_STRNCPY(monitorSend[send_monitor_number].paralist,
                                  p, sizeof(monitorSend[send_monitor_number].paralist));
 
-                    UTIL_STRNCPY(monitorSend[send_monitor_number].value, 
+                    UTIL_STRNCPY(monitorSend[send_monitor_number].value,
                                  paramValue, sizeof(monitorSend[send_monitor_number].value));
-                    send_monitor_number++;        
+                    send_monitor_number++;
                 }
                 VOS_MEM_FREE_BUF_AND_NULL_PTR(paramValue);
             }
-            
+
             VOS_MEM_FREE_BUF_AND_NULL_PTR(paralist);
 
         }
-        return;        
+        return;
     }
-    
+
     ret = tr69c_getParamValue(plist, &paramValue);
     if (VOS_RET_SUCCESS == ret)
     {
         SINT64 valueInt;
-        
+
         util_strtol64(paramValue, NULL, 0, &valueInt);
         vosLog_debug("valueInt = %lld", valueInt);
         if (1 == alert)
@@ -2212,9 +2219,9 @@ void InsertSend(int alert, SINT64 max, SINT64 min, char* plist, int *inalarmstat
                 {
                     if (send_alarm_number < 50)
                     {
-                        UTIL_STRNCPY(alarmSend[send_alarm_number].paralist, 
+                        UTIL_STRNCPY(alarmSend[send_alarm_number].paralist,
                                      plist, sizeof(alarmSend[send_alarm_number].paralist));
-                        UTIL_STRNCPY(alarmSend[send_alarm_number].value, paramValue, 
+                        UTIL_STRNCPY(alarmSend[send_alarm_number].value, paramValue,
                                      sizeof(alarmSend[send_alarm_number].value));
                         send_alarm_number++;
                         *inalarmstatus = 1;
@@ -2224,15 +2231,15 @@ void InsertSend(int alert, SINT64 max, SINT64 min, char* plist, int *inalarmstat
                 {
                     if (1 == *inalarmstatus)
                     {
-                        UTIL_STRNCPY(cleanalarmSend[send_clean_alarm_number].paralist, 
+                        UTIL_STRNCPY(cleanalarmSend[send_clean_alarm_number].paralist,
                                      plist, sizeof(cleanalarmSend[send_clean_alarm_number].paralist));
-                        UTIL_STRNCPY(cleanalarmSend[send_clean_alarm_number].value, 
+                        UTIL_STRNCPY(cleanalarmSend[send_clean_alarm_number].value,
                                      paramValue, sizeof(cleanalarmSend[send_clean_alarm_number].value));
                         send_clean_alarm_number++;
                         *inalarmstatus = 0;
                     }
                 }
-            }        
+            }
         }
         else
         {
@@ -2241,15 +2248,15 @@ void InsertSend(int alert, SINT64 max, SINT64 min, char* plist, int *inalarmstat
             {
                 if (send_monitor_number < 50)
                 {
-                    UTIL_STRNCPY(monitorSend[send_monitor_number].paralist, 
+                    UTIL_STRNCPY(monitorSend[send_monitor_number].paralist,
                                  plist, sizeof(monitorSend[send_monitor_number].paralist));
-                    UTIL_STRNCPY(monitorSend[send_monitor_number].value, 
+                    UTIL_STRNCPY(monitorSend[send_monitor_number].value,
                                  paramValue, sizeof(monitorSend[send_monitor_number].value));
                     send_monitor_number++;
                 }
-            }        
+            }
         }
-        
+
         VOS_MEM_FREE_BUF_AND_NULL_PTR(paramValue);
     }
     else
@@ -2260,7 +2267,7 @@ void InsertSend(int alert, SINT64 max, SINT64 min, char* plist, int *inalarmstat
 
 
 void getNumberAndStatus(int alert, int *allnumber, int *status)
-{    
+{
     VOS_RET_E ret = VOS_RET_SUCCESS;
 
     if (1 == alert)
@@ -2310,13 +2317,13 @@ void dealMonitorTimer(void *id)
     UBOOL8 found = FALSE;
 
     vosLog_debug("Enter, MonitorId = %d", MonitorId);
-    
+
     if (!isAlarmOrMonitorInList(0))
     {
         memset(monitorSend, 0, sizeof(CT_ALARMORMONITOR_SEND) * 50);
         send_monitor_number = 0;
     }
-        
+
     while (pMonitor != NULL)
     {
         if (pMonitor->monitorCfg.instanceId == MonitorId)
@@ -2325,7 +2332,7 @@ void dealMonitorTimer(void *id)
             InsertSend(0, 0, 0, pMonitor->monitorCfg.paramList, NULL);
             break;
         }
-        
+
         pMonitor = pMonitor->next;
     }
 
@@ -2339,7 +2346,8 @@ void dealMonitorTimer(void *id)
     if (found)
     {
         vosLog_debug("found = %d", found);
-        utilTmr_set(tmrHandle, dealMonitorTimer, (void *)&pMonitor->monitorCfg.instanceId, (UINT32)pMonitor->monitorCfg.time *1000, "monitor_fail_backoff_inform");
+        utilTmr_set(tmrHandle, dealMonitorTimer, (void *)&pMonitor->monitorCfg.instanceId,
+                    (UINT32)pMonitor->monitorCfg.time * 1000, "monitor_fail_backoff_inform");
     }
 }
 
@@ -2349,25 +2357,26 @@ void dealAlarmTimer(void *id)
     TR69C_ALARM_T *pAlarm = pAlarmHead->next;
     UINT32 alarmId = *(UINT32 *)id;
     UBOOL8 found = FALSE;
-    
+
     vosLog_debug("Enter>, pAlarmHead = %p, alarmId =%d", pAlarmHead, alarmId);
 
     if (!isAlarmOrMonitorInList(1))
     {
-        memset(alarmSend, 0, sizeof(CT_ALARMORMONITOR_SEND)*50);
+        memset(alarmSend, 0, sizeof(CT_ALARMORMONITOR_SEND) * 50);
         send_alarm_number = 0;
         send_clean_alarm_number = 0;
     }
-    
+
     while (pAlarm != NULL)
     {
         if (pAlarm->alarmCfg.instanceId == alarmId)
         {
             found = TRUE;
-            InsertSend(1, pAlarm->alarmCfg.limitMax, pAlarm->alarmCfg.limitMin, pAlarm->alarmCfg.paramlist, &pAlarm->alarmCfg.inAlarmStatus);
+            InsertSend(1, pAlarm->alarmCfg.limitMax, pAlarm->alarmCfg.limitMin, pAlarm->alarmCfg.paramlist,
+                       &pAlarm->alarmCfg.inAlarmStatus);
             break;
         }
-        
+
         pAlarm = pAlarm->next;
     }
 
@@ -2383,10 +2392,11 @@ void dealAlarmTimer(void *id)
         addInformEventToList(INFORM_EVENT_CLEAR_CT_ALARM);
         sendInform(NULL);
     }
-    
+
     if (found)
     {
-        utilTmr_set(tmrHandle, dealAlarmTimer, (void *)&pAlarm->alarmCfg.instanceId, (UINT32)pAlarm->alarmCfg.time *1000, "alarm_fail_backoff_inform");
+        utilTmr_set(tmrHandle, dealAlarmTimer, (void *)&pAlarm->alarmCfg.instanceId, (UINT32)pAlarm->alarmCfg.time * 1000,
+                    "alarm_fail_backoff_inform");
     }
 }
 
@@ -2399,31 +2409,32 @@ void changeAlarm(UINT32 alarmId)
     VOS_RET_E ret = VOS_RET_SUCCESS;
     UBOOL8 found = FALSE;
     int status = 0;
-    
+
     vosLog_debug("Enter>, alarmId = %d ", alarmId);
-    
+
     getNumberAndStatus(1, &alarmAllNumber, &alarmStatus);
-    
+
     while (pAlarm && alarmStatus)
     {
         if (pAlarm->alarmCfg.instanceId == alarmId)
         {
             found = TRUE;
-            
+
             PUSH_INSTANCE_ID(&iidStack, alarmId);
-            utilTmr_cancel(tmrHandle, dealAlarmTimer, (void *)&(pAlarm->alarmCfg.instanceId));
+            utilTmr_cancel(tmrHandle, dealAlarmTimer, (void *) & (pAlarm->alarmCfg.instanceId));
 
             status = pAlarm->alarmCfg.inAlarmStatus;
-            
+
             ret = CMC_tr69cGetAlarmCfg(&(pAlarm->alarmCfg), &iidStack);
             if (VOS_RET_SUCCESS == ret)
             {
                 vosLog_debug("edit ");
                 if (!IS_EMPTY_STRING(pAlarm->alarmCfg.paramlist))
                 {
-                    utilTmr_set(tmrHandle, dealAlarmTimer, (void *)&(pAlarm->alarmCfg.instanceId), (UINT32)pAlarm->alarmCfg.time * 1000, "alarm_fail_backoff_inform");
+                    utilTmr_set(tmrHandle, dealAlarmTimer, (void *) & (pAlarm->alarmCfg.instanceId), (UINT32)pAlarm->alarmCfg.time * 1000,
+                                "alarm_fail_backoff_inform");
                 }
-                
+
                 pAlarm->alarmCfg.inAlarmStatus = status;
             }
             else
@@ -2432,13 +2443,13 @@ void changeAlarm(UINT32 alarmId)
                 preAlarm->next = pAlarm->next;
                 VOS_MEM_FREE_BUF_AND_NULL_PTR(pAlarm);
             }
-            
+
             break;
         }
-        
+
         preAlarm = pAlarm;
         pAlarm = pAlarm->next;
-        
+
     }
 
     vosLog_debug("alarmStatus = %d", alarmStatus);
@@ -2449,11 +2460,12 @@ void changeAlarm(UINT32 alarmId)
         if (VOS_RET_SUCCESS == (ret = CMC_tr69cGetAlarmCfg(&(pAlarm->alarmCfg), &iidStack)))
         {
             preAlarm->next = pAlarm;
-            
+
             vosLog_debug("pAlarm->alarmCfg.instanceId = %d", pAlarm->alarmCfg.instanceId);
             if (!IS_EMPTY_STRING(pAlarm->alarmCfg.paramlist))
             {
-                utilTmr_set(tmrHandle, dealAlarmTimer, (void *)&(pAlarm->alarmCfg.instanceId), (UINT32)pAlarm->alarmCfg.time * 1000, "alarm_fail_backoff_inform");
+                utilTmr_set(tmrHandle, dealAlarmTimer, (void *) & (pAlarm->alarmCfg.instanceId), (UINT32)pAlarm->alarmCfg.time * 1000,
+                            "alarm_fail_backoff_inform");
             }
             else
             {
@@ -2475,27 +2487,28 @@ void changeMonitor(UINT32 monitorId)
     InstanceIdStack iidStack = EMPTY_INSTANCE_ID_STACK;
     VOS_RET_E ret = VOS_RET_SUCCESS;
     UBOOL8 found = FALSE;
-    
+
     vosLog_debug("Enter>, monitorId = %d ", monitorId);
-    
+
     getNumberAndStatus(0, &monitorAllNumber, &monitorStatus);
-    
+
     while (pMonitor && monitorStatus)
     {
         if (pMonitor->monitorCfg.instanceId == monitorId)
         {
             found = TRUE;
-            
+
             PUSH_INSTANCE_ID(&iidStack, monitorId);
-            utilTmr_cancel(tmrHandle, dealMonitorTimer, (void *)&(pMonitor->monitorCfg.instanceId));
-            
+            utilTmr_cancel(tmrHandle, dealMonitorTimer, (void *) & (pMonitor->monitorCfg.instanceId));
+
             ret = CMC_tr69cGetMonitorCfg(&(pMonitor->monitorCfg), &iidStack);
             if (VOS_RET_SUCCESS == ret)
             {
                 vosLog_debug("edit ");
                 if (!IS_EMPTY_STRING(pMonitor->monitorCfg.paramList))
                 {
-                    utilTmr_set(tmrHandle, dealMonitorTimer, (void *)&(pMonitor->monitorCfg.instanceId), (UINT32)pMonitor->monitorCfg.time * 1000, "alarm_fail_backoff_inform");
+                    utilTmr_set(tmrHandle, dealMonitorTimer, (void *) & (pMonitor->monitorCfg.instanceId),
+                                (UINT32)pMonitor->monitorCfg.time * 1000, "alarm_fail_backoff_inform");
                 }
                 else
                 {
@@ -2508,17 +2521,17 @@ void changeMonitor(UINT32 monitorId)
                 preMonitor->next = pMonitor->next;
                 VOS_MEM_FREE_BUF_AND_NULL_PTR(pMonitor);
             }
-            
+
             break;
         }
-        
+
         preMonitor = pMonitor;
         pMonitor = pMonitor->next;
-        
+
     }
 
     vosLog_debug("monitorStatus = %d", monitorStatus);
-    
+
     if (!found && monitorStatus)
     {
         PUSH_INSTANCE_ID(&iidStack, monitorId);
@@ -2526,11 +2539,12 @@ void changeMonitor(UINT32 monitorId)
         if (VOS_RET_SUCCESS == (ret = CMC_tr69cGetMonitorCfg(&(pMonitor->monitorCfg), &iidStack)))
         {
             preMonitor->next = pMonitor;
-            
+
             vosLog_debug("pMonitor->monitorCfg.instanceId =%d", pMonitor->monitorCfg.instanceId);
             if (!IS_EMPTY_STRING(pMonitor->monitorCfg.paramList))
             {
-                utilTmr_set(tmrHandle, dealMonitorTimer, (void *)&(pMonitor->monitorCfg.instanceId), (UINT32)pMonitor->monitorCfg.time * 1000, "alarm_fail_backoff_inform");
+                utilTmr_set(tmrHandle, dealMonitorTimer, (void *) & (pMonitor->monitorCfg.instanceId),
+                            (UINT32)pMonitor->monitorCfg.time * 1000, "alarm_fail_backoff_inform");
             }
             else
             {
@@ -2552,21 +2566,21 @@ void startAlarm()
     InstanceIdStack iidStack = EMPTY_INSTANCE_ID_STACK;
     VOS_RET_E ret = VOS_RET_SUCCESS;
 
-    memset(alarmSend, 0, sizeof(CT_ALARMORMONITOR_SEND)*50);
+    memset(alarmSend, 0, sizeof(CT_ALARMORMONITOR_SEND) * 50);
     send_alarm_number = 0;
     send_clean_alarm_number = 0;
 
     getNumberAndStatus(1, &alarmAllNumber, &alarmStatus);
-    
+
     pAlarmHead = (TR69C_ALARM_T *)VOS_MALLOC(sizeof(TR69C_ALARM_T));
     if (NULL == pAlarmHead)
     {
         vosLog_error("VOS_MALLOC failed ");
     }
-    
+
     pHead = pAlarmHead;
     pHead->next = NULL;
-    
+
     if (alarmStatus != 0 && alarmAllNumber > 0)
     {
         pAlarm = (TR69C_ALARM_T *)VOS_MALLOC(sizeof(TR69C_ALARM_T));
@@ -2575,12 +2589,13 @@ void startAlarm()
             vosLog_error("VOS_MALLOC failed ");
             return;
         }
-        
-        while(VOS_RET_SUCCESS == (ret = CMC_tr69cGetNextAlarmEntery(&(pAlarm->alarmCfg), &iidStack)))
+
+        while (VOS_RET_SUCCESS == (ret = CMC_tr69cGetNextAlarmEntery(&(pAlarm->alarmCfg), &iidStack)))
         {
             if (!IS_EMPTY_STRING(pAlarm->alarmCfg.paramlist))
             {
-                utilTmr_set(tmrHandle, dealAlarmTimer, (void *)&(pAlarm->alarmCfg.instanceId), (UINT32)pAlarm->alarmCfg.time * 1000, "alarm_fail_backoff_inform");
+                utilTmr_set(tmrHandle, dealAlarmTimer, (void *) & (pAlarm->alarmCfg.instanceId), (UINT32)pAlarm->alarmCfg.time * 1000,
+                            "alarm_fail_backoff_inform");
             }
             else
             {
@@ -2595,7 +2610,7 @@ void startAlarm()
                 vosLog_error("VOS_MALLOC failed ");
             }
         }
-        
+
         VOS_MEM_FREE_BUF_AND_NULL_PTR(pAlarm);
     }
     else if (!alarmStatus)
@@ -2604,7 +2619,7 @@ void startAlarm()
         {
             pAlarm = pHead->next;
             pHead->next = pAlarm->next;
-            utilTmr_cancel(tmrHandle, dealAlarmTimer, (void *)&(pAlarm->alarmCfg.instanceId));
+            utilTmr_cancel(tmrHandle, dealAlarmTimer, (void *) & (pAlarm->alarmCfg.instanceId));
             VOS_MEM_FREE_BUF_AND_NULL_PTR(pAlarm);
         }
     }
@@ -2617,20 +2632,20 @@ void startMonitor()
     TR69C_MONITOR_T *pHead = NULL;
     TR69C_MONITOR_T *pMonitor = NULL;
     InstanceIdStack iidStack = EMPTY_INSTANCE_ID_STACK;
-    
+
     vosLog_debug("Enter>");
-  
+
     memset(monitorSend, 0, sizeof(CT_ALARMORMONITOR_SEND) * 50);
     send_monitor_number = 0;
-    
+
     getNumberAndStatus(0, &monitorAllNumber, &monitorStatus);
     pMonitorHead = (TR69C_MONITOR_T *)VOS_MALLOC(sizeof(TR69C_MONITOR_T));
-    
+
     if (NULL == pMonitorHead)
     {
         vosLog_error("VOS_MALLOC failed ");
     }
-    
+
     pHead = pMonitorHead;
     pHead->next = NULL;
 
@@ -2642,12 +2657,13 @@ void startMonitor()
             vosLog_error("VOS_MALLOC failed");
             return;
         }
-        
-        while(VOS_RET_SUCCESS == (ret = CMC_tr69cGetNextMonitorEntery(&(pMonitor->monitorCfg), &iidStack)))
+
+        while (VOS_RET_SUCCESS == (ret = CMC_tr69cGetNextMonitorEntery(&(pMonitor->monitorCfg), &iidStack)))
         {
             if (!IS_EMPTY_STRING(pMonitor->monitorCfg.paramList))
             {
-                utilTmr_set(tmrHandle, dealMonitorTimer, (void *)&(pMonitor->monitorCfg.instanceId), (UINT32)pMonitor->monitorCfg.time * 1000, "alarm_fail_backoff_inform");
+                utilTmr_set(tmrHandle, dealMonitorTimer, (void *) & (pMonitor->monitorCfg.instanceId),
+                            (UINT32)pMonitor->monitorCfg.time * 1000, "alarm_fail_backoff_inform");
             }
             else
             {
@@ -2662,7 +2678,7 @@ void startMonitor()
                 vosLog_error("VOS_MALLOC failed ");
             }
         }
-        
+
         VOS_MEM_FREE_BUF_AND_NULL_PTR(pMonitor);
     }
     else if (!monitorStatus)
@@ -2671,7 +2687,7 @@ void startMonitor()
         {
             pMonitor = pHead->next;
             pHead->next = pMonitor->next;
-            utilTmr_cancel(tmrHandle, dealMonitorTimer, (void *)&(pMonitor->monitorCfg.instanceId));
+            utilTmr_cancel(tmrHandle, dealMonitorTimer, (void *) & (pMonitor->monitorCfg.instanceId));
             VOS_MEM_FREE_BUF_AND_NULL_PTR(pMonitor);
         }
     }
@@ -2685,7 +2701,7 @@ void initInformer(void)
 
     /* chenlianzhong +: 2011-2-15 增加电信规范要求的设备监控和设备告警功能*/
     if (SF_FEATURE_SUPPORT_TR69C_ALARM)
-    {    
+    {
         startAlarm();
     }
 
@@ -2712,7 +2728,7 @@ void processIptvStbMac(void *handle)
     CMC_MCAST_IPTV_STB_MAC_T  iptvStbMac;
     UINT32 i = 1;
     char lines[BUFLEN_128] = {0};
-    FILE* pfile = NULL;
+    FILE *pfile = NULL;
     char mac[BUFLEN_32] = {0};
     char lanIfc[BUFLEN_8][BUFLEN_32] = {{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}};
     UINT32 portIndex = 0;
@@ -2728,7 +2744,7 @@ void processIptvStbMac(void *handle)
     pfile = popen("brctl show", "r");
     if (NULL != pfile)
     {
-        while(fgets(lines, 128, pfile) != NULL)
+        while (fgets(lines, 128, pfile) != NULL)
         {
             if ((0 == util_strncasecmp(lines, "bridge", 6)) || (0 == util_strncasecmp(lines, "br0", 3)))
             {
@@ -2764,7 +2780,7 @@ void processIptvStbMac(void *handle)
         pfile = popen("brctl showmacs br1", "r");
         if (NULL != pfile)
         {
-            while(fgets(lines, 128, pfile) != NULL)
+            while (fgets(lines, 128, pfile) != NULL)
             {
                 if (0 == util_strncasecmp(lines, "port", 4))
                 {
@@ -2772,9 +2788,10 @@ void processIptvStbMac(void *handle)
                 }
                 else
                 {
-                    if(3 == sscanf(lines, "%d %s %s", &portIndex, mac, isLocal))
+                    if (3 == sscanf(lines, "%d %s %s", &portIndex, mac, isLocal))
                     {
-                        if ((0 != util_strncasecmp(lanIfc[portIndex], "veip", 4)) && (0 != util_strncasecmp(lanIfc[portIndex], "epon", 4)) && (0 != util_strcmp(isLocal, "yes")))
+                        if ((0 != util_strncasecmp(lanIfc[portIndex], "veip", 4)) && (0 != util_strncasecmp(lanIfc[portIndex], "epon", 4)) &&
+                                (0 != util_strcmp(isLocal, "yes")))
                         {
                             vosLog_debug("index=%d, ifname=%s, isLocal=%s, mac=%s", portIndex, lanIfc[portIndex], isLocal, mac);
                             UTIL_STRNCAT(macbuf, mac, sizeof(macbuf));
@@ -2807,7 +2824,7 @@ void processIptvStbMac(void *handle)
             ret = CMC_igmpSetIptvStbMac(&iptvStbMac);
             if (ret != VOS_RET_SUCCESS)
             {
-                vosLog_error("process ping state changed msg failed,ret=%d",ret);
+                vosLog_error("process ping state changed msg failed,ret=%d", ret);
             }
             else
             {
@@ -2847,7 +2864,7 @@ static int getBridgeUsernameIsOk(void)
 
     ifr.ifr_data = (char *) args;
 
-    if ( sfd < 0 )
+    if (sfd < 0)
     {
         if ((sfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
         {
@@ -2862,10 +2879,10 @@ static int getBridgeUsernameIsOk(void)
         UTIL_STRNCPY(bridgeUserName, fe, sizeof(bridgeUserName));
         vosLog_error("Get PPPOE username from bridge WAN link : %s\n", bridgeUserName);
         vosLog_error("Send inform of BAND1\n");
-        
+
         addInformEventToList(INFORM_BRIDGE_USERNAME);
         sendInform(NULL);
-        
+
         close(sfd);
         sfd = -1;
 
@@ -2881,6 +2898,6 @@ static void getBridgeUsername(void *handle)
     utilTmr_cancel(tmrHandle, getBridgeUsername, NULL);
     if (0 == getBridgeUsernameIsOk())
     {
-        utilTmr_set(tmrHandle, getBridgeUsername, NULL, 20*1000, "getBridgeName");
+        utilTmr_set(tmrHandle, getBridgeUsername, NULL, 20 * 1000, "getBridgeName");
     }
 }

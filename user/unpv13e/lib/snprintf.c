@@ -11,17 +11,16 @@
 
 #include	<stdarg.h>		/* ANSI C header file */
 
-int
-snprintf(char *buf, size_t size, const char *fmt, ...)
+int snprintf(char *buf, size_t size, const char *fmt, ...)
 {
-	int			n;
-	va_list		ap;
+    int			n;
+    va_list		ap;
 
-	va_start(ap, fmt);
-	vsprintf(buf, fmt, ap);	/* Sigh, some vsprintf's return ptr, not length */
-	n = strlen(buf);
-	va_end(ap);
-	if (n >= size)
-		err_quit("snprintf: '%s' overflowed array", fmt);
-	return(n);
+    va_start(ap, fmt);
+    vsprintf(buf, fmt, ap);	/* Sigh, some vsprintf's return ptr, not length */
+    n = strlen(buf);
+    va_end(ap);
+    if (n >= size)
+        err_quit("snprintf: '%s' overflowed array", fmt);
+    return (n);
 }

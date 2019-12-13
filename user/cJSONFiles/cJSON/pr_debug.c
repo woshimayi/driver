@@ -24,33 +24,35 @@
 //	.sendfile = generic_file_sendfile,
 //};
 
-typedef enum {
+typedef enum
+{
     XML_STS_OK = 0,
     XML_STS_ERR
-}XML_STATUS;
+} XML_STATUS;
 
-typedef enum {
-    TOKEN_INVALID,  
+typedef enum
+{
+    TOKEN_INVALID,
     TAGBEGIN,
     TAGEND,
     TAGDATA,
     ATTRIBUTE,
     ATTRIBUTEVALUE
-}TOKEN_TYPE;
+} TOKEN_TYPE;
 
 
-static XML_STATUS fdownload(const char * str, TOKEN_TYPE i, const char * str1)
+static XML_STATUS fdownload(const char *str, TOKEN_TYPE i, const char *str1)
 {
-	printf("sdfsd\n");
+    printf("sdfsd\n");
 }
 
 int main()
 {
-	P_debug("%s %d\n", "sdf", 23);
-	P_error("%s %d\n", "sdf", 23);
-	
-	printf("%s\n", XMLFUNC(fdownload));
-	return 0;
+    P_debug("%s %d\n", "sdf", 23);
+    P_error("%s %d\n", "sdf", 23);
+
+    printf("%s\n", XMLFUNC(fdownload));
+    return 0;
 }
 
 

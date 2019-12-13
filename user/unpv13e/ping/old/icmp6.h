@@ -1,11 +1,13 @@
-struct icmp6hdr {
+struct icmp6hdr
+{
     u_int8_t	icmp6_type;		/* Type field */
     u_int8_t	icmp6_code;		/* Code field */
     u_int16_t	icmp6_cksum;		/* Checksum field */
-    union {
-	u_int32_t	un_data32[1];	/* Type-specific field */
-	u_int16_t	un_data16[2];	/* Type-specific field */
-	u_int8_t	un_data8[4];	/* Type-specific field */
+    union
+    {
+        u_int32_t	un_data32[1];	/* Type-specific field */
+        u_int16_t	un_data16[2];	/* Type-specific field */
+        u_int8_t	un_data8[4];	/* Type-specific field */
     } icmp6_dataun;
 };
 
@@ -33,7 +35,7 @@ struct icmp6hdr {
 
 #define	ICMPV6_DEST_UNREACH_NOROUTE	0 /* no route to destination */
 #define	ICMPV6_DEST_UNREACH_ADMIN 	1 /* communication with destination */
-					  /*  administratively prohibited */
+/*  administratively prohibited */
 #define	ICMPV6_DEST_UNREACH_NOTNEIGHBOR	2 /* not a neighbor */
 #define	ICMPV6_DEST_UNREACH_ADDR 	3 /* address unreachable */
 #define	ICMPV6_DEST_UNREACH_NOPORT	4 /* bad port */

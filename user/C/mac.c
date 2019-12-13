@@ -4,9 +4,9 @@
 
 int main()
 {
-	char *str = "74:b9:eb:cb:0d:b1";
-	printf("%d %d\n", strlen(str), sizeof(str));
-	return 0;
+    char *str = "74:b9:eb:cb:0d:b1";
+    printf("%d %d\n", strlen(str), sizeof(str));
+    return 0;
 }
 
 

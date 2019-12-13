@@ -6,17 +6,17 @@
 
 #include	<xti.h>
 #ifdef	HAVE_XTI_INET_H
-# include	<xti_inet.h>
+    #include	<xti_inet.h>
 #endif
 #ifdef	HAVE_NETCONFIG_H
-# include	<netconfig.h>
+    #include	<netconfig.h>
 #endif
 #ifdef	HAVE_NETDIR_H
-# include	<netdir.h>
+    #include	<netdir.h>
 #endif
 
 #ifdef	INFTIM_UNPH
-#undef	INFTIM	/* was not in <poll.h>, undef for <stropts.h> */
+    #undef	INFTIM	/* was not in <poll.h>, undef for <stropts.h> */
 #endif
 
 #include	<stropts.h>
@@ -25,64 +25,64 @@
    in XNS Issue 5, which are not in Posix.1g. */
 
 #ifndef	T_INET_TCP
-#define	T_INET_TCP		INET_TCP
-/* $$.Ic T_INET_TCP$$ */
+    #define	T_INET_TCP		INET_TCP
+    /* $$.Ic T_INET_TCP$$ */
 #endif
 /* end unpxtih1 */
 #ifndef	T_INET_UDP
-#define	T_INET_UDP		INET_UDP
+    #define	T_INET_UDP		INET_UDP
 #endif
 #ifndef	T_INET_IP
-#define	T_INET_IP		INET_IP
+    #define	T_INET_IP		INET_IP
 #endif
 #ifndef	T_TCP_NODELAY
-#define	T_TCP_NODELAY	TCP_NODELAY
+    #define	T_TCP_NODELAY	TCP_NODELAY
 #endif
 #ifndef	T_TCP_MAXSEG
-#define	T_TCP_MAXSEG	TCP_MAXSEG
+    #define	T_TCP_MAXSEG	TCP_MAXSEG
 #endif
 #ifndef	T_TCP_KEEPALIVE
-#define	T_TCP_KEEPALIVE	TCP_KEEPALIVE
+    #define	T_TCP_KEEPALIVE	TCP_KEEPALIVE
 #endif
 #ifndef	T_UDP_CHECKSUM
-#define	T_UDP_CHECKSUM	UDP_CHECKSUM
+    #define	T_UDP_CHECKSUM	UDP_CHECKSUM
 #endif
 #ifndef	T_IP_OPTIONS
-#define	T_IP_OPTIONS	IP_OPTIONS
+    #define	T_IP_OPTIONS	IP_OPTIONS
 #endif
 #ifndef	T_IP_TOS
-#define	T_IP_TOS		IP_TOS
+    #define	T_IP_TOS		IP_TOS
 #endif
 #ifndef	T_IP_TTL
-#define	T_IP_TTL		IP_TTL
+    #define	T_IP_TTL		IP_TTL
 #endif
 #ifndef	T_IP_REUSEADDR
-#define	T_IP_REUSEADDR	IP_REUSEADDR
+    #define	T_IP_REUSEADDR	IP_REUSEADDR
 #endif
 #ifndef	T_IP_DONTROUTE
-#define	T_IP_DONTROUTE	IP_DONTROUTE
+    #define	T_IP_DONTROUTE	IP_DONTROUTE
 #endif
 /* include unpxtih2 */
 #ifndef	T_IP_BROADCAST
-#define	T_IP_BROADCAST	IP_BROADCAST
-/* $$.Ic T_IP_BROADCAST$$ */
+    #define	T_IP_BROADCAST	IP_BROADCAST
+    /* $$.Ic T_IP_BROADCAST$$ */
 #endif
 
 /* Define the appropriate devices for t_open(). */
 #ifdef	HAVE_DEV_TCP
-# define	XTI_TCP		"/dev/tcp"
-# define	XTI_UDP		"/dev/udp"
+    #define	XTI_TCP		"/dev/tcp"
+    #define	XTI_UDP		"/dev/udp"
 #endif
 #ifdef	HAVE_DEV_XTI_TCP
-# define	XTI_TCP		"/dev/xti/tcp"
-# define	XTI_UDP		"/dev/xti/udp"
+    #define	XTI_TCP		"/dev/xti/tcp"
+    #define	XTI_UDP		"/dev/xti/udp"
 #endif
 #ifdef	HAVE_DEV_STREAMS_XTISO_TCP
-# define	XTI_TCP		"/dev/streams/xtiso/tcp+"	/* + for XPG4 */
-# define	XTI_UDP		"/dev/streams/xtiso/udp+"	/* + for XPG4 */
+    #define	XTI_TCP		"/dev/streams/xtiso/tcp+"	/* + for XPG4 */
+    #define	XTI_UDP		"/dev/streams/xtiso/udp+"	/* + for XPG4 */
 #endif
 
-	/* 4device to t_open() for t_accept(); set by tcp_listen() */
+/* 4device to t_open() for t_accept(); set by tcp_listen() */
 /* $$.Id xti_serv_dev$$ */
 extern char	xti_serv_dev[];
 /* end unpxtih2 */
@@ -94,8 +94,8 @@ int		 Getmsg(int, struct strbuf *, struct strbuf *, int *);
 void	 Putmsg(int, const struct strbuf *, const struct strbuf *, int);
 
 #ifdef	HAVE_NETCONFIG_H
-void	*Setnetconfig(void);
-void	*Setnetpath(void);
+    void	*Setnetconfig(void);
+    void	*Setnetpath(void);
 #endif
 
 void	*T_alloc(int, int, int);

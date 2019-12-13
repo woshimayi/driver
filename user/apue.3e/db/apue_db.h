@@ -1,7 +1,7 @@
 #ifndef _APUE_DB_H
 #define _APUE_DB_H
 
-typedef	void *	DBHANDLE;
+typedef	void 	*DBHANDLE;
 
 DBHANDLE  db_open(const char *, int, ...);
 void      db_close(DBHANDLE);

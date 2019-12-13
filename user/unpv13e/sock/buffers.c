@@ -9,52 +9,55 @@
 
 #include	"sock.h"
 
-void
-buffers(int sockfd)
+void buffers(int sockfd)
 {
-	int			n;
-	socklen_t	optlen;
+    int			n;
+    socklen_t	optlen;
 
-		/* Allocate the read and write buffers. */
+    /* Allocate the read and write buffers. */
 
-	if (rbuf == NULL) {
-		if ( (rbuf = malloc(readlen)) == NULL)
-			err_sys("malloc error for read buffer");
-	}
+    if (rbuf == NULL)
+    {
+        if ((rbuf = malloc(readlen)) == NULL)
+            err_sys("malloc error for read buffer");
+    }
 
-	if (wbuf == NULL) {
-		if ( (wbuf = malloc(writelen)) == NULL)
-			err_sys("malloc error for write buffer");
-	}
+    if (wbuf == NULL)
+    {
+        if ((wbuf = malloc(writelen)) == NULL)
+            err_sys("malloc error for write buffer");
+    }
 
-		/* Set the socket send and receive buffer sizes (if specified).
-		   The receive buffer size is tied to TCP's advertised window. */
+    /* Set the socket send and receive buffer sizes (if specified).
+       The receive buffer size is tied to TCP's advertised window. */
 
-	if (rcvbuflen) {
-		if (setsockopt(sockfd, SOL_SOCKET, SO_RCVBUF, &rcvbuflen,
-													sizeof(rcvbuflen)) < 0)
-			err_sys("SO_RCVBUF setsockopt error");
-	
-		optlen = sizeof(n);
-		if (getsockopt(sockfd, SOL_SOCKET, SO_RCVBUF, &n, &optlen) < 0)
-			err_sys("SO_RCVBUF getsockopt error");
-		if (n != rcvbuflen)
-			err_quit("rcvbuflen = %d, SO_RCVBUF = %d", rcvbuflen, n);
-		if (verbose)
-			fprintf(stderr, "SO_RCVBUF = %d\n", n);
-	}
+    if (rcvbuflen)
+    {
+        if (setsockopt(sockfd, SOL_SOCKET, SO_RCVBUF, &rcvbuflen,
+                       sizeof(rcvbuflen)) < 0)
+            err_sys("SO_RCVBUF setsockopt error");
 
-	if (sndbuflen) {
-		if (setsockopt(sockfd, SOL_SOCKET, SO_SNDBUF, &sndbuflen,
-													sizeof(sndbuflen)) < 0)
-			err_sys("SO_SNDBUF setsockopt error");
-	
-		optlen = sizeof(n);
-		if (getsockopt(sockfd, SOL_SOCKET, SO_SNDBUF, &n, &optlen) < 0)
-			err_sys("SO_SNDBUF getsockopt error");
-		if (n != sndbuflen)
-			err_quit("sndbuflen = %d, SO_SNDBUF = %d", sndbuflen, n);
-		if (verbose)
-			fprintf(stderr, "SO_SNDBUF = %d\n", n);
-	}
+        optlen = sizeof(n);
+        if (getsockopt(sockfd, SOL_SOCKET, SO_RCVBUF, &n, &optlen) < 0)
+            err_sys("SO_RCVBUF getsockopt error");
+        if (n != rcvbuflen)
+            err_quit("rcvbuflen = %d, SO_RCVBUF = %d", rcvbuflen, n);
+        if (verbose)
+            fprintf(stderr, "SO_RCVBUF = %d\n", n);
+    }
+
+    if (sndbuflen)
+    {
+        if (setsockopt(sockfd, SOL_SOCKET, SO_SNDBUF, &sndbuflen,
+                       sizeof(sndbuflen)) < 0)
+            err_sys("SO_SNDBUF setsockopt error");
+
+        optlen = sizeof(n);
+        if (getsockopt(sockfd, SOL_SOCKET, SO_SNDBUF, &n, &optlen) < 0)
+            err_sys("SO_SNDBUF getsockopt error");
+        if (n != sndbuflen)
+            err_quit("sndbuflen = %d, SO_SNDBUF = %d", sndbuflen, n);
+        if (verbose)
+            fprintf(stderr, "SO_SNDBUF = %d\n", n);
+    }
 }

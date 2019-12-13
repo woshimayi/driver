@@ -8,31 +8,31 @@
 #define UTIL_COMM_SYSTEM_EX(pszCmd, pszResult, iCount)	UTIL_commSystemEx(pszCmd, pszResult, iCount)
 
 int UTIL_doSystemAction(const char *from, const char *fmt, ...);
-int UTIL_commSystemEx(const char *pszCmd, char * pszResult, int iCount);
+int UTIL_commSystemEx(const char *pszCmd, char *pszResult, int iCount);
 
 
-int UTIL_commSystemEx(const char *pszCmd,char * pszResult,int iCount)
+int UTIL_commSystemEx(const char *pszCmd, char *pszResult, int iCount)
 {
 
     FILE   *stream;
 
     //memset( pszResult, '\0', sizeof(pszResult) );
-    memset( pszResult, '\0', iCount );
-    stream = popen( pszCmd, "r" );
+    memset(pszResult, '\0', iCount);
+    stream = popen(pszCmd, "r");
     if (!stream)
     {
-        pclose( stream );
+        pclose(stream);
         return 0;
     }
 
-    iCount = fread( pszResult, sizeof(char), iCount, stream);
+    iCount = fread(pszResult, sizeof(char), iCount, stream);
     if (!(iCount))
     {
-        pclose( stream );
+        pclose(stream);
         return 0;
     }
 
-    pclose( stream );
+    pclose(stream);
     return 1;
 }
 
@@ -52,7 +52,7 @@ int util_doSystem(const char *cmdStr)
         p++;
     }
     idStr = p;
-    
+
     p = strchr(p, ' ');
     if (NULL != p)
     {
@@ -77,7 +77,7 @@ int util_doSystem(const char *cmdStr)
         snprintf(cmdBuf, sizeof(cmdBuf) - 1, "TS_SOCKET=/tmp/%s.ts_socket ts -n %s", idStr, cmdStr);
         cmd = cmdBuf;
     }
-    
+
 #ifndef DESKTOP_LINUX
 #undef system
     return system((const char *)cmd);
@@ -114,7 +114,7 @@ int UTIL_doSystemAction(const char *from, const char *fmt, ...)
     }
 
     vosLog_error("%s -- %s", from, cmd);
-    
+
     ret = util_doSystem(cmd);
 
     VOS_FREE(allocBuf);

@@ -10,9 +10,9 @@
 #define VOS_LOG_MAX_CACHE_NUM  (32)
 
 #ifndef PFM_SIM
-#define VOS_LOG_KEY_FILE_PREFIX  "/tmp/logKey"
+    #define VOS_LOG_KEY_FILE_PREFIX  "/tmp/logKey"
 #else
-#define VOS_LOG_KEY_FILE_PREFIX  "./logKey"
+    #define VOS_LOG_KEY_FILE_PREFIX  "./logKey"
 #endif
 
 #define VOS_LAST_PTY_NAME_FILE "/tmp/last_pty"
@@ -39,10 +39,10 @@ typedef unsigned long  UINT64;
  */
 typedef enum
 {
-   VOS_LOG_LEVEL_PRINT  = 2,
-   VOS_LOG_LEVEL_ERR    = 3, /**< Message at error level. */
-   VOS_LOG_LEVEL_NOTICE = 5, /**< Message at notice level. */
-   VOS_LOG_LEVEL_DEBUG  = 7  /**< Message at debug level. */
+    VOS_LOG_LEVEL_PRINT  = 2,
+    VOS_LOG_LEVEL_ERR    = 3, /**< Message at error level. */
+    VOS_LOG_LEVEL_NOTICE = 5, /**< Message at notice level. */
+    VOS_LOG_LEVEL_DEBUG  = 7  /**< Message at debug level. */
 } VosLogLevel;
 
 
@@ -51,10 +51,10 @@ typedef enum
  */
 typedef enum
 {
-   VOS_LOG_DEST_STDERR  = 1,  /**< Message output to stderr. */
-   VOS_LOG_DEST_SYSLOG  = 2,  /**< Message output to syslog. */
-   VOS_LOG_DEST_TELNET  = 3,   /**< Message output to telnet clients. */
-   VOS_LOG_DEST_LOGCAT  = 4
+    VOS_LOG_DEST_STDERR  = 1,  /**< Message output to stderr. */
+    VOS_LOG_DEST_SYSLOG  = 2,  /**< Message output to syslog. */
+    VOS_LOG_DEST_TELNET  = 3,   /**< Message output to telnet clients. */
+    VOS_LOG_DEST_LOGCAT  = 4
 } VosLogDestination;
 
 
@@ -99,22 +99,22 @@ typedef struct
  * calling the log_log function directly.
  */
 #if defined(VOS_LOG0)
-#define vosLog_print(args...)  log_log(VOS_LOG_LEVEL_PRINT, __FUNCTION__, __LINE__, args)
-#define vosLog_error(args...)
-#define vosLog_notice(args...)
-#define vosLog_debug(args...)
+    #define vosLog_print(args...)  log_log(VOS_LOG_LEVEL_PRINT, __FUNCTION__, __LINE__, args)
+    #define vosLog_error(args...)
+    #define vosLog_notice(args...)
+    #define vosLog_debug(args...)
 
 #elif defined(VOS_LOG2)
-#define vosLog_print(args...)  log_log(VOS_LOG_LEVEL_PRINT, __FUNCTION__, __LINE__, args)
-#define vosLog_error(args...)  log_log(VOS_LOG_LEVEL_ERR, __FUNCTION__, __LINE__, args)
-#define vosLog_notice(args...) log_log(VOS_LOG_LEVEL_NOTICE, __FUNCTION__, __LINE__, args)
-#define vosLog_debug(args...)
+    #define vosLog_print(args...)  log_log(VOS_LOG_LEVEL_PRINT, __FUNCTION__, __LINE__, args)
+    #define vosLog_error(args...)  log_log(VOS_LOG_LEVEL_ERR, __FUNCTION__, __LINE__, args)
+    #define vosLog_notice(args...) log_log(VOS_LOG_LEVEL_NOTICE, __FUNCTION__, __LINE__, args)
+    #define vosLog_debug(args...)
 
 #else
-#define vosLog_print(args...)  log_log(VOS_LOG_LEVEL_PRINT, __FUNCTION__, __LINE__, args)
-#define vosLog_error(args...)  log_log(VOS_LOG_LEVEL_ERR, __FUNCTION__, __LINE__, args)
-#define vosLog_notice(args...) log_log(VOS_LOG_LEVEL_NOTICE, __FUNCTION__, __LINE__, args)
-#define vosLog_debug(args...)  log_log(VOS_LOG_LEVEL_DEBUG, __FUNCTION__, __LINE__, args)
+    #define vosLog_print(args...)  log_log(VOS_LOG_LEVEL_PRINT, __FUNCTION__, __LINE__, args)
+    #define vosLog_error(args...)  log_log(VOS_LOG_LEVEL_ERR, __FUNCTION__, __LINE__, args)
+    #define vosLog_notice(args...) log_log(VOS_LOG_LEVEL_NOTICE, __FUNCTION__, __LINE__, args)
+    #define vosLog_debug(args...)  log_log(VOS_LOG_LEVEL_DEBUG, __FUNCTION__, __LINE__, args)
 #endif
 
 
@@ -147,7 +147,7 @@ typedef struct
  * @param fmt (IN) The message string.
  *
  */
-void log_log(VosLogLevel level, const char *func, unsigned int lineNum, const char *fmt, ... );
+void log_log(VosLogLevel level, const char *func, unsigned int lineNum, const char *fmt, ...);
 
 /** Message log initialization.
  * This function initializes the message log utility.  The openlog
@@ -313,19 +313,19 @@ void vosLog_cache(const char *func, UINT32 lineNum)
          * and logShareMem->location == VOS_LOG_MAX_CACHE_NUM at a time */
 
         UTIL_SNPRINTF(logShareMem->cache[location++],
-            VOS_LOG_MAX_CACHE_LEN, "<%s:%d>", func, lineNum);
+                      VOS_LOG_MAX_CACHE_LEN, "<%s:%d>", func, lineNum);
     }
 
     logShareMem->location = (location % VOS_LOG_MAX_CACHE_NUM);
 }
 
 
-void log_log(VosLogLevel level, const char *func, UINT32 lineNum, const char *fmt, ... )
+void log_log(VosLogLevel level, const char *func, UINT32 lineNum, const char *fmt, ...)
 {
     va_list ap;
     char buf[MAX_LOG_LINE_LENGTH] = {0};
-    int len=0, maxLen;
-    char *logLevelStr=NULL;
+    int len = 0, maxLen;
+    char *logLevelStr = NULL;
     UINT32 headerMask = logHeaderMask;
 
     if (NULL == logShareMem)
@@ -342,7 +342,7 @@ void log_log(VosLogLevel level, const char *func, UINT32 lineNum, const char *fm
     {
         va_start(ap, fmt);
 
-        switch(level)
+        switch (level)
         {
             case VOS_LOG_LEVEL_ERR:
                 len = snprintf(buf, maxLen, LIGHT_RED_COLOR);
@@ -374,13 +374,13 @@ void log_log(VosLogLevel level, const char *func, UINT32 lineNum, const char *fm
 
         if ((headerMask & VOS_LOG_HDRMASK_LEVEL) && (len < maxLen))
         {
-         /*
-                * Only log the severity level when going to stderr
-                * because syslog already logs the severity level for us.
-                */
+            /*
+                   * Only log the severity level when going to stderr
+                   * because syslog already logs the severity level for us.
+                   */
             if (logShareMem->logDestination == VOS_LOG_DEST_STDERR)
             {
-                switch(level)
+                switch (level)
                 {
                     case VOS_LOG_LEVEL_ERR:
                         logLevelStr = "error";
@@ -410,7 +410,7 @@ void log_log(VosLogLevel level, const char *func, UINT32 lineNum, const char *fm
 
             utilTms_get(&ts);
             len += snprintf(&(buf[len]), maxLen - len, "%u.%03u:",
-                            ts.sec%1000, ts.nsec/NSECS_IN_MSEC);
+                            ts.sec % 1000, ts.nsec / NSECS_IN_MSEC);
         }
 
         if ((headerMask & VOS_LOG_HDRMASK_LOCATION) && (len < maxLen))
@@ -499,9 +499,9 @@ void vosLog_init(VosEntityId eid)
 
 void vosLog_cleanup(void)
 {
-   oalLog_cleanup();
-   VOS_FREE(sg_appName);
-   return;
+    oalLog_cleanup();
+    VOS_FREE(sg_appName);
+    return;
 
 }  /* End of vosLog_cleanup() */
 
@@ -548,18 +548,18 @@ VosLogDestination vosLog_getDestination(void)
 
 void vosLog_setHeaderMask(UINT32 headerMask)
 {
-   logHeaderMask = headerMask;
-   return;
+    logHeaderMask = headerMask;
+    return;
 }
 
 
 UINT32 vosLog_getHeaderMask(void)
 {
-   return logHeaderMask;
+    return logHeaderMask;
 }
 
 
-VOS_RET_E vosLog_security(VosLogSecurityLogIDs id, VosLogSecurityLogData * pdata, const char *fmt, ...)
+VOS_RET_E vosLog_security(VosLogSecurityLogIDs id, VosLogSecurityLogData *pdata, const char *fmt, ...)
 {
     return (VOS_RET_SUCCESS);
 }

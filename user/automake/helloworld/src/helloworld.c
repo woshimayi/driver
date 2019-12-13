@@ -1,7 +1,7 @@
-#include "../include/head.h" 
+#include "../include/head.h"
 
 int main()
 {
-	PP();
-	return 0;
+    PP();
+    return 0;
 }

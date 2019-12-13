@@ -1,9 +1,9 @@
 /*
-	Name: 
-	Copyright: 
-	Author: 
+	Name:
+	Copyright:
+	Author:
 	Date: 16/01/19 16:17
-	Description: 
+	Description:
 */
 
 #include <stdio.h>
@@ -39,7 +39,7 @@ char *util_cryptMakeSalt(void)
     result[0] = i64c(((x >> 18) ^ (x >> 6)) & 077);
     result[1] = i64c(((x >> 12) ^ x) & 077);
     result[2] = '\0';
-    
+
     return result;
 }
 
@@ -47,11 +47,11 @@ char *util_cryptMakeSalt(void)
 
 int main()
 {
-	char * str = crypt("34BF90268626", NULL);
-	
-	printf("%s\n", str);
-	
-	return 0;
+    char *str = crypt("34BF90268626", NULL);
+
+    printf("%s\n", str);
+
+    return 0;
 }
 
 

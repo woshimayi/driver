@@ -49,7 +49,7 @@ int main()
     t = 0;
     timer = 0.0;
     timer_start(timer);
-    while(t < 1000)
+    while (t < 1000)
     {
         t++;
     }

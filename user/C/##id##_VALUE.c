@@ -8,9 +8,9 @@
 
 int main()
 {
-	printf("%s\n", SF_GetFeature(3));
+    printf("%s\n", SF_GetFeature(3));
 
-	return 0;
+    return 0;
 }
 
 

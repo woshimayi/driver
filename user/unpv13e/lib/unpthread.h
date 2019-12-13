@@ -7,7 +7,7 @@
 #include	"unp.h"
 
 void	Pthread_create(pthread_t *, const pthread_attr_t *,
-					   void * (*)(void *), void *);
+                       void *(*)(void *), void *);
 void	Pthread_join(pthread_t, void **);
 void	Pthread_detach(pthread_t);
 void	Pthread_kill(pthread_t, int);
@@ -22,7 +22,7 @@ void	Pthread_cond_broadcast(pthread_cond_t *);
 void	Pthread_cond_signal(pthread_cond_t *);
 void	Pthread_cond_wait(pthread_cond_t *, pthread_mutex_t *);
 void	Pthread_cond_timedwait(pthread_cond_t *, pthread_mutex_t *,
-							   const struct timespec *);
+                               const struct timespec *);
 
 void	Pthread_key_create(pthread_key_t *, void (*)(void *));
 void	Pthread_setspecific(pthread_key_t, const void *);

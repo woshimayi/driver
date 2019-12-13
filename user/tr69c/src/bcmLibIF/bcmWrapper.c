@@ -3,46 +3,46 @@
  *  Copyright (c) 2006-2007  Broadcom Corporation
  *  All Rights Reserved
  *
-# 
-# 
-# This program is the proprietary software of Broadcom Corporation and/or its 
-# licensors, and may only be used, duplicated, modified or distributed pursuant 
-# to the terms and conditions of a separate, written license agreement executed 
-# between you and Broadcom (an "Authorized License").  Except as set forth in 
-# an Authorized License, Broadcom grants no license (express or implied), right 
-# to use, or waiver of any kind with respect to the Software, and Broadcom 
-# expressly reserves all rights in and to the Software and all intellectual 
-# property rights therein.  IF YOU HAVE NO AUTHORIZED LICENSE, THEN YOU HAVE 
-# NO RIGHT TO USE THIS SOFTWARE IN ANY WAY, AND SHOULD IMMEDIATELY NOTIFY 
-# BROADCOM AND DISCONTINUE ALL USE OF THE SOFTWARE. 
-# 
-# Except as expressly set forth in the Authorized License, 
-# 
-# 1. This program, including its structure, sequence and organization, 
-#    constitutes the valuable trade secrets of Broadcom, and you shall use 
-#    all reasonable efforts to protect the confidentiality thereof, and to 
-#    use this information only in connection with your use of Broadcom 
-#    integrated circuit products. 
-# 
-# 2. TO THE MAXIMUM EXTENT PERMITTED BY LAW, THE SOFTWARE IS PROVIDED "AS IS" 
-#    AND WITH ALL FAULTS AND BROADCOM MAKES NO PROMISES, REPRESENTATIONS OR 
-#    WARRANTIES, EITHER EXPRESS, IMPLIED, STATUTORY, OR OTHERWISE, WITH 
-#    RESPECT TO THE SOFTWARE.  BROADCOM SPECIFICALLY DISCLAIMS ANY AND 
-#    ALL IMPLIED WARRANTIES OF TITLE, MERCHANTABILITY, NONINFRINGEMENT, 
-#    FITNESS FOR A PARTICULAR PURPOSE, LACK OF VIRUSES, ACCURACY OR 
-#    COMPLETENESS, QUIET ENJOYMENT, QUIET POSSESSION OR CORRESPONDENCE 
-#    TO DESCRIPTION. YOU ASSUME THE ENTIRE RISK ARISING OUT OF USE OR 
-#    PERFORMANCE OF THE SOFTWARE. 
-# 
-# 3. TO THE MAXIMUM EXTENT PERMITTED BY LAW, IN NO EVENT SHALL BROADCOM OR 
-#    ITS LICENSORS BE LIABLE FOR (i) CONSEQUENTIAL, INCIDENTAL, SPECIAL, 
-#    INDIRECT, OR EXEMPLARY DAMAGES WHATSOEVER ARISING OUT OF OR IN ANY 
-#    WAY RELATING TO YOUR USE OF OR INABILITY TO USE THE SOFTWARE EVEN 
-#    IF BROADCOM HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES; 
-#    OR (ii) ANY AMOUNT IN EXCESS OF THE AMOUNT ACTUALLY PAID FOR THE 
-#    SOFTWARE ITSELF OR U.S. $1, WHICHEVER IS GREATER. THESE LIMITATIONS 
-#    SHALL APPLY NOTWITHSTANDING ANY FAILURE OF ESSENTIAL PURPOSE OF ANY 
-#    LIMITED REMEDY. 
+#
+#
+# This program is the proprietary software of Broadcom Corporation and/or its
+# licensors, and may only be used, duplicated, modified or distributed pursuant
+# to the terms and conditions of a separate, written license agreement executed
+# between you and Broadcom (an "Authorized License").  Except as set forth in
+# an Authorized License, Broadcom grants no license (express or implied), right
+# to use, or waiver of any kind with respect to the Software, and Broadcom
+# expressly reserves all rights in and to the Software and all intellectual
+# property rights therein.  IF YOU HAVE NO AUTHORIZED LICENSE, THEN YOU HAVE
+# NO RIGHT TO USE THIS SOFTWARE IN ANY WAY, AND SHOULD IMMEDIATELY NOTIFY
+# BROADCOM AND DISCONTINUE ALL USE OF THE SOFTWARE.
+#
+# Except as expressly set forth in the Authorized License,
+#
+# 1. This program, including its structure, sequence and organization,
+#    constitutes the valuable trade secrets of Broadcom, and you shall use
+#    all reasonable efforts to protect the confidentiality thereof, and to
+#    use this information only in connection with your use of Broadcom
+#    integrated circuit products.
+#
+# 2. TO THE MAXIMUM EXTENT PERMITTED BY LAW, THE SOFTWARE IS PROVIDED "AS IS"
+#    AND WITH ALL FAULTS AND BROADCOM MAKES NO PROMISES, REPRESENTATIONS OR
+#    WARRANTIES, EITHER EXPRESS, IMPLIED, STATUTORY, OR OTHERWISE, WITH
+#    RESPECT TO THE SOFTWARE.  BROADCOM SPECIFICALLY DISCLAIMS ANY AND
+#    ALL IMPLIED WARRANTIES OF TITLE, MERCHANTABILITY, NONINFRINGEMENT,
+#    FITNESS FOR A PARTICULAR PURPOSE, LACK OF VIRUSES, ACCURACY OR
+#    COMPLETENESS, QUIET ENJOYMENT, QUIET POSSESSION OR CORRESPONDENCE
+#    TO DESCRIPTION. YOU ASSUME THE ENTIRE RISK ARISING OUT OF USE OR
+#    PERFORMANCE OF THE SOFTWARE.
+#
+# 3. TO THE MAXIMUM EXTENT PERMITTED BY LAW, IN NO EVENT SHALL BROADCOM OR
+#    ITS LICENSORS BE LIABLE FOR (i) CONSEQUENTIAL, INCIDENTAL, SPECIAL,
+#    INDIRECT, OR EXEMPLARY DAMAGES WHATSOEVER ARISING OUT OF OR IN ANY
+#    WAY RELATING TO YOUR USE OF OR INABILITY TO USE THE SOFTWARE EVEN
+#    IF BROADCOM HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES;
+#    OR (ii) ANY AMOUNT IN EXCESS OF THE AMOUNT ACTUALLY PAID FOR THE
+#    SOFTWARE ITSELF OR U.S. $1, WHICHEVER IS GREATER. THESE LIMITATIONS
+#    SHALL APPLY NOTWITHSTANDING ANY FAILURE OF ESSENTIAL PURPOSE OF ANY
+#    LIMITED REMEDY.
 #
  *
  ************************************************************************/
@@ -119,12 +119,12 @@ void saveTR69StatusItems(void)
     {
         UTIL_STRNCPY(gwState.downloadCommandKey, a->downloadCommandKey, sizeof(gwState.downloadCommandKey));
     }
-    
+
     if (a->rebootCommandKey)
     {
         UTIL_STRNCPY(gwState.rebootCommandKey, a->rebootCommandKey, sizeof(gwState.rebootCommandKey));
     }
-    
+
     if (a->newParameterKey)
     {
         UTIL_STRNCPY(gwState.newParameterKey, a->newParameterKey, sizeof(gwState.newParameterKey));
@@ -133,23 +133,23 @@ void saveTR69StatusItems(void)
     {
         UTIL_STRNCPY(gwState.newParameterKey, a->parameterKey, sizeof(gwState.newParameterKey));
     }
-    
+
     if (a->dlFaultMsg)
     {
         UTIL_STRNCPY(gwState.dlFaultMsg, a->dlFaultMsg, sizeof(gwState.dlFaultMsg));
     }
-    
+
     gwState.contactedState = informState;
     gwState.dlFaultStatus  = a->dlFaultStatus;
     gwState.startDLTime    = a->startDLTime;
     gwState.endDLTime      = a->endDLTime;
     gwState.retryCount    = a->retryCount;
     gwState.upgradeDownloadFlag = a->upgradeDownloadFlag;
-   
+
     /* save inform event list */
     gwState.informEvCount = informEvList.informEvCnt;
 
-    for (i = 0; i< informEvList.informEvCnt; i++)
+    for (i = 0; i < informEvList.informEvCnt; i++)
     {
         gwState.informEvList[i] = informEvList.informEvList[i];
     }
@@ -197,7 +197,7 @@ void retrieveTR69StatusItems(void)
         VOS_FREE(objValue);
         return;
     }
-    
+
     if (objValue->downloadCommandKey[0] != '\0')
     {
         VOS_MEM_REPLACE_STRING(acsState.downloadCommandKey, objValue->downloadCommandKey);
@@ -217,7 +217,7 @@ void retrieveTR69StatusItems(void)
     {
         VOS_MEM_REPLACE_STRING(acsState.rebootCommandKey, NULL);
     }
-    
+
     vosLog_debug("rebootCommandKey = %s ", acsState.rebootCommandKey);
 
     /*
@@ -228,7 +228,7 @@ void retrieveTR69StatusItems(void)
     * not from the acsState structure, so this code below is pretty much useless.
     * See CR 17990.
     */
-    
+
     if (objValue->newParameterKey[0] != '\0')
     {
         VOS_MEM_REPLACE_STRING(acsState.parameterKey, objValue->newParameterKey);
@@ -237,9 +237,9 @@ void retrieveTR69StatusItems(void)
     {
         VOS_MEM_REPLACE_STRING(acsState.parameterKey, NULL);
     }
-    
+
     vosLog_debug("acsState.parameterKey =%s", acsState.parameterKey);
-    
+
     if (objValue->dlFaultMsg[0] != '\0')
     {
         VOS_MEM_REPLACE_STRING(acsState.dlFaultMsg, objValue->dlFaultMsg);
@@ -248,7 +248,7 @@ void retrieveTR69StatusItems(void)
     {
         VOS_MEM_REPLACE_STRING(acsState.dlFaultMsg, NULL);
     }
-    
+
     vosLog_debug("acsState.dlFaultMsg =%s", acsState.dlFaultMsg);
     acsState.dlFaultStatus = objValue->dlFaultStatus;
     acsState.startDLTime   = objValue->startDLTime;
@@ -260,17 +260,17 @@ void retrieveTR69StatusItems(void)
 
     /* retrieve inform states and inform event list from scratch pad.
     * TR69c may exit due to time out before an inform message could be sent out.
-    * 64 events have been reserved for events; but tr69c only has max of 11 which 
+    * 64 events have been reserved for events; but tr69c only has max of 11 which
     * should be enough as of now.
     */
     savedEvCount = (UINT32)objValue->informEvCount;
     informEvList.informEvCnt = objValue->informEvCount;
 
-    /* we only do 11 events, so just copy 11 events over */   
+    /* we only do 11 events, so just copy 11 events over */
     if (savedEvCount > MAXINFORMEVENTS)
     {
-        vosLog_debug("informEvCount in scratchpad is %d, max kept is %d", 
-                      savedEvCount, MAXINFORMEVENTS);
+        vosLog_debug("informEvCount in scratchpad is %d, max kept is %d",
+                     savedEvCount, MAXINFORMEVENTS);
     }
     else
     {
@@ -292,7 +292,7 @@ void retrieveTR69StatusItems(void)
     vosLog_debug("retryCount=%d", acsState.retryCount);
 
     VOS_FREE(objValue);
-    
+
     bufLen = sizeof(enableSim);
     ret = HAL_sysGetTr69cData("tr69c_simulate", enableSim, &bufLen);
     if (VOS_RET_SUCCESS == ret)
@@ -301,16 +301,16 @@ void retrieveTR69StatusItems(void)
         {
             vosLog_debug("no tr69c_simulate info");
             return;
-        }        
+        }
     }
     else
     {
         vosLog_error("get tr69c_simulate info failed ret=%d", ret);
         return;
     }
-    
+
     g_writeLog = (UBOOL8)atoi(enableSim);
-    
+
     vosLog_debug("g_writeLog = %d", g_writeLog);
     return;
 }
@@ -343,7 +343,7 @@ static void tr69_processCardRemoteReset(void)
 
 
 /*
-* Call library factory reset 
+* Call library factory reset
 */
 UBOOL8 wrapperFactoryReset(void)
 {
@@ -351,12 +351,12 @@ UBOOL8 wrapperFactoryReset(void)
 
     if (SF_FEATURE_SUPPORT_CT_RESETTODEFAULT)
     {
-        #ifdef DMP_X_CT_COM_SUPPORTCARDMON_1
+#ifdef DMP_X_CT_COM_SUPPORTCARDMON_1
         if (SF_FEATURE_SUPPORT_CARD)
         {
             tr69_processCardRemoteReset();
         }
-        #endif
+#endif
 
         if (VOS_RET_SUCCESS != CMC_sysResetConfig(CMC_SYS_CONFIG_RESET_REMOTE))
         {
@@ -384,8 +384,8 @@ UBOOL8 wrapperFactoryReset(void)
 void wrapperReset(void)
 {
     vosLog_debug("Sending msg to smd requesting reboot/reset");
-    
-    if(strstr((const char *)PFM_PRODUCT_NAME, "96838") != 0)
+
+    if (strstr((const char *)PFM_PRODUCT_NAME, "96838") != 0)
     {
         sleep(5);
         HAL_Reboot_System();
@@ -394,8 +394,8 @@ void wrapperReset(void)
     {
         UTIL_reboot(g_msgHandle);
     }
-    
-    return;         
+
+    return;
 }
 
 
@@ -435,7 +435,7 @@ void setITMSUpdateFlag(SINT32 updateflag)
     int result;
     char chUpgrade = '0';
 
-    if((fp = fopen("/var/itmsupgrade", "w")) != NULL)
+    if ((fp = fopen("/var/itmsupgrade", "w")) != NULL)
     {
         fprintf(fp, "upgrade=%d\n", updateflag);
         fclose(fp);
@@ -446,7 +446,7 @@ void setITMSUpdateFlag(SINT32 updateflag)
     address.sun_family = AF_UNIX;
     UTIL_STRNCPY(address.sun_path, UPGRADE_SERVER_NAME, sizeof(address.sun_path) - 1);
     //connect to server
-    result = connect(sockfd, (struct sockaddr*)&address, sizeof(address));
+    result = connect(sockfd, (struct sockaddr *)&address, sizeof(address));
     if (result == -1)
     {
         vosLog_error("Fail to send upgrade msg to HTTPD.\n");
@@ -454,7 +454,7 @@ void setITMSUpdateFlag(SINT32 updateflag)
     }
     else
     {
-        switch(updateflag)
+        switch (updateflag)
         {
             case 0:
                 chUpgrade = '0';
@@ -482,7 +482,7 @@ void sendUpgradePopMsgToSSK(UBOOL8 flag)
     VosMsgHeader *msg;
     void *msgBuf;
     VOS_RET_E ret = VOS_RET_SUCCESS;
-    
+
     msgBuf = VOS_MALLOC_FLAGS(sizeof(VosMsgHeader), ALLOC_ZEROIZE);
     msg = (VosMsgHeader *)msgBuf;
 
@@ -501,7 +501,7 @@ void sendUpgradePopMsgToSSK(UBOOL8 flag)
     {
         vosLog_debug("ssk UpgradePopMsg is not OK");
     }
-    
+
 }
 
 /*升级强制弹出提示处理*/
@@ -509,7 +509,7 @@ void upgradePopInfo(int itmsupgrage)
 {
     VOS_RET_E ret = VOS_RET_SUCCESS;
     char outIpAddr[BUFLEN_16] = {0};
-	char cmd[128] = {0};
+    char cmd[128] = {0};
     vosLog_debug("Need DNSspoof,itmsupgrage=%d", itmsupgrage);
 
     if (itmsupgrage == 1 || itmsupgrage == 2)
@@ -519,10 +519,12 @@ void upgradePopInfo(int itmsupgrage)
         (UINT32)UTIL_sendRequestToSmd(g_msgHandle, VOS_MSG_RESTART_APP, EID_DNSPROXY, cmd, util_strlen(cmd) + 1);
 
         ret = CMC_lanGetIntfInfo(FALSE, "br0", outIpAddr, NULL, NULL, sizeof(outIpAddr));
-        if(ret == VOS_RET_SUCCESS && outIpAddr[0] != '\0')
+        if (ret == VOS_RET_SUCCESS && outIpAddr[0] != '\0')
         {
-            UTIL_DO_SYSTEM_ACTION("iptables -t nat  -D PREROUTING  -p tcp -d ! %s --dport 80 -j DNAT --to %s", outIpAddr, outIpAddr);
-            UTIL_DO_SYSTEM_ACTION("iptables -t nat  -A PREROUTING  -p tcp -d ! %s --dport 80 -j DNAT --to %s", outIpAddr, outIpAddr);      
+            UTIL_DO_SYSTEM_ACTION("iptables -t nat  -D PREROUTING  -p tcp -d ! %s --dport 80 -j DNAT --to %s", outIpAddr,
+                                  outIpAddr);
+            UTIL_DO_SYSTEM_ACTION("iptables -t nat  -A PREROUTING  -p tcp -d ! %s --dport 80 -j DNAT --to %s", outIpAddr,
+                                  outIpAddr);
         }
         else
         {
@@ -530,7 +532,7 @@ void upgradePopInfo(int itmsupgrage)
             UTIL_DO_SYSTEM_ACTION("iptables -t nat  -A PREROUTING  -p tcp -d ! 192.168.1.1 --dport 80 -j DNAT --to 192.168.1.1");
         }
 
-        if(SF_FEATURE_SUPPORT_CT_USERINFO && SF_FEATURE_LOCATION_GUANGDONG)
+        if (SF_FEATURE_SUPPORT_CT_USERINFO && SF_FEATURE_LOCATION_GUANGDONG)
         {
             sendUpgradePopMsgToSSK(TRUE);
         }
@@ -544,16 +546,17 @@ void upgradePopInfo(int itmsupgrage)
         (UINT32)UTIL_sendRequestToSmd(g_msgHandle, VOS_MSG_RESTART_APP, EID_DNSPROXY, cmd, util_strlen(cmd) + 1);
 
         ret = CMC_lanGetIntfInfo(FALSE, "br0", outIpAddr, NULL, NULL, sizeof(outIpAddr));
-        if(ret == VOS_RET_SUCCESS && outIpAddr[0] != '\0')
+        if (ret == VOS_RET_SUCCESS && outIpAddr[0] != '\0')
         {
-            UTIL_DO_SYSTEM_ACTION("iptables -t nat  -D PREROUTING  -p tcp -d ! %s --dport 80 -j DNAT --to %s", outIpAddr, outIpAddr);    
+            UTIL_DO_SYSTEM_ACTION("iptables -t nat  -D PREROUTING  -p tcp -d ! %s --dport 80 -j DNAT --to %s", outIpAddr,
+                                  outIpAddr);
         }
         else
         {
             UTIL_DO_SYSTEM_ACTION("iptables -t nat  -D PREROUTING  -p tcp -d ! 192.168.1.1 --dport 80 -j DNAT --to 192.168.1.1");
         }
 
-        if(SF_FEATURE_SUPPORT_CT_USERINFO && SF_FEATURE_LOCATION_GUANGDONG)
+        if (SF_FEATURE_SUPPORT_CT_USERINFO && SF_FEATURE_LOCATION_GUANGDONG)
         {
             sendUpgradePopMsgToSSK(FALSE);
         }
@@ -571,7 +574,7 @@ VOS_RET_E downloadComplete(DownloadReq *r, char *buf)
 {
     VOS_RET_E ret = VOS_RET_SUCCESS;
     int updateflag = 2;
-    
+
     vosLog_debug("r->efileType=%d r->fileSize=%d\n", r->efileType, r->fileSize);
     if ((eVendorConfig == r->efileType) && (0 == r->fileSize))
     {
@@ -580,8 +583,8 @@ VOS_RET_E downloadComplete(DownloadReq *r, char *buf)
             syslog(LOG_WARNING, "104057 invalid file format(empty configure file)");
         }
     }
-    
-    if (buf) 
+
+    if (buf)
     {
         /*invalid file, it's too small*/
         if (r->fileSize < 64)
@@ -600,26 +603,26 @@ VOS_RET_E downloadComplete(DownloadReq *r, char *buf)
                     syslog(LOG_WARNING, "104056 Invalid file format, too small");
                 }
             }
-                
+
             ret = VOS_RET_INVALID_IMAGE;
         }
 
-        downloadStop_nosendinform("Download finished, write flash failed",9010);
+        downloadStop_nosendinform("Download finished, write flash failed", 9010);
         tr69SaveTransferList();
 
         if (eVendorConfig == r->efileType)
         {
             tr69SaveConfigFileInfo(r);
         }
-            setITMSUpdateFlag(updateflag);
-            upgradePopInfo(updateflag);
+        setITMSUpdateFlag(updateflag);
+        upgradePopInfo(updateflag);
         vosLog_notice("downloadComplete -- save flash image");
 
         if (eFirmwareUpgrade == r->efileType)
         {
             vosLog_debug("eFirmwareUpgrade");
             ret = HAL_flashWriteImage(buf, (UINT32)r->fileSize);
-            if(SF_FEATURE_ISP_CT)
+            if (SF_FEATURE_ISP_CT)
             {
                 CMC_wanSetIpProtocolVersion(3);
                 wrapperSaveConfigurations();
@@ -628,7 +631,7 @@ VOS_RET_E downloadComplete(DownloadReq *r, char *buf)
 
             vosLog_debug("ret = %d", ret);
         }
-        else 
+        else
         {
             ret = CMC_sysWriteBufToConfig(buf, (UINT32)r->fileSize);
         }
@@ -640,7 +643,7 @@ VOS_RET_E downloadComplete(DownloadReq *r, char *buf)
         else
         {
             /*
-            * In the modem, cmsImg_writeValidatedImage() will trigger a 
+            * In the modem, cmsImg_writeValidatedImage() will trigger a
             * reboot.  On the desktop, we will still be here.
             */
             vosLog_debug("image written");
@@ -655,30 +658,30 @@ VOS_RET_E downloadComplete(DownloadReq *r, char *buf)
 
             if (!SF_FEATURE_SUPPORT_CT_MIDDLEWARE)
             {
-				if(strstr((const char *)PFM_PRODUCT_NAME, "96838") != 0)
-				{
-					sleep(5);
-					HAL_Reboot_System();
-				}
-				else
-				{
-                	UTIL_reboot(g_msgHandle);
-				}
+                if (strstr((const char *)PFM_PRODUCT_NAME, "96838") != 0)
+                {
+                    sleep(5);
+                    HAL_Reboot_System();
+                }
+                else
+                {
+                    UTIL_reboot(g_msgHandle);
+                }
             }
             else
             {
                 if (enblCTMiddleware != CTMDW_MODE_0)
                 {
-					//if(memcmp("18.96838GWOVS", (unsigned char *)PFM_PRODUCT_NAME, sizeof(PFM_PRODUCT_NAME)) == 0)
-					if(strstr((const char *)PFM_PRODUCT_NAME, "96838") != 0)
-					{
+                    //if(memcmp("18.96838GWOVS", (unsigned char *)PFM_PRODUCT_NAME, sizeof(PFM_PRODUCT_NAME)) == 0)
+                    if (strstr((const char *)PFM_PRODUCT_NAME, "96838") != 0)
+                    {
                         sleep(5);
-						HAL_Reboot_System();
-					}
-					else
-					{
-	                	UTIL_reboot(g_msgHandle);
-					}
+                        HAL_Reboot_System();
+                    }
+                    else
+                    {
+                        UTIL_reboot(g_msgHandle);
+                    }
                 }
             }
         }
@@ -757,15 +760,15 @@ eWanState getRealWanState(const char *ifName)
 
     if (ifName != NULL)
     {
-        data = (char *) (msg + 1);
+        data = (char *)(msg + 1);
         msg->dataLength = msgDataLen;
         UTIL_STRNCPY(data, ifName, msgDataLen);
     }
 
-   /*
-    * ssk will reply with TRUE or FALSE for wan connection up.
-    * Need to check for that instead of the usual VOS_RET_E enum.
-    */
+    /*
+     * ssk will reply with TRUE or FALSE for wan connection up.
+     * Need to check for that instead of the usual VOS_RET_E enum.
+     */
     ret = vosMsg_sendAndGetReply(g_msgHandle, msg);
     if (TRUE == ret)
     {
@@ -784,29 +787,29 @@ eWanState getRealWanState(const char *ifName)
 }
 
 
-void  addToParamPathList(char * path,void **list,char * value )
+void  addToParamPathList(char *path, void **list, char *value)
 {
     ParamPathList *item = NULL;
     ParamPathList *temp = NULL;
-    item = (ParamPathList*)(*list);
-    
+    item = (ParamPathList *)(*list);
+
     temp = item;
 
     if (item)
     {
         ParamPathList *ppl = ((ParamPathList *)VOS_MALLOC_FLAGS(sizeof(ParamPathList), ALLOC_ZEROIZE));
-        ppl->paramPath= VOS_STRDUP(path);
+        ppl->paramPath = VOS_STRDUP(path);
         if (value)
         {
-            ppl->value= VOS_STRDUP(value);
+            ppl->value = VOS_STRDUP(value);
         }
-        
-        while(temp->next)
+
+        while (temp->next)
         {
             temp = temp->next;
         }
-        
-        temp->next =ppl;
+
+        temp->next = ppl;
     }
     else
     {
@@ -814,38 +817,38 @@ void  addToParamPathList(char * path,void **list,char * value )
         ppl->paramPath = VOS_STRDUP(path);
         if (value)
         {
-            ppl->value = VOS_STRDUP(value); 
+            ppl->value = VOS_STRDUP(value);
         }
-    
+
         ppl->next = NULL;
         item = ppl;
     }
-    
+
     *list = item;
 }
 
 void freeParamPathList(void **aitem)
-{  
+{
     ParamPathList *item = NULL;
     ParamPathList *p = NULL;
-    
-    if (! *aitem) 
+
+    if (! *aitem)
         return;
-    
-    item = (ParamPathList*)(*aitem);
-       
-    while(item)
+
+    item = (ParamPathList *)(*aitem);
+
+    while (item)
     {
         VOS_FREE(item->paramPath);
         VOS_FREE(item->value);
         p = item->next;
         VOS_FREE(item);
-        item =p;
+        item = p;
     }
-    
+
     VOS_FREE(item);
     *aitem = item;
-}  
+}
 
 UINT32 getMdmParamValueChanges(void)
 {
@@ -870,7 +873,7 @@ VOS_RET_E tr69SaveTransferList(void)
         {
             saveEntryCount++;
         }
-    } /* for */ 
+    } /* for */
 
     vosLog_debug("saveEntryCount=%d", saveEntryCount);
     if (saveEntryCount > 0)
@@ -887,34 +890,34 @@ VOS_RET_E tr69SaveTransferList(void)
         {
             q = &transferList.queue[i].request;
             pSaved = &pSaveList[j];
-            if (eTransferNotYetStarted == q->state) 
+            if (eTransferNotYetStarted == q->state)
             {
                 if (q->commandKey)
-                    UTIL_STRNCPY(pSaved->commandKey,(q->commandKey), sizeof(pSaved->commandKey));
+                    UTIL_STRNCPY(pSaved->commandKey, (q->commandKey), sizeof(pSaved->commandKey));
 
                 if (q->url)
-                    UTIL_STRNCPY(pSaved->url,(q->url), sizeof(pSaved->url));
+                    UTIL_STRNCPY(pSaved->url, (q->url), sizeof(pSaved->url));
 
                 if (q->user)
                     UTIL_STRNCPY(pSaved->user, q->user, sizeof(pSaved->user));
 
                 if (q->pwd)
                     UTIL_STRNCPY(pSaved->pwd, q->pwd, sizeof(pSaved->pwd));
-                
+
                 if (q->fileName)
                     UTIL_STRNCPY(pSaved->fileName, q->fileName, sizeof(pSaved->fileName));
 
                 pSaved->efileType = q->efileType;
-                pSaved->fileSize=q->fileSize;
+                pSaved->fileSize = q->fileSize;
                 pSaved->delaySec = q->delaySec;
                 pSaved->state = q->state;
                 pSaved->rpcMethod = transferList.queue[i].rpcMethod;
 
                 vosLog_debug("tr69SaveTransferList(j %d): saving efileType %d,commandKey %s, url %s, user %s, pwd %s, filesize %d, filename %s, delaySec %d, state %d, rpcMethod %d\n",
-                j,pSaved->efileType,pSaved->commandKey,pSaved->url,pSaved->user,
-                pSaved->pwd,pSaved->fileSize,pSaved->fileName,pSaved->delaySec,pSaved->state,pSaved->rpcMethod);
+                             j, pSaved->efileType, pSaved->commandKey, pSaved->url, pSaved->user,
+                             pSaved->pwd, pSaved->fileSize, pSaved->fileName, pSaved->delaySec, pSaved->state, pSaved->rpcMethod);
                 j++;
-            } /* notyetStarted */        
+            } /* notyetStarted */
         } /* for */
 
         if ((ret = HAL_sysSetTr69cData("tr69c_transfer", pSaveList, saveSz)) != VOS_RET_SUCCESS)
@@ -946,10 +949,10 @@ VOS_RET_E tr69RetrieveTransferListFromStore(DownloadReqInfo *list, UINT16 *size)
     {
         vosLog_debug("read %d bytes from scratch pad for tr69c_transfer", bufSz);
         *size = (UINT16) bufSz;
-        memcpy((void*)list, buf, *size);
+        memcpy((void *)list, buf, *size);
         ret = VOS_RET_SUCCESS;
     }
-   
+
     return ret;
 }
 
@@ -959,9 +962,9 @@ VOS_RET_E tr69SaveConfigFileInfo(DownloadReq *r)
     DownloadVendorConfigInfo vendorConfig;
     VOS_RET_E ret = VOS_RET_SUCCESS;
     char *namePtr;
-   
+
     saveSz = sizeof(DownloadVendorConfigInfo);
-    memset(&vendorConfig,0,saveSz);
+    memset(&vendorConfig, 0, saveSz);
 
     utilTms_getXSIDateTime(0, vendorConfig.date, sizeof(vendorConfig.date));
     if ((r->fileName) && (r->fileName[0] != '\0'))
@@ -974,7 +977,8 @@ VOS_RET_E tr69SaveConfigFileInfo(DownloadReq *r)
         namePtr = strrchr(r->url, '/');
         if (namePtr != NULL)
         {
-            UTIL_STRNCPY(vendorConfig.name, (namePtr + 1), sizeof(vendorConfig.name));
+
+            UTIL_STRNCPY(vendorConfig.name, (namePtr + 1), sizeof(vendorConfig.name));
         }
     }
 
@@ -996,12 +1000,12 @@ void setVendorConfigObj(DownloadVendorConfigInfo *vendorConfig)
 
     /* send a message to SSK and have it edit the vendorConfigFile
     * table.   This is a dynamic instance.  TR69 and other applications
-    * are not allowed to update the object. 
+    * are not allowed to update the object.
     */
     msgBuf = (char *)VOS_MALLOC_FLAGS(sizeof(VosMsgHeader) + msgDataLen, ALLOC_ZEROIZE);
 
     msg = (VosMsgHeader *)msgBuf;
-    pData = (vendorConfigUpdateMsgBody *) (msg + 1);
+    pData = (vendorConfigUpdateMsgBody *)(msg + 1);
 
     msg->type = VOS_MSG_VENDOR_CONFIG_UPDATE;
     msg->src = EID_TR69C;
@@ -1009,7 +1013,7 @@ void setVendorConfigObj(DownloadVendorConfigInfo *vendorConfig)
     msg->flags_request = 1;
     msg->dataLength = (UINT32)msgDataLen;
     UTIL_STRNCPY(pData->date, vendorConfig->date, sizeof(pData->date));
-    
+
     if (vendorConfig->name[0] != '\0')
     {
         UTIL_STRNCPY(pData->name, vendorConfig->name, sizeof(pData->name));
@@ -1043,8 +1047,8 @@ void retrieveClearTR69VendorConfigInfo(void)
     UINT32 count = 0;
     vosLog_debug("entered");
 
-    if ((vendorConfig = (DownloadVendorConfigInfo*)
-        VOS_MALLOC_FLAGS(sizeof(DownloadVendorConfigInfo), ALLOC_ZEROIZE)) == NULL)
+    if ((vendorConfig = (DownloadVendorConfigInfo *)
+                        VOS_MALLOC_FLAGS(sizeof(DownloadVendorConfigInfo), ALLOC_ZEROIZE)) == NULL)
     {
         vosLog_error("malloc failed");
         return;
@@ -1064,14 +1068,14 @@ void retrieveClearTR69VendorConfigInfo(void)
         VOS_FREE(vendorConfig);
         return;
     }
-    
-    vosLog_debug("pVendorConfig->name %s, date %s",vendorConfig->name,vendorConfig->date);
+
+    vosLog_debug("pVendorConfig->name %s, date %s", vendorConfig->name, vendorConfig->date);
 
     setVendorConfigObj(vendorConfig);
     VOS_FREE(vendorConfig);
 
     /* we only record the config file once */
-    if (HAL_sysSetTr69cData(VENDOR_CFG_INFO_TOKEN,NULL,0) != VOS_RET_SUCCESS)
+    if (HAL_sysSetTr69cData(VENDOR_CFG_INFO_TOKEN, NULL, 0) != VOS_RET_SUCCESS)
     {
         vosLog_error("Unable to save VENDOR_CFG_INFO_TOKEN in scratch PAD");
     }

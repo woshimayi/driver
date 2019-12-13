@@ -9,20 +9,19 @@
 struct if_nameindex *
 if_nameindex(void)
 {
-	return(NULL);
+    return (NULL);
 }
 
-void
-if_freenameindex(struct if_nameindex *ptr)
+void if_freenameindex(struct if_nameindex *ptr)
 {
 }
 
 struct if_nameindex *
 If_nameindex(void)
 {
-	struct if_nameindex	*ifptr;
+    struct if_nameindex	*ifptr;
 
-	if ( (ifptr = if_nameindex()) == NULL)
-		err_quit("if_nameindex error");
-	return(ifptr);
+    if ((ifptr = if_nameindex()) == NULL)
+        err_quit("if_nameindex error");
+    return (ifptr);
 }

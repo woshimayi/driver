@@ -37,37 +37,41 @@ u_char	*optr;				/* pointer into options being formed */
  * either -g or -G.
  */
 
-void
-sroute_doopt(int strict, char *argptr)
+void sroute_doopt(int strict, char *argptr)
 {
-	struct in_addr	inaddr;
-	struct hostent	*hp;
+    struct in_addr	inaddr;
+    struct hostent	*hp;
 
-	if (sroute_cnt >= 9)
-		err_quit("too many source routes with: %s", argptr);
+    if (sroute_cnt >= 9)
+        err_quit("too many source routes with: %s", argptr);
 
-	if (sroute_cnt == 0) {	/* first one */
-		bzero(sroute_opt, sizeof(sroute_opt));
-		optr = sroute_opt;
-		*optr++ = strict ? IPOPT_SSRR : IPOPT_LSRR;
-		optr++;			/* we fill in the total length later */
-		*optr++ = 4;	/* ptr to first source-route address */
-	}
+    if (sroute_cnt == 0)  	/* first one */
+    {
+        bzero(sroute_opt, sizeof(sroute_opt));
+        optr = sroute_opt;
+        *optr++ = strict ? IPOPT_SSRR : IPOPT_LSRR;
+        optr++;			/* we fill in the total length later */
+        *optr++ = 4;	/* ptr to first source-route address */
+    }
 
-	if (inet_aton(argptr, &inaddr) == 1) {
-		memcpy(optr, &inaddr, sizeof(u_long));	/* dotted decimal */
-		if (verbose)
-			fprintf(stderr, "source route to %s\n", inet_ntoa(inaddr));
-	} else if ( (hp = gethostbyname(argptr)) != NULL) {
-		memcpy(optr, hp->h_addr, sizeof(u_long));/* hostname */
-		if (verbose)
-			fprintf(stderr, "source route to %s\n",
-							inet_ntoa(*((struct in_addr *) hp->h_addr)));
-	} else
-		err_quit("unknown host: %s\n", argptr);
+    if (inet_aton(argptr, &inaddr) == 1)
+    {
+        memcpy(optr, &inaddr, sizeof(u_long));	/* dotted decimal */
+        if (verbose)
+            fprintf(stderr, "source route to %s\n", inet_ntoa(inaddr));
+    }
+    else if ((hp = gethostbyname(argptr)) != NULL)
+    {
+        memcpy(optr, hp->h_addr, sizeof(u_long));/* hostname */
+        if (verbose)
+            fprintf(stderr, "source route to %s\n",
+                    inet_ntoa(*((struct in_addr *) hp->h_addr)));
+    }
+    else
+        err_quit("unknown host: %s\n", argptr);
 
-	optr += sizeof(u_long);		/* for next IP addr in list */
-	sroute_cnt++;
+    optr += sizeof(u_long);		/* for next IP addr in list */
+    sroute_cnt++;
 }
 
 /*
@@ -76,35 +80,35 @@ sroute_doopt(int strict, char *argptr)
  * The final destination goes at the end of the list of IP addresses.
  */
 
-void
-sroute_set(int sockfd)
+void sroute_set(int sockfd)
 {
-	sroute_cnt++;						 /* account for destination */
-	sroute_opt[1] = 3 + (sroute_cnt * 4);/* total length, incl. destination */
+    sroute_cnt++;						 /* account for destination */
+    sroute_opt[1] = 3 + (sroute_cnt * 4);/* total length, incl. destination */
 
-		/* destination must be stored as final entry */
-	memcpy(optr, &servaddr.sin_addr, sizeof(u_long));
-	optr += sizeof(u_long);
-	if (verbose) {
-		fprintf(stderr, "source route to %s\n", inet_ntoa(servaddr.sin_addr));
-		fprintf(stderr, "source route size %d bytes\n", sroute_opt[1]);
-	}
+    /* destination must be stored as final entry */
+    memcpy(optr, &servaddr.sin_addr, sizeof(u_long));
+    optr += sizeof(u_long);
+    if (verbose)
+    {
+        fprintf(stderr, "source route to %s\n", inet_ntoa(servaddr.sin_addr));
+        fprintf(stderr, "source route size %d bytes\n", sroute_opt[1]);
+    }
 
-	/*
-	 * The number of bytes that we pass to setsockopt() must be a multiple
-	 * of 4.  Since the buffer was initialized to 0, this leaves an EOL
-	 * following the final IP address.
-	 * For optimization we could put a NOP before the 3-byte type/len/offset
-	 * field, which would then align all the IP addresses on 4-byte boundaries,
-	 * but the source routing code is not exactly in the fast path of most
-	 * routers.
-	 */
-	while ((optr - sroute_opt) & 3)
-		optr++;
+    /*
+     * The number of bytes that we pass to setsockopt() must be a multiple
+     * of 4.  Since the buffer was initialized to 0, this leaves an EOL
+     * following the final IP address.
+     * For optimization we could put a NOP before the 3-byte type/len/offset
+     * field, which would then align all the IP addresses on 4-byte boundaries,
+     * but the source routing code is not exactly in the fast path of most
+     * routers.
+     */
+    while ((optr - sroute_opt) & 3)
+        optr++;
 
-	if (setsockopt(sockfd, IPPROTO_IP, IP_OPTIONS,
-				   sroute_opt, optr - sroute_opt) < 0)
-		err_sys("setsockopt error for IP_OPTIONS");
+    if (setsockopt(sockfd, IPPROTO_IP, IP_OPTIONS,
+                   sroute_opt, optr - sroute_opt) < 0)
+        err_sys("setsockopt error for IP_OPTIONS");
 
-	sroute_cnt = 0;		/* don't call this function again */
+    sroute_cnt = 0;		/* don't call this function again */
 }

@@ -306,7 +306,8 @@ int main(int argc, char *argv[])
                             }
                         }
                     }
-                    LOG_DBG("buttons_state:%d, tp_axes->x:%d, tp_axes->y:%d, tp_axes->z:%d", buttons_state, tp_axes->x, tp_axes->y, tp_axes->z);
+                    LOG_DBG("buttons_state:%d, tp_axes->x:%d, tp_axes->y:%d, tp_axes->z:%d", buttons_state, tp_axes->x, tp_axes->y,
+                            tp_axes->z);
                 }
                 else
                 {

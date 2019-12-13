@@ -4,30 +4,30 @@
 
 int main()
 {
-        char mac[64] = {0};
-        char *p=NULL;
-        FILE *fd=NULL;
-        char line[128] = {0};
-        fd = fopen("./ifconfig.log", "r");
-        if(NULL == fd)
+    char mac[64] = {0};
+    char *p = NULL;
+    FILE *fd = NULL;
+    char line[128] = {0};
+    fd = fopen("./ifconfig.log", "r");
+    if (NULL == fd)
+    {
+        printf("fail ifocnig ifname\n");
+    }
+    else
+    {
+        while (fgets(line, sizeof(line), fd) != NULL)
         {
-                printf("fail ifocnig ifname\n");
-        }
-        else
-        {
-                while(fgets(line, sizeof(line), fd) != NULL)
+            if ((p = strstr(line, "pon")))
+            {
+                if (p = strstr(line, "HWaddr"))
                 {
-                        if((p = strstr(line, "pon")))
-                        {
-                                if (p = strstr(line, "HWaddr"))
-                                {
-                                        printf("p = %s\n", p);
-                                }
-                                sscanf(p, "%*s%s", mac);
-                        }
+                    printf("p = %s\n", p);
                 }
-                printf("mac = %s\n", mac);
+                sscanf(p, "%*s%s", mac);
+            }
         }
-        fclose(fd);
-        return 0;
+        printf("mac = %s\n", mac);
+    }
+    fclose(fd);
+    return 0;
 }

@@ -4,41 +4,41 @@
 static void			recvfrom_alarm(int);
 static sigjmp_buf	jmpbuf;
 
-void
-dg_cli(FILE *fp, int sockfd, const SA *pservaddr, socklen_t servlen)
+void dg_cli(FILE *fp, int sockfd, const SA *pservaddr, socklen_t servlen)
 {
-	int				n;
-	const int		on = 1;
-	char			sendline[MAXLINE], recvline[MAXLINE + 1];
-	socklen_t		len;
-	struct sockaddr	*preply_addr;
- 
-	preply_addr = Malloc(servlen);
+    int				n;
+    const int		on = 1;
+    char			sendline[MAXLINE], recvline[MAXLINE + 1];
+    socklen_t		len;
+    struct sockaddr	*preply_addr;
 
-	Setsockopt(sockfd, SOL_SOCKET, SO_BROADCAST, &on, sizeof(on));
+    preply_addr = Malloc(servlen);
 
-	Signal(SIGALRM, recvfrom_alarm);
+    Setsockopt(sockfd, SOL_SOCKET, SO_BROADCAST, &on, sizeof(on));
 
-	while (Fgets(sendline, MAXLINE, fp) != NULL) {
+    Signal(SIGALRM, recvfrom_alarm);
 
-		Sendto(sockfd, sendline, strlen(sendline), 0, pservaddr, servlen);
+    while (Fgets(sendline, MAXLINE, fp) != NULL)
+    {
 
-		alarm(5);
-		for ( ; ; ) {
-			if (sigsetjmp(jmpbuf, 1) != 0)
-				break;
-			len = servlen;
-			n = Recvfrom(sockfd, recvline, MAXLINE, 0, preply_addr, &len);
-			recvline[n] = 0;	/* null terminate */
-			printf("from %s: %s",
-					Sock_ntop_host(preply_addr, len), recvline);
-		}
-	}
-	free(preply_addr);
+        Sendto(sockfd, sendline, strlen(sendline), 0, pservaddr, servlen);
+
+        alarm(5);
+        for (; ;)
+        {
+            if (sigsetjmp(jmpbuf, 1) != 0)
+                break;
+            len = servlen;
+            n = Recvfrom(sockfd, recvline, MAXLINE, 0, preply_addr, &len);
+            recvline[n] = 0;	/* null terminate */
+            printf("from %s: %s",
+                   Sock_ntop_host(preply_addr, len), recvline);
+        }
+    }
+    free(preply_addr);
 }
 
-static void
-recvfrom_alarm(int signo)
+static void recvfrom_alarm(int signo)
 {
-	siglongjmp(jmpbuf, 1);
+    siglongjmp(jmpbuf, 1);
 }

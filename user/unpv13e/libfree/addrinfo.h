@@ -7,22 +7,23 @@
  * system's header.
  */
 
-struct addrinfo {
-  int		ai_flags;			/* AI_PASSIVE, AI_CANONNAME */
-  int		ai_family;			/* PF_xxx */
-  int		ai_socktype;		/* SOCK_xxx */
-  int		ai_protocol;		/* IPPROTO_xxx for IPv4 and IPv6 */
-  size_t	ai_addrlen;			/* length of ai_addr */
-  char		*ai_canonname;		/* canonical name for host */
-  struct sockaddr	*ai_addr;	/* binary address */
-  struct addrinfo	*ai_next;	/* next structure in linked list */
+struct addrinfo
+{
+    int		ai_flags;			/* AI_PASSIVE, AI_CANONNAME */
+    int		ai_family;			/* PF_xxx */
+    int		ai_socktype;		/* SOCK_xxx */
+    int		ai_protocol;		/* IPPROTO_xxx for IPv4 and IPv6 */
+    size_t	ai_addrlen;			/* length of ai_addr */
+    char		*ai_canonname;		/* canonical name for host */
+    struct sockaddr	*ai_addr;	/* binary address */
+    struct addrinfo	*ai_next;	/* next structure in linked list */
 };
 
-			/* following for getaddrinfo() */
+/* following for getaddrinfo() */
 #define	AI_PASSIVE		 1	/* socket is intended for bind() + listen() */
 #define	AI_CANONNAME	 2	/* return canonical name */
 
-			/* following for getnameinfo() */
+/* following for getnameinfo() */
 #define	NI_MAXHOST	  1025	/* max hostname returned */
 #define	NI_MAXSERV	    32	/* max service name returned */
 
@@ -32,7 +33,7 @@ struct addrinfo {
 #define	NI_NUMERICSERV   8	/* return numeric form of service name */
 #define	NI_DGRAM	    16	/* datagram service for getservbyname() */
 
-			/* error returns */
+/* error returns */
 #define	EAI_ADDRFAMILY	 1	/* address family for host not supported */
 #define	EAI_AGAIN		 2	/* temporary failure in name resolution */
 #define	EAI_BADFLAGS	 3	/* invalid value for ai_flags */

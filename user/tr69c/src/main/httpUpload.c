@@ -1,21 +1,21 @@
 /*----------------------------------------------------------------------*
-<:copyright-broadcom 
- 
- Copyright (c) 2005 Broadcom Corporation 
- All Rights Reserved 
- No portions of this material may be reproduced in any form without the 
- written permission of: 
-          Broadcom Corporation 
-          16215 Alton Parkway 
-          Irvine, California 92619 
- All information contained in this document is Broadcom Corporation 
- company private, proprietary, and trade secret. 
- 
+<:copyright-broadcom
+
+ Copyright (c) 2005 Broadcom Corporation
+ All Rights Reserved
+ No portions of this material may be reproduced in any form without the
+ written permission of:
+          Broadcom Corporation
+          16215 Alton Parkway
+          Irvine, California 92619
+ All information contained in this document is Broadcom Corporation
+ company private, proprietary, and trade secret.
+
 :>
  *----------------------------------------------------------------------*
  * File Name  : httpUpload.c
  *
- * Description: upload functions 
+ * Description: upload functions
  * $Revision: 1.16 $
  * $Id: httpUpload.c,v 1.16 2006/11/1 21:15:09 Peter Tran Exp $
  *----------------------------------------------------------------------*/
@@ -31,11 +31,11 @@
 #include <fcntl.h>
 
 #ifdef TESTBOX
-#include "../bcmLibIF/bcmTestWrapper.h"
+    #include "../bcmLibIF/bcmTestWrapper.h"
 #else
-#include "fwk.h"
-#include "vos_log.h"
-#include "../bcmLibIF/bcmWrapper.h"
+    #include "fwk.h"
+    #include "vos_log.h"
+    #include "../bcmLibIF/bcmWrapper.h"
 #endif
 
 #include "../inc/appdefs.h"
@@ -66,9 +66,9 @@ extern void *g_msgHandle;
 
 
 #ifdef DEBUG
-#define DBGPRINT(X) fprintf X
+    #define DBGPRINT(X) fprintf X
 #else
-#define DBGPRINT(X)
+    #define DBGPRINT(X)
 #endif
 
 
@@ -85,43 +85,43 @@ extern int transferCompletePending;
 void uploadStop(char *msg, int status)
 {
     vosLog_debug("Enter>");
-    
+
     if (httpUpload.wio)
     {
         wget_Disconnect(httpUpload.wio);
         httpUpload.wio = NULL;
     }
-    
-    if ( httpUpload.authHdr != NULL )
-    {       
+
+    if (httpUpload.authHdr != NULL)
+    {
         VOS_MEM_FREE_BUF_AND_NULL_PTR(httpUpload.authHdr);
     }
-    
-    if ( httpUpload.postMsg != NULL )
+
+    if (httpUpload.postMsg != NULL)
     {
         VOS_MEM_FREE_BUF_AND_NULL_PTR(httpUpload.postMsg);
         httpUpload.postLth = 0;
     }
-    
+
     httpUpload.xfrStatus  = eUploadDone;
     httpUpload.eHttpState = eClosed;
-    httpUpload.eAuthState = sIdle;   
-    httpUpload.callback = NULL;   
+    httpUpload.eAuthState = sIdle;
+    httpUpload.callback = NULL;
 
-    setInformState( eACSUpload );
+    setInformState(eACSUpload);
     addInformEventToList(INFORM_EVENT_UPLOAD_METHOD);
     addInformEventToList(INFORM_EVENT_TRANSER_COMPLETE);
 
     acsState.fault = 0;
-    acsState.dlFaultStatus = status; 
+    acsState.dlFaultStatus = status;
 
     if (msg == NULL)
     {
-       VOS_MEM_REPLACE_STRING(acsState.dlFaultMsg,"Upload successful"); 
+        VOS_MEM_REPLACE_STRING(acsState.dlFaultMsg, "Upload successful");
     }
     else
     {
-       VOS_MEM_REPLACE_STRING(acsState.dlFaultMsg,msg);
+        VOS_MEM_REPLACE_STRING(acsState.dlFaultMsg, msg);
     }
 
     acsState.endDLTime = time(NULL);
@@ -132,7 +132,7 @@ void uploadStop(char *msg, int status)
 static void uploadCompletePut(void *handle)
 {
     vosLog_debug("==Enter==");
-    
+
     int status = 9011;
     char *msg = "Upload failed";
     tWget *wg = (tWget *)handle;
@@ -163,12 +163,12 @@ static void uploadCompletePut(void *handle)
                 break;
         }
     }
-    
+
     if (SF_FEATURE_SUPPORT_CT_MIDDLEWARE)
     {
         if (enblCTMiddleware == CTMDW_MODE_0)
         {
-            if(0 == status)
+            if (0 == status)
             {
                 g_downloadState = CTMDW_DOWNLOAD_STATE_OK;
             }
@@ -179,12 +179,12 @@ static void uploadCompletePut(void *handle)
             else
             {
                 g_downloadState = CTMDW_DOWNLOAD_STATE_ERR_FAILED;
-            } 
+            }
 
             ctmdw_sendUploadRet();
         }
     }
-    
+
     uploadStop(msg, status);
 }
 
@@ -192,7 +192,7 @@ static void uploadCompletePut(void *handle)
 static void uploaddiagCompletePut(void *handle)
 {
     vosLog_debug("Enter>");
-    
+
     int status = 9011;
     char *msg = "Upload failed";
     tWget *wg = (tWget *)handle;
@@ -230,7 +230,7 @@ static void uploaddiagCompletePut(void *handle)
         addInformEventToList(INFORM_EVENT_DIAGNOSTICS_COMPLETE);
         return;
     }
-    
+
     uploadStop(msg, status);
 }
 
@@ -238,7 +238,7 @@ static void uploaddiagCompletePut(void *handle)
 static void uploadCompleteAuth(void *handle)
 {
     vosLog_debug("==Enter==");
-    
+
     int status = 9011;
     char *msg = "Unable to connect to upload URL";
     tWget *wg = (tWget *)handle;
@@ -246,7 +246,7 @@ static void uploadCompleteAuth(void *handle)
     RPCAction *action = (RPCAction *)ht->callback;
     DownloadReq *ulreq = &(action->ud.downloadReq);
     SessionAuth *sa = &putSessionAuth;
-    
+
     if (wg->status == iWgetStatus_Ok)
     {
         if (wg->hdrs->status_code == 401)
@@ -255,31 +255,31 @@ static void uploadCompleteAuth(void *handle)
             if (wg->hdrs->content_length > 0)
             {
                 int mlth = 0;
-                char *tmpBuf = readResponse(wg,&mlth,0);
+                char *tmpBuf = readResponse(wg, &mlth, 0);
                 if (tmpBuf != NULL)
                     VOS_MEM_FREE_BUF_AND_NULL_PTR(tmpBuf);
             }
             ht->authHdr = generateAuthorizationHdrValue(sa, wg->hdrs->wwwAuthenticate,
-                                                       "PUT", ht->wio->uri, ulreq->user, ulreq->pwd);
+                          "PUT", ht->wio->uri, ulreq->user, ulreq->pwd);
             if (ht->authHdr == NULL)
             {
                 if (SF_FEATURE_SUPPORT_CT_MIDDLEWARE)
                 {
                     if (enblCTMiddleware == CTMDW_MODE_0)
                     {
-                       g_downloadState = CTMDW_DOWNLOAD_STATE_ERR_ACCOUNT;
-                       ctmdw_sendUploadRet();
+                        g_downloadState = CTMDW_DOWNLOAD_STATE_ERR_ACCOUNT;
+                        ctmdw_sendUploadRet();
                     }
                 }
-                
+
                 uploadStop("Upload server has unknow authentication header format", status);
                 return;
             }
 
-            closeConn = ht->wio->hdrs->Connection && !strcasecmp(ht->wio->hdrs->Connection,"close");
+            closeConn = ht->wio->hdrs->Connection && !strcasecmp(ht->wio->hdrs->Connection, "close");
             /* end of data on 401 skip_Proto() */
-            if (closeConn) 
-            { 
+            if (closeConn)
+            {
                 /* close connection and reconnect with Authorization header*/
                 wget_Disconnect(ht->wio);
                 ht->wio = wget_Connect(ulreq->url, uploadConnected, action);
@@ -289,21 +289,21 @@ static void uploadCompleteAuth(void *handle)
                     {
                         if (enblCTMiddleware == CTMDW_MODE_0)
                         {
-                           g_downloadState = CTMDW_DOWNLOAD_STATE_ERR_CONNECT;
-                           ctmdw_sendUploadRet();
+                            g_downloadState = CTMDW_DOWNLOAD_STATE_ERR_CONNECT;
+                            ctmdw_sendUploadRet();
                         }
                     }
 
                     uploadStop("Failed to connect upload server", status);
                 }
-                else 
+                else
                 {
-                    wget_AddPostHdr(ht->wio,"Authorization", ht->authHdr);
+                    wget_AddPostHdr(ht->wio, "Authorization", ht->authHdr);
                 }
             }
-            else 
+            else
             {
-                wget_AddPostHdr(ht->wio,"Authorization", ht->authHdr);
+                wget_AddPostHdr(ht->wio, "Authorization", ht->authHdr);
                 /* now just resend the last data with the Authorization header */
                 uploadPutData(action);
             }
@@ -319,8 +319,8 @@ static void uploadCompleteAuth(void *handle)
             {
                 if (enblCTMiddleware == CTMDW_MODE_0)
                 {
-                   g_downloadState = CTMDW_DOWNLOAD_STATE_ERR_ACCOUNT;
-                   ctmdw_sendUploadRet();
+                    g_downloadState = CTMDW_DOWNLOAD_STATE_ERR_ACCOUNT;
+                    ctmdw_sendUploadRet();
                 }
             }
 
@@ -333,8 +333,8 @@ static void uploadCompleteAuth(void *handle)
         {
             if (enblCTMiddleware == CTMDW_MODE_0)
             {
-               g_downloadState = CTMDW_DOWNLOAD_STATE_ERR_FAILED;
-               ctmdw_sendUploadRet();
+                g_downloadState = CTMDW_DOWNLOAD_STATE_ERR_FAILED;
+                ctmdw_sendUploadRet();
             }
         }
 
@@ -357,11 +357,11 @@ static void uploadPutLog(void)
     char timeLog[BCM_SYSLOG_MAX_LINE_SIZE] = {0};
     char hostLog[BCM_SYSLOG_MAX_LINE_SIZE] = {0};
     char msgLog[BCM_SYSLOG_MAX_LINE_SIZE] = {0};
-    
+
     vosLog_debug("Enter>");
 
     memset(&deviceInfoObj, 0, sizeof(deviceInfoObj));
-    if (VOS_RET_SUCCESS != (ret = CMC_sysGetDeviceInfo(&deviceInfoObj))) 
+    if (VOS_RET_SUCCESS != (ret = CMC_sysGetDeviceInfo(&deviceInfoObj)))
     {
         vosLog_error("Get device info fail! ret=%d", ret);
         return;
@@ -373,19 +373,20 @@ static void uploadPutLog(void)
         return;
     }
 
-    UTIL_SNPRINTF(logHeader, sizeof(logHeader), "Manufacturer:%s\r\nProductClass:%s\r\nSerialNumber:%s\r\nIP:%s\r\nHWVer:%s\r\nSWVer:%s\r\n\r\n", 
-                                        deviceInfoObj.manufacturer, deviceInfoObj.productClass, 
-                                        deviceInfoObj.serialNumber, ipAddress, 
-                                        deviceInfoObj.hardwareVersion, deviceInfoObj.softwareVersion);
+    UTIL_SNPRINTF(logHeader, sizeof(logHeader),
+                  "Manufacturer:%s\r\nProductClass:%s\r\nSerialNumber:%s\r\nIP:%s\r\nHWVer:%s\r\nSWVer:%s\r\n\r\n",
+                  deviceInfoObj.manufacturer, deviceInfoObj.productClass,
+                  deviceInfoObj.serialNumber, ipAddress,
+                  deviceInfoObj.hardwareVersion, deviceInfoObj.softwareVersion);
 
     proto_SendRaw(pc, logHeader, util_strlen(logHeader));
 
     if (SF_FEATURE_SUPPORT_SYSLOG)
     {
         /*try reading circular buffer*/
-        while ((readptr != BCM_SYSLOG_READ_BUFFER_ERROR) && (readptr != BCM_SYSLOG_READ_BUFFER_END)) 
+        while ((readptr != BCM_SYSLOG_READ_BUFFER_ERROR) && (readptr != BCM_SYSLOG_READ_BUFFER_END))
         {
-            readptr = HAL_readLogPartialFlash(readptr,data);
+            readptr = HAL_readLogPartialFlash(readptr, data);
             if ('\0' != data[0])
             {
                 sscanf(data, "%s %s %s %[^\n]", dateLog, timeLog, hostLog, msgLog);
@@ -399,10 +400,10 @@ static void uploadPutLog(void)
         readptr = BCM_SYSLOG_FIRST_READ;
     }
 
-    while ((readptr != BCM_SYSLOG_READ_BUFFER_ERROR) && (readptr != BCM_SYSLOG_READ_BUFFER_END)) 
+    while ((readptr != BCM_SYSLOG_READ_BUFFER_ERROR) && (readptr != BCM_SYSLOG_READ_BUFFER_END))
     {
         readptr = HAL_readLogPartial(readptr, data);
-        
+
         if ('\0' != data[0])
         {
             sscanf(data, "%s %s %s %[^\n]", dateLog, timeLog, hostLog, msgLog);
@@ -417,7 +418,7 @@ static void uploadPutLog(void)
 static void uploadPutConfig(void)
 {
     vosLog_debug("Enter>");
-    
+
     UINT32 cnt = 0;
     UINT32 size = 0;
     char *data;
@@ -425,15 +426,15 @@ static void uploadPutConfig(void)
     tProtoCtx *pc = ht->wio->pc;
     UBOOL8 sendUploadStop = TRUE;
     VOS_RET_E ret;
-    
+
     HAL_flashGetConfigSize(&size);
 
     if ((data = VOS_MALLOC_FLAGS(size, ALLOC_ZEROIZE)) == NULL)
     {
-       vosLog_error("could not allocate %u bytes for config buf", size);
-    } 
+        vosLog_error("could not allocate %u bytes for config buf", size);
+    }
     else
-    {    
+    {
         if ((ret = HAL_flashReadConfig(data, &cnt)) != VOS_RET_SUCCESS)
         {
             vosLog_error("could not read config into buf, ret=%d", ret);
@@ -459,15 +460,15 @@ static void uploadPutConfig(void)
                     unsigned char szNor_iv[16];
                     unsigned char *pEncodeBuf = NULL;
 
-                    nEncodeSize = (cnt % 16) > 0 ? (cnt/16 + 1) * 16 : cnt;
-                    pEncodeBuf = (unsigned char*)VOS_MALLOC_FLAGS(nEncodeSize, ALLOC_ZEROIZE);//new unsigned char[nEncodeSize];
-                    memset(pEncodeBuf, 0 , (int)nEncodeSize);
-                    if(pEncodeBuf == NULL)
+                    nEncodeSize = (cnt % 16) > 0 ? (cnt / 16 + 1) * 16 : cnt;
+                    pEncodeBuf = (unsigned char *)VOS_MALLOC_FLAGS(nEncodeSize, ALLOC_ZEROIZE); //new unsigned char[nEncodeSize];
+                    memset(pEncodeBuf, 0, (int)nEncodeSize);
+                    if (pEncodeBuf == NULL)
                     {
                         vosLog_error("pEncodeBuf = new char[%d], alloc memory failed\n", nEncodeSize);
                     }
                     else
-                    {                                      
+                    {
                         memset(szKey, 0, sizeof(szKey));
                         memcpy(szKey, KEY_256, util_strlen(KEY_256) > sizeof(szKey) ? sizeof(szKey) : util_strlen(KEY_256));
                         memset(szNor_iv, 0, sizeof(szNor_iv));
@@ -484,15 +485,15 @@ static void uploadPutConfig(void)
             }
         }
     }
-    
+
     if (sendUploadStop)
     {
-       uploadStop("Invalid upload data", 9011);
+        uploadStop("Invalid upload data", 9011);
     }
 
     if (data != NULL)
     {
-       VOS_FREE(data);
+        VOS_FREE(data);
     }
 }
 
@@ -500,7 +501,7 @@ static void uploadPutConfig(void)
 static void uploadDiagPutConfig(CMC_TR69C_UPLOAD_DIAG_CFG_T *action)
 {
     vosLog_debug("Enter>");
-    
+
     UINT32 cnt = 0;
     UINT32 size = 0;
     char *data;
@@ -510,13 +511,13 @@ static void uploadDiagPutConfig(CMC_TR69C_UPLOAD_DIAG_CFG_T *action)
     VOS_RET_E ret;
 
     HAL_flashGetConfigSize(&size);
-    
+
     if ((data = VOS_MALLOC_FLAGS(size, ALLOC_ZEROIZE)) == NULL)
     {
-       vosLog_error("could not allocate %u bytes for config buf", size);
-    } 
+        vosLog_error("could not allocate %u bytes for config buf", size);
+    }
     else
-    {    
+    {
         if ((ret = HAL_flashReadConfig(data, &cnt)) != VOS_RET_SUCCESS)
         {
             vosLog_error("could not read config into buf, ret=%d", ret);
@@ -533,12 +534,12 @@ static void uploadDiagPutConfig(CMC_TR69C_UPLOAD_DIAG_CFG_T *action)
             }
         }
     }
-    
+
     if (sendUploadStop)
     {
-       uploadStop("Invalid upload data", 9011);
-       CMC_tr69cSetUploadDiagState(TRANSFER_FAILED);
-       addInformEventToList(INFORM_EVENT_DIAGNOSTICS_COMPLETE);
+        uploadStop("Invalid upload data", 9011);
+        CMC_tr69cSetUploadDiagState(TRANSFER_FAILED);
+        addInformEventToList(INFORM_EVENT_DIAGNOSTICS_COMPLETE);
     }
 
     CMC_tr69cSetUploadEOMTime();
@@ -548,12 +549,12 @@ static void uploadDiagPutConfig(CMC_TR69C_UPLOAD_DIAG_CFG_T *action)
 
     if (data != NULL)
     {
-       VOS_FREE(data);
+        VOS_FREE(data);
     }
 }
 
 
-static UINT32 uploadGetLogSize(void) 
+static UINT32 uploadGetLogSize(void)
 {
     UINT32 cnt = 0;
     UINT32 test_head = 0;
@@ -567,13 +568,13 @@ static UINT32 uploadGetLogSize(void)
     char timeLog[BCM_SYSLOG_MAX_LINE_SIZE] = {0};
     char hostLog[BCM_SYSLOG_MAX_LINE_SIZE] = {0};
     char msgLog[BCM_SYSLOG_MAX_LINE_SIZE] = {0};
-    
+
     vosLog_debug("Enter>");
 
     /*try reading circular buffer*/
     if (SF_FEATURE_SUPPORT_SYSLOG)
     {
-        while ((readptr != BCM_SYSLOG_READ_BUFFER_ERROR) && (readptr != BCM_SYSLOG_READ_BUFFER_END)) 
+        while ((readptr != BCM_SYSLOG_READ_BUFFER_ERROR) && (readptr != BCM_SYSLOG_READ_BUFFER_END))
         {
             readptr = HAL_readLogPartialFlash(readptr, buffer);
             if ('\0' != buffer[0])
@@ -588,9 +589,9 @@ static UINT32 uploadGetLogSize(void)
         readptr = BCM_SYSLOG_FIRST_READ;
     }
 
-    while ((readptr != BCM_SYSLOG_READ_BUFFER_ERROR) && (readptr != BCM_SYSLOG_READ_BUFFER_END)) 
+    while ((readptr != BCM_SYSLOG_READ_BUFFER_ERROR) && (readptr != BCM_SYSLOG_READ_BUFFER_END))
     {
-        readptr = HAL_readLogPartial(readptr,buffer);
+        readptr = HAL_readLogPartial(readptr, buffer);
         if ('\0' != buffer[0])
         {
             sscanf(buffer, "%s %s %s %[^\n]", dateLog, timeLog, hostLog, msgLog);
@@ -601,7 +602,7 @@ static UINT32 uploadGetLogSize(void)
         cnt += util_strlen(buffer);
     }
 
-    if ((ret = CMC_sysGetDeviceInfo(&pDeviceInfoObj)) == VOS_RET_SUCCESS) 
+    if ((ret = CMC_sysGetDeviceInfo(&pDeviceInfoObj)) == VOS_RET_SUCCESS)
     {
         vosLog_debug("Get device info success!");
     }
@@ -620,21 +621,22 @@ static UINT32 uploadGetLogSize(void)
         vosLog_error("Tr069 WAN intf is not up! ret=%d", ret);
         return 0;
     }
-    
-    UTIL_SNPRINTF(logHeader, sizeof(logHeader), "Manufacturer:%s\nProductClass:%s\nSerialNumber:%s\nIP:%s\nHWVer:%s\nSWVer:%s\n\n", 
-                                       pDeviceInfoObj.manufacturer, pDeviceInfoObj.productClass, 
-                                       pDeviceInfoObj.serialNumber, ipAddress, 
-                                       pDeviceInfoObj.hardwareVersion, pDeviceInfoObj.softwareVersion);
-    test_head = util_strlen(logHeader)-1;
+
+    UTIL_SNPRINTF(logHeader, sizeof(logHeader),
+                  "Manufacturer:%s\nProductClass:%s\nSerialNumber:%s\nIP:%s\nHWVer:%s\nSWVer:%s\n\n",
+                  pDeviceInfoObj.manufacturer, pDeviceInfoObj.productClass,
+                  pDeviceInfoObj.serialNumber, ipAddress,
+                  pDeviceInfoObj.hardwareVersion, pDeviceInfoObj.softwareVersion);
+    test_head = util_strlen(logHeader) - 1;
 
     return cnt + test_head;
 }
 
 
-static UINT32 uploadGetConfigSize(void) 
+static UINT32 uploadGetConfigSize(void)
 {
     vosLog_debug("==Enter==");
-    
+
     UINT32 cnt = 0;
     UINT32 size = 0;
     char *data;
@@ -644,9 +646,9 @@ static UINT32 uploadGetConfigSize(void)
 
     if ((data = VOS_MALLOC_FLAGS(size, ALLOC_ZEROIZE)) == NULL)
     {
-       vosLog_error("could not allocate %u bytes for config buf", size);
-       return 0;
-    } 
+        vosLog_error("could not allocate %u bytes for config buf", size);
+        return 0;
+    }
 
     if ((ret = HAL_flashReadConfig(data, &cnt)) != VOS_RET_SUCCESS)
     {
@@ -661,12 +663,12 @@ static UINT32 uploadGetConfigSize(void)
 static void uploadPutData(RPCAction *action)
 {
     vosLog_debug("==Enter==");
-    
+
     UINT32 size = 0;
     HttpTask *ht = &httpUpload;
 
-    
-    if (ht->wio == NULL) 
+
+    if (ht->wio == NULL)
     {
         if (SF_FEATURE_SUPPORT_CT_MIDDLEWARE)
         {
@@ -677,17 +679,17 @@ static void uploadPutData(RPCAction *action)
             }
         }
 
-        uploadStop("Unable to connect to upload server", 9011);   
+        uploadStop("Unable to connect to upload server", 9011);
         if (SF_FEATURE_SUPPORT_SYSLOG)
         {
-            syslog(LOG_ERR, "104061 upload file failed!"); 
+            syslog(LOG_ERR, "104061 upload file failed!");
             util_saveLogToFlash(g_msgHandle);
         }
 
         return;
     }
-    
-    if (ht->wio->pc == NULL) 
+
+    if (ht->wio->pc == NULL)
     {
         if (SF_FEATURE_SUPPORT_CT_MIDDLEWARE)
         {
@@ -698,16 +700,16 @@ static void uploadPutData(RPCAction *action)
             }
         }
 
-        uploadStop("Unable to connect to upload server", 9011);     
+        uploadStop("Unable to connect to upload server", 9011);
         if (SF_FEATURE_SUPPORT_SYSLOG)
         {
-            syslog(LOG_ERR, "104061 upload file failed!"); 
+            syslog(LOG_ERR, "104061 upload file failed!");
             util_saveLogToFlash(g_msgHandle);
         }
 
         return;
     }
-            
+
     // Get the body data length
     switch (action->ud.downloadReq.efileType)
     {
@@ -718,8 +720,8 @@ static void uploadPutData(RPCAction *action)
             size = uploadGetConfigSize();
             break;
     }
-    
-    if (size != 0) 
+
+    if (size != 0)
     {
         // Send the PUT header with content length
         ht->content_len = (int)size;
@@ -731,19 +733,19 @@ static void uploadPutData(RPCAction *action)
         // since it is used later in do_send_request
         wget_PutData(ht->wio, ht->postMsg, ht->postLth, "text/xml",
                      uploadCompletePut, (void *)ht);
-                  
+
         // Send the body data
-        switch (action->ud.downloadReq.efileType) 
+        switch (action->ud.downloadReq.efileType)
         {
             case eVendorLog:
-                  uploadPutLog();
+                uploadPutLog();
                 break;
             default:
-                uploadPutConfig();            
+                uploadPutConfig();
                 break;
         }
     }
-    else 
+    else
     {
         if (SF_FEATURE_SUPPORT_CT_MIDDLEWARE)
         {
@@ -762,30 +764,30 @@ static void uploadPutData(RPCAction *action)
 static void uploaddiagPutData(CMC_TR69C_UPLOAD_DIAG_CFG_T *action)
 {
     vosLog_debug("==Enter==");
-    
+
     UINT32 size = 0;
     HttpTask *ht = &httpUpload;
 
-    if (ht->wio == NULL) 
+    if (ht->wio == NULL)
     {
         uploadStop("Unable to connect to upload server", 9011);
         CMC_tr69cSetUploadDiagState(INIT_CONNECTION_FAILED);
         addInformEventToList(INFORM_EVENT_DIAGNOSTICS_COMPLETE);
         return;
     }
-    
-    if (ht->wio->pc == NULL) 
+
+    if (ht->wio->pc == NULL)
     {
         uploadStop("Unable to connect to upload server", 9011);
         CMC_tr69cSetUploadDiagState(INIT_CONNECTION_FAILED);
         addInformEventToList(INFORM_EVENT_DIAGNOSTICS_COMPLETE);
         return;
     }
-            
+
     // Get the body data length
     size = uploadGetConfigSize();
-    
-    if (size != 0) 
+
+    if (size != 0)
     {
         // Send the PUT header with content length
         ht->content_len = (int)size;
@@ -802,7 +804,7 @@ static void uploaddiagPutData(CMC_TR69C_UPLOAD_DIAG_CFG_T *action)
         // Send the body data
         uploadDiagPutConfig(action);
     }
-    else 
+    else
     {
         uploadStop("No upload data", 9011);
         CMC_tr69cSetUploadDiagState(INCORRECT_SIZE);
@@ -811,55 +813,55 @@ static void uploaddiagPutData(CMC_TR69C_UPLOAD_DIAG_CFG_T *action)
 }
 
 
-static void uploadPutAuth(RPCAction *action) 
+static void uploadPutAuth(RPCAction *action)
 {
-   vosLog_debug("==Enter==");
-   
-   int      size = 2;
-   char     *msg;
-   HttpTask *ht = &httpUpload;
-    
-   if (ht->wio == NULL)
-   {
-      if (SF_FEATURE_SUPPORT_CT_MIDDLEWARE)
-      {
-          if (enblCTMiddleware == CTMDW_MODE_0)
-          {
-              g_downloadState = CTMDW_DOWNLOAD_STATE_ERR_CONNECT;
-              ctmdw_sendUploadRet();
-          }
-      }
-      
-      uploadStop("Unable to connect to upload server", 9011);       
-      return;
-   }
+    vosLog_debug("==Enter==");
 
-   msg = (char *)VOS_MALLOC_FLAGS((UINT32)size, ALLOC_ZEROIZE);
-   if (msg == NULL)
-   {
-      uploadStop("Unable to malloc", VOS_RET_INTERNAL_ERROR);
-      return;
-   }    
-   msg[0] = '\n';    
-   ht->content_len = size;
-   ht->postMsg     = msg;
-   ht->postLth     = size;
-   ht->callback    = (CallBack)action; // stick RPCAction to callback
+    int      size = 2;
+    char     *msg;
+    HttpTask *ht = &httpUpload;
 
-   // Send the newline file to test for authentication method
-   // HttpTask has to be the last argument in wget_PutData
-   // since it is used later in do_send_request
-   wget_PutData(ht->wio, ht->postMsg, ht->postLth, "text/xml",
+    if (ht->wio == NULL)
+    {
+        if (SF_FEATURE_SUPPORT_CT_MIDDLEWARE)
+        {
+            if (enblCTMiddleware == CTMDW_MODE_0)
+            {
+                g_downloadState = CTMDW_DOWNLOAD_STATE_ERR_CONNECT;
+                ctmdw_sendUploadRet();
+            }
+        }
+
+        uploadStop("Unable to connect to upload server", 9011);
+        return;
+    }
+
+    msg = (char *)VOS_MALLOC_FLAGS((UINT32)size, ALLOC_ZEROIZE);
+    if (msg == NULL)
+    {
+        uploadStop("Unable to malloc", VOS_RET_INTERNAL_ERROR);
+        return;
+    }
+    msg[0] = '\n';
+    ht->content_len = size;
+    ht->postMsg     = msg;
+    ht->postLth     = size;
+    ht->callback    = (CallBack)action; // stick RPCAction to callback
+
+    // Send the newline file to test for authentication method
+    // HttpTask has to be the last argument in wget_PutData
+    // since it is used later in do_send_request
+    wget_PutData(ht->wio, ht->postMsg, ht->postLth, "text/xml",
                  uploadCompleteAuth, (void *)ht);
 }
 
 static int uploadIsAuthNeeded(RPCAction *action)
 {
     vosLog_debug("==Enter==");
-    
+
     int ret = TRUE;
     HttpTask *ht = &httpUpload;
-    
+
     if (action->ud.downloadReq.user == NULL)
         ret = FALSE;
     else if (action->ud.downloadReq.user[0] == '\0')
@@ -870,20 +872,20 @@ static int uploadIsAuthNeeded(RPCAction *action)
         ret = FALSE;
 
     // authHdr already has value by uploadPutAuth
-    // so don't need to perform authentication again        
+    // so don't need to perform authentication again
     if (ht->authHdr != NULL)
         ret = FALSE;
 
     return ret;
 }
 
-static void uploadConnected(void *handle) 
+static void uploadConnected(void *handle)
 {
     vosLog_debug("==Enter==");
-    
+
     tWget *wg = (tWget *)handle;
     RPCAction *action = (RPCAction *)wg->handle;
-    
+
     if (wg->status != 0)
     {
         if (SF_FEATURE_SUPPORT_CT_MIDDLEWARE)
@@ -892,15 +894,15 @@ static void uploadConnected(void *handle)
             {
                 g_downloadState = CTMDW_DOWNLOAD_STATE_ERR_CONNECT;
                 ctmdw_sendUploadRet();
-            } 
-        } 
+            }
+        }
 
-        uploadStop("Unable to connect to upload server", 9011);       
-        return;      
+        uploadStop("Unable to connect to upload server", 9011);
+        return;
     }
-    
+
     if (uploadIsAuthNeeded(action) == FALSE)
-    {    
+    {
         uploadPutData(action);
     }
     else
@@ -910,17 +912,17 @@ static void uploadConnected(void *handle)
 }
 
 
-static void uploaddiagConnected(void *handle) 
+static void uploaddiagConnected(void *handle)
 {
     vosLog_debug("==Enter==");
-    
+
     //tWget *wg = (tWget *)handle;
     CMC_TR69C_UPLOAD_DIAG_CFG_T *action = (CMC_TR69C_UPLOAD_DIAG_CFG_T *)handle;
-    
+
     /*if (wg->status != 0)
     {
-        uploadStop("Unable to connect to upload server", 9011);       
-        return;      
+        uploadStop("Unable to connect to upload server", 9011);
+        return;
     }*/
     CMC_tr69cSetUploadResponseTime();
     uploaddiagPutData(action);
@@ -930,65 +932,65 @@ static void uploaddiagConnected(void *handle)
 /* this is called by the callback from the startTimer in doUpload. */
 /* we have to use wget_Connect in case of authentication in which case */
 /* we need to control the connection */
-void uploadStart( void *handle) 
+void uploadStart(void *handle)
 {
     RPCAction   *action = (RPCAction *)handle;
     HttpTask    *ht = &httpUpload;
     DownloadReq *ulreq = &action->ud.downloadReq;
 
     vosLog_debug("==Enter==");
-    
+
     if (isTransferInProgress())
     {
-#ifdef DEBUG 
-       printf("------------> transfer in progress, delay request command key %s for 5 seconds......\n",
-              ulreq->commandKey);
-#endif /* DEBUG */
-
-       /* delay by five second */
-       utilTmr_set(tmrHandle, uploadStart, (void *)action, 5000, "upload");
-       return;
-    }
-    else 
-    {
-       if (ulreq->state == eTransferRejected)
-       {
 #ifdef DEBUG
-          printf("@@@@@@@@@@@@@@@@@This upload request was rejected, return 9004 error code, commandKey %s\n",
-                 ulreq->commandKey);
+        printf("------------> transfer in progress, delay request command key %s for 5 seconds......\n",
+               ulreq->commandKey);
 #endif /* DEBUG */
 
-          if (transferCompletePending)
-          {
-#ifdef DEBUG 
-             printf("^^^^^ transferCompletePending..  give tr69c a chance to send the transfer complete out first\n");
+        /* delay by five second */
+        utilTmr_set(tmrHandle, uploadStart, (void *)action, 5000, "upload");
+        return;
+    }
+    else
+    {
+        if (ulreq->state == eTransferRejected)
+        {
+#ifdef DEBUG
+            printf("@@@@@@@@@@@@@@@@@This upload request was rejected, return 9004 error code, commandKey %s\n",
+                   ulreq->commandKey);
 #endif /* DEBUG */
 
-             utilTmr_set(tmrHandle, uploadStart, (void *)action, 1000, "upload");
-          }
-          else 
-          {
-            if (SF_FEATURE_SUPPORT_CT_MIDDLEWARE)
+            if (transferCompletePending)
             {
-                if (enblCTMiddleware == CTMDW_MODE_0)
+#ifdef DEBUG
+                printf("^^^^^ transferCompletePending..  give tr69c a chance to send the transfer complete out first\n");
+#endif /* DEBUG */
+
+                utilTmr_set(tmrHandle, uploadStart, (void *)action, 1000, "upload");
+            }
+            else
+            {
+                if (SF_FEATURE_SUPPORT_CT_MIDDLEWARE)
                 {
-                    g_downloadState = CTMDW_DOWNLOAD_STATE_ERR_FAILED;
-                    ctmdw_sendUploadRet();
+                    if (enblCTMiddleware == CTMDW_MODE_0)
+                    {
+                        g_downloadState = CTMDW_DOWNLOAD_STATE_ERR_FAILED;
+                        ctmdw_sendUploadRet();
+                    }
                 }
+
+                updateDownLoadKey(ulreq);
+                uploadStop("Resources exceeded", 9004);
             }
 
-             updateDownLoadKey(ulreq);
-             uploadStop("Resources exceeded", 9004);
-          }
-          
-          return;
-       } /* eTransferRejected */
-       updateTransferState(ulreq->commandKey,eTransferInProgress);
+            return;
+        } /* eTransferRejected */
+        updateTransferState(ulreq->commandKey, eTransferInProgress);
     }
-    
+
     updateDownLoadKey(ulreq);
     if (strstr(ulreq->url, "http:") == NULL &&
-        strstr(ulreq->url, "https:") == NULL)
+            strstr(ulreq->url, "https:") == NULL)
     {
         if (SF_FEATURE_SUPPORT_CT_MIDDLEWARE)
         {
@@ -1002,9 +1004,9 @@ void uploadStart( void *handle)
         uploadStop("Protocol not supported", 9013);
         return;
     }
-    
+
     if (ulreq->efileType != eVendorConfig &&
-        ulreq->efileType != eVendorLog)
+            ulreq->efileType != eVendorLog)
     {
         if (SF_FEATURE_SUPPORT_CT_MIDDLEWARE)
         {
@@ -1015,14 +1017,14 @@ void uploadStart( void *handle)
             }
         }
 
-        uploadStop("Invalid upload file type", 9011);       
+        uploadStop("Invalid upload file type", 9011);
         return;
     }
-    
+
     memset(ht, 0, sizeof(struct HttpTask));
-    memset(&putSessionAuth,0, sizeof(struct SessionAuth));
-    
-    ht->wio = wget_Connect(ulreq->url, uploadConnected, action); 
+    memset(&putSessionAuth, 0, sizeof(struct SessionAuth));
+
+    ht->wio = wget_Connect(ulreq->url, uploadConnected, action);
     if (ht->wio == NULL)
     {
         if (SF_FEATURE_SUPPORT_CT_MIDDLEWARE)
@@ -1035,7 +1037,7 @@ void uploadStart( void *handle)
         }
 
         vosLog_error("wget_Connect to upload server failed: %s", wget_LastErrorMsg());
-        uploadStop("Connect to upload server failed", 9011);   
+        uploadStop("Connect to upload server failed", 9011);
     }
     else
     {
@@ -1067,8 +1069,8 @@ void uploaddiagStart(CMC_TR69C_UPLOAD_DIAG_CFG_T *handle)
     memset(ht, 0, sizeof(struct HttpTask));
     //memset(&putSessionAuth,0, sizeof(struct SessionAuth));
     CMC_tr69cSetUploadRequestTime();
-    
-    ht->wio = wget_Connect(action->uploadurl, uploaddiagConnected, action); 
+
+    ht->wio = wget_Connect(action->uploadurl, uploaddiagConnected, action);
     if (ht->wio == NULL)
     {
         vosLog_error("wget_Connect to upload server failed: %s", wget_LastErrorMsg());

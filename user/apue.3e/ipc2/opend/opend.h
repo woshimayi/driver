@@ -9,9 +9,10 @@ extern char	 errmsg[];	/* error message string to return to client */
 extern int	 oflag;		/* open flag: O_xxx ... */
 extern char	*pathname;	/* of file to open for client */
 
-typedef struct {	/* one Client struct per connected client */
-  int	fd;			/* fd, or -1 if available */
-  uid_t	uid;
+typedef struct  	/* one Client struct per connected client */
+{
+    int	fd;			/* fd, or -1 if available */
+    uid_t	uid;
 } Client;
 
 extern Client	*client;		/* ptr to malloc'ed array */

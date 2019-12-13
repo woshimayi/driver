@@ -7,39 +7,41 @@
 
 
 #ifdef linux
-int is_valid_mac_addr(char* mac)
+int is_valid_mac_addr(char *mac)
 {
-	int status = 0;
-	const char * pattern = "^([A-Fa-f0-9]{2}[-,:]){5}[A-Fa-f0-9]{2}$";
-	const int cflags = REG_EXTENDED | REG_NEWLINE;
+    int status = 0;
+    const char *pattern = "^([A-Fa-f0-9]{2}[-,:]){5}[A-Fa-f0-9]{2}$";
+    const int cflags = REG_EXTENDED | REG_NEWLINE;
 
-	char ebuf[128] = {0};
-	regmatch_t pmatch[1] = {{0}};
-	int nmatch = 10;
-	regex_t reg;
+    char ebuf[128] = {0};
+    regmatch_t pmatch[1] = {{0}};
+    int nmatch = 10;
+    regex_t reg;
 
 
-	status = regcomp(&reg, pattern, cflags);//编译正则模式
-	if(status != 0) {
-		regerror(status, &reg, ebuf, sizeof(ebuf));
-		printf("%s:%d regcomp fail: %s , pattern '%s' \n", __FUNCTION__, __LINE__, ebuf, pattern);
-		goto failed;
-	}
+    status = regcomp(&reg, pattern, cflags);//编译正则模式
+    if (status != 0)
+    {
+        regerror(status, &reg, ebuf, sizeof(ebuf));
+        printf("%s:%d regcomp fail: %s , pattern '%s' \n", __FUNCTION__, __LINE__, ebuf, pattern);
+        goto failed;
+    }
 
-	status = regexec(&reg, mac, nmatch, pmatch,0);//执行正则表达式和缓存的比较,
-	if(status != 0) {
-		regerror(status, &reg, ebuf, sizeof(ebuf));
-		printf("%s:%d regexec fail: %s , mac:\"%s\" \n", __FUNCTION__, __LINE__, ebuf, mac);
-		goto failed;
-	}
+    status = regexec(&reg, mac, nmatch, pmatch, 0); //执行正则表达式和缓存的比较,
+    if (status != 0)
+    {
+        regerror(status, &reg, ebuf, sizeof(ebuf));
+        printf("%s:%d regexec fail: %s , mac:\"%s\" \n", __FUNCTION__, __LINE__, ebuf, mac);
+        goto failed;
+    }
 
-	printf("[%s]:%d match success.\n", __FUNCTION__, __LINE__);
-	regfree(&reg);
-	return 0;
+    printf("[%s]:%d match success.\n", __FUNCTION__, __LINE__);
+    regfree(&reg);
+    return 0;
 
 failed:
-	regfree(&reg);
-	return -1;
+    regfree(&reg);
+    return -1;
 }
 #endif // linux
 
@@ -85,7 +87,7 @@ int is_valid_mac(const char *mac)
             }
         }
 
-        if (start <= end )
+        if (start <= end)
         {
             if (*start == ':' && num_count == 2)
             {
@@ -231,7 +233,7 @@ int is_valid_mac(const char *mac)
             }
         }
 
-        if (start <= end )
+        if (start <= end)
         {
             if (*start == ':' && num_count == 2)
             {
@@ -280,7 +282,7 @@ void demo()
     ret = is_valid_ip(ip);
     if (ret == 0)
     {
-	    printf("%s is a valid ip!\n", ip);
+        printf("%s is a valid ip!\n", ip);
     }
     else
     {

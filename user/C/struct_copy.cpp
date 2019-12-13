@@ -20,12 +20,12 @@ typedef struct
 
     UINT8  UserName[MaxWanNameLen];
     UINT8  PassWord[MaxWanPassWord];
-}_WanConnectParameter;
+} _WanConnectParameter;
 
 
 int main()
 {
-	_WanConnectParameter wanConnectParameter = {, 19, 1, 1, 1, 1};
-	return 0;
+    _WanConnectParameter wanConnectParameter = {, 19, 1, 1, 1, 1};
+    return 0;
 }
 

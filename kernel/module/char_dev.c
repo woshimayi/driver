@@ -12,13 +12,13 @@
 
 int init_module(void)
 {
-	printk(KERN_ALERT"hello world\n");
-	return 0;
+    printk(KERN_ALERT"hello world\n");
+    return 0;
 }
 
 void cleanup_module(void)
 {
-	printk(KERN_ALERT"GOODbye world\n");
+    printk(KERN_ALERT"GOODbye world\n");
 }
 
 MODULE_LICENSE("GPL v2");

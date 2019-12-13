@@ -1,21 +1,21 @@
 /*----------------------------------------------------------------------*
-<:copyright-broadcom 
- 
- Copyright (c) 2005 Broadcom Corporation 
- All Rights Reserved 
- No portions of this material may be reproduced in any form without the 
- written permission of: 
-          Broadcom Corporation 
-          16215 Alton Parkway 
-          Irvine, California 92619 
- All information contained in this document is Broadcom Corporation 
- company private, proprietary, and trade secret. 
- 
+<:copyright-broadcom
+
+ Copyright (c) 2005 Broadcom Corporation
+ All Rights Reserved
+ No portions of this material may be reproduced in any form without the
+ written permission of:
+          Broadcom Corporation
+          16215 Alton Parkway
+          Irvine, California 92619
+ All information contained in this document is Broadcom Corporation
+ company private, proprietary, and trade secret.
+
 :>
  *----------------------------------------------------------------------*
  * File Name  : httpDownload.c
  *
- * Description: download functions 
+ * Description: download functions
  * $Revision: 1.16 $
  * $Id: httpDownload.c,v 1.16 2006/02/17 21:15:09 dmounday Exp $
  *----------------------------------------------------------------------*/
@@ -57,13 +57,13 @@ extern ACSState    acsState;
 extern void *g_msgHandle;
 
 /* interface name from socket used for image uploading */
-char connIfName[UTIL_IFNAME_LENGTH]={0};
+char connIfName[UTIL_IFNAME_LENGTH] = {0};
 /*
   * display SOAP messages on serial console.
   * This flag is initialize, enabled or disabled in main.c,
   * and perform action in protocol.c
   */
-extern UBOOL8   loggingSOAP; 
+extern UBOOL8   loggingSOAP;
 
 static SessionAuth getSessionAuth;
 HttpTask    httpDownload;
@@ -74,133 +74,133 @@ static void downloadConnected(void *handle);
 void downloadStop_nosendinform(char *msg, int status)
 {
     vosLog_debug("msg = %p, status = %d", msg, status);
-    
+
     if (httpDownload.wio)
     {
         wget_Disconnect(httpDownload.wio);
         httpDownload.wio = NULL;
     }
-    
+
     if (httpDownload.authHdr != NULL)
-    {       
+    {
         VOS_MEM_FREE_BUF_AND_NULL_PTR(httpDownload.authHdr);
-    } 
-    
+    }
+
     if (httpDownload.postMsg != NULL)
     {
         VOS_MEM_FREE_BUF_AND_NULL_PTR(httpDownload.postMsg);
         httpDownload.postLth = 0;
     }
-    
+
     httpDownload.xfrStatus  = eDownloadDone;
     httpDownload.eHttpState = eClosed;
-    httpDownload.eAuthState = sIdle;   
-    httpDownload.callback = NULL;   
+    httpDownload.eAuthState = sIdle;
+    httpDownload.callback = NULL;
 
     setInformState(eACSDownloadReboot);
     addInformEventToList(INFORM_EVENT_DOWNLOAD_METHOD);
     addInformEventToList(INFORM_EVENT_TRANSER_COMPLETE);
 
     acsState.fault = 0;
-    acsState.dlFaultStatus = status; 
+    acsState.dlFaultStatus = status;
 
     if (msg == NULL)
     {
-       VOS_MEM_REPLACE_STRING(acsState.dlFaultMsg,"Download successful"); 
+        VOS_MEM_REPLACE_STRING(acsState.dlFaultMsg, "Download successful");
     }
     else
     {
-       VOS_MEM_REPLACE_STRING(acsState.dlFaultMsg,msg);
+        VOS_MEM_REPLACE_STRING(acsState.dlFaultMsg, msg);
     }
 
     acsState.endDLTime = time(NULL);
     saveTR69StatusItems();
-    updateTransferState(acsState.downloadCommandKey,eTransferCompleted);
+    updateTransferState(acsState.downloadCommandKey, eTransferCompleted);
 }
 
 void downloadDiagStop_nosendinform(char *msg, int status)
 {
     vosLog_debug("msg = %p, status = %d", msg, status);
-    
+
     if (httpDownload.wio)
     {
         wget_Disconnect(httpDownload.wio);
         httpDownload.wio = NULL;
     }
-    
+
     if (httpDownload.authHdr != NULL)
-    {       
+    {
         VOS_MEM_FREE_BUF_AND_NULL_PTR(httpDownload.authHdr);
-    } 
-    
+    }
+
     if (httpDownload.postMsg != NULL)
     {
         VOS_MEM_FREE_BUF_AND_NULL_PTR(httpDownload.postMsg);
         httpDownload.postLth = 0;
     }
-    
+
     httpDownload.xfrStatus  = eDownloadDone;
     httpDownload.eHttpState = eClosed;
-    httpDownload.eAuthState = sIdle;   
-    httpDownload.callback = NULL;   
+    httpDownload.eAuthState = sIdle;
+    httpDownload.callback = NULL;
 
     acsState.fault = 0;
-    acsState.dlFaultStatus = status; 
+    acsState.dlFaultStatus = status;
 
     if (msg == NULL)
     {
-       VOS_MEM_REPLACE_STRING(acsState.dlFaultMsg,"Download successful"); 
+        VOS_MEM_REPLACE_STRING(acsState.dlFaultMsg, "Download successful");
     }
     else
     {
-       VOS_MEM_REPLACE_STRING(acsState.dlFaultMsg,msg);
+        VOS_MEM_REPLACE_STRING(acsState.dlFaultMsg, msg);
     }
 
     acsState.endDLTime = time(NULL);
     saveTR69StatusItems();
-    updateTransferState(acsState.downloadCommandKey,eTransferCompleted);
+    updateTransferState(acsState.downloadCommandKey, eTransferCompleted);
 }
 
 void downloadStop(char *msg, int status)
 {
     vosLog_debug("Enter>, msg = %p, status= %d", msg, status);
-    
+
     if (httpDownload.wio)
     {
         wget_Disconnect(httpDownload.wio);
         httpDownload.wio = NULL;
     }
-    
+
     if (httpDownload.authHdr != NULL)
-    {       
+    {
         VOS_MEM_FREE_BUF_AND_NULL_PTR(httpDownload.authHdr);
-    } 
-    
+    }
+
     if (httpDownload.postMsg != NULL)
     {
         VOS_MEM_FREE_BUF_AND_NULL_PTR(httpDownload.postMsg);
         httpDownload.postLth = 0;
     }
-    
+
     httpDownload.xfrStatus  = eDownloadDone;
     httpDownload.eHttpState = eClosed;
-    httpDownload.eAuthState = sIdle;   
-    httpDownload.callback = NULL;   
+    httpDownload.eAuthState = sIdle;
+    httpDownload.callback = NULL;
 
     setInformState(eACSDownloadReboot);
     addInformEventToList(INFORM_EVENT_DOWNLOAD_METHOD);
     addInformEventToList(INFORM_EVENT_TRANSER_COMPLETE);
 
     acsState.fault = 0;
-    acsState.dlFaultStatus = status; 
+    acsState.dlFaultStatus = status;
 
     if (msg == NULL)
     {
-       VOS_MEM_REPLACE_STRING(acsState.dlFaultMsg,"Download successful"); 
+        VOS_MEM_REPLACE_STRING(acsState.dlFaultMsg, "Download successful");
     }
     else
     {
-       VOS_MEM_REPLACE_STRING(acsState.dlFaultMsg,msg);
+        VOS_MEM_REPLACE_STRING(acsState.dlFaultMsg, msg);
     }
 
     acsState.endDLTime = time(NULL);
@@ -212,7 +212,7 @@ VOS_RET_E downloadCompleteInform(void)
 {
     //inform for tr69c
     VosMsgHeader msg = EMPTY_MSG_HEADER;
-        
+
     msg.type = VOS_MSG_EMLUATE_COMPLTETE_INFORM;
     msg.src = EID_TR69C;
     msg.dst = EID_TR69C;
@@ -231,39 +231,39 @@ VOS_RET_E downloadCompleteInform(void)
 void downloadDiagStop(char *msg, int status)
 {
     vosLog_debug("Enter>, msg = %p, status= %d", msg, status);
-    
+
     if (httpDownload.wio)
     {
         wget_Disconnect(httpDownload.wio);
         httpDownload.wio = NULL;
     }
-    
+
     if (httpDownload.authHdr != NULL)
-    {       
+    {
         VOS_MEM_FREE_BUF_AND_NULL_PTR(httpDownload.authHdr);
-    } 
-    
+    }
+
     if (httpDownload.postMsg != NULL)
     {
         VOS_MEM_FREE_BUF_AND_NULL_PTR(httpDownload.postMsg);
         httpDownload.postLth = 0;
     }
-    
+
     httpDownload.xfrStatus  = eDownloadDone;
     httpDownload.eHttpState = eClosed;
-    httpDownload.eAuthState = sIdle;   
-    httpDownload.callback = NULL;   
+    httpDownload.eAuthState = sIdle;
+    httpDownload.callback = NULL;
 
     acsState.fault = 0;
-    acsState.dlFaultStatus = status; 
+    acsState.dlFaultStatus = status;
 
     if (msg == NULL)
     {
-       VOS_MEM_REPLACE_STRING(acsState.dlFaultMsg,"Download successful"); 
+        VOS_MEM_REPLACE_STRING(acsState.dlFaultMsg, "Download successful");
     }
     else
     {
-       VOS_MEM_REPLACE_STRING(acsState.dlFaultMsg,msg);
+        VOS_MEM_REPLACE_STRING(acsState.dlFaultMsg, msg);
     }
 
     acsState.endDLTime = time(NULL);
@@ -271,18 +271,18 @@ void downloadDiagStop(char *msg, int status)
 
     if (isAcsConnected())
     {
-//        transferCompletePending = 1;
+        //        transferCompletePending = 1;
         vosLog_debug("acs is connected -- set transferCompletePending");
     }
     else
     {
         vosLog_debug("acs is not connected -- sendInform(TransferComplete)");
-//        transferCompletePending = 1;
+        //        transferCompletePending = 1;
         downloadCompleteInform();
     }
 
     updateTransferState(acsState.downloadCommandKey, eTransferCompleted);
-    
+
 }
 
 void updateDownLoadKey(DownloadReq *dlr)
@@ -295,7 +295,7 @@ void updateDownLoadKey(DownloadReq *dlr)
     }
 
     acsState.downloadCommandKey = dlr->commandKey;
-    dlr->commandKey = NULL; 
+    dlr->commandKey = NULL;
 }
 
 
@@ -308,11 +308,11 @@ VOS_RET_E TR69_tarDevGetFwInfo(char *fullPath, UINT32 len, UINT32 *fileSize)
     char suffixName[BUFLEN_80] = {0};
     char pathName[BUFLEN_80] = {0};
     char *tmp = NULL;
-    
+
     vosLog_debug("Enterd.\n");
 
     *fileSize = 0;
-    
+
     fp = fopen("/proc/tardev", "r");
     if (NULL == fp)
     {
@@ -320,7 +320,7 @@ VOS_RET_E TR69_tarDevGetFwInfo(char *fullPath, UINT32 len, UINT32 *fileSize)
         return VOS_RET_OPEN_FILE_ERROR;
     }
 
-    /*# cat /proc/tardev 
+    /*# cat /proc/tardev
         Sevice Pack(sp)     : bcm18.96838GWOVS
         Filter Rule(rule)   : haha,hehe,houhou
         Save Path(savepath) : /tmp
@@ -336,13 +336,13 @@ VOS_RET_E TR69_tarDevGetFwInfo(char *fullPath, UINT32 len, UINT32 *fileSize)
         4) bcm18.96838GWOVS.houhou
         */
 
-    while(fgets(buffer, BUFLEN_80, fp))
+    while (fgets(buffer, BUFLEN_80, fp))
     {
-        if(NULL != (tmp = strchr(buffer, '\r')))
+        if (NULL != (tmp = strchr(buffer, '\r')))
         {
             *tmp = '\0';
         }
-        if(NULL != (tmp = strchr(buffer, '\n')))
+        if (NULL != (tmp = strchr(buffer, '\n')))
         {
             *tmp = '\0';
         }
@@ -393,7 +393,7 @@ VOS_RET_E TR69_tarDevGetFwInfo(char *fullPath, UINT32 len, UINT32 *fileSize)
     }
 
     vosLog_debug("fullPath:%s", fullPath);
-    
+
     if (access(fullPath, 0) == 0)
     {
         struct stat statBuf;
@@ -411,9 +411,9 @@ VOS_RET_E TR69_tarDevGetFwInfo(char *fullPath, UINT32 len, UINT32 *fileSize)
         vosLog_error("file %s is not exist!", fullPath);
         ret = VOS_RET_INTERNAL_ERROR;
     }
-    
+
     return ret;
-    
+
 }
 
 
@@ -437,18 +437,18 @@ VOS_RET_E TR69_tarDevProcessUpgrate(tWget *wg, DownloadReq *dlreq)
         return VOS_RET_OPEN_FILE_ERROR;
     }
 
-    if(remainLen >0)
+    if (remainLen > 0)
     {
-        if(SF_FEATURE_LOCATION_JIANGXI || SF_FEATURE_LOCATION_GUANGDONG || SF_FEATURE_LOCATION_FUJIAN)
+        if (SF_FEATURE_LOCATION_JIANGXI || SF_FEATURE_LOCATION_GUANGDONG || SF_FEATURE_LOCATION_FUJIAN)
         {
             setITMSUpdateFlag(1);
-            upgradePopInfo(1);	
+            upgradePopInfo(1);
             printf("*****Downloading Image.......*******\n");
         }
     }
     while (remainLen > 0)
     {
-        if(remainLen >= tmpLen)
+        if (remainLen >= tmpLen)
         {
             buf = readResponse(wg, &readLen, tmpLen);
         }
@@ -456,8 +456,8 @@ VOS_RET_E TR69_tarDevProcessUpgrate(tWget *wg, DownloadReq *dlreq)
         {
             buf = readResponse(wg, &readLen, remainLen);
         }
-        
-        vosLog_debug("buf:%p;tmpLen:%u;readLen:%u;remainLen:%d", buf, tmpLen,readLen, remainLen);
+
+        vosLog_debug("buf:%p;tmpLen:%u;readLen:%u;remainLen:%d", buf, tmpLen, readLen, remainLen);
 
         if (NULL == buf)
         {
@@ -471,7 +471,7 @@ VOS_RET_E TR69_tarDevProcessUpgrate(tWget *wg, DownloadReq *dlreq)
             VOS_MEM_FREE_BUF_AND_NULL_PTR(buf);
             break;
         }
-		
+
         VOS_MEM_FREE_BUF_AND_NULL_PTR(buf);
 
         remainLen -= readLen;
@@ -489,11 +489,11 @@ VOS_RET_E TR69_tarDevProcessUpgrate(tWget *wg, DownloadReq *dlreq)
         {
             //modify size for write to flash;
             dlreq->fileSize = tmpLen;
-            
+
             ret = downloadComplete(dlreq, buf);
         }
     }
-    
+
     return ret;
 }
 
@@ -503,20 +503,20 @@ VOS_RET_E TR69_commonProcessUpgrate(tWget *wg, DownloadReq *dlreq)
     VOS_RET_E ret = VOS_RET_SUCCESS;
     SINT32 mlth = 0;
     char *rambuf = NULL;
-    
+
     vosLog_debug("Enterd\n");
-    
+
     rambuf = readResponse(wg, &mlth, 0);
-    if ((0 == mlth)) 
+    if ((0 == mlth))
     {
         /* if control falls thru to here send a fault status to ACS */
         vosLog_error("Download from failed.\n");
         downloadStop("Unable to connect to download server", 9010);
-    } 
-    else if ((rambuf != NULL )&& mlth)
+    }
+    else if ((rambuf != NULL) && mlth)
     {
         dlreq->fileSize = mlth;
-                
+
         if (SF_FEATURE_ISP_CU || SF_FEATURE_UPLINK_TYPE_EOC)
         {
             ret = downloadComplete(dlreq, rambuf);
@@ -527,42 +527,42 @@ VOS_RET_E TR69_commonProcessUpgrate(tWget *wg, DownloadReq *dlreq)
             aes_context handler;
             unsigned char szKey[32];
             unsigned char szNor_iv[16];
-            unsigned char *pEncodeBuf = NULL;                
+            unsigned char *pEncodeBuf = NULL;
             const char *dslCpeConfig = "</DslCpeConfig>";
             const char *itfGatewayCfg = "</InternetGatewayDevice>";
             UINT32 i = 0;
             UINT32 len = 0;
             UINT32 len1 = 0;
             UBOOL8 likely = FALSE;
-                   
+
             len = (UINT32)util_strlen(itfGatewayCfg);
             len1 = (UINT32)util_strlen(dslCpeConfig);
             if (dlreq->efileType == eVendorConfig && dlreq->fileSize > 0)
             {
                 nEncodeSize = (dlreq->fileSize % 16) > 0 ? (dlreq->fileSize / 16 + 1) * 16 : dlreq->fileSize;
-                pEncodeBuf = (unsigned char*)VOS_MALLOC_FLAGS(nEncodeSize, ALLOC_ZEROIZE);//new unsigned char[nEncodeSize];
-                memset(pEncodeBuf,0,dlreq->fileSize+16);
-        
+                pEncodeBuf = (unsigned char *)VOS_MALLOC_FLAGS(nEncodeSize, ALLOC_ZEROIZE); //new unsigned char[nEncodeSize];
+                memset(pEncodeBuf, 0, dlreq->fileSize + 16);
+
                 if (pEncodeBuf == NULL)
                 {
                     vosLog_error("pEncodeBuf = new char[%d], alloc memory failed\n", dlreq->fileSize);
                 }
                 else
-                {                 
+                {
                     memset(szKey, 0, sizeof(szKey));
                     memcpy(szKey, KEY_256, util_strlen(KEY_256) > sizeof(szKey) ? sizeof(szKey) : util_strlen(KEY_256));
                     memset(szNor_iv, 0, sizeof(szNor_iv));
                     memcpy(szNor_iv, NOR_IV, util_strlen(NOR_IV) > sizeof(szNor_iv) ? sizeof(szNor_iv) : util_strlen(NOR_IV));
-        
+
                     aes_set_key(&handler, szKey, 256);
                     aes_cbc_decrypt(&handler, szNor_iv, (unsigned char *)rambuf, pEncodeBuf, nEncodeSize);
-        
+
                     for (i = dlreq->fileSize - 50; i < dlreq->fileSize && !likely; i++)
                     {
-                        if (util_strncmp((const char *)&(pEncodeBuf[i]), itfGatewayCfg, len) == 0)
+                        if (util_strncmp((const char *) & (pEncodeBuf[i]), itfGatewayCfg, len) == 0)
                         {
                             likely = TRUE;
-                            UTIL_SNPRINTF((char *)&(pEncodeBuf[i + len + 1]), len1 +1, dslCpeConfig);
+                            UTIL_SNPRINTF((char *) & (pEncodeBuf[i + len + 1]), len1 + 1, dslCpeConfig);
                             pEncodeBuf[dlreq->fileSize - 2] = '\n';
                             pEncodeBuf[dlreq->fileSize - 1] = '\0';
                         }
@@ -576,7 +576,7 @@ VOS_RET_E TR69_commonProcessUpgrate(tWget *wg, DownloadReq *dlreq)
                 ret = downloadComplete(dlreq, rambuf);
             }
         }
-                  
+
         VOS_MEM_FREE_BUF_AND_NULL_PTR(rambuf);
     }
 
@@ -598,9 +598,9 @@ static void __downloadGetData(void *handle)
 
     if (wg->status == iWgetStatus_Ok)
     {
-        if (wg->hdrs->status_code == 200 && 
-        ((wg->hdrs->content_length > 0) ||
-        (wg->hdrs->TransferEncoding && streq(wg->hdrs->TransferEncoding, "chunked"))))
+        if (wg->hdrs->status_code == 200 &&
+                ((wg->hdrs->content_length > 0) ||
+                 (wg->hdrs->TransferEncoding && streq(wg->hdrs->TransferEncoding, "chunked"))))
         {
             //int mlth = 0;
             //char *rambuf = NULL;
@@ -612,7 +612,7 @@ static void __downloadGetData(void *handle)
 
             /*
             * Notify smd that we are going to allocate a big buffer and
-            * start downloading an image into it.  Smd will do the 
+            * start downloading an image into it.  Smd will do the
             * "killAllAps", or whatever it decides is best.
             */
 
@@ -641,11 +641,11 @@ static void __downloadGetData(void *handle)
                             */
                 if (SF_FEATURE_SUPPORT_CT_MIDDLEWARE)
                 {
-                   if (enblCTMiddleware == CTMDW_MODE_0)
-                   {
+                    if (enblCTMiddleware == CTMDW_MODE_0)
+                    {
                         g_downloadState = CTMDW_DOWNLOAD_STATE_ERR_FILE;
                         ctmdw_sendUpgradeRet();
-                   }
+                    }
                 }
 
                 /* reset SOAP log to current value */
@@ -660,8 +660,8 @@ static void __downloadGetData(void *handle)
             {
                 if (enblCTMiddleware == CTMDW_MODE_0)
                 {
-                     g_downloadState = CTMDW_DOWNLOAD_STATE_OK;
-                     ctmdw_sendUpgradeRet();
+                    g_downloadState = CTMDW_DOWNLOAD_STATE_OK;
+                    ctmdw_sendUpgradeRet();
                 }
             }
 
@@ -677,12 +677,13 @@ static void __downloadGetData(void *handle)
                 }
             }
 
-            vosLog_error("File transfer server authentication failure from %s failed. Status = %d", dlreq->url, wg->hdrs->status_code);
+            vosLog_error("File transfer server authentication failure from %s failed. Status = %d", dlreq->url,
+                         wg->hdrs->status_code);
             downloadStop("File transfer server authentication failure", 9012);
         }
         else if (wg->hdrs->status_code == 404)
         {
-            if(SF_FEATURE_SUPPORT_CT_MIDDLEWARE)
+            if (SF_FEATURE_SUPPORT_CT_MIDDLEWARE)
             {
                 if (enblCTMiddleware == CTMDW_MODE_0)
                 {
@@ -711,9 +712,9 @@ static void __downloadGetData(void *handle)
 
             if (SF_FEATURE_SUPPORT_SYSLOG)
             {
-                if(wg->hdrs->status_code == 200)
+                if (wg->hdrs->status_code == 200)
                 {
-                    if(dlreq->efileType == eVendorConfig)
+                    if (dlreq->efileType == eVendorConfig)
                     {
                         syslog(LOG_WARNING, "104054 Configuration file is not available");
                     }
@@ -734,7 +735,7 @@ static void __downloadGetData(void *handle)
     }
     else
     {
-        if(SF_FEATURE_SUPPORT_CT_MIDDLEWARE)
+        if (SF_FEATURE_SUPPORT_CT_MIDDLEWARE)
         {
             if (enblCTMiddleware == CTMDW_MODE_0)
             {
@@ -760,37 +761,37 @@ static void downloadGetData(void *handle)
 {
     pthread_t thread_id;
     pthread_create(&thread_id, NULL, (ThreadHandler)&__downloadGetData, handle);
-	pthread_join(thread_id, NULL);
+    pthread_join(thread_id, NULL);
     return;
 }
 
 
-static void* downloadAsynDiagFunc()
+static void *downloadAsynDiagFunc()
 {
     int mlth = 0;
     char *rambuf = NULL;
     UBOOL8 currLoggingSOAP = loggingSOAP;
     HttpTask *ht = &httpDownload;
-    tWgetInternal *data = ht->wio;    
+    tWgetInternal *data = ht->wio;
     tWget wg;
 
     vosLog_debug("Enter>, data = %p", data);
-    
+
     wg.pc = data->pc;
     wg.hdrs = data->hdrs;
-     
+
     /* disable SOAP log so that image is not printed out at console */
     loggingSOAP = FALSE;
 
     /*
     * Notify smd that we are going to allocate a big buffer and
-    * start downloading an image into it.  Smd will do the 
+    * start downloading an image into it.  Smd will do the
     * "killAllAps", or whatever it decides is best.
     */
     //downloadDiagStop("Download failed1", 9010);
     CMC_tr69cSetDownloadBOMTime();
     rambuf = readResponseDiag(&wg, &mlth, 0);
-                
+
     if ((mlth == 0))
     {
         /* if control falls thru to here send a fault status to ACS */
@@ -798,8 +799,8 @@ static void* downloadAsynDiagFunc()
         downloadDiagStop("Unable to connect to download server", 9010);
         CMC_tr69cSetDownloadDiagState(INIT_CONNECTION_FAILED);
         addInformEventToList(INFORM_EVENT_DIAGNOSTICS_COMPLETE);
-    } 
-    else if ((rambuf != NULL )&& mlth)
+    }
+    else if ((rambuf != NULL) && mlth)
     {
         VOS_RET_E ret = VOS_RET_SUCCESS;
 
@@ -824,7 +825,7 @@ static void* downloadAsynDiagFunc()
         CMC_tr69cSetDownloadDiagState(TRANSFER_FAILED);
         addInformEventToList(INFORM_EVENT_DIAGNOSTICS_COMPLETE);
     }
-               
+
     if (data->keepConnection == eCloseConnection)
     {
         freeData(data);
@@ -836,12 +837,12 @@ static void* downloadAsynDiagFunc()
 
 void downloadAsynDiagGetData(void)
 {
-    pthread_t thread_id; 
-    pthread_attr_t attr; 
-    pthread_attr_init(&attr);   
+    pthread_t thread_id;
+    pthread_attr_t attr;
+    pthread_attr_init(&attr);
     pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
-    pthread_create(&thread_id, &attr, downloadAsynDiagFunc, NULL); 
-    pthread_attr_destroy(&attr); 
+    pthread_create(&thread_id, &attr, downloadAsynDiagFunc, NULL);
+    pthread_attr_destroy(&attr);
 }
 
 
@@ -856,17 +857,18 @@ static void downloaddiagGetData(void *handle)
 
     if (wg->status == iWgetStatus_Ok)
     {
-        if (wg->hdrs->status_code == 200 && 
-        ((wg->hdrs->content_length > 0) ||
-        (wg->hdrs->TransferEncoding && streq(wg->hdrs->TransferEncoding,"chunked"))))
+        if (wg->hdrs->status_code == 200 &&
+                ((wg->hdrs->content_length > 0) ||
+                 (wg->hdrs->TransferEncoding && streq(wg->hdrs->TransferEncoding, "chunked"))))
         {
-            ht->wio->status = -9;        
+            ht->wio->status = -9;
             downloadAsynDiagGetData();
-            stopListener(ht->wio->pc->fd);            
+            stopListener(ht->wio->pc->fd);
         }
         else if (wg->hdrs->status_code == 401)
         {
-            vosLog_error("File transfer server authentication failure from %s failed. Status = %d", action->downloadurl, wg->hdrs->status_code);
+            vosLog_error("File transfer server authentication failure from %s failed. Status = %d", action->downloadurl,
+                         wg->hdrs->status_code);
             downloadDiagStop("File transfer server authentication failure", 9012);
             CMC_tr69cSetDownloadDiagState(LOGIN_FAILED);
             addInformEventToList(INFORM_EVENT_DIAGNOSTICS_COMPLETE);
@@ -903,7 +905,7 @@ static void downloaddiagGetData(void *handle)
 static void downloadGetAuth(void *handle)
 {
     vosLog_debug("==Enter==");
-    
+
     int status = 9010;
     char *msg = "Unable to connect to download URL";
     tWget *wg = (tWget *)handle;
@@ -911,11 +913,11 @@ static void downloadGetAuth(void *handle)
     RPCAction *action = (RPCAction *)ht->callback;
     DownloadReq *dlreq = &(action->ud.downloadReq);
     SessionAuth *sa = &getSessionAuth;
-        
-    #ifdef DEBUG
+
+#ifdef DEBUG
     DBGPRINT((stderr, "downloadGetAuth(): starting authentication\n"));
-    #endif
-    
+#endif
+
     if (wg->status == iWgetStatus_Ok)
     {
         if (wg->hdrs->status_code == 401)
@@ -929,10 +931,10 @@ static void downloadGetAuth(void *handle)
                     VOS_MEM_FREE_BUF_AND_NULL_PTR(tmpBuf);
             }
             ht->authHdr = generateAuthorizationHdrValue(sa, wg->hdrs->wwwAuthenticate,
-                                                       "GET", ht->wio->uri, dlreq->user, dlreq->pwd);
+                          "GET", ht->wio->uri, dlreq->user, dlreq->pwd);
             if (ht->authHdr == NULL)
             {
-                if(SF_FEATURE_SUPPORT_CT_MIDDLEWARE)
+                if (SF_FEATURE_SUPPORT_CT_MIDDLEWARE)
                 {
                     if (enblCTMiddleware == CTMDW_MODE_0)
                     {
@@ -940,19 +942,19 @@ static void downloadGetAuth(void *handle)
                         ctmdw_sendUpgradeRet();
                     }
                 }
-                
+
                 downloadStop("Download server has unknow authentication header format", status);
                 return;
             }
 
-            closeConn = ht->wio->hdrs->Connection && !strcasecmp(ht->wio->hdrs->Connection,"close");
+            closeConn = ht->wio->hdrs->Connection && !strcasecmp(ht->wio->hdrs->Connection, "close");
             if (closeConn)
-            {   
+            {
                 /* end of data on 401 skip_Proto() */
                 /* close connection and reconnect with Authorization header*/
                 wget_Disconnect(ht->wio);
                 ht->wio = wget_Connect(dlreq->url, downloadConnected, action);
-                if (ht->wio == NULL) 
+                if (ht->wio == NULL)
                 {
                     downloadStop("Failed to connect download server", status);
                     if (SF_FEATURE_SUPPORT_CT_MIDDLEWARE)
@@ -963,15 +965,15 @@ static void downloadGetAuth(void *handle)
                             ctmdw_sendUpgradeRet();
                         }
                     }
-                } 
-                else 
+                }
+                else
                 {
-                    wget_AddPostHdr(ht->wio,"Authorization", ht->authHdr);
+                    wget_AddPostHdr(ht->wio, "Authorization", ht->authHdr);
                 }
             }
             else
             {
-                wget_AddPostHdr(ht->wio,"Authorization", ht->authHdr);
+                wget_AddPostHdr(ht->wio, "Authorization", ht->authHdr);
                 // now just resend the last data with the Authorization header
                 // HttpTask has to be the last argument in wget_GetData
                 // since it is used later in do_send_request
@@ -989,7 +991,7 @@ static void downloadGetAuth(void *handle)
                 }
             }
 
-           downloadStop("Download file cannot be found", 9010);
+            downloadStop("Download file cannot be found", 9010);
         }
         else if (wg->hdrs->status_code >= 100 && wg->hdrs->status_code < 200)
         {
@@ -1006,11 +1008,11 @@ static void downloadGetAuth(void *handle)
             {
                 if (enblCTMiddleware == CTMDW_MODE_0)
                 {
-                   g_downloadState = CTMDW_DOWNLOAD_STATE_ERR_ACCOUNT;
-                   ctmdw_sendUpgradeRet();
+                    g_downloadState = CTMDW_DOWNLOAD_STATE_ERR_ACCOUNT;
+                    ctmdw_sendUpgradeRet();
                 }
             }
-            
+
             downloadStop("Download server authentication failure", 9012);
         }
     }
@@ -1032,10 +1034,10 @@ static void downloadGetAuth(void *handle)
 static int downloadIsAuthNeeded(RPCAction *action)
 {
     vosLog_debug("==Enter==");
-    
+
     int ret = TRUE;
     HttpTask *ht = &httpDownload;
-    
+
     if (action->ud.downloadReq.user == NULL)
         ret = FALSE;
     else if (action->ud.downloadReq.user[0] == '\0')
@@ -1046,65 +1048,65 @@ static int downloadIsAuthNeeded(RPCAction *action)
         ret = FALSE;
 
     // authHdr already has value by downloadGetAuth
-    // so don't need to perform authentication again        
+    // so don't need to perform authentication again
     if (ht->authHdr != NULL)
         ret = FALSE;
 
     return ret;
 }
 
-static void downloadConnected(void *handle) 
+static void downloadConnected(void *handle)
 {
     vosLog_debug("==Enter==");
-    
+
     tWget *wg = (tWget *)handle;
     RPCAction *action = (RPCAction *)wg->handle;
     HttpTask *ht = &httpDownload;
-    
+
     if (wg->status != 0)
     {
         if (SF_FEATURE_SUPPORT_CT_MIDDLEWARE)
         {
-            if(enblCTMiddleware == CTMDW_MODE_0)
+            if (enblCTMiddleware == CTMDW_MODE_0)
             {
                 g_downloadState = CTMDW_DOWNLOAD_STATE_ERR_CONNECT;
                 ctmdw_sendUpgradeRet();
-            } 
+            }
         }
 
         if (eFirmwareUpgrade == action->ud.downloadReq.efileType && SF_FEATURE_SUPPORT_PLUGIN)
         {
             CMC_sendTr69cStartAlarmInfo(0, "104058");
         }
-        downloadStop("Unable to connect to download server", 9010);       
-        return;      
+        downloadStop("Unable to connect to download server", 9010);
+        return;
     }
-    
+
     // stick RPCAction to callback
     ht->callback = (CallBack)action;
-    
+
     // HttpTask has to be the last argument in wget_GetData
     // since it is used later in do_send_request
     if (SF_FEATURE_ISP_CU && SF_FEATURE_LOCATION_HENAN)
     {
-        wget_GetData(ht->wio, downloadGetData,(void *)ht);
+        wget_GetData(ht->wio, downloadGetData, (void *)ht);
     }
     else
     {
         if (downloadIsAuthNeeded(action) == FALSE)
-        {    
-            wget_GetData(ht->wio, downloadGetData,(void *)ht);
+        {
+            wget_GetData(ht->wio, downloadGetData, (void *)ht);
         }
         else
         {
-            wget_GetData(ht->wio, downloadGetAuth,(void *)ht);
+            wget_GetData(ht->wio, downloadGetAuth, (void *)ht);
         }
     }
 }
 
 
 
-static void downloaddiagConnected(void *handle) 
+static void downloaddiagConnected(void *handle)
 {
     vosLog_debug("==Enter==");
     CMC_TR69C_DOWNLOAD_DIAG_CFG_T *action = (CMC_TR69C_DOWNLOAD_DIAG_CFG_T *)handle;
@@ -1114,21 +1116,21 @@ static void downloaddiagConnected(void *handle)
 
     // stick RPCAction to callback
     ht->callback = (CallBack)action;
-    
+
     // HttpTask has to be the last argument in wget_GetData
-    // since it is used later in do_send_request  
+    // since it is used later in do_send_request
     CMC_tr69cSetDownloadROMTime();
-    wget_GetData(ht->wio, downloaddiagGetData,(void *)ht);
+    wget_GetData(ht->wio, downloaddiagGetData, (void *)ht);
 }
 
 
 /* this is called by the callback from the startTimer in doDownload. */
 /* we have to use wget_Connect in case of authentication in which case */
 /* we need to control the connection */
-void downloadStart( void *handle) 
+void downloadStart(void *handle)
 {
     vosLog_debug("==Enter==");
-    
+
     RPCAction   *action = (RPCAction *)handle;
     HttpTask    *ht = &httpDownload;
     DownloadReq *dlreq = &action->ud.downloadReq;
@@ -1136,9 +1138,9 @@ void downloadStart( void *handle)
     // update download command key to fix CSP# 41725
     updateDownLoadKey(dlreq);
     if (util_strstr(dlreq->url, "http:") == NULL &&
-        util_strstr(dlreq->url, "https:") == NULL)
+            util_strstr(dlreq->url, "https:") == NULL)
     {
-        if(SF_FEATURE_SUPPORT_CT_MIDDLEWARE)
+        if (SF_FEATURE_SUPPORT_CT_MIDDLEWARE)
         {
             if (enblCTMiddleware == CTMDW_MODE_0)
             {
@@ -1154,11 +1156,11 @@ void downloadStart( void *handle)
         downloadStop("Protocol not supported", 9013);
         return;
     }
-    
+
     if (dlreq->efileType != eFirmwareUpgrade &&
-        dlreq->efileType != eVendorConfig)
+            dlreq->efileType != eVendorConfig)
     {
-        if(SF_FEATURE_SUPPORT_CT_MIDDLEWARE)
+        if (SF_FEATURE_SUPPORT_CT_MIDDLEWARE)
         {
             if (enblCTMiddleware == CTMDW_MODE_0)
             {
@@ -1167,17 +1169,17 @@ void downloadStart( void *handle)
             }
         }
 
-        downloadStop("Invalid download file type", 9010);       
+        downloadStop("Invalid download file type", 9010);
         return;
     }
-    
+
     memset(ht, 0, sizeof(struct HttpTask));
-    memset(&getSessionAuth,0, sizeof(struct SessionAuth));
-    
-    ht->wio = wget_Connect(dlreq->url, downloadConnected, action); 
+    memset(&getSessionAuth, 0, sizeof(struct SessionAuth));
+
+    ht->wio = wget_Connect(dlreq->url, downloadConnected, action);
     if (ht->wio == NULL)
     {
-        if(SF_FEATURE_SUPPORT_CT_MIDDLEWARE)
+        if (SF_FEATURE_SUPPORT_CT_MIDDLEWARE)
         {
             if (enblCTMiddleware == CTMDW_MODE_0)
             {
@@ -1191,7 +1193,7 @@ void downloadStart( void *handle)
             CMC_sendTr69cStartAlarmInfo(0, "104058");
         }
         vosLog_error("wget_Connect to download server failed: %s", wget_LastErrorMsg());
-        downloadStop("Connect to download server failed", 9010);   
+        downloadStop("Connect to download server failed", 9010);
     }
     else
     {
@@ -1205,7 +1207,7 @@ void downloadStart( void *handle)
 }
 
 
-void downloaddiagStart( CMC_TR69C_DOWNLOAD_DIAG_CFG_T *handle)
+void downloaddiagStart(CMC_TR69C_DOWNLOAD_DIAG_CFG_T *handle)
 {
     HttpTask    *ht = &httpDownload;
 
@@ -1222,7 +1224,7 @@ void downloaddiagStart( CMC_TR69C_DOWNLOAD_DIAG_CFG_T *handle)
     memset(ht, 0, sizeof(struct HttpTask));
     CMC_tr69cSetDownloadRequestTime();
 
-    ht->wio = wget_DiagConnect(handle->downloadurl, downloaddiagConnected, handle); 
+    ht->wio = wget_DiagConnect(handle->downloadurl, downloaddiagConnected, handle);
     if (ht->wio == NULL)
     {
         vosLog_error("wget_Connect to download server failed: %s", wget_LastErrorMsg());

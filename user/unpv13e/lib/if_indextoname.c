@@ -6,18 +6,16 @@
  * if_XXX() functions in the libroute/ directory will replace these.
  */
 
-char *
-if_indextoname(unsigned int index, char *name)
+char *if_indextoname(unsigned int index, char *name)
 {
-	return(NULL);
+    return (NULL);
 }
 
-char *
-If_indextoname(unsigned int index, char *name)
+char *If_indextoname(unsigned int index, char *name)
 {
-	char	*ptr;
+    char	*ptr;
 
-	if ( (ptr = if_indextoname(index, name)) == NULL)
-		err_quit("if_indextoname error for %d", index);
-	return(ptr);
+    if ((ptr = if_indextoname(index, name)) == NULL)
+        err_quit("if_indextoname error for %d", index);
+    return (ptr);
 }

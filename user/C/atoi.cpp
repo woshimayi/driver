@@ -4,11 +4,11 @@
 
 int main()
 {
-	char * s = "0";
-	int i  = 3;
-	i = atoi(s);
-	printf("i = %d\n", i);
-	return 0;
+    char *s = "0";
+    int i  = 3;
+    i = atoi(s);
+    printf("i = %d\n", i);
+    return 0;
 }
 
 

@@ -27,7 +27,7 @@
 *******************************************************************************/
 int arpDel(char *ifname, char *ipStr)
 {
-    if(ifname == NULL || ipStr == NULL)
+    if (ifname == NULL || ipStr == NULL)
     {
         printf("para is null.\n");
         return -1;
@@ -46,14 +46,14 @@ int arpDel(char *ifname, char *ipStr)
     strncpy(req.arp_dev, ifname, 15);
 
     sock_fd = socket(AF_INET, SOCK_DGRAM, 0);
-    if(sock_fd < 0)
+    if (sock_fd < 0)
     {
         printf("get socket error.\n");
         return -1;
     }
 
     ret = ioctl(sock_fd, SIOCDARP, &req);
-    if(ret < 0)
+    if (ret < 0)
     {
         printf("ioctl error.\n");
         close(sock_fd);
@@ -85,7 +85,7 @@ int arpDel(char *ifname, char *ipStr)
 *******************************************************************************/
 int arpGet(char *ifname, char *ipStr)
 {
-    if(ifname == NULL || ipStr == NULL)
+    if (ifname == NULL || ipStr == NULL)
     {
         printf("para is null.\n");
         return -1;
@@ -106,14 +106,14 @@ int arpGet(char *ifname, char *ipStr)
     strncpy(req.arp_dev, ifname, 15);
 
     sock_fd = socket(AF_INET, SOCK_DGRAM, 0);
-    if(sock_fd < 0)
+    if (sock_fd < 0)
     {
         printf("get socket error.\n");
         return -1;
     }
 
     ret = ioctl(sock_fd, SIOCGARP, &req);
-    if(ret < 0)
+    if (ret < 0)
     {
         printf("ioctl error.\n");
         close(sock_fd);
@@ -133,7 +133,7 @@ int arpGet(char *ifname, char *ipStr)
 
 int getHwAddr(char *buff, char *mac)
 {
-    if( buff == NULL || mac == NULL )
+    if (buff == NULL || mac == NULL)
     {
         return -1;
     }
@@ -141,12 +141,12 @@ int getHwAddr(char *buff, char *mac)
     int i = 0;
     unsigned int p[6];
 
-    if(sscanf(mac, "%x:%x:%x:%x:%x:%x", &p[0], &p[1], &p[2], &p[3], &p[4], &p[5]) < 6)
+    if (sscanf(mac, "%x:%x:%x:%x:%x:%x", &p[0], &p[1], &p[2], &p[3], &p[4], &p[5]) < 6)
     {
         return -1;
     }
 
-    for(i = 0; i < 6; i ++)
+    for (i = 0; i < 6; i ++)
     {
         buff[i] = p[i];
     }
@@ -175,7 +175,7 @@ int getHwAddr(char *buff, char *mac)
 *******************************************************************************/
 int arpSet(char *ifname, char *ipStr, char *mac)
 {
-    if(ifname == NULL || ipStr == NULL || mac == NULL)
+    if (ifname == NULL || ipStr == NULL || mac == NULL)
     {
         printf("para is null.\n");
         return -1;
@@ -194,21 +194,21 @@ int arpSet(char *ifname, char *ipStr, char *mac)
     strncpy(req.arp_dev, ifname, 15);
     req.arp_flags = ATF_PERM | ATF_COM;
 
-    if(getHwAddr((char *)req.arp_ha.sa_data, mac) < 0)
+    if (getHwAddr((char *)req.arp_ha.sa_data, mac) < 0)
     {
         printf("get mac error.\n");
         return -1;
     }
 
     sock_fd = socket(AF_INET, SOCK_DGRAM, 0);
-    if(sock_fd < 0)
+    if (sock_fd < 0)
     {
         printf("get socket error.\n");
         return -1;
     }
 
     ret = ioctl(sock_fd, SIOCSARP, &req);
-    if(ret < 0)
+    if (ret < 0)
     {
         printf("ioctl error.\n");
         close(sock_fd);

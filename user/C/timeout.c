@@ -21,8 +21,8 @@ typedef unsigned char UBOOL8;
 
 typedef struct
 {
-   int sec;   /**< Number of seconds since some arbitrary point. */
-   int nsec;  /**< Number of nanoseconds since some arbitrary point. */
+    int sec;   /**< Number of seconds since some arbitrary point. */
+    int nsec;  /**< Number of nanoseconds since some arbitrary point. */
 } CmsTimestamp;
 
 
@@ -30,8 +30,8 @@ typedef struct
  */
 typedef struct
 {
-   UINT32 sec;   /**< Number of seconds since some arbitrary point. */
-   UINT32 nsec;  /**< Number of nanoseconds since some arbitrary point. */
+    UINT32 sec;   /**< Number of seconds since some arbitrary point. */
+    UINT32 nsec;  /**< Number of nanoseconds since some arbitrary point. */
 } UtilTimestamp;
 
 
@@ -40,26 +40,26 @@ typedef struct
  */
 void oalTms_get(CmsTimestamp *tms)
 {
-   struct timespec ts;
-   int rc;
+    struct timespec ts;
+    int rc;
 
-   if (tms == NULL)
-   {
-      return;
-   }
+    if (tms == NULL)
+    {
+        return;
+    }
 
-   rc = clock_gettime(CLOCK_MONOTONIC, &ts);
-   if (rc == 0)
-   {
-      tms->sec = ts.tv_sec;
-      tms->nsec = ts.tv_nsec;
-   }
-   else
-   {
-      printf("clock_gettime failed, set timestamp to 0");
-      tms->sec = 0;
-      tms->nsec = 0;
-   }
+    rc = clock_gettime(CLOCK_MONOTONIC, &ts);
+    if (rc == 0)
+    {
+        tms->sec = ts.tv_sec;
+        tms->nsec = ts.tv_nsec;
+    }
+    else
+    {
+        printf("clock_gettime failed, set timestamp to 0");
+        tms->sec = 0;
+        tms->nsec = 0;
+    }
 }
 
 
@@ -81,15 +81,15 @@ double xu_wallclock(void)
 int main()
 {
 
-	CmsTimestamp cmsTimestamp;
-	oalTms_get(&cmsTimestamp);
-	printf("%d %d\n", cmsTimestamp.nsec, cmsTimestamp.sec);
+    CmsTimestamp cmsTimestamp;
+    oalTms_get(&cmsTimestamp);
+    printf("%d %d\n", cmsTimestamp.nsec, cmsTimestamp.sec);
 
-	CmsTimestamp cmsTimestamp1;
-	oalTms_get(&cmsTimestamp1);
-	printf("%d %d\n", cmsTimestamp1.nsec, cmsTimestamp1.sec);
-	
-	printf("%d %d\n", cmsTimestamp1.nsec - cmsTimestamp.nsec, cmsTimestamp1.sec - cmsTimestamp.sec);
-	
-	return 0;
+    CmsTimestamp cmsTimestamp1;
+    oalTms_get(&cmsTimestamp1);
+    printf("%d %d\n", cmsTimestamp1.nsec, cmsTimestamp1.sec);
+
+    printf("%d %d\n", cmsTimestamp1.nsec - cmsTimestamp.nsec, cmsTimestamp1.sec - cmsTimestamp.sec);
+
+    return 0;
 }

@@ -4,12 +4,12 @@
 
 int main()
 {
-	char * str = "asdfghedfef";
-	printf("%d\n", atoi(str));
-//	switch()
-//	{
-//		case 
-//	}
-	return 0;
+    char *str = "asdfghedfef";
+    printf("%d\n", atoi(str));
+    //	switch()
+    //	{
+    //		case
+    //	}
+    return 0;
 }
 

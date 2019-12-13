@@ -50,22 +50,22 @@ void repeat(callback function, char *para)
     function(para);
 }
 
-void hello(char* a)
+void hello(char *a)
 {
-     printf("Hello %s\n",(const char *)a);
+    printf("Hello %s\n", (const char *)a);
 }
 
 void count(char *num)
 {
-     int i;
-     for(i=1;i<(int)num;i++)
-          printf("%d",i);
-     putchar('\n');
+    int i;
+    for (i = 1; i < (int)num; i++)
+        printf("%d", i);
+    putchar('\n');
 }
 
 int main(void)
 {
-     repeat(hello,"Huangyi");
-     printf("sdfsd");
-     repeat(count, (char *)4);
+    repeat(hello, "Huangyi");
+    printf("sdfsd");
+    repeat(count, (char *)4);
 }

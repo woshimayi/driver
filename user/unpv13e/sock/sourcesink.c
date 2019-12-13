@@ -12,79 +12,89 @@
 
 void	pattern(char *ptr, int len);
 
-void
-sink(int sockfd)
+void sink(int sockfd)
 {
-	int		i, n;
-	char	oob;
+    int		i, n;
+    char	oob;
 
-	if (client) {
-		pattern(wbuf, writelen);	/* fill send buffer with a pattern */
+    if (client)
+    {
+        pattern(wbuf, writelen);	/* fill send buffer with a pattern */
 
-		if (pauseinit)
-			sleep(pauseinit);
+        if (pauseinit)
+            sleep(pauseinit);
 
-		for (i = 1; i <= nbuf; i++) {
-			if (urgwrite == i) {
-				oob = urgwrite;
-				if ( (n = send(sockfd, &oob, 1, MSG_OOB)) != 1)
-					err_sys("send of MSG_OOB returned %d, expected %d",
-																n, writelen);
-				if (verbose)
-					fprintf(stderr, "wrote %d byte of urgent data\n", n);
-			}
+        for (i = 1; i <= nbuf; i++)
+        {
+            if (urgwrite == i)
+            {
+                oob = urgwrite;
+                if ((n = send(sockfd, &oob, 1, MSG_OOB)) != 1)
+                    err_sys("send of MSG_OOB returned %d, expected %d",
+                            n, writelen);
+                if (verbose)
+                    fprintf(stderr, "wrote %d byte of urgent data\n", n);
+            }
 
-			if ( (n = write(sockfd, wbuf, writelen)) != writelen)
-				err_sys("write returned %d, expected %d", n, writelen);
-			if (verbose)
-				fprintf(stderr, "wrote %d bytes\n", n);
+            if ((n = write(sockfd, wbuf, writelen)) != writelen)
+                err_sys("write returned %d, expected %d", n, writelen);
+            if (verbose)
+                fprintf(stderr, "wrote %d bytes\n", n);
 
-			if (pauserw)
-				sleep(pauserw);
-		}
+            if (pauserw)
+                sleep(pauserw);
+        }
 
-	} else {
+    }
+    else
+    {
 
-		if (pauseinit)
-			sleep(pauseinit);
+        if (pauseinit)
+            sleep(pauseinit);
 
-		for ( ; ; ) {
-			if ( (n = read(sockfd, rbuf, readlen)) < 0) {
-				err_sys("read error");
+        for (; ;)
+        {
+            if ((n = read(sockfd, rbuf, readlen)) < 0)
+            {
+                err_sys("read error");
 
-			} else if (n == 0) {
-				break;	 	/* connection closed by peer */
+            }
+            else if (n == 0)
+            {
+                break;	 	/* connection closed by peer */
 
-			} else if (n != readlen)
-				err_quit("read returned %d, expected %d", n, readlen);
-	
-			if (verbose)
-				fprintf(stderr, "received %d bytes\n", n);
+            }
+            else if (n != readlen)
+                err_quit("read returned %d, expected %d", n, readlen);
 
-			if (pauserw)
-				sleep(pauserw);
-		}
-	}
+            if (verbose)
+                fprintf(stderr, "received %d bytes\n", n);
 
-	if (pauseclose) {
-		if (verbose)
-				fprintf(stderr, "pausing before close\n");
-		sleep(pauseclose);
-	}
+            if (pauserw)
+                sleep(pauserw);
+        }
+    }
 
-	if (close(sockfd) < 0)
-		err_sys("close error");		/* since SO_LINGER may be set */
+    if (pauseclose)
+    {
+        if (verbose)
+            fprintf(stderr, "pausing before close\n");
+        sleep(pauseclose);
+    }
+
+    if (close(sockfd) < 0)
+        err_sys("close error");		/* since SO_LINGER may be set */
 }
 
-void
-pattern(char *ptr, int len)
+void pattern(char *ptr, int len)
 {
-	char	c;
+    char	c;
 
-	c = 0;
-	while(len-- > 0)  {
-		while(isprint((c & 0x7F)) == 0)
-			c++;	/* skip over nonprinting characters */
-		*ptr++ = (c++ & 0x7F);
-	}
+    c = 0;
+    while (len-- > 0)
+    {
+        while (isprint((c & 0x7F)) == 0)
+            c++;	/* skip over nonprinting characters */
+        *ptr++ = (c++ & 0x7F);
+    }
 }

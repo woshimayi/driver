@@ -30,6 +30,7 @@ Copyright © zuozhongkai Co., Ltd. 1998-2019. All rights reserved.
 
 /*
  * GPIO1相关寄存器地址   GPIO1 io口控制寄存器
+ * GPIO Memory Map/Register Definition
  */
 #define GPIO1_DR 			*((volatile unsigned int *)0X0209C000)
 #define GPIO1_GDIR 			*((volatile unsigned int *)0X0209C004)

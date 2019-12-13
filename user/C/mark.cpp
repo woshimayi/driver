@@ -4,24 +4,24 @@
 
 int main()
 {
-	int mark = 1;
-	scanf("%d", &mark);
-	printf("0x%x\n", mark);
-	mark = mark& 0xf;
-	printf("0x%x\n", mark);
-	
-    if(1)
+    int mark = 1;
+    scanf("%d", &mark);
+    printf("0x%x\n", mark);
+    mark = mark & 0xf;
+    printf("0x%x\n", mark);
+
+    if (1)
     {
         mark = (mark << 0x4);
         printf("0x%x\n", mark);
     }
     else
     {
-		mark>>0x4;
-		printf("0x%x\n", mark);
+        mark >> 0x4;
+        printf("0x%x\n", mark);
     }
-//	printf("0x%x\n", mark);
-	return 0;
+    //	printf("0x%x\n", mark);
+    return 0;
 }
 
 

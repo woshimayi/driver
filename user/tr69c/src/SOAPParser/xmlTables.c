@@ -1,22 +1,22 @@
 
 /*----------------------------------------------------------------------*
-<:copyright-broadcom 
- 
- Copyright (c) 2005 Broadcom Corporation 
- All Rights Reserved 
- No portions of this material may be reproduced in any form without the 
- written permission of: 
-          Broadcom Corporation 
-          16215 Alton Parkway 
-          Irvine, California 92619 
- All information contained in this document is Broadcom Corporation 
- company private, proprietary, and trade secret. 
- 
+<:copyright-broadcom
+
+ Copyright (c) 2005 Broadcom Corporation
+ All Rights Reserved
+ No portions of this material may be reproduced in any form without the
+ written permission of:
+          Broadcom Corporation
+          16215 Alton Parkway
+          Irvine, California 92619
+ All information contained in this document is Broadcom Corporation
+ company private, proprietary, and trade secret.
+
 :>
  *----------------------------------------------------------------------*
  * File Name  : xmlTables.c
  *
- * Description: SOAP xmlTables and data structures 
+ * Description: SOAP xmlTables and data structures
  * $Revision: 1.17 $
  * $Id: xmlTables.c,v 1.17 2006/01/25 17:02:00 dmounday Exp $
  *----------------------------------------------------------------------*/
@@ -57,13 +57,14 @@ extern ACSState acsState;
 /* List of namespaces recognized by this parser */
 /* Prefixes are set by each message */
 /* !!!!! Notice change MACROS if this table is changed */
-NameSpace nameSpaces[] = {
+NameSpace nameSpaces[] =
+{
     {NULL, "SOAP-ENV:", "http://schemas.xmlsoap.org/soap/envelope/"},
     {NULL, "SOAP-ENC:", "http://schemas.xmlsoap.org/soap/encoding/"},
-    {NULL, "xsd:",      "http://www.w3.org/2001/XMLSchema"}, 
+    {NULL, "xsd:",      "http://www.w3.org/2001/XMLSchema"},
     {NULL, "xsi:",      "http://www.w3.org/2001/XMLSchema-instance"},
     {NULL, "cwmp:",     "urn:dslforum-org:cwmp-1-0"},
-    {NULL, NULL,NULL}
+    {NULL, NULL, NULL}
 };
 
 /* MACROS for referencing the above namespace */
@@ -76,20 +77,22 @@ NameSpace nameSpaces[] = {
 #define iCWMP       &nameSpaces[4]
 /* */
 /* Node descriptors for SOAP Header */
-static XmlNodeDesc mustDesc[] = {
-    {iSOAP, "mustUnderstand",NULL,NULL},
-    {iSOAP, "actor", NULL,NULL}, /* not sure about this-- ignore attr value */
-    {iXSI,	"type", NULL,NULL},
-	{NULL, NULL}
+static XmlNodeDesc mustDesc[] =
+{
+    {iSOAP, "mustUnderstand", NULL, NULL},
+    {iSOAP, "actor", NULL, NULL}, /* not sure about this-- ignore attr value */
+    {iXSI,	"type", NULL, NULL},
+    {NULL, NULL}
 };
 
 XMLFUNC(fIDValue);
 XMLFUNC(fHoldRequest);
 XMLFUNC(fNoMoreRequests);
-static XmlNodeDesc headerDesc[] = {
+static XmlNodeDesc headerDesc[] =
+{
     {iCWMP, "ID", fIDValue, mustDesc},               /* data value */
-    {iCWMP, "HoldRequests",fHoldRequest, mustDesc}, /* data value */
-    {iCWMP, "NoMoreRequests", fNoMoreRequests,NULL}, /* data value flag */
+    {iCWMP, "HoldRequests", fHoldRequest, mustDesc}, /* data value */
+    {iCWMP, "NoMoreRequests", fNoMoreRequests, NULL}, /* data value flag */
     {NULL, NULL}
 };
 
@@ -98,16 +101,18 @@ static XmlNodeDesc headerDesc[] = {
 /* fault codes from ACS */
 XMLFUNC(fFaultCode);
 XMLFUNC(fFaultString);
-static XmlNodeDesc faultDesc[] = {
+static XmlNodeDesc faultDesc[] =
+{
     {NULL,  "faultCode", fFaultCode, NULL},               /* data value */
-    {NULL,  "faultString",fFaultString, NULL}, /* data value */
+    {NULL,  "faultString", fFaultString, NULL}, /* data value */
     {NULL, NULL}
 };
 
 /* <cmsp:Reboot>
 */
 XMLFUNC(fMaxEnvelopes);
-static XmlNodeDesc informResponseDesc[] = {
+static XmlNodeDesc informResponseDesc[] =
+{
     {NULL,  "MaxEnvelopes", fMaxEnvelopes, NULL},               /*  */
     {NULL, NULL}
 };
@@ -115,7 +120,8 @@ static XmlNodeDesc informResponseDesc[] = {
 */
 
 XMLFUNC(fCommandKey);
-static XmlNodeDesc rebootDesc[] = {
+static XmlNodeDesc rebootDesc[] =
+{
     {NULL,  "CommandKey", fCommandKey, NULL},               /*  */
     {NULL, NULL}
 };
@@ -130,46 +136,49 @@ XMLFUNC(fDownloadPwd);
 XMLFUNC(fDownloadFileSize);
 XMLFUNC(fTargetFileName);
 XMLFUNC(fDownloadDelaySec);
-static XmlNodeDesc downLoadDesc[] = {
-    {NULL,  "CommandKey", fDLCommandKey,NULL},
-    {NULL,  "FileType", fDownloadFileType,NULL},
-    {NULL,  "URL", fDownloadURL,NULL},
-    {NULL,  "Username", fDownloadUser,NULL},
-    {NULL,  "Password", fDownloadPwd,NULL},
-    {NULL,  "FileSize", fDownloadFileSize,NULL},
-    {NULL,  "TargetFileName", fTargetFileName,NULL},
-    {NULL,  "DelaySeconds", fDownloadDelaySec,NULL},
-    {NULL,  "SuccessURL", NULL,NULL},
-    {NULL,  "FailureURL", NULL,NULL},
-    {NULL,NULL}
+static XmlNodeDesc downLoadDesc[] =
+{
+    {NULL,  "CommandKey", fDLCommandKey, NULL},
+    {NULL,  "FileType", fDownloadFileType, NULL},
+    {NULL,  "URL", fDownloadURL, NULL},
+    {NULL,  "Username", fDownloadUser, NULL},
+    {NULL,  "Password", fDownloadPwd, NULL},
+    {NULL,  "FileSize", fDownloadFileSize, NULL},
+    {NULL,  "TargetFileName", fTargetFileName, NULL},
+    {NULL,  "DelaySeconds", fDownloadDelaySec, NULL},
+    {NULL,  "SuccessURL", NULL, NULL},
+    {NULL,  "FailureURL", NULL, NULL},
+    {NULL, NULL}
 };
 /* <cmwp:Upload >
 */
 
 XMLFUNC(fUploadFileType);
-static XmlNodeDesc upLoadDesc[] = {
-    {NULL,  "CommandKey", fDLCommandKey,NULL},
-    {NULL,  "FileType", fUploadFileType,NULL},
-    {NULL,  "URL", fDownloadURL,NULL},
-    {NULL,  "Username", fDownloadUser,NULL},
-    {NULL,  "Password", fDownloadPwd,NULL},
-    {NULL,  "FileSize", fDownloadFileSize,NULL},
-    {NULL,  "TargetFileName", fTargetFileName,NULL},
-    {NULL,  "DelaySeconds", fDownloadDelaySec,NULL},
-    {NULL,  "SuccessURL", NULL,NULL},
-    {NULL,  "FailureURL", NULL,NULL},
-    {NULL,NULL}
+static XmlNodeDesc upLoadDesc[] =
+{
+    {NULL,  "CommandKey", fDLCommandKey, NULL},
+    {NULL,  "FileType", fUploadFileType, NULL},
+    {NULL,  "URL", fDownloadURL, NULL},
+    {NULL,  "Username", fDownloadUser, NULL},
+    {NULL,  "Password", fDownloadPwd, NULL},
+    {NULL,  "FileSize", fDownloadFileSize, NULL},
+    {NULL,  "TargetFileName", fTargetFileName, NULL},
+    {NULL,  "DelaySeconds", fDownloadDelaySec, NULL},
+    {NULL,  "SuccessURL", NULL, NULL},
+    {NULL,  "FailureURL", NULL, NULL},
+    {NULL, NULL}
 };
-/* <cwmp:DeleteObject> 
+/* <cwmp:DeleteObject>
 *  <cwmp:AddObject>
 */
 
 XMLFUNC(fObjectName);
 XMLFUNC(fSetParameterKey);
-static XmlNodeDesc addDelObjectDesc[] = {
-    {NULL,  "ObjectName", fObjectName,NULL},
+static XmlNodeDesc addDelObjectDesc[] =
+{
+    {NULL,  "ObjectName", fObjectName, NULL},
     {NULL,  "ParameterKey", fSetParameterKey, NULL},
-    {NULL,NULL}
+    {NULL, NULL}
 };
 
 /* <cwmp:GetParameterValues ..../> */
@@ -186,16 +195,18 @@ static XmlNodeDesc addDelObjectDesc[] = {
 XMLFUNC(fParameterNameArraySize);
 XMLFUNC(fParameterNames);
 XMLFUNC(fGetParameterValues);
-static XmlNodeDesc pNamesDesc[] = {
-    {iSOAP, "arrayType", fParameterNameArraySize,NULL},
-    {iXSD,  "string", fParameterNames,NULL},    /* namevalue is TAGDATA */
-    {iCWMP, "item", fParameterNames,NULL},    /* namevalue is TAGDATA -- added for dimark */
-    {iCWMP, "ParameterNames", fParameterNames,NULL},    /* namevalue is TAGDATA -- added for dimark */
-    {NULL,NULL}
+static XmlNodeDesc pNamesDesc[] =
+{
+    {iSOAP, "arrayType", fParameterNameArraySize, NULL},
+    {iXSD,  "string", fParameterNames, NULL},   /* namevalue is TAGDATA */
+    {iCWMP, "item", fParameterNames, NULL},   /* namevalue is TAGDATA -- added for dimark */
+    {iCWMP, "ParameterNames", fParameterNames, NULL},   /* namevalue is TAGDATA -- added for dimark */
+    {NULL, NULL}
 };
-static XmlNodeDesc getParameterValuesDesc[] = {
-    {NULL,  "ParameterNames", NULL,pNamesDesc},
-    {NULL,NULL}
+static XmlNodeDesc getParameterValuesDesc[] =
+{
+    {NULL,  "ParameterNames", NULL, pNamesDesc},
+    {NULL, NULL}
 };
 
 /* <SetParameterValue>
@@ -204,17 +215,19 @@ static XmlNodeDesc getParameterValuesDesc[] = {
 *   </ParamterList>
 *   <ParameterKey>kkkkk</ParameterKey>
 */
-XMLFUNC(fParameterValue );
-XMLFUNC(fSetParameterValues );
+XMLFUNC(fParameterValue);
+XMLFUNC(fSetParameterValues);
 
-static XmlNodeDesc valueDesc[] = {
-    {iXSD, "type", NULL, NULL},         
-    {NULL,NULL}
+static XmlNodeDesc valueDesc[] =
+{
+    {iXSD, "type", NULL, NULL},
+    {NULL, NULL}
 };
-static XmlNodeDesc parameterValueStructDesc[] = {
+static XmlNodeDesc parameterValueStructDesc[] =
+{
     {NULL, "Name", fParameterNames, NULL},
     {NULL, "Value", fParameterValue, valueDesc},
-    {NULL,NULL}
+    {NULL, NULL}
 };
 
 
@@ -223,66 +236,74 @@ static XmlNodeDesc parameterValueStructDesc[] = {
 *               <Name>xxx</Name>  ....
 */
 
-XMLFUNC(fSetAttParameterName );
+XMLFUNC(fSetAttParameterName);
 XMLFUNC(fNotification);
-XMLFUNC(fNotificationChange );
+XMLFUNC(fNotificationChange);
 XMLFUNC(fAcclistChange);
 XMLFUNC(fAccessList);
-static XmlNodeDesc accessListDesc[] = {
-	{NULL, "string", fAccessList, NULL},	/* only subscriber defined */
-	{NULL, "arrayType", NULL,NULL},
-	{NULL,NULL}
+static XmlNodeDesc accessListDesc[] =
+{
+    {NULL, "string", fAccessList, NULL},	/* only subscriber defined */
+    {NULL, "arrayType", NULL, NULL},
+    {NULL, NULL}
 };
-static XmlNodeDesc setparameterAttriStructDesc[] = {
+static XmlNodeDesc setparameterAttriStructDesc[] =
+{
     {NULL, "Name", fSetAttParameterName, NULL},
     {NULL, "Notification", fNotification, NULL},
     {NULL, "NotificationChange", fNotificationChange, NULL},
     {NULL, "AccessListChange", fAcclistChange, NULL},
     {NULL, "AccessList", NULL, accessListDesc},
-    {NULL,NULL}
+    {NULL, NULL}
 };
 
 XMLFUNC(fSetParameterAttributesList);
 /* this is being used by multiple complex types -- will not detect mixed element errors*/
-static XmlNodeDesc parameterListDesc[] = {
+static XmlNodeDesc parameterListDesc[] =
+{
     {iSOAP, "arrayType", fParameterNameArraySize, NULL},
-    {NULL, "ParameterValueStruct",NULL,parameterValueStructDesc},
-    {NULL, "SetParameterAttributesStruct",fSetParameterAttributesList,setparameterAttriStructDesc},
-    {NULL,NULL}
+    {NULL, "ParameterValueStruct", NULL, parameterValueStructDesc},
+    {NULL, "SetParameterAttributesStruct", fSetParameterAttributesList, setparameterAttriStructDesc},
+    {NULL, NULL}
 };
-static XmlNodeDesc setParameterValuesDesc[] = {
+static XmlNodeDesc setParameterValuesDesc[] =
+{
     {NULL, "ParameterList", NULL, parameterListDesc},
     {NULL, "ParameterKey", fSetParameterKey, NULL},
-    {NULL,NULL}
+    {NULL, NULL}
 };
 /*
 */
-static XmlNodeDesc setParameterAttributesDesc[] = {
+static XmlNodeDesc setParameterAttributesDesc[] =
+{
     {NULL, "ParameterList", NULL, parameterListDesc},
     {NULL, "ParameterKey", fSetParameterKey, NULL},
-    {NULL,NULL}
+    {NULL, NULL}
 };
 
 XMLFUNC(fDelaySeconds);
-static XmlNodeDesc scheduleInformDesc[] = {
-    {NULL, "DelaySeconds", fDelaySeconds,NULL},
+static XmlNodeDesc scheduleInformDesc[] =
+{
+    {NULL, "DelaySeconds", fDelaySeconds, NULL},
     {NULL, "CommandKey", fCommandKey, NULL},
-    {NULL,NULL}
+    {NULL, NULL}
 };
 /*
 */
-static XmlNodeDesc getParameterAttributesDesc[] = {
+static XmlNodeDesc getParameterAttributesDesc[] =
+{
     {NULL, "ParameterNames", NULL, pNamesDesc},
-    {NULL,NULL}
+    {NULL, NULL}
 };
 
 /*
 */
 XMLFUNC(fParameterPath);
-XMLFUNC( fNextLevel);
-static XmlNodeDesc getParameterNamesDesc[] = {
+XMLFUNC(fNextLevel);
+static XmlNodeDesc getParameterNamesDesc[] =
+{
     {NULL,  "ParameterPath", fParameterPath, NULL},               /* data value */
-    {NULL,  "NextLevel",fNextLevel, NULL}, /* data value */
+    {NULL,  "NextLevel", fNextLevel, NULL}, /* data value */
     {NULL, NULL}
 };
 
@@ -302,8 +323,9 @@ XMLFUNC(fInformResponse);
 XMLFUNC(fFactoryReset);
 XMLFUNC(fTransferCompleteResponse);
 XMLFUNC(fGetRPCMethodsResponse);
-static XmlNodeDesc bodyDesc[] = {
-    {iSOAP, "Fault", fFault, faultDesc}, 
+static XmlNodeDesc bodyDesc[] =
+{
+    {iSOAP, "Fault", fFault, faultDesc},
     {iCWMP, "GetRPCMethods", fGetRPCMethods, NULL},
     {iCWMP, "ScheduleInform", fScheduleInform, scheduleInformDesc},
     {iCWMP, "GetParameterNames", fGetParameterNames, getParameterNamesDesc},
@@ -326,40 +348,48 @@ static XmlNodeDesc bodyDesc[] = {
 
 //XMLFUNC(fHeader);
 XMLFUNC(fBody);
-static XmlNodeDesc envDesc[] = {
+static XmlNodeDesc envDesc[] =
+{
     {iSOAP, "Header", NULL, headerDesc},
     {iSOAP, "Body", fBody, bodyDesc},
     {NULL, NULL}
 };
 /* TopLevel node for a SOAP envelope */
 XMLFUNC(fEnvelope);
-XmlNodeDesc envelopeDesc[] = {
-    {iNULL,"Envelope",fEnvelope, envDesc}, /* -1 is namespace exception flag*/
+XmlNodeDesc envelopeDesc[] =
+{
+    {iNULL, "Envelope", fEnvelope, envDesc}, /* -1 is namespace exception flag*/
     {NULL, NULL}
 };
 
 static XML_STATUS fFaultString(const char *name, TOKEN_TYPE ttype, const char *value)
 {
-    if (ttype == TAGBEGIN) {
-        }
-    else {
+    if (ttype == TAGBEGIN)
+    {
+    }
+    else
+    {
     }
     return XML_STS_OK;
 }
 static XML_STATUS fFaultCode(const char *name, TOKEN_TYPE ttype, const char *value)
 {
-    if (ttype == TAGBEGIN) {
-        }
-    else {
+    if (ttype == TAGBEGIN)
+    {
+    }
+    else
+    {
     }
     return XML_STS_OK;
 }
 static XML_STATUS fFault(const char *name, TOKEN_TYPE ttype, const char *value)
 {
-    if (ttype == TAGBEGIN) {
+    if (ttype == TAGBEGIN)
+    {
         acsRpcAction->rpcMethod = rpcFault;
-        }
-    else {
+    }
+    else
+    {
     }
     return XML_STS_OK;
 }
@@ -374,7 +404,8 @@ static XML_STATUS fDownload(const char *name, TOKEN_TYPE ttype, const char *valu
 }
 static XML_STATUS fDLCommandKey(const char *name, TOKEN_TYPE ttype, const char *value)
 {
-    if (ttype == TAGDATA){
+    if (ttype == TAGDATA)
+    {
         acsRpcAction->ud.downloadReq.commandKey = VOS_STRDUP(value);
     }
     return XML_STS_OK;
@@ -433,9 +464,10 @@ static XML_STATUS fUpload(const char *name, TOKEN_TYPE ttype, const char *value)
 }
 static XML_STATUS fUploadFileType(const char *name, TOKEN_TYPE ttype, const char *value)
 {
-    if (ttype == TAGDATA) {
+    if (ttype == TAGDATA)
+    {
         int type = atoi(value);
-        if ( type == eWebContent )
+        if (type == eWebContent)
             acsRpcAction->ud.downloadReq.efileType = eVendorLog;
         else
             acsRpcAction->ud.downloadReq.efileType = eVendorConfig;
@@ -451,7 +483,7 @@ static XML_STATUS fUploadFileType(const char *name, TOKEN_TYPE ttype, const char
 static XML_STATUS fMaxEnvelopes(const char *name, TOKEN_TYPE ttype, const char *value)
 {
     if (ttype == TAGDATA)
-        acsState.maxEnvelopes= atoi(value);
+        acsState.maxEnvelopes = atoi(value);
     return XML_STS_OK;
 }
 /* <Reboot>
@@ -459,7 +491,8 @@ static XML_STATUS fMaxEnvelopes(const char *name, TOKEN_TYPE ttype, const char *
 
 static XML_STATUS fCommandKey(const char *name, TOKEN_TYPE ttype, const char *value)
 {
-    if (ttype == TAGDATA){
+    if (ttype == TAGDATA)
+    {
         acsRpcAction->commandKey = VOS_STRDUP(value);
     }
     return XML_STS_OK;
@@ -470,8 +503,8 @@ static XML_STATUS fReboot(const char *name, TOKEN_TYPE ttype, const char *value)
         acsRpcAction->rpcMethod = rpcReboot;
     return XML_STS_OK;
 }
-/* 
-* <FactoryReset/> 
+/*
+* <FactoryReset/>
 */
 static XML_STATUS fFactoryReset(const char *name, TOKEN_TYPE ttype, const char *value)
 {
@@ -482,7 +515,8 @@ static XML_STATUS fFactoryReset(const char *name, TOKEN_TYPE ttype, const char *
 
 static XML_STATUS fInformResponse(const char *name, TOKEN_TYPE ttype, const char *value)
 {
-    if (ttype == TAGBEGIN){
+    if (ttype == TAGBEGIN)
+    {
         acsRpcAction->rpcMethod = rpcInformResponse;
         informState = eACSInformed;
     }
@@ -490,7 +524,8 @@ static XML_STATUS fInformResponse(const char *name, TOKEN_TYPE ttype, const char
 }
 static XML_STATUS fTransferCompleteResponse(const char *name, TOKEN_TYPE ttype, const char *value)
 {
-    if (ttype == TAGBEGIN){
+    if (ttype == TAGBEGIN)
+    {
         acsRpcAction->rpcMethod = rpcTransferCompleteResponse;
     }
     return XML_STS_OK;
@@ -502,7 +537,8 @@ static XML_STATUS fTransferCompleteResponse(const char *name, TOKEN_TYPE ttype, 
 
 static XML_STATUS fObjectName(const char *name, TOKEN_TYPE ttype, const char *value)
 {
-    if (ttype == TAGDATA && acsRpcAction){
+    if (ttype == TAGDATA && acsRpcAction)
+    {
         acsRpcAction->ud.addDelObjectReq.objectName = VOS_STRDUP(value);
     }
     return XML_STS_OK;
@@ -510,14 +546,16 @@ static XML_STATUS fObjectName(const char *name, TOKEN_TYPE ttype, const char *va
 
 static XML_STATUS fAddObject(const char *name, TOKEN_TYPE ttype, const char *value)
 {
-    if (ttype == TAGBEGIN && acsRpcAction){
+    if (ttype == TAGBEGIN && acsRpcAction)
+    {
         acsRpcAction->rpcMethod = rpcAddObject;
     }
     return XML_STS_OK;
 }
 static XML_STATUS fDeleteObject(const char *name, TOKEN_TYPE ttype, const char *value)
 {
-    if (ttype == TAGBEGIN && acsRpcAction){
+    if (ttype == TAGBEGIN && acsRpcAction)
+    {
         acsRpcAction->rpcMethod = rpcDeleteObject;
     }
     return XML_STS_OK;
@@ -530,22 +568,25 @@ static XML_STATUS fDeleteObject(const char *name, TOKEN_TYPE ttype, const char *
 */
 static XML_STATUS fParameterValue(const char *name, TOKEN_TYPE ttype, const char *value)
 {
-    if (ttype == TAGDATA && acsRpcAction){
-        if(acsRpcAction->ud.pItem)
+    if (ttype == TAGDATA && acsRpcAction)
+    {
+        if (acsRpcAction->ud.pItem)
             acsRpcAction->ud.pItem->pvalue = VOS_STRDUP(value);
     }
     return XML_STS_OK;
 }
 static XML_STATUS fSetParameterKey(const char *name, TOKEN_TYPE ttype, const char *value)
 {
-    if (ttype == TAGDATA && acsRpcAction){
+    if (ttype == TAGDATA && acsRpcAction)
+    {
         acsRpcAction->parameterKey = VOS_STRDUP(value);
     }
     return XML_STS_OK;
 }
 static XML_STATUS fSetParameterValues(const char *name, TOKEN_TYPE ttype, const char *value)
 {
-    if (ttype == TAGBEGIN && acsRpcAction){
+    if (ttype == TAGBEGIN && acsRpcAction)
+    {
         acsRpcAction->rpcMethod = rpcSetParameterValues;
     }
     return XML_STS_OK;
@@ -555,33 +596,38 @@ static XML_STATUS fSetParameterValues(const char *name, TOKEN_TYPE ttype, const 
 */
 static XML_STATUS fParameterNameArraySize(const char *name, TOKEN_TYPE ttype, const char *value)
 {
-	
-    #if !defined(SUPPRESS_SOAP_ARRAYTYPE)  /* use element cnt */
-    if (ttype == ATTRIBUTEVALUE && acsRpcAction){
+
+#if !defined(SUPPRESS_SOAP_ARRAYTYPE)  /* use element cnt */
+    if (ttype == ATTRIBUTEVALUE && acsRpcAction)
+    {
         char *s;
-        s = strchr(value,'[');
+        s = strchr(value, '[');
         if (s)
-            acsRpcAction->arrayItemCnt = atoi(s+1);
+            acsRpcAction->arrayItemCnt = atoi(s + 1);
     }
-	#endif
+#endif
     return XML_STS_OK;
 }
 
 static XML_STATUS fParameterNames(const char *name, TOKEN_TYPE ttype, const char *value)
 {
-    if (ttype == TAGBEGIN && acsRpcAction){
+    if (ttype == TAGBEGIN && acsRpcAction)
+    {
         ParamItem *p = (ParamItem *)VOS_MALLOC_FLAGS(sizeof(ParamItem), 0);
-        if (p) {
-			#ifdef SUPPRESS_SOAP_ARRAYTYPE
+        if (p)
+        {
+#ifdef SUPPRESS_SOAP_ARRAYTYPE
             ++acsRpcAction->arrayItemCnt;
-			#endif
+#endif
             p->pname = p->pvalue = p->pOrigValue = NULL;
             p->next = acsRpcAction->ud.pItem;
             acsRpcAction->ud.pItem = p;
             return XML_STS_OK;
         }
         return XML_STS_ERR;
-    } else if (ttype==TAGDATA) {
+    }
+    else if (ttype == TAGDATA)
+    {
         ParamItem *p = acsRpcAction->ud.pItem;
         p->pname = VOS_STRDUP(value);
 
@@ -601,10 +647,13 @@ static XML_STATUS fGetParameterValues(const char *name, TOKEN_TYPE ttype, const 
 *               <Name>xxx</Name>  ....
 */
 static XML_STATUS fAccessList(const char *name, TOKEN_TYPE ttype, const char *value)
-{   /* there's only one access list item today */
-    if (ttype == TAGDATA && acsRpcAction){
-        if (acsRpcAction->ud.aItem) {
-            acsRpcAction->ud.aItem->subAccess= !strcasecmp(value,"subscriber");
+{
+    /* there's only one access list item today */
+    if (ttype == TAGDATA && acsRpcAction)
+    {
+        if (acsRpcAction->ud.aItem)
+        {
+            acsRpcAction->ud.aItem->subAccess = !strcasecmp(value, "subscriber");
             return XML_STS_OK;
         }
         return XML_STS_ERR;
@@ -613,9 +662,11 @@ static XML_STATUS fAccessList(const char *name, TOKEN_TYPE ttype, const char *va
 }
 static XML_STATUS fAcclistChange(const char *name, TOKEN_TYPE ttype, const char *value)
 {
-    if (ttype == TAGDATA && acsRpcAction){
-        if (acsRpcAction->ud.aItem) {
-            acsRpcAction->ud.aItem->chgAccess= testBoolean(value);
+    if (ttype == TAGDATA && acsRpcAction)
+    {
+        if (acsRpcAction->ud.aItem)
+        {
+            acsRpcAction->ud.aItem->chgAccess = testBoolean(value);
             return XML_STS_OK;
         }
         return XML_STS_ERR;
@@ -624,9 +675,11 @@ static XML_STATUS fAcclistChange(const char *name, TOKEN_TYPE ttype, const char 
 }
 static XML_STATUS fNotificationChange(const char *name, TOKEN_TYPE ttype, const char *value)
 {
-    if (ttype == TAGDATA && acsRpcAction){
-        if (acsRpcAction->ud.aItem) {
-            acsRpcAction->ud.aItem->chgNotify= testBoolean(value);
+    if (ttype == TAGDATA && acsRpcAction)
+    {
+        if (acsRpcAction->ud.aItem)
+        {
+            acsRpcAction->ud.aItem->chgNotify = testBoolean(value);
             return XML_STS_OK;
         }
         return XML_STS_ERR;
@@ -635,8 +688,10 @@ static XML_STATUS fNotificationChange(const char *name, TOKEN_TYPE ttype, const 
 }
 static XML_STATUS fNotification(const char *name, TOKEN_TYPE ttype, const char *value)
 {
-    if (ttype == TAGDATA && acsRpcAction){
-        if (acsRpcAction->ud.aItem) {
+    if (ttype == TAGDATA && acsRpcAction)
+    {
+        if (acsRpcAction->ud.aItem)
+        {
             acsRpcAction->ud.aItem->notification = atoi(value);
             return XML_STS_OK;
         }
@@ -646,8 +701,10 @@ static XML_STATUS fNotification(const char *name, TOKEN_TYPE ttype, const char *
 }
 static XML_STATUS fSetAttParameterName(const char *name, TOKEN_TYPE ttype, const char *value)
 {
-    if (ttype == TAGDATA && acsRpcAction){
-        if (acsRpcAction->ud.aItem) {
+    if (ttype == TAGDATA && acsRpcAction)
+    {
+        if (acsRpcAction->ud.aItem)
+        {
             acsRpcAction->ud.aItem->pname = VOS_STRDUP(value);
             return XML_STS_OK;
         }
@@ -658,12 +715,14 @@ static XML_STATUS fSetAttParameterName(const char *name, TOKEN_TYPE ttype, const
 
 static XML_STATUS fSetParameterAttributesList(const char *name, TOKEN_TYPE ttype, const char *value)
 {
-    if (ttype == TAGBEGIN && acsRpcAction){
-        AttributeItem *p = (AttributeItem *)VOS_MALLOC_FLAGS(sizeof (AttributeItem), ALLOC_ZEROIZE);
-        if (p) {
-            #ifdef SUPPRESS_SOAP_ARRAYTYPE
-			++acsRpcAction->arrayItemCnt;
-			#endif
+    if (ttype == TAGBEGIN && acsRpcAction)
+    {
+        AttributeItem *p = (AttributeItem *)VOS_MALLOC_FLAGS(sizeof(AttributeItem), ALLOC_ZEROIZE);
+        if (p)
+        {
+#ifdef SUPPRESS_SOAP_ARRAYTYPE
+            ++acsRpcAction->arrayItemCnt;
+#endif
             p->next = acsRpcAction->ud.aItem;
             acsRpcAction->ud.aItem = p;
             return XML_STS_OK;
@@ -675,7 +734,8 @@ static XML_STATUS fSetParameterAttributesList(const char *name, TOKEN_TYPE ttype
 
 static XML_STATUS fSetParameterAttributes(const char *name, TOKEN_TYPE ttype, const char *value)
 {
-    if (ttype == TAGBEGIN && acsRpcAction){
+    if (ttype == TAGBEGIN && acsRpcAction)
+    {
         acsRpcAction->rpcMethod = rpcSetParameterAttributes;
     }
     return XML_STS_OK;
@@ -686,7 +746,8 @@ static XML_STATUS fSetParameterAttributes(const char *name, TOKEN_TYPE ttype, co
 */
 static XML_STATUS fGetParameterAttributes(const char *name, TOKEN_TYPE ttype, const char *value)
 {
-    if (ttype == TAGBEGIN && acsRpcAction){
+    if (ttype == TAGBEGIN && acsRpcAction)
+    {
         acsRpcAction->rpcMethod = rpcGetParameterAttributes;
     }
     return XML_STS_OK;
@@ -721,12 +782,12 @@ static XML_STATUS fDelaySeconds(const char *name, TOKEN_TYPE ttype, const char *
 {
     if (ttype == TAGDATA && acsRpcAction)
     {
-        ParamItem *p = (ParamItem *)VOS_MALLOC_FLAGS(sizeof (ParamItem), 0);
+        ParamItem *p = (ParamItem *)VOS_MALLOC_FLAGS(sizeof(ParamItem), 0);
         if (p)
         {
-            #ifdef SUPPRESS_SOAP_ARRAYTYPE
-                ++acsRpcAction->arrayItemCnt;
-            #endif
+#ifdef SUPPRESS_SOAP_ARRAYTYPE
+            ++acsRpcAction->arrayItemCnt;
+#endif
             p->pname = p->pvalue = p->pOrigValue = NULL;
             p->next = acsRpcAction->ud.pItem;
             acsRpcAction->ud.pItem = p;
@@ -754,9 +815,11 @@ static XML_STATUS fScheduleInform(const char *name, TOKEN_TYPE ttype, const char
 
 static XML_STATUS fBody(const char *name, TOKEN_TYPE ttype, const char *value)
 {
-    if (ttype == TAGBEGIN) {
-        }
-    else {
+    if (ttype == TAGBEGIN)
+    {
+    }
+    else
+    {
     }
     return XML_STS_OK;
 }
@@ -772,19 +835,20 @@ static XML_STATUS fGetRPCMethodsResponse(const char *name, TOKEN_TYPE ttype, con
 static XML_STATUS fNoMoreRequests(const char *name, TOKEN_TYPE ttype, const char *value)
 {
     if (ttype == TAGDATA)
-        acsState.noMoreRequests = !strcmp(value,"1");
+        acsState.noMoreRequests = !strcmp(value, "1");
     return XML_STS_OK;
 }
 static XML_STATUS fHoldRequest(const char *name, TOKEN_TYPE ttype, const char *value)
 {
     if (ttype == TAGDATA)
-        acsState.holdRequests = !strcmp(value,"1");
-        
+        acsState.holdRequests = !strcmp(value, "1");
+
     return XML_STS_OK;
 }
 static XML_STATUS fIDValue(const char *name, TOKEN_TYPE ttype, const char *value)
 {
-    if (ttype == TAGDATA) {
+    if (ttype == TAGDATA)
+    {
         if (acsRpcAction)
             acsRpcAction->ID = VOS_STRDUP(value);
         else
@@ -795,32 +859,32 @@ static XML_STATUS fIDValue(const char *name, TOKEN_TYPE ttype, const char *value
 /* <envelope .../>   */
 static XML_STATUS fEnvelope(const char *name, TOKEN_TYPE ttype, const char *value)
 {
-   if (ttype == TAGBEGIN)
-   {
-      vosLog_debug("TAGBEGIN ------");
-      if (acsRpcAction)
-      {
-         freeRPCAction(acsRpcAction);
-      }
-      acsRpcAction = newRPCAction();
-   }
-   else
-   {
-      vosLog_debug("TAGEND -----");
-      /* end of envelope -- now run RPC */
-      /* */
-      #ifdef DEBUG
-      dumpAcsState();
-      dumpRpcAction(acsRpcAction);
-      #endif
-   }
-   return XML_STS_OK;
+    if (ttype == TAGBEGIN)
+    {
+        vosLog_debug("TAGBEGIN ------");
+        if (acsRpcAction)
+        {
+            freeRPCAction(acsRpcAction);
+        }
+        acsRpcAction = newRPCAction();
+    }
+    else
+    {
+        vosLog_debug("TAGEND -----");
+        /* end of envelope -- now run RPC */
+        /* */
+#ifdef DEBUG
+        dumpAcsState();
+        dumpRpcAction(acsRpcAction);
+#endif
+    }
+    return XML_STS_OK;
 }
 
 static XML_STATUS fGetQueuedTransfers(const char *name, TOKEN_TYPE ttype, const char *value)
 {
     if (ttype == TAGBEGIN && acsRpcAction)
-       acsRpcAction->rpcMethod = rpcGetQueuedTransfers;
+        acsRpcAction->rpcMethod = rpcGetQueuedTransfers;
     return XML_STS_OK;
 }
 

@@ -3,7 +3,7 @@
 #include <linux/platform_device.h>
 #include <linux/ioport.h>
 
-static struct resource beep_resource[] = 
+static struct resource beep_resource[] =
 {
     [0] = {
         .start = 0x114000a0,
@@ -26,7 +26,7 @@ static void hello_release(struct device *dev)
 }
 
 
-static struct platform_device hello_device=
+static struct platform_device hello_device =
 {
     .name = "bigbang",
     .id = -1,

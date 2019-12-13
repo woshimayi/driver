@@ -5,7 +5,7 @@
 
 #define	BUFSIZE		1500
 
-			/* globals */
+/* globals */
 char	 sendbuf[BUFSIZE];
 
 int		 datalen;			/* # bytes of data following ICMP header */
@@ -15,7 +15,7 @@ pid_t	 pid;				/* our PID */
 int		 sockfd;
 int		 verbose;
 
-			/* function prototypes */
+/* function prototypes */
 void	 init_v6(void);
 void	 proc_v4(char *, ssize_t, struct msghdr *, struct timeval *);
 void	 proc_v6(char *, ssize_t, struct msghdr *, struct timeval *);
@@ -25,19 +25,20 @@ void	 readloop(void);
 void	 sig_alrm(int);
 void	 tv_sub(struct timeval *, struct timeval *);
 
-struct proto {
-  void	 (*fproc)(char *, ssize_t, struct msghdr *, struct timeval *);
-  void	 (*fsend)(void);
-  void	 (*finit)(void);
-  struct sockaddr  *sasend;	/* sockaddr{} for send, from getaddrinfo */
-  struct sockaddr  *sarecv;	/* sockaddr{} for receiving */
-  socklen_t	    salen;		/* length of sockaddr{}s */
-  int	   	    icmpproto;	/* IPPROTO_xxx value for ICMP */
+struct proto
+{
+    void (*fproc)(char *, ssize_t, struct msghdr *, struct timeval *);
+    void (*fsend)(void);
+    void (*finit)(void);
+    struct sockaddr  *sasend;	/* sockaddr{} for send, from getaddrinfo */
+    struct sockaddr  *sarecv;	/* sockaddr{} for receiving */
+    socklen_t	    salen;		/* length of sockaddr{}s */
+    int	   	    icmpproto;	/* IPPROTO_xxx value for ICMP */
 } *pr;
 
 #ifdef	IPV6
 
-#include	<netinet/ip6.h>
-#include	<netinet/icmp6.h>
+    #include	<netinet/ip6.h>
+    #include	<netinet/icmp6.h>
 
 #endif

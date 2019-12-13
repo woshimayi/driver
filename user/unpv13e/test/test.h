@@ -1,6 +1,6 @@
 #include	"unp.h"
 
-	/* globals */
+/* globals */
 extern struct sockaddr_in	servaddr, cliaddr;
 extern char		buff[8192];
 extern int		verbose;

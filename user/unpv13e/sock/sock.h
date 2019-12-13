@@ -11,12 +11,12 @@
 
 #include	<sys/uio.h>
 #ifdef	__bsdi__
-#include	<machine/endian.h>	/* required before tcp.h, for BYTE_ORDER */
+    #include	<machine/endian.h>	/* required before tcp.h, for BYTE_ORDER */
 #endif
 #include	<netinet/tcp.h>		/* TCP_NODELAY */
 #include	<netdb.h>			/* getservbyname(), gethostbyname() */
 
-				/* declare global variables */
+/* declare global variables */
 extern int		bindport;
 extern int		broadcast;
 extern int		cbreak;
@@ -75,12 +75,12 @@ extern struct sockaddr_in	cliaddr, servaddr;
    with inet_ntoa, whose argument is a "struct in_addr". */
 
 #if	defined(sun) && defined(__GNUC__) && defined(GCC_STRUCT_PROBLEM)
-#define	INET_NTOA(foo)	inet_ntoa(&foo)
+    #define	INET_NTOA(foo)	inet_ntoa(&foo)
 #else
-#define	INET_NTOA(foo)	inet_ntoa(foo)
+    #define	INET_NTOA(foo)	inet_ntoa(foo)
 #endif
 
-				/* function prototypes */
+/* function prototypes */
 void	buffers(int);
 int		cliopen(char *, char *);
 int		crlf_add(char *, int, const char *, int);

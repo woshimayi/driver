@@ -1,16 +1,16 @@
 /*----------------------------------------------------------------------*
-<:copyright-broadcom 
- 
- Copyright (c) 2005 Broadcom Corporation 
- All Rights Reserved 
- No portions of this material may be reproduced in any form without the 
- written permission of: 
-          Broadcom Corporation 
-          16215 Alton Parkway 
-          Irvine, California 92619 
- All information contained in this document is Broadcom Corporation 
- company private, proprietary, and trade secret. 
- 
+<:copyright-broadcom
+
+ Copyright (c) 2005 Broadcom Corporation
+ All Rights Reserved
+ No portions of this material may be reproduced in any form without the
+ written permission of:
+          Broadcom Corporation
+          16215 Alton Parkway
+          Irvine, California 92619
+ All information contained in this document is Broadcom Corporation
+ company private, proprietary, and trade secret.
+
 :>
  *----------------------------------------------------------------------*/
 
@@ -50,28 +50,29 @@
 
 /*>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>*/
 #ifdef  DEBUG
-    #define mkstr(S) # S
-    #define setListener(A,B,C) {fprintf(stderr,mkstr(%s setListener B fd=%d\n), getticks(), A);\
-setListener( A,B,C);}
+#define mkstr(S) # S
+#define setListener(A,B,C) {fprintf(stderr,mkstr(%s setListener B fd=%d\n), getticks(), A);\
+        setListener( A,B,C);}
 
-    #define setListenerType(A,B,C,E) {fprintf(stderr,mkstr(%s setListenerType B-E fd=%d\n), getticks(), A);\
-setListenerType( A,B,C,E);}
+#define setListenerType(A,B,C,E) {fprintf(stderr,mkstr(%s setListenerType B-E fd=%d\n), getticks(), A);\
+        setListenerType( A,B,C,E);}
 
-    #define stopListener(A) {fprintf(stderr,"%s stopListener fd=%d\n", getticks(), A);\
-stopListener( A );}
+#define stopListener(A) {fprintf(stderr,"%s stopListener fd=%d\n", getticks(), A);\
+        stopListener( A );}
 
 static char timestr[40];
 static char *getticks()
 {
     struct timeval now;
-    gettimeofday( &now,NULL);
-    sprintf(timestr,"%04ld.%06ld", now.tv_sec%1000, now.tv_usec);
+    gettimeofday(&now, NULL);
+    sprintf(timestr, "%04ld.%06ld", now.tv_sec % 1000, now.tv_usec);
     return timestr;
 }
 #endif
 
 
-typedef enum {
+typedef enum
+{
     REPLACE,
     ADDTOLIST
 } eHdrOp;
@@ -85,7 +86,7 @@ typedef enum {
 static char noHostConnectMsg[] = "Could not establish connection to host %s(%s):%d";
 static char noHostResolve[] = "Could not resolve host %s";
 static char lastErrorMsg[255];
-int g_dns_resolve_ret = 1; 
+int g_dns_resolve_ret = 1;
 
 extern RPCAction *simRpcAction;
 
@@ -97,23 +98,25 @@ static void do_response(void *p);
 static void do_send_request(void *p, int errorcode);
 
 
-static void freeHdrs( XtraPostHdr **p )
+static void freeHdrs(XtraPostHdr **p)
 {
     XtraPostHdr *next = *p;
-        while( next ){
-            XtraPostHdr *temp;
-            temp = next->next;
-            VOS_FREE(next->hdr);
-            VOS_FREE(next->value);
-            VOS_FREE(next);
-            next = temp;
-        }
+    while (next)
+    {
+        XtraPostHdr *temp;
+        temp = next->next;
+        VOS_FREE(next->hdr);
+        VOS_FREE(next->value);
+        VOS_FREE(next);
+        next = temp;
+    }
 }
 
-static void freeCookies( CookieHdr **p )
+static void freeCookies(CookieHdr **p)
 {
     CookieHdr *next = *p;
-    while( next ){
+    while (next)
+    {
         CookieHdr *temp;
         temp = next->next;
         VOS_FREE(next->name);
@@ -127,9 +130,9 @@ static void freeCookies( CookieHdr **p )
 /*----------------------------------------------------------------------*/
 void freeData(tWgetInternal *wg)
 {
-    if (wg != NULL) 
+    if (wg != NULL)
     {
-        if (wg->pc != NULL) 
+        if (wg->pc != NULL)
         {
             proto_FreeCtx(wg->pc);
             wg->pc = NULL;
@@ -139,31 +142,35 @@ void freeData(tWgetInternal *wg)
         VOS_FREE(wg->host);
         VOS_FREE(wg->uri);
 
-        if (wg->hdrs != NULL) 
+        if (wg->hdrs != NULL)
         {
             proto_FreeHttpHdrs(wg->hdrs);
         }
-        
-        freeCookies( &wg->cookieHdrs );
-        freeHdrs( &wg->xtraPostHdrs );
+
+        freeCookies(&wg->cookieHdrs);
+        freeHdrs(&wg->xtraPostHdrs);
         // don't free content_type and postdata since they're only pointers, there are no strdup for them.
         VOS_FREE(wg);
     }
 }
 
 
-static int addCookieHdr( CookieHdr **hdrQp, char *cookieName, char *value, eHdrOp replaceDups)
+static int addCookieHdr(CookieHdr **hdrQp, char *cookieName, char *value, eHdrOp replaceDups)
 {
     CookieHdr *xh;
     CookieHdr **p = hdrQp;
-    xh= (CookieHdr *)VOS_MALLOC_FLAGS(sizeof(struct CookieHdr), ALLOC_ZEROIZE);
-    if (xh) {
+    xh = (CookieHdr *)VOS_MALLOC_FLAGS(sizeof(struct CookieHdr), ALLOC_ZEROIZE);
+    if (xh)
+    {
         xh->name = VOS_STRDUP(cookieName);
         xh->value = VOS_STRDUP(value);
-        if (replaceDups == REPLACE) {
-            while (*p) {
+        if (replaceDups == REPLACE)
+        {
+            while (*p)
+            {
                 CookieHdr *xp = *p;
-                if ( strcasecmp(xp->name, xh->name)==0) {
+                if (strcasecmp(xp->name, xh->name) == 0)
+                {
                     /* replace header */
                     xh->next = xp->next;
                     VOS_FREE(xp->name);
@@ -184,22 +191,22 @@ static int addCookieHdr( CookieHdr **hdrQp, char *cookieName, char *value, eHdrO
 }
 
 
-static int addPostHdr( XtraPostHdr **hdrQp, char *xhdrname, char *value, eHdrOp replaceDups)
+static int addPostHdr(XtraPostHdr **hdrQp, char *xhdrname, char *value, eHdrOp replaceDups)
 {
     XtraPostHdr *xh;
     XtraPostHdr **p = hdrQp;
 
-    xh= (XtraPostHdr *)VOS_MALLOC_FLAGS(sizeof(struct XtraPostHdr), ALLOC_ZEROIZE);
-    if (xh) 
+    xh = (XtraPostHdr *)VOS_MALLOC_FLAGS(sizeof(struct XtraPostHdr), ALLOC_ZEROIZE);
+    if (xh)
     {
         xh->hdr = VOS_STRDUP(xhdrname);
         xh->value = VOS_STRDUP(value);
-        if (replaceDups == REPLACE) 
+        if (replaceDups == REPLACE)
         {
-            while (*p) 
+            while (*p)
             {
                 XtraPostHdr *xp = *p;
-                if (strcmp(xp->hdr, xh->hdr) == 0) 
+                if (strcmp(xp->hdr, xh->hdr) == 0)
                 {
                     /* replace header */
                     xh->next = xp->next;
@@ -209,28 +216,28 @@ static int addPostHdr( XtraPostHdr **hdrQp, char *xhdrname, char *value, eHdrOp 
                     *p = xh;
                     return 1;
                 }
-                
+
                 p = &xp->next;
             }
         }
-        
+
         /* just stick it at beginning of list */
         xh->next = *hdrQp;
         *hdrQp = xh;
         return 1;
     }
-    
+
     return 0;
 }
 
 /*----------------------------------------------------------------------*/
-static void report_status(tWgetInternal *data, tWgetStatus status, 
+static void report_status(tWgetInternal *data, tWgetStatus status,
                           const char *msg)
 {
     tWget wg;
 
     vosLog_debug("Enter>, data = %p", data);
-    
+
     /* internal error, call callback */
     wg.status = status;
     wg.pc = data->pc;
@@ -240,7 +247,7 @@ static void report_status(tWgetInternal *data, tWgetStatus status,
     data->cbActive = 1;
     (*data->cb)(&wg);
     data->cbActive = 0;
-    
+
     if (data->keepConnection == eCloseConnection && data->status != -9)
     {
         freeData(data);
@@ -277,8 +284,8 @@ static int send_get_request(tWgetInternal *p,
     {
         proto_SendHeader(pc,  "User-Agent", USER_AGENT_NAME);
     }
-    
-    if (p->keepConnection==eCloseConnection)
+
+    if (p->keepConnection == eCloseConnection)
     {
         proto_SendHeader(pc,  "Connection", "close");
     }
@@ -286,11 +293,11 @@ static int send_get_request(tWgetInternal *p,
     {
         proto_SendHeader(pc,  "Connection", "keep-alive");
     }
-   
+
     next = p->xtraPostHdrs;
     while (next)
     {
-        proto_SendHeader(pc,next->hdr, next->value);
+        proto_SendHeader(pc, next->hdr, next->value);
         next = next->next;
     }
 
@@ -309,7 +316,7 @@ static int send_request(tWgetInternal *p, const char *host, int port, const char
     CookieHdr   *cookie;
 
     vosLog_debug("Enter>");
-    
+
     UTIL_SNPRINTF(buf, sizeof(buf), "%s:%d", host, port);
     proto_SendHeader(pc,  "Host", buf);
     if (SF_FEATURE_LOCATION_SHANGHAI)
@@ -321,7 +328,7 @@ static int send_request(tWgetInternal *p, const char *host, int port, const char
         proto_SendHeader(pc,  "User-Agent", USER_AGENT_NAME);
     }
 
-    
+
     if (p->keepConnection == eCloseConnection)
     {
         proto_SendHeader(pc,  "Connection", "close");
@@ -330,21 +337,21 @@ static int send_request(tWgetInternal *p, const char *host, int port, const char
     {
         proto_SendHeader(pc,  "Connection", "keep-alive");
     }
-   
+
     next = p->xtraPostHdrs;
     while (next)
     {
-        proto_SendHeader(pc,next->hdr, next->value);
+        proto_SendHeader(pc, next->hdr, next->value);
         next = next->next;
     }
-   
+
     cookie = p->cookieHdrs;
-    while(cookie)
+    while (cookie)
     {
         proto_SendCookie(pc, cookie);
         cookie = cookie->next;
     }
-   
+
     proto_SendHeader(pc,  "Content-Type", content_type);
     UTIL_SNPRINTF(buf, sizeof(buf), "%d", content_len);
     proto_SendHeader(pc,  "Content-Length", buf);
@@ -396,7 +403,7 @@ static int send_put_request(tWgetInternal *p, const char *host, int port, const 
 {
     tProtoCtx *pc = p->pc;
 
-    if (getWanState()== eWAN_INACTIVE)
+    if (getWanState() == eWAN_INACTIVE)
     {
         return -1;
     }
@@ -428,7 +435,7 @@ static void timer_response(void *p)
     char  buf[512] = {0};
 
     stopListener(data->pc->fd);
-    
+
     UTIL_SNPRINTF(buf, sizeof(buf), "Host (%s:%d) is not responding, timeout", data->host, data->port);
     report_status(data, iWgetStatus_ConnectionError, buf);
 }
@@ -461,8 +468,8 @@ static void do_connect(void *p)
         /* connection not established */
         char buf[256];
 
-        UTIL_SNPRINTF(buf, sizeof(buf), "Connection to host %s(%s):%d failed %d (%s)", 
-                      data->host, writeIp(data->host_addr), data->port, 
+        UTIL_SNPRINTF(buf, sizeof(buf), "Connection to host %s(%s):%d failed %d (%s)",
+                      data->host, writeIp(data->host_addr), data->port,
                       err, strerror(err));
         report_status(data, iWgetStatus_ConnectionError, buf);
         return;
@@ -494,14 +501,14 @@ static void do_connect_ssl(void *p, int errorcode)
 
     if (errorcode < 0)
     {
-        report_status(data, iWgetStatus_ConnectionError, 
-              "Failed to establish SSL connection");
+        report_status(data, iWgetStatus_ConnectionError,
+                      "Failed to establish SSL connection");
     }
     else
     {
         do_connect(p);
     }
-} 
+}
 
 
 /*----------------------------------------------------------------------*/
@@ -516,7 +523,7 @@ static void do_send_request(void *p, int errorcode)
     vosLog_debug("Enter>, keepConn = %d status = %d", data->keepConnection, data->status);
     if (errorcode < 0)
     {
-        report_status(data, iWgetStatus_ConnectionError, 
+        report_status(data, iWgetStatus_ConnectionError,
                       "Failed to establish SSL connection");
         return;
     }
@@ -529,11 +536,11 @@ static void do_send_request(void *p, int errorcode)
             res = send_get_request(p, data->host, data->port, data->uri);
             break;
         case ePostData:
-            res = send_post_request(p, data->host, data->port, data->uri, data->postdata, 
+            res = send_post_request(p, data->host, data->port, data->uri, data->postdata,
                                     data->datalen, data->content_type, ht->content_len);
             break;
         case ePutData:
-            res = send_put_request(p, data->host, data->port, data->uri, data->postdata, 
+            res = send_put_request(p, data->host, data->port, data->uri, data->postdata,
                                    data->datalen, data->content_type, ht->content_len);
             break;
         default:
@@ -543,8 +550,8 @@ static void do_send_request(void *p, int errorcode)
 
     if (res < 0)
     {
-        report_status(data, iWgetStatus_ConnectionError, 
-                    "Failed to send request on connection");
+        report_status(data, iWgetStatus_ConnectionError,
+                      "Failed to send request on connection");
         return;
     }
 
@@ -557,15 +564,15 @@ static void do_send_request(void *p, int errorcode)
     setListener(data->pc->fd, do_response, data);
     if (ePutData == data->request || eGetData == data->request)
     {
-        responseTime = 60 * 1000*5;
+        responseTime = 60 * 1000 * 5;
     }
 
-    if(SF_FEATURE_LOCATION_GUANGDONG)
+    if (SF_FEATURE_LOCATION_GUANGDONG)
     {
         responseTime = 6 * ACSRESPONSETIME;
     }
     ret = utilTmr_set(tmrHandle, timer_response, data, responseTime, "timer_response"); /* response timeout is 60 sec */
-    
+
     if (ret != VOS_RET_SUCCESS)
     {
         vosLog_error("could not set ACS response timer, ret=%d", ret);
@@ -586,24 +593,24 @@ static void do_response(void *p)
     if (data->pc == NULL)
     {
         vosLog_error("wget, Internal Error");
-        
-        report_status(data, iWgetStatus_InternalError, 
+
+        report_status(data, iWgetStatus_InternalError,
                       "internal error: no filedescriptor");
         return;
     }
-    
+
     if (data->pc->fd <= 0)
     {
-        report_status(data, iWgetStatus_InternalError, 
-               "internal error: no filedescriptor");
+        report_status(data, iWgetStatus_InternalError,
+                      "internal error: no filedescriptor");
         return;
     }
-    
+
     if (data->hdrs)
     {
         proto_FreeHttpHdrs(data->hdrs);
     }
-    
+
     data->hdrs = proto_NewHttpHdrs();
     if (data->hdrs == NULL)
     {
@@ -613,7 +620,7 @@ static void do_response(void *p)
 
     if (proto_ParseResponse(data->pc, data->hdrs) < 0)
     {
-        report_status(data, iWgetStatus_Error, 
+        report_status(data, iWgetStatus_Error,
                       "error: illegal http response or read failure");
         return;
     }
@@ -621,9 +628,9 @@ static void do_response(void *p)
     proto_ParseHdrs(data->pc, data->hdrs);
     cp = data->hdrs->setCookies;
     while (cp)
-    { 
+    {
         /* save new cookies if present*/
-        addCookieHdr( &data->cookieHdrs,cp->name, cp->value, REPLACE );
+        addCookieHdr(&data->cookieHdrs, cp->name, cp->value, REPLACE);
         cp = cp->next;
     }
 
@@ -634,7 +641,7 @@ static void do_response(void *p)
     else
     {
         char buf[1024];
-        UTIL_SNPRINTF(buf, sizeof(buf), "Host %s returned error \"%s\"(%d)", 
+        UTIL_SNPRINTF(buf, sizeof(buf), "Host %s returned error \"%s\"(%d)",
                       data->host, data->hdrs->message, data->hdrs->status_code);
         report_status(data, iWgetStatus_HttpError, buf);
     }
@@ -644,8 +651,8 @@ static void do_response(void *p)
 /*
 * Connect to the specified url
 * Returns: NULL  failed allocate memory or immediate connection error.
- *               Call wget_LastErrorMsg() to retrieve last error msg. 
- *         pointer to Connection descriptor tWgetInternal. 
+ *               Call wget_LastErrorMsg() to retrieve last error msg.
+ *         pointer to Connection descriptor tWgetInternal.
 */
 tWgetInternal *wget_DiagConnect(const char *url, UtilEventHandler callback, void *handle)
 {
@@ -658,18 +665,18 @@ tWgetInternal *wget_DiagConnect(const char *url, UtilEventHandler callback, void
 
     vosLog_debug("Enter>, (\"%s\", ...)", url);
 
-    if ((wg = (tWgetInternal*)VOS_MALLOC_FLAGS(sizeof(tWgetInternal), ALLOC_ZEROIZE)) == NULL)
+    if ((wg = (tWgetInternal *)VOS_MALLOC_FLAGS(sizeof(tWgetInternal), ALLOC_ZEROIZE)) == NULL)
     {
         vosLog_error("VOS_MALLOC_FLAGS failed");
         return NULL;
     }
-   
+
     lastErrorMsg[0] = '\0';
 
     wg->request        = eConnect;
     wg->keepConnection = eKeepConnectionOpen;
     CMC_wanGetTr69cWanConnState(&state);
-    
+
     if (state != 1)
     {
         vosLog_debug("tr69 wan is not up");
@@ -714,7 +721,7 @@ tWgetInternal *wget_DiagConnect(const char *url, UtilEventHandler callback, void
     wg->host       = VOS_STRDUP(host);
     wg->host_addr  = 0;
     wg->port       = port;
-    
+
     if (util_strlen(uri))
     {
         wg->uri = VOS_STRDUP(uri);
@@ -754,7 +761,7 @@ tWgetInternal *wget_DiagConnect(const char *url, UtilEventHandler callback, void
         {
             if (SF_FEATURE_SUPPORT_TR69C_REMOTESTATUS)
             {
-                g_dns_resolve_ret = 2; 
+                g_dns_resolve_ret = 2;
             }
 
             if (res == -1)
@@ -762,9 +769,9 @@ tWgetInternal *wget_DiagConnect(const char *url, UtilEventHandler callback, void
                 UTIL_STRNCPY(lastErrorMsg, "Socket creation error", sizeof(lastErrorMsg));
             }
             else
-            { 
-                UTIL_SNPRINTF(lastErrorMsg, sizeof(lastErrorMsg), noHostConnectMsg, 
-                 wg->host, writeIp(wg->host_addr), wg->port);
+            {
+                UTIL_SNPRINTF(lastErrorMsg, sizeof(lastErrorMsg), noHostConnectMsg,
+                              wg->host, writeIp(wg->host_addr), wg->port);
             }
 
             vosLog_debug("%s", lastErrorMsg);
@@ -772,7 +779,7 @@ tWgetInternal *wget_DiagConnect(const char *url, UtilEventHandler callback, void
             wg = NULL;
         }
         else
-        { 
+        {
             /* connection complete- start it */
             if (SF_FEATURE_SUPPORT_TR69C_REMOTESTATUS)
             {
@@ -796,8 +803,8 @@ tWgetInternal *wget_DiagConnect(const char *url, UtilEventHandler callback, void
 /*
 * Connect to the specified url
 * Returns: NULL  failed allocate memory or immediate connection error.
- *               Call wget_LastErrorMsg() to retrieve last error msg. 
- *         pointer to Connection descriptor tWgetInternal. 
+ *               Call wget_LastErrorMsg() to retrieve last error msg.
+ *         pointer to Connection descriptor tWgetInternal.
 */
 tWgetInternal *wget_Connect(const char *url, UtilEventHandler callback, void *handle)
 {
@@ -810,18 +817,18 @@ tWgetInternal *wget_Connect(const char *url, UtilEventHandler callback, void *ha
 
     vosLog_debug("Enter>, (\"%s\", ...)", url);
 
-    if ((wg = (tWgetInternal*)VOS_MALLOC_FLAGS(sizeof(tWgetInternal), ALLOC_ZEROIZE)) == NULL)
+    if ((wg = (tWgetInternal *)VOS_MALLOC_FLAGS(sizeof(tWgetInternal), ALLOC_ZEROIZE)) == NULL)
     {
         vosLog_error("VOS_MALLOC_FLAGS failed");
         return NULL;
     }
-   
+
     lastErrorMsg[0] = '\0';
 
     wg->request        = eConnect;
     wg->keepConnection = eKeepConnectionOpen;
     CMC_wanGetTr69cWanConnState(&state);
-    
+
     if (state != 1)
     {
         vosLog_debug("tr69 wan is not up");
@@ -866,7 +873,7 @@ tWgetInternal *wget_Connect(const char *url, UtilEventHandler callback, void *ha
     wg->host       = VOS_STRDUP(host);
     wg->host_addr  = 0;
     wg->port       = port;
-    
+
     if (util_strlen(uri))
     {
         wg->uri = VOS_STRDUP(uri);
@@ -906,7 +913,7 @@ tWgetInternal *wget_Connect(const char *url, UtilEventHandler callback, void *ha
         {
             if (SF_FEATURE_SUPPORT_TR69C_REMOTESTATUS)
             {
-                g_dns_resolve_ret = 2; 
+                g_dns_resolve_ret = 2;
             }
 
             if (res == -1)
@@ -914,9 +921,9 @@ tWgetInternal *wget_Connect(const char *url, UtilEventHandler callback, void *ha
                 UTIL_STRNCPY(lastErrorMsg, "Socket creation error", sizeof(lastErrorMsg));
             }
             else
-            { 
-                UTIL_SNPRINTF(lastErrorMsg, sizeof(lastErrorMsg), noHostConnectMsg, 
-                 wg->host, writeIp(wg->host_addr), wg->port);
+            {
+                UTIL_SNPRINTF(lastErrorMsg, sizeof(lastErrorMsg), noHostConnectMsg,
+                              wg->host, writeIp(wg->host_addr), wg->port);
             }
 
             vosLog_debug("%s", lastErrorMsg);
@@ -924,7 +931,7 @@ tWgetInternal *wget_Connect(const char *url, UtilEventHandler callback, void *ha
             wg = NULL;
         }
         else
-        { 
+        {
             /* connection complete- start it */
             if (SF_FEATURE_SUPPORT_TR69C_REMOTESTATUS)
             {
@@ -959,10 +966,10 @@ int wget_GetData(tWgetInternal *wg, UtilEventHandler callback, void *handle)
 
     do_send_request(wg, PROTO_OK);
     return 0;
-} 
+}
 
 
-int wget_PostData(tWgetInternal *wg,char *postdata, int datalen, char *content_type,
+int wget_PostData(tWgetInternal *wg, char *postdata, int datalen, char *content_type,
                   UtilEventHandler callback, void *handle)
 {
     vosLog_debug("Enter>");
@@ -973,7 +980,7 @@ int wget_PostData(tWgetInternal *wg,char *postdata, int datalen, char *content_t
     wg->datalen = datalen;
     wg->handle = handle;
     wg->cb = callback;
-    
+
     if (wg->hdrs)
     {
         wg->hdrs->status_code    = 0; /* reset status_code */
@@ -982,7 +989,7 @@ int wget_PostData(tWgetInternal *wg,char *postdata, int datalen, char *content_t
 
     do_send_request(wg, PROTO_OK);
     return 0;
-}  
+}
 
 
 int wget_PostDataClose(tWgetInternal *wg, char *postdata, int datalen, char *content_type,
@@ -1006,7 +1013,7 @@ int wget_PostDataClose(tWgetInternal *wg, char *postdata, int datalen, char *con
     do_send_request(wg, PROTO_OK);
     return 0;
 
-} 
+}
 
 
 int wget_PutData(tWgetInternal *wg, char *putdata, int datalen, char *content_type,
@@ -1028,7 +1035,7 @@ int wget_PutData(tWgetInternal *wg, char *putdata, int datalen, char *content_ty
 
     do_send_request(wg, PROTO_OK);
     return 0;
-}  
+}
 
 
 /*
@@ -1036,13 +1043,13 @@ int wget_PutData(tWgetInternal *wg, char *putdata, int datalen, char *content_ty
  * by report_status. Don't freeData() if cbActive is set.
  * Setting cCloseConnection will cause report_status
  * to free up the data on return by the callback.
-* 
+*
 */
 
 int wget_Disconnect(tWgetInternal *wio)
 {
     if (wio != NULL)
-    { 
+    {
         utilTmr_cancel(tmrHandle, timer_response, wio); /* may be running */
         wio->request = eDisconnect;
         wio->keepConnection = eCloseConnection;
@@ -1056,17 +1063,17 @@ int wget_Disconnect(tWgetInternal *wio)
 }
 
 
-int wget_AddPostHdr( tWgetInternal *wio, char *xhdrname, char *value)
+int wget_AddPostHdr(tWgetInternal *wio, char *xhdrname, char *value)
 {
-   XtraPostHdr   **p = &wio->xtraPostHdrs;
+    XtraPostHdr   **p = &wio->xtraPostHdrs;
 
-   vosLog_debug("Enter>");
-   
-   return addPostHdr(p, xhdrname,value, REPLACE);
+    vosLog_debug("Enter>");
+
+    return addPostHdr(p, xhdrname, value, REPLACE);
 }
 
 
-void wget_ClearPostHdrs( tWgetInternal *wio)
+void wget_ClearPostHdrs(tWgetInternal *wio)
 {
     XtraPostHdr *xh = wio->xtraPostHdrs;
 
@@ -1075,13 +1082,13 @@ void wget_ClearPostHdrs( tWgetInternal *wio)
     while (xh)
     {
         XtraPostHdr *nxt;
-        VOS_FREE( xh->hdr);
+        VOS_FREE(xh->hdr);
         VOS_FREE(xh->value);
         nxt = xh->next;
         VOS_FREE(xh);
-        xh= nxt;
+        xh = nxt;
     }
-    
+
     wio->xtraPostHdrs = NULL;
 }
 

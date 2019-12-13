@@ -12,7 +12,7 @@
 
 #define	TTL_OUT		64				/* outgoing TTL */
 
-					/* declare global variables */
+/* declare global variables */
 extern struct sockaddr	*dest, *local;
 extern socklen_t		destlen, locallen;
 extern int		datalink;
@@ -23,7 +23,7 @@ extern int		snaplen;
 extern int		verbose;
 extern int		zerosum;
 
-					/* function prototypes */
+/* function prototypes */
 void			 cleanup(int);
 char			*next_pcap(int *);
 void			 open_output(void);

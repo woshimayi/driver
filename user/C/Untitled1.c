@@ -18,35 +18,35 @@ static VOS_LOG_SHARED_MEM_T *logShareMem = NULL;
 
 typedef enum
 {
-   VOS_LOG_DEST_STDERR  = 1,  /**< Message output to stderr. */
-   VOS_LOG_DEST_SYSLOG  = 2,  /**< Message output to syslog. */
-   VOS_LOG_DEST_TELNET  = 3,   /**< Message output to telnet clients. */
-   VOS_LOG_DEST_LOGCAT  = 4
+    VOS_LOG_DEST_STDERR  = 1,  /**< Message output to stderr. */
+    VOS_LOG_DEST_SYSLOG  = 2,  /**< Message output to syslog. */
+    VOS_LOG_DEST_TELNET  = 3,   /**< Message output to telnet clients. */
+    VOS_LOG_DEST_LOGCAT  = 4
 } VosLogDestination;
 
 
 typedef enum
 {
-   VOS_LOG_LEVEL_PRINT  = 2,
-   VOS_LOG_LEVEL_ERR    = 3, /**< Message at error level. */
-   VOS_LOG_LEVEL_NOTICE = 5, /**< Message at notice level. */
-   VOS_LOG_LEVEL_DEBUG  = 7  /**< Message at debug level. */
+    VOS_LOG_LEVEL_PRINT  = 2,
+    VOS_LOG_LEVEL_ERR    = 3, /**< Message at error level. */
+    VOS_LOG_LEVEL_NOTICE = 5, /**< Message at notice level. */
+    VOS_LOG_LEVEL_DEBUG  = 7  /**< Message at debug level. */
 } VosLogLevel;
 
 typedef enum
 {
-   VOS_LOG_DEST_STDERR  = 1,  /**< Message output to stderr. */
-   VOS_LOG_DEST_SYSLOG  = 2,  /**< Message output to syslog. */
-   VOS_LOG_DEST_TELNET  = 3,   /**< Message output to telnet clients. */
-   VOS_LOG_DEST_LOGCAT  = 4
+    VOS_LOG_DEST_STDERR  = 1,  /**< Message output to stderr. */
+    VOS_LOG_DEST_SYSLOG  = 2,  /**< Message output to syslog. */
+    VOS_LOG_DEST_TELNET  = 3,   /**< Message output to telnet clients. */
+    VOS_LOG_DEST_LOGCAT  = 4
 } VosLogDestination;
 
 typedef enum
 {
-   VOS_LOG_LEVEL_PRINT  = 2,
-   VOS_LOG_LEVEL_ERR    = 3, /**< Message at error level. */
-   VOS_LOG_LEVEL_NOTICE = 5, /**< Message at notice level. */
-   VOS_LOG_LEVEL_DEBUG  = 7  /**< Message at debug level. */
+    VOS_LOG_LEVEL_PRINT  = 2,
+    VOS_LOG_LEVEL_ERR    = 3, /**< Message at error level. */
+    VOS_LOG_LEVEL_NOTICE = 5, /**< Message at notice level. */
+    VOS_LOG_LEVEL_DEBUG  = 7  /**< Message at debug level. */
 } VosLogLevel;
 
 
@@ -55,12 +55,12 @@ typedef enum
 
 
 
-void log_log(VosLogLevel level, const char *func, UINT32 lineNum, const char *fmt, ... )
+void log_log(VosLogLevel level, const char *func, UINT32 lineNum, const char *fmt, ...)
 {
     va_list ap;
     char buf[102400] = {0};
-    int len=0, maxLen;
-    char *logLevelStr=NULL;
+    int len = 0, maxLen;
+    char *logLevelStr = NULL;
     UINT32 headerMask = logHeaderMask;
 
     if (NULL == logShareMem)
@@ -77,7 +77,7 @@ void log_log(VosLogLevel level, const char *func, UINT32 lineNum, const char *fm
     {
         va_start(ap, fmt);
 
-        switch(level)
+        switch (level)
         {
             case VOS_LOG_LEVEL_ERR:
                 len = snprintf(buf, maxLen, LIGHT_RED_COLOR);
@@ -109,13 +109,13 @@ void log_log(VosLogLevel level, const char *func, UINT32 lineNum, const char *fm
 
         if ((headerMask & VOS_LOG_HDRMASK_LEVEL) && (len < maxLen))
         {
-         /*
-                * Only log the severity level when going to stderr
-                * because syslog already logs the severity level for us.
-                */
+            /*
+                   * Only log the severity level when going to stderr
+                   * because syslog already logs the severity level for us.
+                   */
             if (logShareMem->logDestination == VOS_LOG_DEST_STDERR)
             {
-                switch(level)
+                switch (level)
                 {
                     case VOS_LOG_LEVEL_ERR:
                         logLevelStr = "error";
@@ -145,7 +145,7 @@ void log_log(VosLogLevel level, const char *func, UINT32 lineNum, const char *fm
 
             utilTms_get(&ts);
             len += snprintf(&(buf[len]), maxLen - len, "%u.%03u:",
-                            ts.sec%1000, ts.nsec/NSECS_IN_MSEC);
+                            ts.sec % 1000, ts.nsec / NSECS_IN_MSEC);
         }
 
         if ((headerMask & VOS_LOG_HDRMASK_LOCATION) && (len < maxLen))

@@ -2,25 +2,25 @@
 #include<string.h>
 #include<stdlib.h>
 
-typedef struct 
+typedef struct
 {
-	char * str;
-}abc;
+    char *str;
+} abc;
 
-typedef struct 
+typedef struct
 {
-	char * str1;
-}cde;
+    char *str1;
+} cde;
 
 int main()
 {
-	abc abc = {"abc"};
-	cde cde = {"cde"};
-	void * dest = NULL;
-	void * dest1 = NULL;
-	(abc*)dest = abc;
-	
-	printf("dest->str = %s\n", dest1->str);
-	return 0;
+    abc abc = {"abc"};
+    cde cde = {"cde"};
+    void *dest = NULL;
+    void *dest1 = NULL;
+    (abc *)dest = abc;
+
+    printf("dest->str = %s\n", dest1->str);
+    return 0;
 }
 

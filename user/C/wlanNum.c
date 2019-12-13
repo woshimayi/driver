@@ -4,15 +4,15 @@
 
 int OamCtcGetWlanEnableNum()
 {
-    FILE *fd=NULL;
+    FILE *fd = NULL;
     char  tmp[100] = {0};
     int num = 0;
     fd = fopen("ifconfig.log", "r");
-    if(fd != NULL)
+    if (fd != NULL)
     {
-        while(NULL != fgets(tmp, sizeof(tmp), fd))
+        while (NULL != fgets(tmp, sizeof(tmp), fd))
         {
-            if(NULL != strstr(tmp, "wl0"))
+            if (NULL != strstr(tmp, "wl0"))
             {
                 num++;
             }
@@ -34,49 +34,49 @@ int OamCtcGetWlanEnableNum()
 
 int main()
 {
-//	char  tmp[100] = {0};
-//	FILE * fd = NULL;
-	int num = 0;
-//	fd = fopen("ifconfig.log", "r");
-//	if(fd != NULL)
-//	{
-//			while(NULL != fgets(tmp, sizeof(tmp), fd))
-//			{
-//				if(NULL != strstr(tmp, "wl0"))
-//				{
-//					printf("tmp = %s\n", tmp);
-//					num++;
-//				}
-//			}
-//	}
+    //	char  tmp[100] = {0};
+    //	FILE * fd = NULL;
+    int num = 0;
+    //	fd = fopen("ifconfig.log", "r");
+    //	if(fd != NULL)
+    //	{
+    //			while(NULL != fgets(tmp, sizeof(tmp), fd))
+    //			{
+    //				if(NULL != strstr(tmp, "wl0"))
+    //				{
+    //					printf("tmp = %s\n", tmp);
+    //					num++;
+    //				}
+    //			}
+    //	}
 
-//    char *p=NULL;
-//    FILE *fd=NULL;
-//    char line[128] = {0};
-//    int num = 0;
-//
-//    fd = fopen("ifconfig.log", "r");
-//    if(NULL == fd)
-//    {
-// 		printf("sdfsdfs\n");
-//    }
-//    else
-//    {
-//        while(fgets(line, sizeof(line), fd) != NULL)
-//        {
-//            if((p = strstr(line, "wl0")))
-//            {
-//                num = num + 1;
-//            }
-//        }
-//    }
-//    fclose(fd);
+    //    char *p=NULL;
+    //    FILE *fd=NULL;
+    //    char line[128] = {0};
+    //    int num = 0;
+    //
+    //    fd = fopen("ifconfig.log", "r");
+    //    if(NULL == fd)
+    //    {
+    // 		printf("sdfsdfs\n");
+    //    }
+    //    else
+    //    {
+    //        while(fgets(line, sizeof(line), fd) != NULL)
+    //        {
+    //            if((p = strstr(line, "wl0")))
+    //            {
+    //                num = num + 1;
+    //            }
+    //        }
+    //    }
+    //    fclose(fd);
 
 
-	num = OamCtcGetWlanEnableNum();
+    num = OamCtcGetWlanEnableNum();
 
-	printf("num = %d", num);
-	return 0;
+    printf("num = %d", num);
+    return 0;
 }
 
 

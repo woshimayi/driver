@@ -15,11 +15,11 @@ typedef u_int8_t u8;
 #include "hal_util_eth.h"
 #include "mtkswitch_api.h"
 #ifdef JASON_DEBUG
-#include "bcmswapitypes.h"
-#include "generated/autoconf.h"
-#include "bcmnet.h"
-#include "bcm_vlan.h"
-#include "vlanctl_api.h"
+    #include "bcmswapitypes.h"
+    #include "generated/autoconf.h"
+    #include "bcmnet.h"
+    #include "bcm_vlan.h"
+    #include "vlanctl_api.h"
 #endif /* DESKTOP_LINUX */
 #include "hal_gpon_mac.h"
 
@@ -76,7 +76,7 @@ static HAL_ETH_PORT_INFO portInfo[4] = {{"eth0", 0}, {"eth1", 1}, {"eth2", 2}, {
 
 static HAL_ETH_PORT_INFO portInfoReverse[4] = {{"eth0", 3}, {"eth1", 2}, {"eth2", 1}, {"eth3", 0}};
 
-static HAL_ETH_MCAST_IF sg_mcastIfNames[HAL_MAX_MCAST_IFNAMES] = 
+static HAL_ETH_MCAST_IF sg_mcastIfNames[HAL_MAX_MCAST_IFNAMES] =
 {
     {
         .ifName = "gponm.aniR",
@@ -101,13 +101,13 @@ typedef struct
 } HAL_VLAN_ETH_NAME_LIST;
 
 
-static HAL_VLAN_ETH_NAME_LIST sg_vlanEthNameList[UTIL_WAN_CONN_MAX_NUM] = 
+static HAL_VLAN_ETH_NAME_LIST sg_vlanEthNameList[UTIL_WAN_CONN_MAX_NUM] =
 {
     {0, {'\0'}, {'\0'}},
     {0, {'\0'}, {'\0'}},
     {0, {'\0'}, {'\0'}},
     {0, {'\0'}, {'\0'}},
-    
+
     {0, {'\0'}, {'\0'}},
     {0, {'\0'}, {'\0'}},
     {0, {'\0'}, {'\0'}},
@@ -130,13 +130,13 @@ typedef struct
 } HAL_VLAN_MAP_MC_WAN_LIST;
 
 
-static HAL_VLAN_MAP_MC_WAN_LIST sg_vlanMapMcWanList[UTIL_WAN_CONN_MAX_NUM] = 
+static HAL_VLAN_MAP_MC_WAN_LIST sg_vlanMapMcWanList[UTIL_WAN_CONN_MAX_NUM] =
 {
     {0, {'\0'}, {'\0'}},
     {0, {'\0'}, {'\0'}},
     {0, {'\0'}, {'\0'}},
     {0, {'\0'}, {'\0'}},
-    
+
     {0, {'\0'}, {'\0'}},
     {0, {'\0'}, {'\0'}},
     {0, {'\0'}, {'\0'}},
@@ -159,7 +159,7 @@ VOS_RET_E Hal_increaseMacValue(UINT8 macAddr[6], SINT32 increase)
     char macHigh[BUFLEN_16] = {0};
     UINT8 macdst[6];
     VOS_RET_E ret = VOS_RET_SUCCESS;
-    
+
     memset(macTmp, 0, sizeof(macTmp));
     memset(macLow, 0, sizeof(macLow));
     memset(macHigh, 0, sizeof(macHigh));
@@ -168,7 +168,7 @@ VOS_RET_E Hal_increaseMacValue(UINT8 macAddr[6], SINT32 increase)
     for (i = 0; i < 6; i++)
     {
         char buf[BUFLEN_4];
-            
+
         memset(buf, 0, sizeof(buf));
         UTIL_SNPRINTF(buf, sizeof(buf) - 1, "%02X",  macAddr[i]);
         UTIL_STRNCAT(macTmp, buf, sizeof(macTmp));
@@ -182,21 +182,21 @@ VOS_RET_E Hal_increaseMacValue(UINT8 macAddr[6], SINT32 increase)
 
     umacLow = strtoul(macLow, NULL, 16);
 
-    if((umacLow + increase) > MAX_VALUE_OF_HEX)
+    if ((umacLow + increase) > MAX_VALUE_OF_HEX)
     {
-            umacLow = umacLow + increase - CYCLE_VALUE_OF_HEX;
+        umacLow = umacLow + increase - CYCLE_VALUE_OF_HEX;
     }
     else
     {
-            umacLow += increase;
+        umacLow += increase;
     }
 
     memset(macLow, 0, sizeof(macLow));
     UTIL_SNPRINTF(macLow, sizeof(macLow), "%6lX", umacLow);
 
-    for(i=0; i<6; i++)
+    for (i = 0; i < 6; i++)
     {
-        if(macLow[i] == ' ')
+        if (macLow[i] == ' ')
         {
             macLow[i] = '0';
         }
@@ -204,19 +204,19 @@ VOS_RET_E Hal_increaseMacValue(UINT8 macAddr[6], SINT32 increase)
 
     /* generate the dest mac addr */
     memset(macTmp, 0, sizeof(macTmp));
-    UTIL_SNPRINTF(macTmp, sizeof(macTmp), "%s%s", macHigh, macLow);    
-    p=macTmp;
-    
+    UTIL_SNPRINTF(macTmp, sizeof(macTmp), "%s%s", macHigh, macLow);
+    p = macTmp;
+
     memset(&macdst, 0, sizeof(UINT8) * 6);
-    
-    for(i = 0; i < 6; i++)
+
+    for (i = 0; i < 6; i++)
     {
         char bufTmp[BUFLEN_4];
         memset(bufTmp, 0, sizeof(bufTmp));
         UTIL_STRNCPY(bufTmp, p, 3);
-        macdst[i] = (UINT8)strtoul((char*)bufTmp, NULL, 16);
+        macdst[i] = (UINT8)strtoul((char *)bufTmp, NULL, 16);
         macAddr[i] = macdst[i];
-        p+=2;
+        p += 2;
     }
 
     return ret;
@@ -228,17 +228,17 @@ static SINT32 hal_ethGetInterfaceIndex(const char *vlanDevName)
 {
     struct ifreq ifr;
     SINT32 s = 0;
-    
-    if (vlanDevName == NULL) 
+
+    if (vlanDevName == NULL)
         return -1;
-    
+
     if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
     {
         return -1;
     }
-    
+
     UTIL_STRNCPY(ifr.ifr_name, vlanDevName, sizeof(ifr.ifr_name));
-    if (ioctl(s, SIOCGIFINDEX, &ifr) < 0) 
+    if (ioctl(s, SIOCGIFINDEX, &ifr) < 0)
     {
         close(s);
         return 0;
@@ -251,16 +251,16 @@ static UBOOL8 hal_ethWaitInterfaceExists(const char *devName)
 {
     SINT32 retry = 0;
     SINT32 ret;
-    
-    while (retry < INTERFACE_RETRY_COUNT) 
+
+    while (retry < INTERFACE_RETRY_COUNT)
     {
-        if ((ret = hal_ethGetInterfaceIndex(devName)) <= 0) 
+        if ((ret = hal_ethGetInterfaceIndex(devName)) <= 0)
         {
             usleep(USLEEP_COUNT);
             vosLog_error("devName [%s] not exist,retry %d, ret %d\n", devName, retry, ret);
             retry++;
         }
-        else 
+        else
         {
             return TRUE;
         }
@@ -272,43 +272,43 @@ static UBOOL8 hal_ethWaitInterfaceExists(const char *devName)
 static UBOOL8 hal_configIfMacAddr(const char *devName, const UINT8 mac[6])
 {
     SINT32 retry = 0;
-    UINT8 getMac[6]={0, 0, 0, 0, 0, 0};
-    UINT8 tempMac[6]={0, 0, 0, 0, 0, 0};
+    UINT8 getMac[6] = {0, 0, 0, 0, 0, 0};
+    UINT8 tempMac[6] = {0, 0, 0, 0, 0, 0};
     char cmd[BUFLEN_256];
-    
-    while (retry < INTERFACE_RETRY_COUNT) 
+
+    while (retry < INTERFACE_RETRY_COUNT)
     {
         UTIL_getIfMacAddr((char *)devName, (char *)getMac);
-        vosLog_debug("before set devName[%s] mac=[%02x:%02x:%02x:%02x:%02x:%02x] \n", 
-                        devName, getMac[0], getMac[1], getMac[2], getMac[3], getMac[4], getMac[5]);
+        vosLog_debug("before set devName[%s] mac=[%02x:%02x:%02x:%02x:%02x:%02x] \n",
+                     devName, getMac[0], getMac[1], getMac[2], getMac[3], getMac[4], getMac[5]);
 
 
         memset(cmd, 0, sizeof(cmd));
         UTIL_SNPRINTF(cmd, sizeof(cmd), "ifconfig %s down && ifconfig %s hw ether %02x:%02x:%02x:%02x:%02x:%02x",
-                                                devName, 
-                                                devName, 
-                                                mac[0],
-                                                mac[1],
-                                                mac[2],
-                                                mac[3],
-                                                mac[4],
-                                                mac[5]);            
+                      devName,
+                      devName,
+                      mac[0],
+                      mac[1],
+                      mac[2],
+                      mac[3],
+                      mac[4],
+                      mac[5]);
 
         vosLog_debug("cmd = [%s] \n", cmd);
         UTIL_DO_SYSTEM_ACTION(cmd);
 
         UTIL_getIfMacAddr((char *)devName, (char *)getMac);
-        
-        vosLog_debug("after set devName[%s] mac=[%02x:%02x:%02x:%02x:%02x:%02x] \n", 
-                        devName, getMac[0], getMac[1], getMac[2], getMac[3], getMac[4], getMac[5]);
 
-        if(memcmp(getMac, tempMac, 6) == 0)
+        vosLog_debug("after set devName[%s] mac=[%02x:%02x:%02x:%02x:%02x:%02x] \n",
+                     devName, getMac[0], getMac[1], getMac[2], getMac[3], getMac[4], getMac[5]);
+
+        if (memcmp(getMac, tempMac, 6) == 0)
         {
             usleep(USLEEP_COUNT);
             vosLog_error("set devName=[%s] mac fail retry=%d \n", devName, retry);
             retry++;
         }
-        else 
+        else
         {
             return TRUE;
         }
@@ -320,7 +320,7 @@ static UBOOL8 hal_configIfMacAddr(const char *devName, const UINT8 mac[6])
 
 
 #ifndef DESKTOP_LINUX
-UBOOL8 hal_ethIsInterfaceExist(const char *ifcName) 
+UBOOL8 hal_ethIsInterfaceExist(const char *ifcName)
 {
     return (hal_ethGetInterfaceIndex(ifcName) > 0) ? TRUE : FALSE;
 }
@@ -331,39 +331,39 @@ UBOOL8 hal_ethIsInterfaceExist(const char *ifcName)
 static VOS_RET_E hal_ethSetIptvMethod(UBOOL8 enableCrossVlan)
 {
     VOS_RET_E ret = VOS_RET_SUCCESS;
-/*
-    SINT32 fd = 0;
-    SINT32 rc = 0;
+    /*
+        SINT32 fd = 0;
+        SINT32 rc = 0;
 
-    fd = open(BCM_GMP_MW_CHRDEV_FULLNAME, O_WRONLY);
-    if (fd < 0)
-    {
-        vosLog_error("open failed. fd=%d", fd);
-        return VOS_RET_INTERNAL_ERROR;
-    }
+        fd = open(BCM_GMP_MW_CHRDEV_FULLNAME, O_WRONLY);
+        if (fd < 0)
+        {
+            vosLog_error("open failed. fd=%d", fd);
+            return VOS_RET_INTERNAL_ERROR;
+        }
 
-    rc = ioctl(fd, enableCrossVlan ? BCM_GMP_MW_IPTV_VID_FILTER_ENABLE : BCM_GMP_MW_IPTV_VID_FILTER_DISABLE, 0);
-    if (rc < 0)
-    {
-        vosLog_error("ioctl failed. rc=%d", rc);
-        ret = VOS_RET_INTERNAL_ERROR; 
-        goto Exit;
-    }
+        rc = ioctl(fd, enableCrossVlan ? BCM_GMP_MW_IPTV_VID_FILTER_ENABLE : BCM_GMP_MW_IPTV_VID_FILTER_DISABLE, 0);
+        if (rc < 0)
+        {
+            vosLog_error("ioctl failed. rc=%d", rc);
+            ret = VOS_RET_INTERNAL_ERROR;
+            goto Exit;
+        }
 
-    ret = VOS_RET_SUCCESS;
+        ret = VOS_RET_SUCCESS;
 
-Exit:
-    close(fd);*/
+    Exit:
+        close(fd);*/
     return ret;
 }
 #endif
 
 
 static VOS_RET_E hal_ethAddDelWanIpSubnet(const char *vlanIfName,
-                                                       UBOOL8 add,
-                                                       UBOOL8 isBridge,
-                                                       UBOOL8 isPPPoE,
-                                                       SINT32 vid)
+        UBOOL8 add,
+        UBOOL8 isBridge,
+        UBOOL8 isPPPoE,
+        SINT32 vid)
 {
 #ifdef DESKTOP_LINUX
     return VOS_RET_SUCCESS;
@@ -390,28 +390,28 @@ VOS_RET_E HAL_ethGetIfLinkState(const char *ifName, UBOOL8 *linkUp)
     char string[16] = {0};
     int portNum = 0, i = 0;
     int lanStatus[LAN_PORT_NUM];
-	
+
     if (NULL == ifName)
     {
         vosLog_error("Invalid args!");
         return VOS_RET_INVALID_ARGUMENTS;
-    }    
-    
+    }
+
     fp = fopen(LAN_PORT_STATUS_FILE, "r");
     if (fp != NULL)
     {
         memset(string, 0, sizeof(string));
         fgets(string, sizeof(string), fp);
-        portNum = sscanf(string, "%d %d %d %d", lanStatus, lanStatus+1, lanStatus+2, lanStatus+3);
+        portNum = sscanf(string, "%d %d %d %d", lanStatus, lanStatus + 1, lanStatus + 2, lanStatus + 3);
         fclose(fp);
-        
-        if(portNum == LAN_PORT_NUM)
+
+        if (portNum == LAN_PORT_NUM)
         {
             char ethName[16];
-            
+
             for (i = 0; i < LAN_PORT_NUM; i ++)
             {
-                memset(ethName, 0, sizeof(ethName));  
+                memset(ethName, 0, sizeof(ethName));
                 HAL_ethGetLanIfName(i, ethName, sizeof(ethName));
 
                 if (0 == util_strcmp(ifName, ethName))
@@ -420,7 +420,7 @@ VOS_RET_E HAL_ethGetIfLinkState(const char *ifName, UBOOL8 *linkUp)
                     ret = VOS_RET_SUCCESS;
                     break;
                 }
-            }            
+            }
         }
     }
 
@@ -470,7 +470,7 @@ static VOS_RET_E HAL_ethSetPubMvlanInterface(const char *vlanIfName)
     }
 
     vosLog_debug("vlanIfName[%s]\n", vlanIfName);
-    ret = ioctl(fd, TW_MCAST_UPDATE_PUBLIC_VLAN_INTERFACE, (void*)vlanIfName);
+    ret = ioctl(fd, TW_MCAST_UPDATE_PUBLIC_VLAN_INTERFACE, (void *)vlanIfName);
 
     close(fd);
 
@@ -484,20 +484,24 @@ VOS_RET_E HAL_ethAddFilterRules(const char *vlanIfName, const char *wanIfName)
 {
     vosLog_debug("vlanIfName = %s, wanIfName = %s", vlanIfName, wanIfName);
 
-    UTIL_DO_SYSTEM_ACTION("ebtables -D %s -p IPv4 -i %s --ip-proto igmp -j ACCEPT > /var/err", UTIL_WAN_CONN_FWD_CHAIN, vlanIfName, wanIfName);
-    UTIL_DO_SYSTEM_ACTION("ebtables -D %s -p IPv6 -i %s --ip6-icmpv6type 130 -j ACCEPT > /var/err", UTIL_WAN_CONN_FWD_CHAIN, vlanIfName, wanIfName);
+    UTIL_DO_SYSTEM_ACTION("ebtables -D %s -p IPv4 -i %s --ip-proto igmp -j ACCEPT > /var/err", UTIL_WAN_CONN_FWD_CHAIN,
+                          vlanIfName, wanIfName);
+    UTIL_DO_SYSTEM_ACTION("ebtables -D %s -p IPv6 -i %s --ip6-icmpv6type 130 -j ACCEPT > /var/err", UTIL_WAN_CONN_FWD_CHAIN,
+                          vlanIfName, wanIfName);
     UTIL_DO_SYSTEM_ACTION("ebtables -D %s -i %s -j DROP > /var/err", UTIL_WAN_CONN_FWD_CHAIN, vlanIfName, wanIfName);
     UTIL_DO_SYSTEM_ACTION("ebtables -D %s -o %s -j DROP > /var/err", UTIL_WAN_CONN_FWD_CHAIN, vlanIfName);
-   
+
     //for loop
-    UTIL_DO_SYSTEM_ACTION("ebtables -A %s -p IPv4 -i %s --ip-proto igmp -j ACCEPT > /var/err", UTIL_WAN_CONN_FWD_CHAIN, vlanIfName, wanIfName);
-    UTIL_DO_SYSTEM_ACTION("ebtables -A %s -p IPv6 -i %s --ip6-icmpv6type 130 -j ACCEPT > /var/err", UTIL_WAN_CONN_FWD_CHAIN, vlanIfName, wanIfName);
-    UTIL_DO_SYSTEM_ACTION("ebtables -A %s -i %s -j DROP > /var/err", UTIL_WAN_CONN_FWD_CHAIN, vlanIfName, wanIfName);       
-    //when wan is other bridge, lan packets could not through pon interface of public mcast    
+    UTIL_DO_SYSTEM_ACTION("ebtables -A %s -p IPv4 -i %s --ip-proto igmp -j ACCEPT > /var/err", UTIL_WAN_CONN_FWD_CHAIN,
+                          vlanIfName, wanIfName);
+    UTIL_DO_SYSTEM_ACTION("ebtables -A %s -p IPv6 -i %s --ip6-icmpv6type 130 -j ACCEPT > /var/err", UTIL_WAN_CONN_FWD_CHAIN,
+                          vlanIfName, wanIfName);
+    UTIL_DO_SYSTEM_ACTION("ebtables -A %s -i %s -j DROP > /var/err", UTIL_WAN_CONN_FWD_CHAIN, vlanIfName, wanIfName);
+    //when wan is other bridge, lan packets could not through pon interface of public mcast
     UTIL_DO_SYSTEM_ACTION("ebtables -A %s -o %s -j DROP > /var/err", UTIL_WAN_CONN_FWD_CHAIN, vlanIfName);
 
     HAL_ethSetPubMvlanInterface(vlanIfName);
-    
+
     return VOS_RET_SUCCESS;
 }
 
@@ -582,7 +586,7 @@ VOS_RET_E HAL_ethGetIfStatistics(const char *devName, HAL_ETH_STATISTICS_T *stat
         {
             p++;
         }
-        
+
         if ((NULL != p) && (isdigit(*p)))
         {
             UTIL_STRNCPY(buf, p, sizeof(buf));
@@ -610,7 +614,7 @@ VOS_RET_E HAL_ethGetIfStatistics(const char *devName, HAL_ETH_STATISTICS_T *stat
     } /* while */
 
     fclose(fs);
-    
+
     return VOS_RET_SUCCESS;
 #endif /* DESKTOP_LINUX */
 }
@@ -638,11 +642,11 @@ static int hal_ethFindPortNoByName(const char *name)
 
     for (i = 0; i < 4; i++)
     {
-        if(0 == strcmp(name, portInfo[i].name))
+        if (0 == strcmp(name, portInfo[i].name))
             return portInfo[i].swPort;
     }
 
-    return -1;    
+    return -1;
 }
 
 static int hal_ethFindPortNoByNameReverse(const char *name)
@@ -651,28 +655,28 @@ static int hal_ethFindPortNoByNameReverse(const char *name)
 
     for (i = 0; i < 4; i++)
     {
-        if(0 == strcmp(name, portInfoReverse[i].name))
+        if (0 == strcmp(name, portInfoReverse[i].name))
             return portInfoReverse[i].swPort;
     }
 
-    return -1;    
+    return -1;
 }
 
 #endif /* DESKTOP_LINUX */
 
 #ifndef DESKTOP_LINUX
-/*static int hal_ethFindSwPortNoByName(const char *name)
-{
+    /*static int hal_ethFindSwPortNoByName(const char *name)
+    {
     int i = 0;
 
     for (i = 0; i < 4; i++)
     {
-        if(0 == strcmp(name, sg_portInfo[i].name))
-            return sg_portInfo[i].swPort;
+    if(0 == strcmp(name, sg_portInfo[i].name))
+    return sg_portInfo[i].swPort;
     }
 
-    return -1;    
-}*/
+    return -1;
+    }*/
 #endif /* DESKTOP_LINUX */
 
 VOS_RET_E HAL_ethPortInit(void)
@@ -682,28 +686,28 @@ VOS_RET_E HAL_ethPortInit(void)
 #else
     int port = 0;
     UBOOL8 port_enable = FALSE;
-    
-    for (port = 0;port < 4 ;port++)
+
+    for (port = 0; port < 4 ; port++)
     {
         HAL_ethSetIfState(portInfo[port].name, port_enable);
     }
     port_enable = TRUE;
-    for (port = 0;port < 4 ;port++)
+    for (port = 0; port < 4 ; port++)
     {
         HAL_ethSetIfState(portInfo[port].name, port_enable);
     }
 
     /*
-    Soft Qdma Flag specification: 
-    bit 0:multicast, bit 1:ftp packet, bit 2:http download src port 80, 
-    bit 3:http download src port 8080, bit 6:tcp download src port 12345 
+    Soft Qdma Flag specification:
+    bit 0:multicast, bit 1:ftp packet, bit 2:http download src port 80,
+    bit 3:http download src port 8080, bit 6:tcp download src port 12345
     */
     /*open ftp soft_qdma*/
     UTIL_DO_SYSTEM_ACTION("echo 2 > /proc/tc3162/soft_qdma ");
-    
+
     return VOS_RET_SUCCESS;
 #endif
-    
+
 }
 
 /** Abstract       :Set interface mode.
@@ -713,7 +717,7 @@ VOS_RET_E HAL_ethPortInit(void)
  *
  * @return         :Success -- VOS_RET_SUCCESS, Failure -- VOS_RET_INTERNAL_ERROR.
  */
-VOS_RET_E HAL_ethSetIfNegMode(const char *devName, HAL_ETH_NEG_MODE_E mode)   
+VOS_RET_E HAL_ethSetIfNegMode(const char *devName, HAL_ETH_NEG_MODE_E mode)
 {
 #ifdef DESKTOP_LINUX
     return VOS_RET_SUCCESS;
@@ -726,41 +730,41 @@ VOS_RET_E HAL_ethSetIfNegMode(const char *devName, HAL_ETH_NEG_MODE_E mode)
 
     portIdx = hal_ethFindPortNoByNameReverse(devName);
     vosLog_debug(" devName = %s, mode = 0x%x  \n", devName, mode);
-    if(portIdx < 0)
+    if (portIdx < 0)
     {
         vosLog_error("no recognition devname:%s portIdx = %d ", devName, portIdx);
         return VOS_RET_INTERNAL_ERROR;
     }
     return VOS_RET_SUCCESS;
 
-    switch(mode)
+    switch (mode)
     {
-    case  HAL_ETH_NEG_MODE_AUTO:
-        speedMode = 0x0;
-        break;
-    case HAL_ETH_NEG_MODE_10M_HALF:
-        speedMode = 0x11;
-        break;
-    case HAL_ETH_NEG_MODE_10M_FULL:
-        speedMode = 0x01;
-        break;
-    case HAL_ETH_NEG_MODE_100M_HALF:
-        speedMode = 0x12;
-        break;
-    case HAL_ETH_NEG_MODE_100M_FULL:
-        speedMode = 0x02;
-        break;
-    case HAL_ETH_NEG_MODE_1000M:
-        speedMode = 0x03;
-        break;
-    default:
-        break;
+        case  HAL_ETH_NEG_MODE_AUTO:
+            speedMode = 0x0;
+            break;
+        case HAL_ETH_NEG_MODE_10M_HALF:
+            speedMode = 0x11;
+            break;
+        case HAL_ETH_NEG_MODE_10M_FULL:
+            speedMode = 0x01;
+            break;
+        case HAL_ETH_NEG_MODE_100M_HALF:
+            speedMode = 0x12;
+            break;
+        case HAL_ETH_NEG_MODE_100M_FULL:
+            speedMode = 0x02;
+            break;
+        case HAL_ETH_NEG_MODE_1000M:
+            speedMode = 0x03;
+            break;
+        default:
+            break;
     }
 
     vosLog_debug(" portIdx = %d, speedMode = 0x%x  \n", portIdx, speedMode);
 
     ret = macMT7530SetAutoDetection(speedMode, portIdx);
-    
+
     return ret;
 #else
     int swPortNo = 0;
@@ -776,28 +780,28 @@ VOS_RET_E HAL_ethSetIfNegMode(const char *devName, HAL_ETH_NEG_MODE_E mode)
 
     switch (mode)
     {
-        case HAL_ETH_NEG_MODE_AUTO:        
+        case HAL_ETH_NEG_MODE_AUTO:
             snprintf(cmd, sizeof(cmd), "ethcmd eth0 media-type auto port %d &", swPortNo);
             break;
         case HAL_ETH_NEG_MODE_10M_HALF:
             snprintf(cmd, sizeof(cmd), "ethcmd eth0 media-type 10HD  port %d &", swPortNo);
             break;
-            
+
         case HAL_ETH_NEG_MODE_10M_FULL:
             snprintf(cmd, sizeof(cmd), "ethcmd eth0 media-type 10FD  port %d &", swPortNo);
             break;
-            
+
         case HAL_ETH_NEG_MODE_100M_HALF:
             snprintf(cmd, sizeof(cmd), "ethcmd eth0 media-type 100HD  port %d &", swPortNo);
             break;
-            
+
         case HAL_ETH_NEG_MODE_100M_FULL:
             snprintf(cmd, sizeof(cmd), "ethcmd eth0 media-type 100FD  port %d &", swPortNo);
             break;
-            
+
         case HAL_ETH_NEG_MODE_1000M:
             break;
-            
+
         default:
             break;
     }
@@ -844,33 +848,33 @@ VOS_RET_E HAL_ethGetIfNegMode(const char *devName, HAL_ETH_NEG_MODE_E *mode)
         sw_port = (u8)port_index;
         ret = macMT7530GetPortSpeedMode(sw_port, &speedMode);
         vosLog_debug("ret = %u, speedMode = 0x%x  \n", ret, speedMode);
-        switch(speedMode)
+        switch (speedMode)
         {
-         case 0x0:
-            *mode = HAL_ETH_NEG_MODE_AUTO;
-            break;
-         case 0x01:
-            *mode =  HAL_ETH_NEG_MODE_10M_FULL;
-            break;
-         case 0x02:
-            *mode =  HAL_ETH_NEG_MODE_100M_FULL;
-            break;
-         case 0x03:
-            *mode =  HAL_ETH_NEG_MODE_1000M;
-            break;  
-         case 0x11:
-            *mode =  HAL_ETH_NEG_MODE_10M_HALF;
-            break; 
-         case 0x12:
-            *mode =  HAL_ETH_NEG_MODE_100M_HALF;
-            break;  
-         case 0x13:
-            *mode =  HAL_ETH_NEG_MODE_1000M;
-            break;  
-         default:
-            vosLog_error("no recognition mode! mode = %d \n", mode);
-            ret = VOS_RET_INTERNAL_ERROR;
-            break;
+            case 0x0:
+                *mode = HAL_ETH_NEG_MODE_AUTO;
+                break;
+            case 0x01:
+                *mode =  HAL_ETH_NEG_MODE_10M_FULL;
+                break;
+            case 0x02:
+                *mode =  HAL_ETH_NEG_MODE_100M_FULL;
+                break;
+            case 0x03:
+                *mode =  HAL_ETH_NEG_MODE_1000M;
+                break;
+            case 0x11:
+                *mode =  HAL_ETH_NEG_MODE_10M_HALF;
+                break;
+            case 0x12:
+                *mode =  HAL_ETH_NEG_MODE_100M_HALF;
+                break;
+            case 0x13:
+                *mode =  HAL_ETH_NEG_MODE_1000M;
+                break;
+            default:
+                vosLog_error("no recognition mode! mode = %d \n", mode);
+                ret = VOS_RET_INTERNAL_ERROR;
+                break;
         }
     }
 
@@ -886,7 +890,7 @@ VOS_RET_E HAL_ethGetIfNegMode(const char *devName, HAL_ETH_NEG_MODE_E *mode)
     if (swPortNo == -1)
     {
         return VOS_RET_INTERNAL_ERROR;
-    }    
+    }
 
     val = bcm_phy_mode_get(0, swPortNo, &speed, &duplex);
 
@@ -962,7 +966,7 @@ VOS_RET_E HAL_ethSetIfState(const char *ifName, UBOOL8 enable)
         return VOS_RET_INTERNAL_ERROR;
     }
 
-	HAL_ethSetPortState(swPortNo, enable);
+    HAL_ethSetPortState(swPortNo, enable);
     return ret;
 #endif /* DESKTOP_LINUX */
 }
@@ -970,7 +974,7 @@ VOS_RET_E HAL_ethSetIfState(const char *ifName, UBOOL8 enable)
 VOS_RET_E HAL_ethGetWanIfName(UINT8 port, char *ifName, UINT32 ifNameLen)
 {
     VOS_RET_E ret = VOS_RET_SUCCESS;
-    
+
     if (ifName == NULL)
     {
         vosLog_error("ifName is NULL!");
@@ -984,8 +988,8 @@ VOS_RET_E HAL_ethGetWanIfName(UINT8 port, char *ifName, UINT32 ifNameLen)
     else
     {
         UTIL_SNPRINTF(ifName, ifNameLen, "%s", WAN_GPON_IF_NAME_PREFIX);
-    }    
-    
+    }
+
     return ret;
 }
 
@@ -999,15 +1003,15 @@ static UINT8 hal_ethGetPortNameBase(void)
 VOS_RET_E HAL_ethGetLanIfName(UINT8 port, char *ifName, UINT32 ifNameLen)
 {
     VOS_RET_E ret = VOS_RET_SUCCESS;
-    
-    if(ifName == NULL)
+
+    if (ifName == NULL)
     {
         vosLog_error("ifName is NULL!");
         return VOS_RET_INVALID_PARAM_VALUE;
     }
-    
+
     UTIL_SNPRINTF(ifName, ifNameLen, "%s%d", LAN_IF_NAME_PREFIX, port + hal_ethGetPortNameBase());
-    
+
     return ret;
 }
 
@@ -1022,10 +1026,10 @@ VOS_RET_E HAL_ethGetLanPanelIfNo(UINT8 instId, UINT8 *panelNo)
 VOS_RET_E HAL_ethGetWlanIfName(UINT8 port, char *ifName, UINT32 ifNameLen)
 {
     VOS_RET_E ret = VOS_RET_SUCCESS;
-    UINT32 devId = port/4;
-    port = port%4;
-    
-    if(ifName == NULL)
+    UINT32 devId = port / 4;
+    port = port % 4;
+
+    if (ifName == NULL)
     {
         vosLog_error("ifName is NULL!");
         return VOS_RET_INVALID_PARAM_VALUE;
@@ -1039,7 +1043,7 @@ VOS_RET_E HAL_ethGetWlanIfName(UINT8 port, char *ifName, UINT32 ifNameLen)
     {
         UTIL_SNPRINTF(ifName, ifNameLen, "%s%d.%d", WLAN_IF_NAME_PREFIX, devId, port);
     }
-    
+
     return ret;
 }
 
@@ -1051,15 +1055,15 @@ VOS_RET_E HAL_ethGetWanVlanIfName(const char *ifName, SINT32 idx, SINT16 vid, UI
     return VOS_RET_SUCCESS;
 #else /* DESKTOP_LINUX */
     VOS_RET_E ret = VOS_RET_SUCCESS;
-    
-    if(ifName == NULL || vlanIfName == NULL)
+
+    if (ifName == NULL || vlanIfName == NULL)
     {
         vosLog_error("ifName is NULL!");
         return VOS_RET_INVALID_PARAM_VALUE;
     }
-    
+
     UTIL_SNPRINTF(vlanIfName, vlanIfNameLen, "%s.%d", ifName, idx);
-    
+
     return ret;
 #endif /* DESKTOP_LINUX */
 }
@@ -1072,15 +1076,15 @@ VOS_RET_E HAL_ethGetLanVlanIfName(const char *ifName, SINT16 vid,
     return VOS_RET_SUCCESS;
 #else /* DESKTOP_LINUX */
     VOS_RET_E ret = VOS_RET_SUCCESS;
-    
-    if(ifName == NULL || vlanIfName == NULL)
+
+    if (ifName == NULL || vlanIfName == NULL)
     {
         vosLog_error("ifName is NULL!");
         return VOS_RET_INVALID_PARAM_VALUE;
     }
-    
+
     UTIL_SNPRINTF(vlanIfName, vlanIfNameLen, "%s.%d", ifName, vid);
-    
+
     return ret;
 #endif /* DESKTOP_LINUX */
 }
@@ -1092,15 +1096,15 @@ VOS_RET_E HAL_ethGetLanDefVlanIfName(const char *ifName, char *vlanIfName, UINT3
     return VOS_RET_SUCCESS;
 #else /* DESKTOP_LINUX */
     VOS_RET_E ret = VOS_RET_SUCCESS;
-    
-    if(ifName == NULL || vlanIfName == NULL)
+
+    if (ifName == NULL || vlanIfName == NULL)
     {
         vosLog_error("ifName is NULL!");
         return VOS_RET_INVALID_PARAM_VALUE;
     }
-    
+
     UTIL_SNPRINTF(vlanIfName, vlanIfNameLen, "%s.%d", ifName, 0);
-    
+
     return ret;
 #endif /* DESKTOP_LINUX */
 }
@@ -1115,7 +1119,7 @@ static VOS_RET_E HAL_ethSetLanMapWanList(HAL_LAN_MAP_L3IF_LIST *data)
 
     if (NULL == data)
         return VOS_RET_INVALID_ARGUMENTS;
-    
+
     fd = open("/dev/tw_mcast", O_RDWR);
     if (fd < 0)
     {
@@ -1123,7 +1127,7 @@ static VOS_RET_E HAL_ethSetLanMapWanList(HAL_LAN_MAP_L3IF_LIST *data)
     }
 
     vosLog_debug("lanIfName[%s] L3IfName[%s]\n", data->lanIfName, data->L3IfName);
-    ret = ioctl(fd, TW_BRIDGE_UPDATE_PORT_MAPING_WAN_INFO, (void*)data);
+    ret = ioctl(fd, TW_BRIDGE_UPDATE_PORT_MAPING_WAN_INFO, (void *)data);
 
     close(fd);
 
@@ -1133,7 +1137,8 @@ static VOS_RET_E HAL_ethSetLanMapWanList(HAL_LAN_MAP_L3IF_LIST *data)
 }
 
 
-VOS_RET_E HAL_ethCreateRouteWanVlanIf(const char *ifName, SINT32 idx, SINT16 vid, UINT8 priority, UBOOL8 isPppoe, UBOOL8 isInternet, const char *lanIf, UBOOL8 isBridge, UBOOL8 ipv6Enable)
+VOS_RET_E HAL_ethCreateRouteWanVlanIf(const char *ifName, SINT32 idx, SINT16 vid, UINT8 priority, UBOOL8 isPppoe,
+                                      UBOOL8 isInternet, const char *lanIf, UBOOL8 isBridge, UBOOL8 ipv6Enable)
 {
 #ifdef DESKTOP_LINUX
     return VOS_RET_SUCCESS;
@@ -1143,9 +1148,9 @@ VOS_RET_E HAL_ethCreateRouteWanVlanIf(const char *ifName, SINT32 idx, SINT16 vid
     char L3IfName[BUFLEN_64];
     char cmd[BUFLEN_256];
     UINT8 mac[18];
-#ifdef MTK_SMUXCTL    
-    SINT32 vlanMode = 3; //vlan_mode[1~3:untag,transparent,tag] 
-    char protoStr[BUFLEN_16];    
+#ifdef MTK_SMUXCTL
+    SINT32 vlanMode = 3; //vlan_mode[1~3:untag,transparent,tag]
+    char protoStr[BUFLEN_16];
 #else
     UINT16 macId;
     UINT16 i;
@@ -1156,22 +1161,23 @@ VOS_RET_E HAL_ethCreateRouteWanVlanIf(const char *ifName, SINT32 idx, SINT16 vid
     HAL_LAN_MAP_L3IF_LIST lanMapL3IfList;
 
 
-    vosLog_debug("ifName=%s idx=%d vid=%d priority=%d isPppoe=%d isInternet %d", ifName, idx, vid, priority, isPppoe, isInternet);
-    
+    vosLog_debug("ifName=%s idx=%d vid=%d priority=%d isPppoe=%d isInternet %d", ifName, idx, vid, priority, isPppoe,
+                 isInternet);
+
     memset(vlanIfName, 0, sizeof(vlanIfName));
     memset(L3IfName, 0, sizeof(L3IfName));
-    memset(mac,0,18);
-    
+    memset(mac, 0, 18);
+
 #ifdef MTK_SMUXCTL
     if (-1 == vid)
     {
-        vlanMode = 2; //vlan_mode[1~3:untag,transparent,tag] 
+        vlanMode = 2; //vlan_mode[1~3:untag,transparent,tag]
     }
     else
     {
-        vlanMode = 3; //vlan_mode[1~3:untag,transparent,tag] 
+        vlanMode = 3; //vlan_mode[1~3:untag,transparent,tag]
     }
-    
+
     if (TRUE == isPppoe)
     {
         UTIL_STRNCPY(protoStr, WAN_PROTO_PPPOE_STR, sizeof(protoStr));
@@ -1185,32 +1191,32 @@ VOS_RET_E HAL_ethCreateRouteWanVlanIf(const char *ifName, SINT32 idx, SINT16 vid
     {
         vosLog_error("HAL_ethCreateRouteWanVlanIf error! ret = %d", ret);
         return ret;
-    }    
-   
-    if (hal_ethIsInterfaceExist(vlanIfName) == FALSE)        
+    }
+
+    if (hal_ethIsInterfaceExist(vlanIfName) == FALSE)
     {
         memset(cmd, 0, sizeof(cmd));
         //smuxctl add  [pppoe | ipoe | bridge] pvc_name if_name vlan_mode[1~3:untag,transparent,tag] vid pbit multicast_tci
-        UTIL_SNPRINTF(cmd, sizeof(cmd), "smuxctl add %s %s %s %d %d %d %d", 
-                                            protoStr, 
-                                            ifName, 
-                                            vlanIfName, 
-                                            vlanMode,
-                                            ((vid == -1) ? 0 : vid),
-                                            priority,
-                                            0);
+        UTIL_SNPRINTF(cmd, sizeof(cmd), "smuxctl add %s %s %s %d %d %d %d",
+                      protoStr,
+                      ifName,
+                      vlanIfName,
+                      vlanMode,
+                      ((vid == -1) ? 0 : vid),
+                      priority,
+                      0);
 
         UTIL_DO_SYSTEM_ACTION(cmd);
-     }
+    }
 #else
 
-    ret = HAL_sysGetMacAddr(mac);  
+    ret = HAL_sysGetMacAddr(mac);
     if (VOS_RET_SUCCESS != ret)
     {
         vosLog_error("get baseMac failed, ret = %d", ret);
         return ret;
     }
-    
+
     if (SF_FEATURE_SUPPORT_WLAN)
     {
         if (SF_FEATURE_SUPPORT_WLAN_5G)
@@ -1222,7 +1228,7 @@ VOS_RET_E HAL_ethCreateRouteWanVlanIf(const char *ifName, SINT32 idx, SINT16 vid
     {
         macId = idx + 1;
     }
-    
+
     Hal_increaseMacValue(mac, macId);
 
 
@@ -1230,59 +1236,60 @@ VOS_RET_E HAL_ethCreateRouteWanVlanIf(const char *ifName, SINT32 idx, SINT16 vid
     {
         memset(vlanIfName, 0, sizeof(vlanIfName));
         UTIL_SNPRINTF(vlanIfName, sizeof(vlanIfName), VLAN_DEV_FORMAT, ifName, vid);
-        
-        if (hal_ethIsInterfaceExist(vlanIfName) == FALSE)        
+
+        if (hal_ethIsInterfaceExist(vlanIfName) == FALSE)
         {
             memset(cmd, 0, sizeof(cmd));
             UTIL_SNPRINTF(cmd, sizeof(cmd), "vconfig set_name_type %s", VLAN_NAME_TYPE_FLAG);
-            UTIL_DO_SYSTEM_ACTION(cmd); 
-            
-            memset(cmd, 0, sizeof(cmd));
-            UTIL_SNPRINTF(cmd, sizeof(cmd), "vconfig add %s %d", ifName, vid);  
-            UTIL_DO_SYSTEM_ACTION(cmd);       
+            UTIL_DO_SYSTEM_ACTION(cmd);
 
-            if (!hal_ethWaitInterfaceExists(vlanIfName)) 
+            memset(cmd, 0, sizeof(cmd));
+            UTIL_SNPRINTF(cmd, sizeof(cmd), "vconfig add %s %d", ifName, vid);
+            UTIL_DO_SYSTEM_ACTION(cmd);
+
+            if (!hal_ethWaitInterfaceExists(vlanIfName))
             {
                 vosLog_error("Failed to create %s", vlanIfName);
                 return VOS_RET_INTERNAL_ERROR;
             }
 
-#if 0            
+#if 0
             memset(cmd, 0, sizeof(cmd));
             UTIL_SNPRINTF(cmd, sizeof(cmd), "ifconfig %s down && ifconfig %s hw ether %02x:%02x:%02x:%02x:%02x:%02x",
-                                                    vlanIfName, 
-                                                    vlanIfName, 
-                                                    mac[0],
-                                                    mac[1],
-                                                    mac[2],
-                                                    mac[3],
-                                                    mac[4],
-                                                    mac[5]);
+                          vlanIfName,
+                          vlanIfName,
+                          mac[0],
+                          mac[1],
+                          mac[2],
+                          mac[3],
+                          mac[4],
+                          mac[5]);
             UTIL_DO_SYSTEM_ACTION(cmd);
 #else
             hal_configIfMacAddr(vlanIfName, mac);
 #endif
-            
+
             if (! ipv6Enable)
             {
                 UTIL_DO_SYSTEM_ACTION("echo 1 > /proc/sys/net/ipv6/conf/%s/disable_ipv6 ", vlanIfName);
             }
-            
+
             memset(cmd, 0, sizeof(cmd));
             UTIL_SNPRINTF(cmd, sizeof(cmd), "ifconfig %s up", vlanIfName);
-            UTIL_DO_SYSTEM_ACTION(cmd);   
+            UTIL_DO_SYSTEM_ACTION(cmd);
 
             for (i = 0; i <= 7; i++)
             {
                 //UTIL_DO_SYSTEM_ACTION("vconfig set_egress_map %s.%u %u %u",
                 //                 ifName, vid, i + 20, i);
                 UTIL_DO_SYSTEM_ACTION("vconfig set_egress_map %s %u %u",
-                                 vlanIfName, i, priority);
-            }            
-            
+                                      vlanIfName, i, priority);
+            }
+
         }
     }
-    else{
+    else
+    {
         //UTIL_SNPRINTF(vlanIfName, sizeof(vlanIfName), "%s", ifName);
         UTIL_STRNCPY(vlanIfName, ifName, sizeof(vlanIfName));
     }
@@ -1291,33 +1298,33 @@ VOS_RET_E HAL_ethCreateRouteWanVlanIf(const char *ifName, SINT32 idx, SINT16 vid
     {
         vosLog_error("HAL_ethCreateRouteWanVlanIf error! ret = %d", ret);
         return ret;
-    }    
-    
-    if (hal_ethIsInterfaceExist(L3IfName) == FALSE)        
+    }
+
+    if (hal_ethIsInterfaceExist(L3IfName) == FALSE)
     {
         memset(cmd, 0, sizeof(cmd));
-        UTIL_SNPRINTF(cmd, sizeof(cmd), "vnetconfig add %s %s", 
-                                            L3IfName,
-                                            vlanIfName);
+        UTIL_SNPRINTF(cmd, sizeof(cmd), "vnetconfig add %s %s",
+                      L3IfName,
+                      vlanIfName);
         UTIL_DO_SYSTEM_ACTION(cmd);
 
-        if (!hal_ethWaitInterfaceExists(L3IfName)) 
+        if (!hal_ethWaitInterfaceExists(L3IfName))
         {
             vosLog_error("Failed to create %s", L3IfName);
             return VOS_RET_INTERNAL_ERROR;
         }
 
-#if 0         
+#if 0
         memset(cmd, 0, sizeof(cmd));
         UTIL_SNPRINTF(cmd, sizeof(cmd), "ifconfig %s down && ifconfig %s hw ether %02x:%02x:%02x:%02x:%02x:%02x",
-                                                    L3IfName, 
-                                                    L3IfName, 
-                                                    mac[0],
-                                                    mac[1],
-                                                    mac[2],
-                                                    mac[3],
-                                                    mac[4],
-                                                    mac[5]);
+                      L3IfName,
+                      L3IfName,
+                      mac[0],
+                      mac[1],
+                      mac[2],
+                      mac[3],
+                      mac[4],
+                      mac[5]);
         UTIL_DO_SYSTEM_ACTION(cmd);
 #else
         hal_configIfMacAddr(L3IfName, mac);
@@ -1346,20 +1353,20 @@ VOS_RET_E HAL_ethCreateRouteWanVlanIf(const char *ifName, SINT32 idx, SINT16 vid
             UTIL_DO_SYSTEM_ACTION("echo 1 > %s", TW_LAN_WAN_BIND_FILE);
 
             while (NULL != pPath)
-            {		
+            {
                 memset(lanMapL3IfList.lanIfName, 0, sizeof(lanMapL3IfList.lanIfName));
                 UTIL_STRNCPY(lanMapL3IfList.lanIfName, pPath, sizeof(lanMapL3IfList.lanIfName));
 
                 memset(lanMapL3IfList.L3IfName, 0, sizeof(lanMapL3IfList.L3IfName));
                 UTIL_STRNCPY(lanMapL3IfList.L3IfName, L3IfName, sizeof(lanMapL3IfList.L3IfName));
 
-                lanMapL3IfList.action= 1; //add flag
+                lanMapL3IfList.action = 1; //add flag
                 lanMapL3IfList.used = 1;
-				
+
                 HAL_ethSetLanMapWanList(&lanMapL3IfList);
                 pPath = strtok_r(NULL, ",", &saveStr);
-            }	
-        }	
+            }
+        }
     }
 
     if (SF_FEATURE_LOCATION_RUSSIA)
@@ -1368,11 +1375,11 @@ VOS_RET_E HAL_ethCreateRouteWanVlanIf(const char *ifName, SINT32 idx, SINT16 vid
         {
             UTIL_DO_SYSTEM_ACTION("echo 1 > %s", TW_MTK_OFF_PPP_FILE);
         }
-    }   
+    }
 #endif
 
     return ret;
-    
+
 #endif /* DESKTOP_LINUX */
 }
 
@@ -1383,43 +1390,47 @@ VOS_RET_E HAL_ethDeletePubVlanIf(const char *wanIfName, const char *wanConnName)
     SINT32 i;
     SINT32 j;
     SINT32 n = 0;
-    
-    vosLog_debug("wanIfName = %s", wanIfName);    
+
+    vosLog_debug("wanIfName = %s", wanIfName);
 
     for (i = 0; i < UTIL_WAN_CONN_MAX_NUM; i++)
     {
-        printf("before delete [index=%d] used=%d, wanIfName=[%s], mVlanIfName=[%s] \n", 
-            i,
-            sg_vlanMapMcWanList[i].used, 
-            sg_vlanMapMcWanList[i].wanIfName[0] ? sg_vlanMapMcWanList[i].wanIfName : "", 
-            sg_vlanMapMcWanList[i].mVlanIfName[0] ? sg_vlanMapMcWanList[i].mVlanIfName : "");
+        printf("before delete [index=%d] used=%d, wanIfName=[%s], mVlanIfName=[%s] \n",
+               i,
+               sg_vlanMapMcWanList[i].used,
+               sg_vlanMapMcWanList[i].wanIfName[0] ? sg_vlanMapMcWanList[i].wanIfName : "",
+               sg_vlanMapMcWanList[i].mVlanIfName[0] ? sg_vlanMapMcWanList[i].mVlanIfName : "");
     }
-        
+
     for (i = 0; i < UTIL_WAN_CONN_MAX_NUM; i++)
-    {       
+    {
         if ((sg_vlanMapMcWanList[i].used) && (!util_strcmp(sg_vlanMapMcWanList[i].wanIfName, wanIfName)))
         {
-            for(j = 0; j < UTIL_WAN_CONN_MAX_NUM; j++)
-            { 
-                if(!util_strcmp(sg_vlanMapMcWanList[j].mVlanIfName, sg_vlanMapMcWanList[i].mVlanIfName))
+            for (j = 0; j < UTIL_WAN_CONN_MAX_NUM; j++)
+            {
+                if (!util_strcmp(sg_vlanMapMcWanList[j].mVlanIfName, sg_vlanMapMcWanList[i].mVlanIfName))
                 {
                     n++;
                 }
             }
 
-            if((n == 1) && (hal_ethIsInterfaceExist(sg_vlanMapMcWanList[i].mVlanIfName)))
+            if ((n == 1) && (hal_ethIsInterfaceExist(sg_vlanMapMcWanList[i].mVlanIfName)))
             {
                 if (NULL != strstr(wanConnName, "OTHER_B") || NULL != strstr(wanConnName, "INTERNET_B")
-                    || NULL != strstr(wanConnName, "IPTV_B"))
+                        || NULL != strstr(wanConnName, "IPTV_B"))
                 {
-                    UTIL_DO_SYSTEM_ACTION("ebtables -D %s -p IPv4 -i %s --ip-proto igmp -j ACCEPT > /var/err", UTIL_WAN_CONN_FWD_CHAIN, sg_vlanMapMcWanList[i].mVlanIfName);
-                    UTIL_DO_SYSTEM_ACTION("ebtables -D %s -p IPv6 -i %s --ip6-icmpv6type 130 -j ACCEPT > /var/err", UTIL_WAN_CONN_FWD_CHAIN, sg_vlanMapMcWanList[i].mVlanIfName);
-                    UTIL_DO_SYSTEM_ACTION("ebtables -D %s -i %s -j DROP > /var/err", UTIL_WAN_CONN_FWD_CHAIN, sg_vlanMapMcWanList[i].mVlanIfName);
-                    UTIL_DO_SYSTEM_ACTION("ebtables -D %s -o %s -j DROP > /var/err", UTIL_WAN_CONN_FWD_CHAIN, sg_vlanMapMcWanList[i].mVlanIfName);
+                    UTIL_DO_SYSTEM_ACTION("ebtables -D %s -p IPv4 -i %s --ip-proto igmp -j ACCEPT > /var/err", UTIL_WAN_CONN_FWD_CHAIN,
+                                          sg_vlanMapMcWanList[i].mVlanIfName);
+                    UTIL_DO_SYSTEM_ACTION("ebtables -D %s -p IPv6 -i %s --ip6-icmpv6type 130 -j ACCEPT > /var/err", UTIL_WAN_CONN_FWD_CHAIN,
+                                          sg_vlanMapMcWanList[i].mVlanIfName);
+                    UTIL_DO_SYSTEM_ACTION("ebtables -D %s -i %s -j DROP > /var/err", UTIL_WAN_CONN_FWD_CHAIN,
+                                          sg_vlanMapMcWanList[i].mVlanIfName);
+                    UTIL_DO_SYSTEM_ACTION("ebtables -D %s -o %s -j DROP > /var/err", UTIL_WAN_CONN_FWD_CHAIN,
+                                          sg_vlanMapMcWanList[i].mVlanIfName);
                 }
                 UTIL_DO_SYSTEM_ACTION("ifconfig %s down", sg_vlanMapMcWanList[i].mVlanIfName);
                 UTIL_DO_SYSTEM_ACTION("vconfig rem %s", sg_vlanMapMcWanList[i].mVlanIfName);
-                
+
                 sg_vlanMapMcWanList[i].used = 0;
                 memset(sg_vlanMapMcWanList[i].wanIfName, 0, sizeof(sg_vlanMapMcWanList[i].wanIfName));
                 memset(sg_vlanMapMcWanList[i].mVlanIfName, 0, sizeof(sg_vlanMapMcWanList[i].mVlanIfName));
@@ -1429,14 +1440,14 @@ VOS_RET_E HAL_ethDeletePubVlanIf(const char *wanIfName, const char *wanConnName)
 
     for (i = 0; i < UTIL_WAN_CONN_MAX_NUM; i++)
     {
-        printf("after  delete [index=%d] used=%d, wanIfName=[%s], mVlanIfName=[%s] \n", 
-            i,
-            sg_vlanMapMcWanList[i].used, 
-            sg_vlanMapMcWanList[i].wanIfName[0] ? sg_vlanMapMcWanList[i].wanIfName : "", 
-            sg_vlanMapMcWanList[i].mVlanIfName[0] ? sg_vlanMapMcWanList[i].mVlanIfName : "");
+        printf("after  delete [index=%d] used=%d, wanIfName=[%s], mVlanIfName=[%s] \n",
+               i,
+               sg_vlanMapMcWanList[i].used,
+               sg_vlanMapMcWanList[i].wanIfName[0] ? sg_vlanMapMcWanList[i].wanIfName : "",
+               sg_vlanMapMcWanList[i].mVlanIfName[0] ? sg_vlanMapMcWanList[i].mVlanIfName : "");
     }
 
-    
+
     return ret;
 }
 
@@ -1451,7 +1462,7 @@ static VOS_RET_E HAL_ethSetRouteWanPubMvlan(HAL_VLAN_MAP_MC_WAN_LIST *data)
 
     if (NULL == data)
         return VOS_RET_INVALID_ARGUMENTS;
-    
+
     fd = open("/dev/tw_mcast", O_RDWR);
     if (fd < 0)
     {
@@ -1459,7 +1470,7 @@ static VOS_RET_E HAL_ethSetRouteWanPubMvlan(HAL_VLAN_MAP_MC_WAN_LIST *data)
     }
 
     vosLog_debug("mVlanIfName[%s] wanIfName[%s]\n", data->mVlanIfName, data->wanIfName);
-    ret = ioctl(fd, TW_MCAST_UPDATE_MAPING_VLAN_INFO, (void*)data);
+    ret = ioctl(fd, TW_MCAST_UPDATE_MAPING_VLAN_INFO, (void *)data);
 
     close(fd);
 
@@ -1468,7 +1479,8 @@ static VOS_RET_E HAL_ethSetRouteWanPubMvlan(HAL_VLAN_MAP_MC_WAN_LIST *data)
 #endif /* DESKTOP_LINUX */
 }
 
-VOS_RET_E HAL_ethCreatePubWanVlanIf(const char *ifName, SINT32 idx, SINT16 vid, UINT8 priority, UBOOL8 isPppoe, const char *wanConnName, const char *wanIfName)
+VOS_RET_E HAL_ethCreatePubWanVlanIf(const char *ifName, SINT32 idx, SINT16 vid, UINT8 priority, UBOOL8 isPppoe,
+                                    const char *wanConnName, const char *wanIfName)
 {
 #ifdef DESKTOP_LINUX
     return VOS_RET_SUCCESS;
@@ -1479,12 +1491,12 @@ VOS_RET_E HAL_ethCreatePubWanVlanIf(const char *ifName, SINT32 idx, SINT16 vid, 
     UINT8 mac[18];
     UINT16 macId;
     UINT16 i;
-    
+
     vosLog_debug("ifName=%s idx=%d vid=%d wanIfName=%s", ifName, idx, vid, wanIfName);
-    
+
     memset(vlanIfName, 0, sizeof(vlanIfName));
     memset(mac, 0, 18);
-    
+
     HAL_ethSetPubMvlanInterface("no");
 
     if (vid > MIN_VLAN_ID && vid < MAX_VLAN_ID)
@@ -1496,30 +1508,30 @@ VOS_RET_E HAL_ethCreatePubWanVlanIf(const char *ifName, SINT32 idx, SINT16 vid, 
         if (hal_ethIsInterfaceExist(vlanIfName) == TRUE)
         {
             if ((NULL != strstr(wanConnName, "INTERNET_R")) || (NULL != strstr(wanConnName, "OTHER_B"))
-                || NULL != strstr(wanConnName, "INTERNET_B") || NULL != strstr(wanConnName, "IPTV"))
+                    || NULL != strstr(wanConnName, "INTERNET_B") || NULL != strstr(wanConnName, "IPTV"))
             {
                 vosLog_debug("wanIfName=[%s]\n", wanIfName);
                 HAL_ethDeletePubVlanIf(wanIfName, wanConnName);
-            }   
-        }        
-        
+            }
+        }
+
         memset(cmd, 0, sizeof(cmd));
         UTIL_SNPRINTF(cmd, sizeof(cmd), "vconfig set_name_type %s", VLAN_NAME_TYPE_FLAG);
-        UTIL_DO_SYSTEM_ACTION(cmd);           
-        
+        UTIL_DO_SYSTEM_ACTION(cmd);
+
         memset(cmd, 0, sizeof(cmd));
-        UTIL_SNPRINTF(cmd, sizeof(cmd), "vconfig add %s %d", ifName, vid);        
-        UTIL_DO_SYSTEM_ACTION(cmd);       
+        UTIL_SNPRINTF(cmd, sizeof(cmd), "vconfig add %s %d", ifName, vid);
+        UTIL_DO_SYSTEM_ACTION(cmd);
 
         ret = HAL_sysGetMacAddr(mac);
         vosLog_debug("mac[%02x:%02x:%02x:%02x:%02x:%02x]\n", mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
-        
+
         if (VOS_RET_SUCCESS != ret)
         {
             vosLog_error("get baseMac failed, ret = %d", ret);
             return ret;
         }
-        
+
         if (SF_FEATURE_SUPPORT_WLAN)
         {
             if (SF_FEATURE_SUPPORT_WLAN_5G)
@@ -1531,27 +1543,27 @@ VOS_RET_E HAL_ethCreatePubWanVlanIf(const char *ifName, SINT32 idx, SINT16 vid, 
         {
             macId = idx + 1;
         }
-        
+
         Hal_increaseMacValue(mac, macId);
         vosLog_debug("mac[%02x:%02x:%02x:%02x:%02x:%02x]\n", mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
 
-        if (!hal_ethWaitInterfaceExists(vlanIfName)) 
+        if (!hal_ethWaitInterfaceExists(vlanIfName))
         {
             vosLog_error("Failed to create %s", vlanIfName);
             return VOS_RET_INTERNAL_ERROR;
         }
 
-#if 0            
+#if 0
         memset(cmd, 0, sizeof(cmd));
         UTIL_SNPRINTF(cmd, sizeof(cmd), "ifconfig %s down && ifconfig %s hw ether %02x:%02x:%02x:%02x:%02x:%02x",
-                                                vlanIfName, 
-                                                vlanIfName, 
-                                                mac[0],
-                                                mac[1],
-                                                mac[2],
-                                                mac[3],
-                                                mac[4],
-                                                mac[5]);
+                      vlanIfName,
+                      vlanIfName,
+                      mac[0],
+                      mac[1],
+                      mac[2],
+                      mac[3],
+                      mac[4],
+                      mac[5]);
         UTIL_DO_SYSTEM_ACTION(cmd);
 
 #else
@@ -1560,16 +1572,16 @@ VOS_RET_E HAL_ethCreatePubWanVlanIf(const char *ifName, SINT32 idx, SINT16 vid, 
 
         memset(cmd, 0, sizeof(cmd));
         UTIL_SNPRINTF(cmd, sizeof(cmd), "ifconfig %s up", vlanIfName);
-        UTIL_DO_SYSTEM_ACTION(cmd);   
+        UTIL_DO_SYSTEM_ACTION(cmd);
 
 
         for (i = 0; i < UTIL_WAN_CONN_MAX_NUM; i++)
         {
-            printf("before create [index=%d] used=%d, wanIfName=[%s], mVlanIfName=[%s] \n", 
-                i,
-                sg_vlanMapMcWanList[i].used, 
-                sg_vlanMapMcWanList[i].wanIfName[0] ? sg_vlanMapMcWanList[i].wanIfName : "", 
-                sg_vlanMapMcWanList[i].mVlanIfName[0] ? sg_vlanMapMcWanList[i].mVlanIfName : "");
+            printf("before create [index=%d] used=%d, wanIfName=[%s], mVlanIfName=[%s] \n",
+                   i,
+                   sg_vlanMapMcWanList[i].used,
+                   sg_vlanMapMcWanList[i].wanIfName[0] ? sg_vlanMapMcWanList[i].wanIfName : "",
+                   sg_vlanMapMcWanList[i].mVlanIfName[0] ? sg_vlanMapMcWanList[i].mVlanIfName : "");
         }
 
 
@@ -1591,22 +1603,22 @@ VOS_RET_E HAL_ethCreatePubWanVlanIf(const char *ifName, SINT32 idx, SINT16 vid, 
 
         for (i = 0; i < UTIL_WAN_CONN_MAX_NUM; i++)
         {
-            printf("after  create [index=%d] used=%d, wanIfName=[%s], mVlanIfName=[%s] \n", 
-                i,
-                sg_vlanMapMcWanList[i].used, 
-                sg_vlanMapMcWanList[i].wanIfName[0] ? sg_vlanMapMcWanList[i].wanIfName : "", 
-                sg_vlanMapMcWanList[i].mVlanIfName[0] ? sg_vlanMapMcWanList[i].mVlanIfName : "");
+            printf("after  create [index=%d] used=%d, wanIfName=[%s], mVlanIfName=[%s] \n",
+                   i,
+                   sg_vlanMapMcWanList[i].used,
+                   sg_vlanMapMcWanList[i].wanIfName[0] ? sg_vlanMapMcWanList[i].wanIfName : "",
+                   sg_vlanMapMcWanList[i].mVlanIfName[0] ? sg_vlanMapMcWanList[i].mVlanIfName : "");
         }
 
         if ((NULL != strstr(wanConnName, "OTHER_B")) || (NULL != strstr(wanConnName, "IPTV_B")))
         {
             memset(cmd, 0, sizeof(cmd));
             UTIL_SNPRINTF(cmd, sizeof(cmd), "brctl addif br1 %s ", vlanIfName);
-            UTIL_DO_SYSTEM_ACTION(cmd); 
+            UTIL_DO_SYSTEM_ACTION(cmd);
 
-            HAL_ethAddFilterRules(vlanIfName, wanIfName);    
+            HAL_ethAddFilterRules(vlanIfName, wanIfName);
         }
-        else if(NULL != strstr(wanConnName, "INTERNET_B"))
+        else if (NULL != strstr(wanConnName, "INTERNET_B"))
         {
             memset(cmd, 0, sizeof(cmd));
             UTIL_SNPRINTF(cmd, sizeof(cmd), "brctl addif br0 %s ", vlanIfName);
@@ -1615,9 +1627,9 @@ VOS_RET_E HAL_ethCreatePubWanVlanIf(const char *ifName, SINT32 idx, SINT16 vid, 
             HAL_ethAddFilterRules(vlanIfName, wanIfName);
         }
         else if ((NULL != strstr(wanConnName, "INTERNET_R")) || (NULL != strstr(wanConnName, "IPTV_R")))
-        {           
+        {
             HAL_ethSetRouteWanPubMvlan(&sg_vlanMapMcWanList[i]);
-        }  
+        }
     }
     else if (vid == -1)
     {
@@ -1629,21 +1641,22 @@ VOS_RET_E HAL_ethCreatePubWanVlanIf(const char *ifName, SINT32 idx, SINT16 vid, 
         ret = VOS_RET_INVALID_ARGUMENTS;
         vosLog_error("#######VOS_RET_INVALID_ARGUMENTS, vid:%d#####\n", vid);
     }
-    
+
     return ret;
-    
+
 #endif /* DESKTOP_LINUX */
 }
 
 
-VOS_RET_E HAL_ethCreateRouteIphostVlanIf(const char *ifName, const char *vlanIfName, SINT16 vid, UINT8 priority, UBOOL8 isPppoe)
+VOS_RET_E HAL_ethCreateRouteIphostVlanIf(const char *ifName, const char *vlanIfName, SINT16 vid, UINT8 priority,
+        UBOOL8 isPppoe)
 {
 #ifndef JASON_DEBUG
     return VOS_RET_SUCCESS;
 #else /* DESKTOP_LINUX */
     VOS_RET_E ret = VOS_RET_SUCCESS;
     UINT32 tagRuleId = VLANCTL_DONT_CARE;
-    char ifName1[32] = {0},vlanIfName1[32] = {0};
+    char ifName1[32] = {0}, vlanIfName1[32] = {0};
     vlanCtl_init();
     vlanCtl_setIfSuffix(".");
     strncpy(vlanIfName1, vlanIfName, strlen(vlanIfName));
@@ -1652,7 +1665,7 @@ VOS_RET_E HAL_ethCreateRouteIphostVlanIf(const char *ifName, const char *vlanIfN
     vlanCtl_createVlanInterfaceByName(ifName1, (char *)vlanIfName1, TRUE, 1);
     vlanCtl_setRealDevMode(ifName1, BCM_VLAN_MODE_ONT);
 
-    if (!hal_ethWaitInterfaceExists(vlanIfName1)) 
+    if (!hal_ethWaitInterfaceExists(vlanIfName1))
     {
         vosLog_error("Failed to create %s", vlanIfName1);
         return VOS_RET_INTERNAL_ERROR;
@@ -1661,78 +1674,78 @@ VOS_RET_E HAL_ethCreateRouteIphostVlanIf(const char *ifName, const char *vlanIfN
     if (vid != VLANMUX_DISABLE)
     {
         /* ******** tagged virtual interface ******** */
-        
+
         /* ======== Set tx rules ======== */
-        
+
         vlanCtl_initTagRule();
-        
+
         /* Match the transmitting VOPI against vlanIfName */
         vlanCtl_filterOnTxVlanDevice(vlanIfName1);
-        
+
         /* If hit, push an outer tag */
         vlanCtl_cmdPushVlanTag();
-        
+
         /* Set pbits and vid in tag number 0, which is always the outer tag of the frame. */
         vlanCtl_cmdSetTagVid(vid, 0);
         vlanCtl_cmdSetTagPbits(priority, 0);
-        
+
         /* Set rule to the top of the non-tag tx tables. */
-        vlanCtl_insertTagRule(ifName1, VLANCTL_DIRECTION_TX, 
+        vlanCtl_insertTagRule(ifName1, VLANCTL_DIRECTION_TX,
                               0, VLANCTL_POSITION_BEFORE,
                               VLANCTL_DONT_CARE, &tagRuleId);
-        
+
         vlanCtl_initTagRule();
-        
+
         /* Match the transmitting VOPI against vlanIfName */
         vlanCtl_filterOnTxVlanDevice(vlanIfName1);
-        
+
         /* If hit, push an outer tag */
         //vlanCtl_cmdPushVlanTag();
-        
+
         /* Set pbits and vid in tag number 0, which is always the outer tag of the frame. */
         vlanCtl_cmdSetTagVid(vid, 0);
         vlanCtl_cmdSetTagPbits(priority, 0);
-        
+
         /* Set rule to the top of the single-tag tx tables. */
         vlanCtl_insertTagRule(ifName1, VLANCTL_DIRECTION_TX,
                               1, VLANCTL_POSITION_BEFORE,
                               VLANCTL_DONT_CARE, &tagRuleId);
-        
+
         /* ------------------------ */
         vlanCtl_initTagRule();
-        
+
         /* Match the transmitting VOPI against vlanIfName */
         vlanCtl_filterOnTxVlanDevice(vlanIfName1);
-        
+
         /* Match vid value of VLAN header against 0 */
         vlanCtl_filterOnTagVid(0, 0);
-        
+
         /* If hit, set vid in tag number 0, which is always the outer tag of the frame. */
         vlanCtl_cmdSetTagVid(vid, 0);
-        
+
         /* Set rule to the top of the single-tag tx tables. */
-        vlanCtl_insertTagRule(ifName1, VLANCTL_DIRECTION_TX, 
+        vlanCtl_insertTagRule(ifName1, VLANCTL_DIRECTION_TX,
                               1, VLANCTL_POSITION_BEFORE,
                               VLANCTL_DONT_CARE, &tagRuleId);
-        
+
         /* ======== Set rx rules ======== */
-        
+
         /* Note: Always set bridge interface rx rules at the bottom of the tables
          * using VLANCTL_POSITION_APPEND. Always set route interface rx rules at
          * the top of the tables using VLANCTL_POSITION_BEFORE.
          */
-        
+
         vlanCtl_initTagRule();
-        
+
         /* Set rx vlan interface for this rule */
         vlanCtl_setReceiveVlanDevice(vlanIfName1);
-        
+
         if (SF_FEATURE_UPLINK_TYPE_GPON)
         {
             //set default action of veip0 rx direction as drop
-            vlanCtl_setDefaultAction(ifName1,VLANCTL_DIRECTION_RX,0,VLANCTL_ACTION_DROP, NULL);
-            vlanCtl_setDefaultAction(ifName1,VLANCTL_DIRECTION_RX,1,VLANCTL_ACTION_DROP, NULL);
-            vlanCtl_setDefaultAction(ifName1,VLANCTL_DIRECTION_RX,2,VLANCTL_ACTION_DROP, NULL);
+            vlanCtl_setDefaultAction(ifName1, VLANCTL_DIRECTION_RX, 0, VLANCTL_ACTION_DROP, NULL);
+            vlanCtl_setDefaultAction(ifName1, VLANCTL_DIRECTION_RX, 1, VLANCTL_ACTION_DROP, NULL);
+            vlanCtl_setDefaultAction(ifName1, VLANCTL_DIRECTION_RX, 2, VLANCTL_ACTION_DROP, NULL);
         }
 
         /* Filter on receive interface and not allow for multicast.
@@ -1740,27 +1753,27 @@ VOS_RET_E HAL_ethCreateRouteIphostVlanIf(const char *ifName, const char *vlanIfN
          */
         vlanCtl_filterOnVlanDeviceMacAddr(0);
         vlanCtl_cmdDropFrame();
-    
+
 #if 0
         /* Set rule to the top of the non-tag, single-tag and double-tag rx tables. */
-        vlanCtl_insertTagRule(ifName, VLANCTL_DIRECTION_RX, 
+        vlanCtl_insertTagRule(ifName, VLANCTL_DIRECTION_RX,
                               0, VLANCTL_POSITION_BEFORE,
                               VLANCTL_DONT_CARE, &tagRuleId);
-        
-        vlanCtl_insertTagRule(ifName, VLANCTL_DIRECTION_RX, 
+
+        vlanCtl_insertTagRule(ifName, VLANCTL_DIRECTION_RX,
                               1, VLANCTL_POSITION_BEFORE,
                               VLANCTL_DONT_CARE, &tagRuleId);
 #endif
 
-        vlanCtl_insertTagRule(ifName1, VLANCTL_DIRECTION_RX, 
+        vlanCtl_insertTagRule(ifName1, VLANCTL_DIRECTION_RX,
                               2, VLANCTL_POSITION_BEFORE,
                               VLANCTL_DONT_CARE, &tagRuleId);
-        
+
         vlanCtl_initTagRule();
-        
+
         /* Set rx vlan interface for this rule */
         vlanCtl_setReceiveVlanDevice(vlanIfName1);
-        
+
         /* Filter on receive interface and allow for multicast..
         * Filter on vid of tag number 0, which is always the outer tag of the frame.
         * If hit, pop the outer tag of the frame and forward it to the rx vlan interface.
@@ -1768,12 +1781,12 @@ VOS_RET_E HAL_ethCreateRouteIphostVlanIf(const char *ifName, const char *vlanIfN
         vlanCtl_filterOnVlanDeviceMacAddr(1);
         vlanCtl_filterOnTagVid(vid, 0);
         vlanCtl_cmdPopVlanTag();
-        
+
         /* Set rule to the top of the single-tag and double-tag rx tables. */
         vlanCtl_insertTagRule(ifName1, VLANCTL_DIRECTION_RX,
                               1, VLANCTL_POSITION_BEFORE,
                               VLANCTL_DONT_CARE, &tagRuleId);
-        vlanCtl_insertTagRule(ifName1, VLANCTL_DIRECTION_RX, 
+        vlanCtl_insertTagRule(ifName1, VLANCTL_DIRECTION_RX,
                               2, VLANCTL_POSITION_BEFORE,
                               VLANCTL_DONT_CARE, &tagRuleId);
     }
@@ -1781,45 +1794,45 @@ VOS_RET_E HAL_ethCreateRouteIphostVlanIf(const char *ifName, const char *vlanIfN
     {
         /* ******** untagged virtual interface ******** */
         vlanCtl_initTagRule();
-        
+
         /* Set rx vlan interface for this rule */
         vlanCtl_setReceiveVlanDevice(vlanIfName1);
-        
+
         /* Filter on receive interface and allow for multicast frame.
         * If hit, forward the frame to the rx vlan interface.
         */
         vlanCtl_filterOnVlanDeviceMacAddr(1);
-        
+
         /* Set rule to the top of the non-tag rx tables. */
-        vlanCtl_insertTagRule(ifName1, VLANCTL_DIRECTION_RX, 
+        vlanCtl_insertTagRule(ifName1, VLANCTL_DIRECTION_RX,
                               0, VLANCTL_POSITION_BEFORE,
                               VLANCTL_DONT_CARE, &tagRuleId);
-        
+
         /* ------------------------ */
         vlanCtl_initTagRule();
-        
+
         /* Set rx vlan interface for this rule */
         vlanCtl_setReceiveVlanDevice(vlanIfName1);
-        
+
         /* Filter on receive interface and not allow for multicast.
         * If hit, drop the frame.
         */
         vlanCtl_filterOnVlanDeviceMacAddr(0);
         vlanCtl_cmdDropFrame();
-    
+
 #if 0
         /* Set rule to the top of the single-tag and double-tag rx tables. */
-        vlanCtl_insertTagRule(ifName, VLANCTL_DIRECTION_RX, 
+        vlanCtl_insertTagRule(ifName, VLANCTL_DIRECTION_RX,
                               1, VLANCTL_POSITION_BEFORE,
                               VLANCTL_DONT_CARE, &tagRuleId);
 #endif
 
-        vlanCtl_insertTagRule(ifName1, VLANCTL_DIRECTION_RX, 
+        vlanCtl_insertTagRule(ifName1, VLANCTL_DIRECTION_RX,
                               2, VLANCTL_POSITION_BEFORE,
                               VLANCTL_DONT_CARE, &tagRuleId);
     }
 
-    if(SF_FEATURE_SUPPORT_TR247)
+    if (SF_FEATURE_SUPPORT_TR247)
     {
         vlanCtl_createVlanFlows(HAL_GPON_DEF_IFNAME, vlanIfName1);
         vlanCtl_createVlanFlows(vlanIfName1, HAL_GPON_DEF_IFNAME);
@@ -1829,19 +1842,20 @@ VOS_RET_E HAL_ethCreateRouteIphostVlanIf(const char *ifName, const char *vlanIfN
     printf("vlanCtl_createVlanFlows %s %s\n", HAL_GPON_DEF_IFNAME, vlanIfName1);
 
     vlanCtl_cleanup();
-    
+
     return ret;
 #endif /* DESKTOP_LINUX */
 }
 
 
-VOS_RET_E HAL_ethCreateBridgeWanVlanIf(const char *ifName, SINT32 idx, SINT16 vid, UINT8 priority, UINT32 tpid, HAL_VLAN_MODE_E vlanMode, const char *lanIf, UBOOL8 ipv6Enable)
+VOS_RET_E HAL_ethCreateBridgeWanVlanIf(const char *ifName, SINT32 idx, SINT16 vid, UINT8 priority, UINT32 tpid,
+                                       HAL_VLAN_MODE_E vlanMode, const char *lanIf, UBOOL8 ipv6Enable)
 {
 #ifdef DESKTOP_LINUX
     return VOS_RET_SUCCESS;
 #else /* DESKTOP_LINUX */
     VOS_RET_E ret;
-    UBOOL8 isBridge = TRUE; 
+    UBOOL8 isBridge = TRUE;
 
     ret = HAL_ethCreateRouteWanVlanIf(ifName, idx, vid, priority, 0, 0, lanIf, isBridge, ipv6Enable);
 
@@ -1864,7 +1878,7 @@ VOS_RET_E HAL_ethDelBridgeWanVlanIf(const char *vlanIfName, SINT32 idx, SINT16 v
     char *saveStr = NULL;
     char fullPath[BUFLEN_1024] = {0};
     HAL_LAN_MAP_L3IF_LIST lanMapL3IfList;
-	
+
     vosLog_debug("vlanIfName = %s, idx = %d, vid = %d, priority = %u", vlanIfName, idx, vid, priority);
     hal_ethAddDelWanIpSubnet(vlanIfName, FALSE, TRUE, TRUE, vid);
 
@@ -1875,14 +1889,14 @@ VOS_RET_E HAL_ethDelBridgeWanVlanIf(const char *vlanIfName, SINT32 idx, SINT16 v
 
         while (NULL != pPath)
         {
-            lanMapL3IfList.action= 2;
+            lanMapL3IfList.action = 2;
             UTIL_STRNCPY(lanMapL3IfList.lanIfName, pPath, sizeof(lanMapL3IfList.lanIfName));
             UTIL_STRNCPY(lanMapL3IfList.L3IfName, vlanIfName, sizeof(lanMapL3IfList.L3IfName));
 
             HAL_ethSetLanMapWanList(&lanMapL3IfList);
-			
+
             pPath = strtok_r(NULL, ",", &saveStr);
-        }	
+        }
     }
 
     return HAL_ethDeleteVlanIf(vlanIfName);
@@ -1899,28 +1913,28 @@ VOS_RET_E HAL_ethDeleteVlanIf(const char *vlanIfName)
     SINT32 j;
     SINT32 n = 0;
     char bridgeEmulatorIfName[BUFLEN_32] = {0};
-    
+
     vosLog_error("vlanIfName = %s", vlanIfName);
 
     /* bridgeEmulatorIfName: pon.16 */
     UTIL_SNPRINTF(bridgeEmulatorIfName, sizeof(bridgeEmulatorIfName), "pon.%d", IFC_WAN_MAX);
 
-#ifdef MTK_SMUXCTL    
+#ifdef MTK_SMUXCTL
     if (SF_AND_IF(SF_FEATURE_UPLINK_TYPE_GPON || SF_FEATURE_UPLINK_TYPE_EPON)
-        hal_ethIsInterfaceExist(vlanIfName)
-        SF_AND_ENDIF)
+            hal_ethIsInterfaceExist(vlanIfName)
+            SF_AND_ENDIF)
     {
         UTIL_DO_SYSTEM_ACTION("smuxctl rem %s", vlanIfName);
     }
 #else
     if (SF_AND_IF(SF_FEATURE_UPLINK_TYPE_GPON || SF_FEATURE_UPLINK_TYPE_EPON)
-        hal_ethIsInterfaceExist(vlanIfName)
-        SF_AND_ENDIF)
+            hal_ethIsInterfaceExist(vlanIfName)
+            SF_AND_ENDIF)
     {
         if (0 == util_strncmp(vlanIfName, WAN_EPON_IF_NAME_PREFIX, strlen(WAN_EPON_IF_NAME_PREFIX)))
-        {    
+        {
             UTIL_DO_SYSTEM_ACTION("vnetconfig del %s", vlanIfName);
-            
+
             for (i = 0; i < UTIL_WAN_CONN_MAX_NUM; i++)
             {
                 if ((sg_vlanEthNameList[i].used) && (!util_strcmp(sg_vlanEthNameList[i].L3IfName, vlanIfName)))
@@ -1934,9 +1948,9 @@ VOS_RET_E HAL_ethDeleteVlanIf(const char *vlanIfName)
                     }
                     else
                     {
-                        for(j = 0; j < UTIL_WAN_CONN_MAX_NUM; j++)
+                        for (j = 0; j < UTIL_WAN_CONN_MAX_NUM; j++)
                         {
-                            if(!util_strcmp(sg_vlanEthNameList[j].vlanIfName, sg_vlanEthNameList[i].vlanIfName))
+                            if (!util_strcmp(sg_vlanEthNameList[j].vlanIfName, sg_vlanEthNameList[i].vlanIfName))
                             {
                                 n++;
                             }
@@ -1944,7 +1958,7 @@ VOS_RET_E HAL_ethDeleteVlanIf(const char *vlanIfName)
 
                         if (SF_FEATURE_CUSTOMER_JISHIHUITONG)
                         {
-                            if((n == 1) && (hal_ethIsInterfaceExist(sg_vlanEthNameList[i].vlanIfName)))
+                            if ((n == 1) && (hal_ethIsInterfaceExist(sg_vlanEthNameList[i].vlanIfName)))
                             {
                                 UTIL_DO_SYSTEM_ACTION("vconfig rem %s", sg_vlanEthNameList[i].vlanIfName);
                             }
@@ -1954,7 +1968,7 @@ VOS_RET_E HAL_ethDeleteVlanIf(const char *vlanIfName)
                         }
                         else
                         {
-                            if((n == 1) && (hal_ethIsInterfaceExist(sg_vlanEthNameList[i].vlanIfName)))
+                            if ((n == 1) && (hal_ethIsInterfaceExist(sg_vlanEthNameList[i].vlanIfName)))
                             {
                                 UTIL_DO_SYSTEM_ACTION("vconfig rem %s", sg_vlanEthNameList[i].vlanIfName);
 
@@ -1986,20 +2000,20 @@ VOS_RET_E HAL_ethSetWanIgmpState(const char *vlanIfName, const UBOOL8 isBridge, 
     VOS_RET_E ret = VOS_RET_SUCCESS;
     char wanIfName[BUFLEN_32] = {0};
     UINT32 tagRuleId = VLANCTL_DONT_CARE;
-    
+
     if (vlanIfName == NULL)
     {
         vosLog_error("vlanIfName is NULL!");
         return VOS_RET_INVALID_PARAM_VALUE;
     }
-    if(SF_FEATURE_SUPPORT_TR247)
+    if (SF_FEATURE_SUPPORT_TR247)
     {
-        if(util_strlen(vlanIfName) >= 5)
+        if (util_strlen(vlanIfName) >= 5)
         {
             memcpy(wanIfName, vlanIfName, 5);
             wanIfName[5] = '\0';
         }
-        
+
     }
     else
     {
@@ -2023,13 +2037,13 @@ VOS_RET_E HAL_ethSetWanIgmpState(const char *vlanIfName, const UBOOL8 isBridge, 
         vlanCtl_cmdPopVlanTag();
 
         /* Set rule to the top of the single-tag and double-tag rx tables. */
-        vlanCtl_insertTagRule(wanIfName, VLANCTL_DIRECTION_RX, 
-                                1, VLANCTL_POSITION_BEFORE,
-                                VLANCTL_DONT_CARE, &tagRuleId);
+        vlanCtl_insertTagRule(wanIfName, VLANCTL_DIRECTION_RX,
+                              1, VLANCTL_POSITION_BEFORE,
+                              VLANCTL_DONT_CARE, &tagRuleId);
     }
-    
+
     vlanCtl_cleanup();
-    
+
     return ret;
 #endif /* DESKTOP_LINUX */
 }
@@ -2053,7 +2067,7 @@ VOS_RET_E hal_ethDelGponTagRuleById(const char *devInterface, SINT32 ruleId, SIN
     return VOS_RET_SUCCESS;
 #else
     VOS_RET_E ret = VOS_RET_SUCCESS;
-    
+
     if (ruleId != -1)
     {
         vlanCtl_init();
@@ -2061,14 +2075,14 @@ VOS_RET_E hal_ethDelGponTagRuleById(const char *devInterface, SINT32 ruleId, SIN
                                     VLANCTL_DIRECTION_RX,
                                     1,
                                     ruleId);
-                            //        1);
+        //        1);
 
         vosLog_notice("===> vlanCtl_removeTagRule, realLanIf=%s, oldVlan=%d, dir=%d, nbrOfTags=%d, tagRuleId=%d, ret=%d\n",
                       devInterface,
                       vid,
-                      VLANCTL_DIRECTION_RX, 
-                      1, 
-                      ruleId, 
+                      VLANCTL_DIRECTION_RX,
+                      1,
+                      ruleId,
                       ret);
 
         vlanCtl_cleanup();
@@ -2085,18 +2099,18 @@ VOS_RET_E hal_ethDelOldGponTagRule(const char *devInterface, const char *wanConn
     SINT32 oldTagRuleId = -1;
     SINT32 oldVlan = 0;
     FILE *fp = NULL;
-    
+
     fp = fopen("/tmp/mcastAniFilterTagPopRule", "r");
-    
-    if(fp == NULL)
+
+    if (fp == NULL)
     {
         printf("Open /tmp/mcastAniFilterTagPopRule failed!...................\n");
         return VOS_RET_OPEN_FILE_ERROR;
     }
-       
-    while((fgets(temp, 1024, fp)) != NULL)
-    {       
-        if(strstr(temp, (wanConnName + 2)) != NULL)
+
+    while ((fgets(temp, 1024, fp)) != NULL)
+    {
+        if (strstr(temp, (wanConnName + 2)) != NULL)
         {
             strtok(temp, " ");
             oldVlan = atoi(strtok(NULL, " "));
@@ -2109,9 +2123,9 @@ VOS_RET_E hal_ethDelOldGponTagRule(const char *devInterface, const char *wanConn
             }
         }
     }
-    
+
     fclose(fp);
-    
+
     return VOS_RET_SUCCESS;
 }
 
@@ -2125,15 +2139,15 @@ SINT32 hal_ethGetGponTagRuleId(const char *wanConnName)
 
     fp = fopen("/tmp/mcastAniFilterTagPopRule", "r");
 
-    if(fp == NULL)
+    if (fp == NULL)
     {
         printf("Open /tmp/mcastAniFilterTagPopRule failed!...................\n");
         return -1;
     }
-   
-    while((fgets(temp, 1024, fp)) != NULL)
-    {       
-        if(strstr(temp, (wanConnName + 2)) != NULL)
+
+    while ((fgets(temp, 1024, fp)) != NULL)
+    {
+        if (strstr(temp, (wanConnName + 2)) != NULL)
         {
             strtok(temp, " ");
             oldVlan = atoi(strtok(NULL, " "));
@@ -2144,7 +2158,7 @@ SINT32 hal_ethGetGponTagRuleId(const char *wanConnName)
 
     fclose(fp);
 
-    return oldTagRuleId; 
+    return oldTagRuleId;
 }
 
 #ifdef DESKTOP_LINUX
@@ -2156,29 +2170,29 @@ static SINT32 hal_ethAddGponMcastVlanRule(const char *wanConnName, UINT32 vlanId
 
     fp = fopen("/tmp/mcastAniFilterTagPopRule", "a+");
 
-    if(fp == NULL)
+    if (fp == NULL)
         return -1;
 
- #if 0                
-    while((fgets(temp, 1024, fp)) != NULL)
+#if 0
+    while ((fgets(temp, 1024, fp)) != NULL)
     {
-         if(strstr(temp, (wanConnName + 2)) != NULL)
-         {
-             fclose(fp);
-             return 0;
-         }
-       
-       memset(temp, 0, sizeof(temp));
-    }
-#endif 
+        if (strstr(temp, (wanConnName + 2)) != NULL)
+        {
+            fclose(fp);
+            return 0;
+        }
 
-    memset(temp, 0, sizeof(temp));  
+        memset(temp, 0, sizeof(temp));
+    }
+#endif
+
+    memset(temp, 0, sizeof(temp));
     UTIL_SNPRINTF(temp, sizeof(temp), "%s %d %d\r\n", (wanConnName + 2), vlanId, tagRuleId);
-    fputs(temp, fp); 
+    fputs(temp, fp);
 
     fclose(fp);
 
-    return 0;   
+    return 0;
 }
 #endif
 
@@ -2191,9 +2205,9 @@ static SINT32 hal_ethDelGponMcastVlanRule(const char *wanConnName)
     FILE *fp1, *fp2;
 
     fp1 = fopen("/tmp/mcastAniFilterTagPopRule", "a+");
-    if(fp1 == NULL) 
+    if (fp1 == NULL)
         return -1;
-    
+
     fp2 = fopen("/tmp/mcastAniFilterTagPopRule.tmp", "w+");
     if (fp2 == NULL)
     {
@@ -2204,15 +2218,15 @@ static SINT32 hal_ethDelGponMcastVlanRule(const char *wanConnName)
 
     UTIL_SNPRINTF(trunkName, sizeof(trunkName), "%s", (wanConnName + 2));
 
-    while((fgets(temp, 1024, fp1)) != NULL)
+    while ((fgets(temp, 1024, fp1)) != NULL)
     {
-       if(strstr(temp, trunkName) == NULL)
-          fputs(temp, fp2);
+        if (strstr(temp, trunkName) == NULL)
+            fputs(temp, fp2);
 
-       memset(temp, 0, sizeof(temp));
+        memset(temp, 0, sizeof(temp));
     }
 
-    fclose(fp1);   
+    fclose(fp1);
     fclose(fp2);
 
     UTIL_DO_SYSTEM_ACTION("rm -rf /tmp/mcastAniFilterTagPopRule");
@@ -2234,16 +2248,17 @@ VOS_RET_E HAL_ethGetMcastIfByIdx(HAL_ETH_MCAST_IF *mcastIf, UINT32 *idx)
         vosLog_debug("Index is invalid.\n");
         return VOS_RET_INVALID_ARGUMENTS;
     }
-    
+
     memcpy(mcastIf, &sg_mcastIfNames[*idx], sizeof(HAL_ETH_MCAST_IF));
     (*idx)++;
-    
-    return VOS_RET_SUCCESS;   
+
+    return VOS_RET_SUCCESS;
 #endif
 }
 
 
-VOS_RET_E HAL_ethSetWanMvlan(const char *vlanIfName, SINT32 priVid, SINT32 pubVid, UBOOL8 isBridge, UBOOL8 isInternet, const char* ifname)
+VOS_RET_E HAL_ethSetWanMvlan(const char *vlanIfName, SINT32 priVid, SINT32 pubVid, UBOOL8 isBridge, UBOOL8 isInternet,
+                             const char *ifname)
 {
 #ifdef DESKTOP_LINUX
     return VOS_RET_SUCCESS;
@@ -2266,16 +2281,16 @@ VOS_RET_E HAL_ethSetWanMvlan(const char *vlanIfName, SINT32 priVid, SINT32 pubVi
         else
         {
             if ((NULL != strstr(vlanIfName, "OTHER_B")) || (NULL != strstr(vlanIfName, "INTERNET_R"))
-                || (NULL != strstr(vlanIfName, "IPTV")) || (NULL != strstr(vlanIfName, "INTERNET_B")))
+                    || (NULL != strstr(vlanIfName, "IPTV")) || (NULL != strstr(vlanIfName, "INTERNET_B")))
             {
                 idx = ifname[4] - '0' + 8;
                 vosLog_debug("idx [%d]\n", idx);
                 //epon interface and gpon interface is the same
                 HAL_ethCreatePubWanVlanIf(WAN_EPON_IF_NAME_PREFIX, idx, pubVid, 0, 0, vlanIfName, ifname);
-            }  
+            }
         }
     }
-    
+
     return VOS_RET_SUCCESS;
 #endif /* DESKTOP_LINUX */
 }
@@ -2291,7 +2306,7 @@ VOS_RET_E HAL_ethSetWanPubMvlan(void *vlanInfo)
 
     if (NULL == vlanInfo)
         return VOS_RET_INVALID_ARGUMENTS;
-    
+
     fd = open("/dev/tw_mcast", O_RDWR);
     if (fd < 0)
     {
@@ -2307,10 +2322,11 @@ VOS_RET_E HAL_ethSetWanPubMvlan(void *vlanInfo)
 #endif /* DESKTOP_LINUX */
 }
 
-VOS_RET_E HAL_ethSetWanMCastvlan(const char *vlanIfName, SINT32 priVid, SINT32 pubVid, UBOOL8 isBridge, UBOOL8 isInternet, const char* ifname)
+VOS_RET_E HAL_ethSetWanMCastvlan(const char *vlanIfName, SINT32 priVid, SINT32 pubVid, UBOOL8 isBridge,
+                                 UBOOL8 isInternet, const char *ifname)
 {
     HAL_ethSetWanMvlan(vlanIfName, priVid,  pubVid, isBridge, isInternet, ifname);
-    
+
     return VOS_RET_SUCCESS;
 }
 
@@ -2328,12 +2344,12 @@ VOS_RET_E HAL_ethCreateLanVlanIf(const char *ifName, SINT32 vid)
 
         memset(vlanDevName, 0, sizeof(vlanDevName));
         UTIL_SNPRINTF(vlanDevName, sizeof(vlanDevName), VLAN_DEV_FORMAT, ifName, vid);
-        
+
         memset(cmd, 0, sizeof(cmd));
         UTIL_SNPRINTF(cmd, sizeof(cmd), "ifconfig %s up", vlanDevName);
-        UTIL_DO_SYSTEM_ACTION(cmd);       
+        UTIL_DO_SYSTEM_ACTION(cmd);
     }
-    
+
     return VOS_RET_SUCCESS;
 #endif /* DESKTOP_LINUX */
 }
@@ -2344,7 +2360,7 @@ VOS_RET_E HAL_ethCreateLanDefVlanIf(const char *ifName, HAL_VLAN_MODE_E vlanMode
 #ifdef DESKTOP_LINUX
     return VOS_RET_SUCCESS;
 #else /* DESKTOP_LINUX */
-    VOS_RET_E ret = VOS_RET_SUCCESS;    
+    VOS_RET_E ret = VOS_RET_SUCCESS;
     return ret;
 #endif /* DESKTOP_LINUX */
 }
@@ -2371,9 +2387,9 @@ SINT32 HAL_getInterfaceIndex(const char *interfaceName)
     return ret;
 }
 
-void HAL_createEthernetFlows(UINT32 numOfAssoIntf, 
-                                    char assoIfName[][BUFLEN_32], 
-                                    char *l3Name)
+void HAL_createEthernetFlows(UINT32 numOfAssoIntf,
+                             char assoIfName[][BUFLEN_32],
+                             char *l3Name)
 {
 #ifndef JASON_DEBUG
     return;
@@ -2390,11 +2406,11 @@ void HAL_createEthernetFlows(UINT32 numOfAssoIntf,
     for (i = 0; i < numOfAssoIntf; i++)
     {
         if ((IS_EMPTY_STRING(assoIfName[i]))
-         || (!HAL_getInterfaceIndex(assoIfName[i])))
+                || (!HAL_getInterfaceIndex(assoIfName[i])))
         {
             vosLog_error("interface %p is null or does not exist.", assoIfName[i]);
             continue;
-        }   
+        }
 
         vlanCtl_createVlanFlows(l3Name, assoIfName[i]);
         vlanCtl_createVlanFlows(assoIfName[i], l3Name);
@@ -2416,12 +2432,12 @@ VOS_RET_E HAL_deleteEthernetFlows(char *rxL3Name, char *txL3Name, char *txIface)
     {
         ret = vlanCtl_deleteVlanFlows(rxL3Name, "");
         ret = vlanCtl_deleteVlanFlows("", rxL3Name);
-        vosLog_debug("remove vlan blog rule: bi-direction Dev=%s", rxL3Name);      
+        vosLog_debug("remove vlan blog rule: bi-direction Dev=%s", rxL3Name);
     }
     else
     {
-        ret= vlanCtl_deleteVlanFlows(rxL3Name, txL3Name); 
-        vosLog_debug("remove vlan blog rule: rxDev=%s txDev=%s", rxL3Name, txL3Name);      
+        ret = vlanCtl_deleteVlanFlows(rxL3Name, txL3Name);
+        vosLog_debug("remove vlan blog rule: rxDev=%s txDev=%s", rxL3Name, txL3Name);
     }
 
     vlanCtl_cleanup();
@@ -2438,28 +2454,28 @@ VOS_RET_E HAL_ethAddIptvIpv6Address(const char *ifName, const HAL_ETH_GMP_MW_WAN
 {
     VOS_RET_E ret = VOS_RET_SUCCESS;
 #ifdef DESKTOP_LINUX
-        return ret;
-#else
-/*
-    SINT32 fd = 0;
-    SINT32 rc = 0;
-
-    fd = open(BCM_GMP_MW_CHRDEV_FULLNAME, O_WRONLY);
-    if (fd < 0)
-    {
-        vosLog_error("open failed. fd=%d", fd);
-        return VOS_RET_INTERNAL_ERROR;
-    }
-    
-    rc = ioctl(fd, BCM_GMP_MW_ADD_WAN_IPTV_IP6_ADDRESS, iptvAddr);
-    if (rc < 0)
-    {
-        vosLog_error("ioctl failed. rc=%d", rc);
-        return VOS_RET_INTERNAL_ERROR;
-    }*/
-    
     return ret;
-    
+#else
+    /*
+        SINT32 fd = 0;
+        SINT32 rc = 0;
+
+        fd = open(BCM_GMP_MW_CHRDEV_FULLNAME, O_WRONLY);
+        if (fd < 0)
+        {
+            vosLog_error("open failed. fd=%d", fd);
+            return VOS_RET_INTERNAL_ERROR;
+        }
+
+        rc = ioctl(fd, BCM_GMP_MW_ADD_WAN_IPTV_IP6_ADDRESS, iptvAddr);
+        if (rc < 0)
+        {
+            vosLog_error("ioctl failed. rc=%d", rc);
+            return VOS_RET_INTERNAL_ERROR;
+        }*/
+
+    return ret;
+
 #endif
 }
 
@@ -2467,30 +2483,30 @@ VOS_RET_E HAL_ethAddIptvIpv6Address(const char *ifName, const HAL_ETH_GMP_MW_WAN
 VOS_RET_E HAL_ethDelIptvIpv6Address(const char *ifName, const HAL_ETH_GMP_MW_WAN_IPTV_IPV6_ADDR_T *iptvAddr)
 {
     VOS_RET_E ret = VOS_RET_SUCCESS;
-    
-#ifdef DESKTOP_LINUX
-        return ret;
-#else   
-/*
-    SINT32 fd = 0;
-    SINT32 rc = 0;
 
-    fd = open(BCM_GMP_MW_CHRDEV_FULLNAME, O_WRONLY);
-    if (fd < 0)
-    {
-        vosLog_error("open failed. fd=%d", fd);
-        return VOS_RET_INTERNAL_ERROR;
-    }
-    
-    rc = ioctl(fd, BCM_GMP_MW_REMOVE_WAN_IPTV_IP6_ADDRESS, iptvAddr);
-    if (rc < 0)
-    {
-        vosLog_error("ioctl failed. rc=%d", rc);
-        return VOS_RET_INTERNAL_ERROR;
-    }*/
+#ifdef DESKTOP_LINUX
+    return ret;
+#else
+    /*
+        SINT32 fd = 0;
+        SINT32 rc = 0;
+
+        fd = open(BCM_GMP_MW_CHRDEV_FULLNAME, O_WRONLY);
+        if (fd < 0)
+        {
+            vosLog_error("open failed. fd=%d", fd);
+            return VOS_RET_INTERNAL_ERROR;
+        }
+
+        rc = ioctl(fd, BCM_GMP_MW_REMOVE_WAN_IPTV_IP6_ADDRESS, iptvAddr);
+        if (rc < 0)
+        {
+            vosLog_error("ioctl failed. rc=%d", rc);
+            return VOS_RET_INTERNAL_ERROR;
+        }*/
 
     return ret;
-    
+
 #endif
 }
 
@@ -2513,10 +2529,10 @@ VOS_RET_E HAL_ethSetPortEgressRate(const char *ifName, UINT32 kBitsSec, UINT32 k
     }
     else
     {
-        UTIL_DO_SYSTEM_ACTION("ethcmd ratectl 0 %u %u", 
-            MTK_PORT_CONVERT(*port), kBitsSec < 1024 ? 1024 : kBitsSec);
+        UTIL_DO_SYSTEM_ACTION("ethcmd ratectl 0 %u %u",
+                              MTK_PORT_CONVERT(*port), kBitsSec < 1024 ? 1024 : kBitsSec);
     }
-    
+
     return VOS_RET_SUCCESS;
 
 #endif
@@ -2524,7 +2540,7 @@ VOS_RET_E HAL_ethSetPortEgressRate(const char *ifName, UINT32 kBitsSec, UINT32 k
 
 
 #ifndef DESKTOP_LINUX
-UINT16 hal_ethGetPhyIdByName(const char * name)
+UINT16 hal_ethGetPhyIdByName(const char *name)
 {
 #ifndef JASON_DEBUG
     return VOS_RET_SUCCESS;
@@ -2549,7 +2565,7 @@ UINT16 hal_ethGetPhyIdByName(const char * name)
         UTIL_STRNCPY(pifr->ifr_name, name, sizeof(pifr->ifr_name));
 
         intf.ifr_data = (char *)&miiVal;
-        
+
         data = (unsigned short *)(&intf.ifr_data);
 
         data[0] = 0;
@@ -2589,14 +2605,14 @@ UINT16 hal_ethSetPhyState(UINT16 phyId, UBOOL8 state)
     {
         UTIL_STRNCPY(pifr->ifr_name, "eth0", sizeof(pifr->ifr_name));
 
-        data = (unsigned short *) (&intf.ifr_data);
+        data = (unsigned short *)(&intf.ifr_data);
         data[0] = phyId;
         data[1] = MII_BMCR;
         if (ioctl(socketFd, SIOCGMIIREG, &intf) != -1)
         {
             if (state)
             {
-                writeVal = data[3] & (~(1<<11));
+                writeVal = data[3] & (~(1 << 11));
                 vosLog_debug("writeVal %x", writeVal);
             }
             else
@@ -2607,7 +2623,7 @@ UINT16 hal_ethSetPhyState(UINT16 phyId, UBOOL8 state)
         }
 
         data[2] = writeVal;
-        
+
         if (ioctl(socketFd, SIOCSMIIREG, &intf) == -1)
         {
             vosLog_debug("ioctl SIOCSMIIREG fail");
@@ -2616,7 +2632,7 @@ UINT16 hal_ethSetPhyState(UINT16 phyId, UBOOL8 state)
         close(socketFd);
     }
     return 0;
-#endif    
+#endif
 }
 #endif /* DESKTOP_LINUX */
 
@@ -2627,7 +2643,7 @@ VOS_RET_E HAL_ethSetPortState(int port, UBOOL8 enable)
 #else /* DESKTOP_LINUX */
     char cmd[128] = {0};
     UINT32 phyId = 0;
-               
+
     if (port >= 0 && port <= 4)
     {
         if (port == 0)
@@ -2636,17 +2652,17 @@ VOS_RET_E HAL_ethSetPortState(int port, UBOOL8 enable)
         }
         else if (port == 1)
         {
-            phyId = 3;//phy3 
+            phyId = 3;//phy3
         }
         else if (port == 2)
         {
-            phyId = 2;//phy2 
+            phyId = 2;//phy2
         }
         else if (port == 3)
         {
-            phyId = 1;//phy1 
+            phyId = 1;//phy1
         }
-        
+
         vosLog_debug("Eth[%d]-Phy[%d] change state into [%s].\n", port, phyId, (enable) ? "Enable" : "Disable");
 
         /* User app enable port only, kernel would disable phy port when detected loopback. */
@@ -2704,7 +2720,7 @@ VOS_RET_E HAL_ethSetPortIngressRate(const char *ifName, UINT32 kBitsSec, UINT32 
 #ifdef DESKTOP_LINUX
     return VOS_RET_SUCCESS;
 #else
-    
+
     UINT8 *port = (UINT8 *)ifName;
 
     if (NULL == port)
@@ -2718,8 +2734,8 @@ VOS_RET_E HAL_ethSetPortIngressRate(const char *ifName, UINT32 kBitsSec, UINT32 
     }
     else
     {
-        UTIL_DO_SYSTEM_ACTION("ethcmd ratectl 1 %u %u", 
-            MTK_PORT_CONVERT(*port), kBitsSec < 1024 ? 1024 : kBitsSec);
+        UTIL_DO_SYSTEM_ACTION("ethcmd ratectl 1 %u %u",
+                              MTK_PORT_CONVERT(*port), kBitsSec < 1024 ? 1024 : kBitsSec);
     }
 
     return VOS_RET_SUCCESS;
@@ -2727,7 +2743,8 @@ VOS_RET_E HAL_ethSetPortIngressRate(const char *ifName, UINT32 kBitsSec, UINT32 
 }
 
 
-VOS_RET_E HAL_ethCreateRouteTransparentVlanIf(const char *ifName, SINT32 idx, SINT16 vid, UINT8 priority, UBOOL8 isPppoe)
+VOS_RET_E HAL_ethCreateRouteTransparentVlanIf(const char *ifName, SINT32 idx, SINT16 vid, UINT8 priority,
+        UBOOL8 isPppoe)
 {
 #ifdef DESKTOP_LINUX
     return VOS_RET_SUCCESS;
@@ -2757,7 +2774,7 @@ VOS_RET_E HAL_ethDeleteConnInterface(const char *vlanDevName, int vid, int pri)
 #endif
 }
 
-VOS_RET_E HAL_ethCreateConnInterface(const char *vlanDevName, int vid, int pri, SINT16 MultiVid, UBOOL8 * omciVlanMode)
+VOS_RET_E HAL_ethCreateConnInterface(const char *vlanDevName, int vid, int pri, SINT16 MultiVid, UBOOL8 *omciVlanMode)
 {
 #ifdef DESKTOP_LINUX
     return VOS_RET_SUCCESS;
@@ -2777,7 +2794,7 @@ VOS_RET_E HAL_ethEnablePortRecive(UINT32 swPort)
     return VOS_RET_SUCCESS;
 }
 
-VOS_RET_E HAL_ethSetPortPower(UINT32 port,UINT32 portState)
+VOS_RET_E HAL_ethSetPortPower(UINT32 port, UINT32 portState)
 {
 #ifdef DESKTOP_LINUX
     return VOS_RET_SUCCESS;
@@ -2785,7 +2802,7 @@ VOS_RET_E HAL_ethSetPortPower(UINT32 port,UINT32 portState)
     UBOOL8 enable = FALSE;
     char cmd[128] = {0};
     UINT32 phyId = 0;
-               
+
     if (port >= 0 && port <= 4)
     {
         enable = (0 == portState) ? TRUE : FALSE;
@@ -2796,17 +2813,17 @@ VOS_RET_E HAL_ethSetPortPower(UINT32 port,UINT32 portState)
         }
         else if (port == 1)
         {
-            phyId = 3;//phy3 
+            phyId = 3;//phy3
         }
         else if (port == 2)
         {
-            phyId = 2;//phy2 
+            phyId = 2;//phy2
         }
         else if (port == 3)
         {
-            phyId = 1;//phy1 
+            phyId = 1;//phy1
         }
-        
+
         printf("\nEth[%d]-Phy[%d] change state into [%s].\n", port, phyId, (0 == portState) ? "Enable" : "Disable");
 
         /* User app enable port only, kernel would disable phy port when detected loopback. */
@@ -2852,26 +2869,26 @@ VOS_RET_E HAL_ethRestoreLanMcastRule()
         vlanCtl_init();
         vlanCtl_initTagRule();
         vlanCtl_removeAllTagRule(vlanDevName);
-        
+
 
         vlanCtl_initTagRule();
         vlanCtl_setReceiveVlanDevice((char *)vlanDevName);
-        vlanCtl_insertTagRule(devName, 
-                                               VLANCTL_DIRECTION_RX,
-                                               0,
-                                               VLANCTL_POSITION_APPEND,
-                                               VLANCTL_DONT_CARE,
-                                               &tagRuleId);
+        vlanCtl_insertTagRule(devName,
+                              VLANCTL_DIRECTION_RX,
+                              0,
+                              VLANCTL_POSITION_APPEND,
+                              VLANCTL_DONT_CARE,
+                              &tagRuleId);
 
         vlanCtl_initTagRule();
         vlanCtl_setReceiveVlanDevice((char *)vlanDevName);
         vlanCtl_cmdPopVlanTag();
-        vlanCtl_insertTagRule(devName, 
-                                               VLANCTL_DIRECTION_RX,
-                                               1,
-                                               VLANCTL_POSITION_APPEND,
-                                               VLANCTL_DONT_CARE,
-                                               &tagRuleId);
+        vlanCtl_insertTagRule(devName,
+                              VLANCTL_DIRECTION_RX,
+                              1,
+                              VLANCTL_POSITION_APPEND,
+                              VLANCTL_DONT_CARE,
+                              &tagRuleId);
         vlanCtl_cleanup();
     }
 
@@ -2904,7 +2921,7 @@ VOS_RET_E HAL_ethAddEponOamVlan(const UINT8 lanPort, const UINT16 vlan, UINT32 t
 #ifdef DESKTOP_LINUX
 static VOS_RET_E hal_ethVlanExist(const UINT8 lanPort, const UINT16 eponVlan)
 {
-    return VOS_RET_SUCCESS;   
+    return VOS_RET_SUCCESS;
 }
 #endif
 
@@ -2912,9 +2929,9 @@ static VOS_RET_E hal_ethVlanExist(const UINT8 lanPort, const UINT16 eponVlan)
 static VOS_RET_E hal_ethGetEponOamVlan(const UINT8 lanPort, UINT16 vlan[BUFLEN_8], UINT8 *vlanNum)
 {
 #ifdef DESKTOP_LINUX
-        return VOS_RET_SUCCESS;
+    return VOS_RET_SUCCESS;
 #else /* DESKTOP_LINUX */
-        return VOS_RET_SUCCESS;
+    return VOS_RET_SUCCESS;
 #endif /* DESKTOP_LINUX */
 }
 #endif
@@ -2941,10 +2958,11 @@ VOS_RET_E HAL_ethSetEponOamRuleId(const UINT8 lanPort, const UINT16 vlan, const 
 }
 
 
-VOS_RET_E HAL_ethUpdateLanPortMcastTag(const UINT8 lanPort, const UINT16 eponVlan, const UINT16 iptvVlan, const UINT8 tagOp)
+VOS_RET_E HAL_ethUpdateLanPortMcastTag(const UINT8 lanPort, const UINT16 eponVlan, const UINT16 iptvVlan,
+                                       const UINT8 tagOp)
 {
 #ifndef JASON_DEBUG
-        return VOS_RET_SUCCESS;
+    return VOS_RET_SUCCESS;
 #else
     char devName[BUFLEN_128] = {0};
     char vlanDevName[BUFLEN_128] = {0};
@@ -2952,7 +2970,7 @@ VOS_RET_E HAL_ethUpdateLanPortMcastTag(const UINT8 lanPort, const UINT16 eponVla
     UINT16 vlan[BUFLEN_8] = {0};
     UINT8 vlanNum = 0;
     int i;
-    
+
     UTIL_SNPRINTF(devName, sizeof(devName), "eth%d", lanPort);
     UTIL_SNPRINTF(vlanDevName, sizeof(vlanDevName), "eth%d.0", lanPort);
 
@@ -2967,7 +2985,7 @@ VOS_RET_E HAL_ethUpdateLanPortMcastTag(const UINT8 lanPort, const UINT16 eponVla
         vosLog_error("devName or vlanDevName is NULL.");
         return VOS_RET_INTERNAL_ERROR;
     }
-    
+
     vlanCtl_init();
     vlanCtl_initTagRule();
     //read oamfile to
@@ -3005,24 +3023,24 @@ VOS_RET_E HAL_ethUpdateLanPortMcastTag(const UINT8 lanPort, const UINT16 eponVla
             vlanCtl_filterOnFlags(BCM_VLAN_FILTER_FLAGS_IS_MULTICAST);
             vlanCtl_filterOnIpProto(2);
             vlanCtl_cmdSetTagVid(vlan[i], 0);
-            vlanCtl_insertTagRule(devName, 
-                                                   VLANCTL_DIRECTION_TX,
-                                                   0,
-                                                   VLANCTL_POSITION_APPEND,
-                                                   VLANCTL_DONT_CARE,
-                                                   &tagRuleId);
-    
+            vlanCtl_insertTagRule(devName,
+                                  VLANCTL_DIRECTION_TX,
+                                  0,
+                                  VLANCTL_POSITION_APPEND,
+                                  VLANCTL_DONT_CARE,
+                                  &tagRuleId);
+
             vlanCtl_initTagRule();
             vlanCtl_filterOnTxVlanDevice((char *)vlanDevName);
             vlanCtl_filterOnFlags(BCM_VLAN_FILTER_FLAGS_IS_MULTICAST);
             vlanCtl_filterOnIpProto(2);
             vlanCtl_cmdSetTagVid(vlan[i], 0);
-            vlanCtl_insertTagRule(devName, 
-                                                   VLANCTL_DIRECTION_TX,
-                                                   1,
-                                                   VLANCTL_POSITION_APPEND,
-                                                   VLANCTL_DONT_CARE,
-                                                   &tagRuleId);
+            vlanCtl_insertTagRule(devName,
+                                  VLANCTL_DIRECTION_TX,
+                                  1,
+                                  VLANCTL_POSITION_APPEND,
+                                  VLANCTL_DONT_CARE,
+                                  &tagRuleId);
 
             //multicast interface, udp
             vlanCtl_initTagRule();
@@ -3030,24 +3048,24 @@ VOS_RET_E HAL_ethUpdateLanPortMcastTag(const UINT8 lanPort, const UINT16 eponVla
             vlanCtl_filterOnFlags(BCM_VLAN_FILTER_FLAGS_IS_MULTICAST);
             vlanCtl_filterOnIpProto(11);
             vlanCtl_cmdSetTagVid(vlan[i], 0);
-            vlanCtl_insertTagRule(devName, 
-                                                   VLANCTL_DIRECTION_TX,
-                                                   0,
-                                                   VLANCTL_POSITION_APPEND,
-                                                   VLANCTL_DONT_CARE,
-                                                   &tagRuleId);
-    
+            vlanCtl_insertTagRule(devName,
+                                  VLANCTL_DIRECTION_TX,
+                                  0,
+                                  VLANCTL_POSITION_APPEND,
+                                  VLANCTL_DONT_CARE,
+                                  &tagRuleId);
+
             vlanCtl_initTagRule();
             vlanCtl_filterOnTxVlanDevice((char *)vlanDevName);
             vlanCtl_filterOnFlags(BCM_VLAN_FILTER_FLAGS_IS_MULTICAST);
             vlanCtl_filterOnIpProto(11);
             vlanCtl_cmdSetTagVid(vlan[i], 0);
-            vlanCtl_insertTagRule(devName, 
-                                                   VLANCTL_DIRECTION_TX,
-                                                   1,
-                                                   VLANCTL_POSITION_APPEND,
-                                                   VLANCTL_DONT_CARE,
-                                                   &tagRuleId);
+            vlanCtl_insertTagRule(devName,
+                                  VLANCTL_DIRECTION_TX,
+                                  1,
+                                  VLANCTL_POSITION_APPEND,
+                                  VLANCTL_DONT_CARE,
+                                  &tagRuleId);
 
             //multicast interface, udp
             vlanCtl_initTagRule();
@@ -3055,68 +3073,68 @@ VOS_RET_E HAL_ethUpdateLanPortMcastTag(const UINT8 lanPort, const UINT16 eponVla
             vlanCtl_filterOnFlags(BCM_VLAN_FILTER_FLAGS_IS_MULTICAST);
             vlanCtl_filterOnIpProto(58);
             vlanCtl_cmdSetTagVid(vlan[i], 0);
-            vlanCtl_insertTagRule(devName, 
-                                                   VLANCTL_DIRECTION_TX,
-                                                   0,
-                                                   VLANCTL_POSITION_APPEND,
-                                                   VLANCTL_DONT_CARE,
-                                                   &tagRuleId);
-    
+            vlanCtl_insertTagRule(devName,
+                                  VLANCTL_DIRECTION_TX,
+                                  0,
+                                  VLANCTL_POSITION_APPEND,
+                                  VLANCTL_DONT_CARE,
+                                  &tagRuleId);
+
             vlanCtl_initTagRule();
             vlanCtl_filterOnTxVlanDevice((char *)vlanDevName);
             vlanCtl_filterOnFlags(BCM_VLAN_FILTER_FLAGS_IS_MULTICAST);
             vlanCtl_filterOnIpProto(58);
             vlanCtl_cmdSetTagVid(vlan[i], 0);
-            vlanCtl_insertTagRule(devName, 
-                                                   VLANCTL_DIRECTION_TX,
-                                                   1,
-                                                   VLANCTL_POSITION_APPEND,
-                                                   VLANCTL_DONT_CARE,
-                                                   &tagRuleId);
-            
-    
+            vlanCtl_insertTagRule(devName,
+                                  VLANCTL_DIRECTION_TX,
+                                  1,
+                                  VLANCTL_POSITION_APPEND,
+                                  VLANCTL_DONT_CARE,
+                                  &tagRuleId);
+
+
             //unicast
             vlanCtl_initTagRule();
             vlanCtl_filterOnTxVlanDevice((char *)vlanDevName);
             vlanCtl_cmdSetTagVid(vlan[i], 0);
-            vlanCtl_insertTagRule(devName, 
-                                                   VLANCTL_DIRECTION_TX,
-                                                   0,
-                                                   VLANCTL_POSITION_APPEND,
-                                                   VLANCTL_DONT_CARE,
-                                                   &tagRuleId);
-    
+            vlanCtl_insertTagRule(devName,
+                                  VLANCTL_DIRECTION_TX,
+                                  0,
+                                  VLANCTL_POSITION_APPEND,
+                                  VLANCTL_DONT_CARE,
+                                  &tagRuleId);
+
             vlanCtl_initTagRule();
             vlanCtl_filterOnTxVlanDevice((char *)vlanDevName);
             vlanCtl_cmdSetTagVid(vlan[i], 0);
-            vlanCtl_insertTagRule(devName, 
-                                                   VLANCTL_DIRECTION_TX,
-                                                   1,
-                                                   VLANCTL_POSITION_APPEND,
-                                                   VLANCTL_DONT_CARE,
-                                                   &tagRuleId);
+            vlanCtl_insertTagRule(devName,
+                                  VLANCTL_DIRECTION_TX,
+                                  1,
+                                  VLANCTL_POSITION_APPEND,
+                                  VLANCTL_DONT_CARE,
+                                  &tagRuleId);
 
         }
 
-            //rx, tags=0:NOP, tags=1:POP
-            vlanCtl_initTagRule();
-            vlanCtl_setReceiveVlanDevice((char *)vlanDevName);
-            vlanCtl_insertTagRule(devName, 
-                                                   VLANCTL_DIRECTION_RX,
-                                                   0,
-                                                   VLANCTL_POSITION_APPEND,
-                                                   VLANCTL_DONT_CARE,
-                                                   &tagRuleId);
+        //rx, tags=0:NOP, tags=1:POP
+        vlanCtl_initTagRule();
+        vlanCtl_setReceiveVlanDevice((char *)vlanDevName);
+        vlanCtl_insertTagRule(devName,
+                              VLANCTL_DIRECTION_RX,
+                              0,
+                              VLANCTL_POSITION_APPEND,
+                              VLANCTL_DONT_CARE,
+                              &tagRuleId);
 
-            vlanCtl_initTagRule();
-            vlanCtl_setReceiveVlanDevice((char *)vlanDevName);
-            vlanCtl_cmdPopVlanTag();
-            vlanCtl_insertTagRule(devName, 
-                                                   VLANCTL_DIRECTION_RX,
-                                                   1,
-                                                   VLANCTL_POSITION_APPEND,
-                                                   VLANCTL_DONT_CARE,
-                                                   &tagRuleId);
+        vlanCtl_initTagRule();
+        vlanCtl_setReceiveVlanDevice((char *)vlanDevName);
+        vlanCtl_cmdPopVlanTag();
+        vlanCtl_insertTagRule(devName,
+                              VLANCTL_DIRECTION_RX,
+                              1,
+                              VLANCTL_POSITION_APPEND,
+                              VLANCTL_DONT_CARE,
+                              &tagRuleId);
     }
     else if (1 == tagOp)
     {
@@ -3126,42 +3144,42 @@ VOS_RET_E HAL_ethUpdateLanPortMcastTag(const UINT8 lanPort, const UINT16 eponVla
             vosLog_debug("vlan[%d]:%d, devName:%s", i, vlan[i], devName);
             vlanCtl_initTagRule();
             vlanCtl_filterOnTxVlanDevice((char *)vlanDevName);
-            vlanCtl_insertTagRule(devName, 
-                                                   VLANCTL_DIRECTION_TX,
-                                                   0,
-                                                   VLANCTL_POSITION_APPEND,
-                                                   VLANCTL_DONT_CARE,
-                                                   &tagRuleId);
-    
+            vlanCtl_insertTagRule(devName,
+                                  VLANCTL_DIRECTION_TX,
+                                  0,
+                                  VLANCTL_POSITION_APPEND,
+                                  VLANCTL_DONT_CARE,
+                                  &tagRuleId);
+
             vlanCtl_initTagRule();
             vlanCtl_filterOnTxVlanDevice((char *)vlanDevName);
-            vlanCtl_insertTagRule(devName, 
-                                                   VLANCTL_DIRECTION_TX,
-                                                   1,
-                                                   VLANCTL_POSITION_APPEND,
-                                                   VLANCTL_DONT_CARE,
-                                                   &tagRuleId);
+            vlanCtl_insertTagRule(devName,
+                                  VLANCTL_DIRECTION_TX,
+                                  1,
+                                  VLANCTL_POSITION_APPEND,
+                                  VLANCTL_DONT_CARE,
+                                  &tagRuleId);
         }
 
         //rx, tags=0:NOP, tags=1:POP
         vlanCtl_initTagRule();
         vlanCtl_setReceiveVlanDevice((char *)vlanDevName);
-        vlanCtl_insertTagRule(devName, 
-                                               VLANCTL_DIRECTION_RX,
-                                               0,
-                                               VLANCTL_POSITION_APPEND,
-                                               VLANCTL_DONT_CARE,
-                                               &tagRuleId);
+        vlanCtl_insertTagRule(devName,
+                              VLANCTL_DIRECTION_RX,
+                              0,
+                              VLANCTL_POSITION_APPEND,
+                              VLANCTL_DONT_CARE,
+                              &tagRuleId);
 
         vlanCtl_initTagRule();
         vlanCtl_setReceiveVlanDevice((char *)vlanDevName);
         vlanCtl_cmdPopVlanTag();
-        vlanCtl_insertTagRule(devName, 
-                                               VLANCTL_DIRECTION_RX,
-                                               1,
-                                               VLANCTL_POSITION_APPEND,
-                                               VLANCTL_DONT_CARE,
-                                               &tagRuleId);
+        vlanCtl_insertTagRule(devName,
+                              VLANCTL_DIRECTION_RX,
+                              1,
+                              VLANCTL_POSITION_APPEND,
+                              VLANCTL_DONT_CARE,
+                              &tagRuleId);
     }
     else if (2 == tagOp)
     {
@@ -3173,24 +3191,24 @@ VOS_RET_E HAL_ethUpdateLanPortMcastTag(const UINT8 lanPort, const UINT16 eponVla
         vlanCtl_filterOnFlags(BCM_VLAN_FILTER_FLAGS_IS_MULTICAST);
         vlanCtl_filterOnIpProto(2);
         vlanCtl_cmdSetTagVid(iptvVlan, 0);
-        vlanCtl_insertTagRule(devName, 
-                                               VLANCTL_DIRECTION_TX,
-                                               0,
-                                               VLANCTL_POSITION_APPEND,
-                                               VLANCTL_DONT_CARE,
-                                               &tagRuleId);
+        vlanCtl_insertTagRule(devName,
+                              VLANCTL_DIRECTION_TX,
+                              0,
+                              VLANCTL_POSITION_APPEND,
+                              VLANCTL_DONT_CARE,
+                              &tagRuleId);
 
         vlanCtl_initTagRule();
         vlanCtl_filterOnTxVlanDevice((char *)vlanDevName);
         vlanCtl_filterOnFlags(BCM_VLAN_FILTER_FLAGS_IS_MULTICAST);
         vlanCtl_filterOnIpProto(2);
         vlanCtl_cmdSetTagVid(iptvVlan, 0);
-        vlanCtl_insertTagRule(devName, 
-                                               VLANCTL_DIRECTION_TX,
-                                               1,
-                                               VLANCTL_POSITION_APPEND,
-                                               VLANCTL_DONT_CARE,
-                                               &tagRuleId);
+        vlanCtl_insertTagRule(devName,
+                              VLANCTL_DIRECTION_TX,
+                              1,
+                              VLANCTL_POSITION_APPEND,
+                              VLANCTL_DONT_CARE,
+                              &tagRuleId);
 
         //multicast interface, udp
         vlanCtl_initTagRule();
@@ -3198,24 +3216,24 @@ VOS_RET_E HAL_ethUpdateLanPortMcastTag(const UINT8 lanPort, const UINT16 eponVla
         vlanCtl_filterOnFlags(BCM_VLAN_FILTER_FLAGS_IS_MULTICAST);
         vlanCtl_filterOnIpProto(17);
         vlanCtl_cmdSetTagVid(iptvVlan, 0);
-        vlanCtl_insertTagRule(devName, 
-                                               VLANCTL_DIRECTION_TX,
-                                               0,
-                                               VLANCTL_POSITION_APPEND,
-                                               VLANCTL_DONT_CARE,
-                                               &tagRuleId);
+        vlanCtl_insertTagRule(devName,
+                              VLANCTL_DIRECTION_TX,
+                              0,
+                              VLANCTL_POSITION_APPEND,
+                              VLANCTL_DONT_CARE,
+                              &tagRuleId);
 
         vlanCtl_initTagRule();
         vlanCtl_filterOnTxVlanDevice((char *)vlanDevName);
         vlanCtl_filterOnFlags(BCM_VLAN_FILTER_FLAGS_IS_MULTICAST);
         vlanCtl_filterOnIpProto(17);
         vlanCtl_cmdSetTagVid(iptvVlan, 0);
-        vlanCtl_insertTagRule(devName, 
-                                               VLANCTL_DIRECTION_TX,
-                                               1,
-                                               VLANCTL_POSITION_APPEND,
-                                               VLANCTL_DONT_CARE,
-                                               &tagRuleId);
+        vlanCtl_insertTagRule(devName,
+                              VLANCTL_DIRECTION_TX,
+                              1,
+                              VLANCTL_POSITION_APPEND,
+                              VLANCTL_DONT_CARE,
+                              &tagRuleId);
 
         //multicast interface, udp
         vlanCtl_initTagRule();
@@ -3223,65 +3241,65 @@ VOS_RET_E HAL_ethUpdateLanPortMcastTag(const UINT8 lanPort, const UINT16 eponVla
         vlanCtl_filterOnFlags(BCM_VLAN_FILTER_FLAGS_IS_MULTICAST);
         vlanCtl_filterOnIpProto(58);
         vlanCtl_cmdSetTagVid(iptvVlan, 0);
-        vlanCtl_insertTagRule(devName, 
-                                               VLANCTL_DIRECTION_TX,
-                                               0,
-                                               VLANCTL_POSITION_APPEND,
-                                               VLANCTL_DONT_CARE,
-                                               &tagRuleId);
+        vlanCtl_insertTagRule(devName,
+                              VLANCTL_DIRECTION_TX,
+                              0,
+                              VLANCTL_POSITION_APPEND,
+                              VLANCTL_DONT_CARE,
+                              &tagRuleId);
 
         vlanCtl_initTagRule();
         vlanCtl_filterOnTxVlanDevice((char *)vlanDevName);
         vlanCtl_filterOnFlags(BCM_VLAN_FILTER_FLAGS_IS_MULTICAST);
         vlanCtl_filterOnIpProto(58);
         vlanCtl_cmdSetTagVid(iptvVlan, 0);
-        vlanCtl_insertTagRule(devName, 
-                                               VLANCTL_DIRECTION_TX,
-                                               1,
-                                               VLANCTL_POSITION_APPEND,
-                                               VLANCTL_DONT_CARE,
-                                               &tagRuleId);
+        vlanCtl_insertTagRule(devName,
+                              VLANCTL_DIRECTION_TX,
+                              1,
+                              VLANCTL_POSITION_APPEND,
+                              VLANCTL_DONT_CARE,
+                              &tagRuleId);
 
         //unicast
         vlanCtl_initTagRule();
         vlanCtl_filterOnTxVlanDevice((char *)vlanDevName);
-        vlanCtl_insertTagRule(devName, 
-                                               VLANCTL_DIRECTION_TX,
-                                               0,
-                                               VLANCTL_POSITION_APPEND,
-                                               VLANCTL_DONT_CARE,
-                                               &tagRuleId);
+        vlanCtl_insertTagRule(devName,
+                              VLANCTL_DIRECTION_TX,
+                              0,
+                              VLANCTL_POSITION_APPEND,
+                              VLANCTL_DONT_CARE,
+                              &tagRuleId);
 
         vlanCtl_initTagRule();
         vlanCtl_filterOnTxVlanDevice((char *)vlanDevName);
-        vlanCtl_insertTagRule(devName, 
-                                               VLANCTL_DIRECTION_TX,
-                                               1,
-                                               VLANCTL_POSITION_APPEND,
-                                               VLANCTL_DONT_CARE,
-                                               &tagRuleId);
+        vlanCtl_insertTagRule(devName,
+                              VLANCTL_DIRECTION_TX,
+                              1,
+                              VLANCTL_POSITION_APPEND,
+                              VLANCTL_DONT_CARE,
+                              &tagRuleId);
 
         //rx, tags=0:NOP, tags=1:POP
         vlanCtl_initTagRule();
         vlanCtl_setReceiveVlanDevice((char *)vlanDevName);
-        vlanCtl_insertTagRule(devName, 
-                                               VLANCTL_DIRECTION_RX,
-                                               0,
-                                               VLANCTL_POSITION_APPEND,
-                                               VLANCTL_DONT_CARE,
-                                               &tagRuleId);
+        vlanCtl_insertTagRule(devName,
+                              VLANCTL_DIRECTION_RX,
+                              0,
+                              VLANCTL_POSITION_APPEND,
+                              VLANCTL_DONT_CARE,
+                              &tagRuleId);
 
         vlanCtl_initTagRule();
         vlanCtl_setReceiveVlanDevice((char *)vlanDevName);
         vlanCtl_cmdPopVlanTag();
-        vlanCtl_insertTagRule(devName, 
-                                               VLANCTL_DIRECTION_RX,
-                                               1,
-                                               VLANCTL_POSITION_APPEND,
-                                               VLANCTL_DONT_CARE,
-                                               &tagRuleId);
+        vlanCtl_insertTagRule(devName,
+                              VLANCTL_DIRECTION_RX,
+                              1,
+                              VLANCTL_POSITION_APPEND,
+                              VLANCTL_DONT_CARE,
+                              &tagRuleId);
     }
-    
+
     vlanCtl_cleanup();
 
     return VOS_RET_SUCCESS;
@@ -3346,9 +3364,9 @@ VOS_RET_E HAL_delHwnatByEthIfName(const char *ifName, const char *macAddr)
         {
             continue;
         }
-        sscanf(arpBuf," %s %17s", portNum, macEthAddr); 
-        portTemp = atoi(ifName+3) + 1;
-        vosLog_debug("portTemp:%d, macEthAddr:%s,portNum:%s", portTemp, macEthAddr,portNum);
+        sscanf(arpBuf, " %s %17s", portNum, macEthAddr);
+        portTemp = atoi(ifName + 3) + 1;
+        vosLog_debug("portTemp:%d, macEthAddr:%s,portNum:%s", portTemp, macEthAddr, portNum);
         if (portTemp == atoi(portNum))
         {
             FILE *fb1 = NULL;
@@ -3391,7 +3409,7 @@ VOS_RET_E HAL_delHwnatByEthIfName(const char *ifName, const char *macAddr)
                 return VOS_RET_INTERNAL_ERROR;
             }
 
-            char numEntry[16] = {0}; 
+            char numEntry[16] = {0};
             memset(arpBuf, 0, sizeof(arpBuf));
             while (NULL != fgets(arpBuf, sizeof(arpBuf), fb1))
             {
@@ -3427,12 +3445,12 @@ VOS_RET_E HAL_ethGetPortFromName(char *ethName, UINT8 *port)
 
     if (util_strstr(ethName, "eth"))
     {
-        *port = atoi(ethName+3);
+        *port = atoi(ethName + 3);
     }
 
     if (util_strstr(ethName, "wl"))
     {
-        *port = atoi(ethName+3) + 4;
+        *port = atoi(ethName + 3) + 4;
     }
 
     return VOS_RET_SUCCESS;

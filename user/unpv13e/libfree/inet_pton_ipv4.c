@@ -10,19 +10,20 @@
 int		 inet_aton(const char *, struct in_addr *);
 
 /* include inet_pton */
-int
-inet_pton(int family, const char *strptr, void *addrptr)
+int inet_pton(int family, const char *strptr, void *addrptr)
 {
-    if (family == AF_INET) {
-    	struct in_addr  in_val;
+    if (family == AF_INET)
+    {
+        struct in_addr  in_val;
 
-        if (inet_aton(strptr, &in_val)) {
+        if (inet_aton(strptr, &in_val))
+        {
             memcpy(addrptr, &in_val, sizeof(struct in_addr));
             return (1);
         }
-		return(0);
+        return (0);
     }
-	errno = EAFNOSUPPORT;
+    errno = EAFNOSUPPORT;
     return (-1);
 }
 /* end inet_pton */

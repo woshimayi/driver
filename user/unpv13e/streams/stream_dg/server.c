@@ -12,35 +12,34 @@ extern int errno;
 
 main()
 {
-	int fd;
-	struct sockaddr_in	my_addr;
-	void			echo_serv (int);
+    int fd;
+    struct sockaddr_in	my_addr;
+    void			echo_serv(int);
 
-	bzero((char *) &my_addr, sizeof(my_addr));
-	my_addr.sin_family      = AF_INET;
-	my_addr.sin_addr.s_addr = htonl (INADDR_ANY);
-	my_addr.sin_port        = htons(SERV_TCP_PORT);
+    bzero((char *) &my_addr, sizeof(my_addr));
+    my_addr.sin_family      = AF_INET;
+    my_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+    my_addr.sin_port        = htons(SERV_TCP_PORT);
 
-	fd = net_open ("/dev/udp", O_RDWR);
-	fd = net_bind (fd, &my_addr, sizeof (struct sockaddr_in));
+    fd = net_open("/dev/udp", O_RDWR);
+    fd = net_bind(fd, &my_addr, sizeof(struct sockaddr_in));
 
-	echo_serv (fd);
-	exit (0);	/* not reached */
+    echo_serv(fd);
+    exit(0);	/* not reached */
 }
 
-void
-echo_serv (int fd)
+void echo_serv(int fd)
 {
-	struct sockaddr_in	fm_addr;
-	char			buf[512];
-	int			n;
+    struct sockaddr_in	fm_addr;
+    char			buf[512];
+    int			n;
 
-	while (1)
-	{
-		n = net_recv (fd, buf, sizeof (buf),
-				&fm_addr, sizeof (struct sockaddr_in));
+    while (1)
+    {
+        n = net_recv(fd, buf, sizeof(buf),
+                     &fm_addr, sizeof(struct sockaddr_in));
 
-		net_send (fd, buf, n,
-				&fm_addr, sizeof (struct sockaddr_in));
-	}
+        net_send(fd, buf, n,
+                 &fm_addr, sizeof(struct sockaddr_in));
+    }
 }

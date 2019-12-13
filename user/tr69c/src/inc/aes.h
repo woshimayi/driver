@@ -29,7 +29,7 @@ typedef struct
  * \param key      the secret key
  * \param keysize  must be 128, 192 or 256
  */
-void aes_set_key( aes_context *ctx, unsigned char *key, int keysize );
+void aes_set_key(aes_context *ctx, unsigned char *key, int keysize);
 
 /**
  * \brief          AES block encryption (ECB mode)
@@ -38,9 +38,9 @@ void aes_set_key( aes_context *ctx, unsigned char *key, int keysize );
  * \param input    plaintext  block
  * \param output   ciphertext block
  */
-void aes_encrypt( aes_context *ctx,
-                  unsigned char input[16],
-                  unsigned char output[16] );
+void aes_encrypt(aes_context *ctx,
+                 unsigned char input[16],
+                 unsigned char output[16]);
 
 /**
  * \brief          AES block decryption (ECB mode)
@@ -49,9 +49,9 @@ void aes_encrypt( aes_context *ctx,
  * \param input    ciphertext block
  * \param output   plaintext  block
  */
-void aes_decrypt( aes_context *ctx,
-                  unsigned char input[16],
-                  unsigned char output[16] );
+void aes_decrypt(aes_context *ctx,
+                 unsigned char input[16],
+                 unsigned char output[16]);
 
 /**
  * \brief          AES-CBC buffer encryption
@@ -62,11 +62,11 @@ void aes_decrypt( aes_context *ctx,
  * \param output   buffer holding the ciphertext
  * \param len      length of the data to be encrypted
  */
-void aes_cbc_encrypt( aes_context *ctx,
-                      unsigned char iv[16],
-                      unsigned char *input,
-                      unsigned char *output,
-                      int len );
+void aes_cbc_encrypt(aes_context *ctx,
+                     unsigned char iv[16],
+                     unsigned char *input,
+                     unsigned char *output,
+                     int len);
 
 /**
  * \brief          AES-CBC buffer decryption
@@ -77,18 +77,18 @@ void aes_cbc_encrypt( aes_context *ctx,
  * \param output   buffer holding the plaintext
  * \param len      length of the data to be decrypted
  */
-void aes_cbc_decrypt( aes_context *ctx,
-                      unsigned char iv[16],
-                      unsigned char *input,
-                      unsigned char *output,
-                      int len );
+void aes_cbc_decrypt(aes_context *ctx,
+                     unsigned char iv[16],
+                     unsigned char *input,
+                     unsigned char *output,
+                     int len);
 
 /**
  * \brief          Checkup routine
  *
  * \return         0 if successful, or 1 if the test failed
  */
-int aes_self_test( void );
+int aes_self_test(void);
 
 #ifdef __cplusplus
 }

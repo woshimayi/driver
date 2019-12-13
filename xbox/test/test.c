@@ -31,8 +31,8 @@ void interrupt_handler(int num)
 {
     char data[8];
     read(fd, data, 8);
-    printf("%02X %02X %02X %02X %02X %02X %02X %02X/n", 
-        (char)data[0], (char)data[1], (char)data[2], (char)data[3],
+    printf("%02X %02X %02X %02X %02X %02X %02X %02X/n",
+           (char)data[0], (char)data[1], (char)data[2], (char)data[3],
            (char)data[4], (char)data[5], (char)data[6], (char)data[7]);
 }
 
