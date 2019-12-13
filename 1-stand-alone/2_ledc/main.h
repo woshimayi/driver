@@ -30,15 +30,15 @@ Copyright © zuozhongkai Co., Ltd. 1998-2019. All rights reserved.
 
 /*
  * GPIO1相关寄存器地址   GPIO1 io口控制寄存器
- * GPIO Memory Map/Register Definition
+ * 搜索 GPIO Memory Map/Register Definition
  */
-#define GPIO1_DR 			*((volatile unsigned int *)0X0209C000)
-#define GPIO1_GDIR 			*((volatile unsigned int *)0X0209C004)
-#define GPIO1_PSR 			*((volatile unsigned int *)0X0209C008)
-#define GPIO1_ICR1 			*((volatile unsigned int *)0X0209C00C)
-#define GPIO1_ICR2 			*((volatile unsigned int *)0X0209C010)
-#define GPIO1_IMR 			*((volatile unsigned int *)0X0209C014)
-#define GPIO1_ISR 			*((volatile unsigned int *)0X0209C018)
-#define GPIO1_EDGE_SEL 		*((volatile unsigned int *)0X0209C01C)
+#define GPIO1_DR 			*((volatile unsigned int *)0X0209C000)      //GPIO data register (GPIOx_DR)
+#define GPIO1_GDIR 			*((volatile unsigned int *)0X0209C004)      //GPIO direction register (GPIOx_GDIR)
+#define GPIO1_PSR 			*((volatile unsigned int *)0X0209C008)      //GPIO pad status register
+#define GPIO1_ICR1 			*((volatile unsigned int *)0X0209C00C)      //GPIO interrupt configuration register1 (GPIOx_ICR1)
+#define GPIO1_ICR2 			*((volatile unsigned int *)0X0209C010)      //GPIO interrupt configuration register2 (GPIOx_ICR2)
+#define GPIO1_IMR 			*((volatile unsigned int *)0X0209C014)      //GPIO interrupt mask register (GPIOx_IMR)
+#define GPIO1_ISR 			*((volatile unsigned int *)0X0209C018)      //GPIO interrupt status register (GPIOx_ISR)
+#define GPIO1_EDGE_SEL 		*((volatile unsigned int *)0X0209C01C)      //GPIO edge select register (GPIOx_EDGE_SEL)
 
 #endif

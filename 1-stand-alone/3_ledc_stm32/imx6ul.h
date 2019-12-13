@@ -11,15 +11,15 @@ Copyright © zuozhongkai Co., Ltd. 1998-2019. All rights reserved.
 /*
  * 外设寄存器组的基地址
  */
-#define CCM_BASE					(0X020C4000)
-#define CCM_ANALOG_BASE				(0X020C8000)
-#define IOMUX_SW_MUX_BASE			(0X020E0014)
-#define IOMUX_SW_PAD_BASE			(0X020E0204)
-#define GPIO1_BASE                  (0x0209C000)
-#define GPIO2_BASE                  (0x020A0000)
-#define GPIO3_BASE                  (0x020A4000)
-#define GPIO4_BASE                  (0x020A8000)
-#define GPIO5_BASE                  (0x020AC000)
+#define CCM_BASE					(0X020C4000)            //CCM Control Register (CCM_CCR)
+#define CCM_ANALOG_BASE				(0X020C8000)            //Analog ARM PLL control Register (CCM_ANALOG_PLL_ARM)
+#define IOMUX_SW_MUX_BASE			(0X020E0014)            //SW_MUX_CTL_PAD_BOOT_MODE0 IO复用寄存器组的基地址
+#define IOMUX_SW_PAD_BASE			(0X020E0204)            //SW_PAD_CTL_PAD_DRAM_ADDR00 IO控制寄存器基地址
+#define GPIO1_BASE                  (0x0209C000)            //GPIO data register (GPIO1_DR) 
+#define GPIO2_BASE                  (0x020A0000)            //GPIO data register (GPIO2_DR) 
+#define GPIO3_BASE                  (0x020A4000)            //GPIO data register (GPIO3_DR) 
+#define GPIO4_BASE                  (0x020A8000)            //GPIO data register (GPIO4_DR) 
+#define GPIO5_BASE                  (0x020AC000)            //GPIO data register (GPIO5_DR) 
 
 /*
  * CCM寄存器结构体定义，分为CCM和CCM_ANALOG
@@ -131,8 +131,8 @@ typedef struct
  */
 typedef struct
 {
-    volatile unsigned int BOOT_MODE0;
-    volatile unsigned int BOOT_MODE1;
+    volatile unsigned int BOOT_MODE0;               //0X020E_0014
+    volatile unsigned int BOOT_MODE1;               //0X020E_0018
     volatile unsigned int SNVS_TAMPER0;
     volatile unsigned int SNVS_TAMPER1;
     volatile unsigned int SNVS_TAMPER2;
@@ -254,12 +254,12 @@ typedef struct
     volatile unsigned int CSI_DATA04;
     volatile unsigned int CSI_DATA05;
     volatile unsigned int CSI_DATA06;
-    volatile unsigned int CSI_DATA07;
+    volatile unsigned int CSI_DATA07;               //0X20E_0200h
 } IOMUX_SW_MUX_Type;
 
 typedef struct
 {
-    volatile unsigned int DRAM_ADDR00;
+    volatile unsigned int DRAM_ADDR00;              //0X20E_0204h
     volatile unsigned int DRAM_ADDR01;
     volatile unsigned int DRAM_ADDR02;
     volatile unsigned int DRAM_ADDR03;
@@ -431,7 +431,7 @@ typedef struct
     volatile unsigned int GRP_DDRHYS;
     volatile unsigned int GRP_DDRPKE;
     volatile unsigned int GRP_DDRMODE;
-    volatile unsigned int GRP_DDR_TYPE;
+    volatile unsigned int GRP_DDR_TYPE;             //0X20E_04B4h
 } IOMUX_SW_PAD_Type;
 
 /*
