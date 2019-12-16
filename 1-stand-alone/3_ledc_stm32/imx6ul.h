@@ -127,7 +127,7 @@ typedef struct
 } CCM_ANALOG_Type;
 
 /*
- * IOMUX寄存器组
+ * IOMUX寄存器组 ARM 处理器按照4字节(32位)寻址
  */
 typedef struct
 {
@@ -260,7 +260,7 @@ typedef struct
 typedef struct
 {
     volatile unsigned int DRAM_ADDR00;              //0X20E_0204h
-    volatile unsigned int DRAM_ADDR01;
+    volatile unsigned int DRAM_ADDR01;              //0X20E_0208h
     volatile unsigned int DRAM_ADDR02;
     volatile unsigned int DRAM_ADDR03;
     volatile unsigned int DRAM_ADDR04;

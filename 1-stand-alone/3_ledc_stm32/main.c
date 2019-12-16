@@ -22,7 +22,6 @@ void clk_enable(void)
 {
     CCM->CCGR0 = 0XFFFFFFFF;
     CCM->CCGR1 = 0XFFFFFFFF;
-
     CCM->CCGR2 = 0XFFFFFFFF;
     CCM->CCGR3 = 0XFFFFFFFF;
     CCM->CCGR4 = 0XFFFFFFFF;

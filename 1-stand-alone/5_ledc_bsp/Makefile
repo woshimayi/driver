@@ -16,18 +16,26 @@ SRCDIRS			:= project \
 				   bsp/led \
 				   bsp/delay 
 				   
-				   
-INCLUDE			:= $(patsubst %, -I %, $(INCDIRS))
+INCLUDE			:= $(patsubst %, -I %, $(INCDIRS))       # 目录前面加上 -I
+$(warning $(INCLUDE))
 
-SFILES			:= $(foreach dir, $(SRCDIRS), $(wildcard $(dir)/*.S))
+SFILES			:= $(foreach dir, $(SRCDIRS), $(wildcard $(dir)/*.S))  # foreach 挑选出.S 文件
 CFILES			:= $(foreach dir, $(SRCDIRS), $(wildcard $(dir)/*.c))
+$(warning $(SFILES))
+$(warning $(CFILES))
 
 SFILENDIR		:= $(notdir  $(SFILES))
-CFILENDIR		:= $(notdir  $(CFILES))
+CFILENDIR		:= $(notdir  $(CFILES)) # notdir 去掉路径
+$(warning $(SFILENDIR))
+$(warning $(CFILENDIR))
 
-SOBJS			:= $(patsubst %, obj/%, $(SFILENDIR:.S=.o))
+SOBJS			:= $(patsubst %, obj/%, $(SFILENDIR:.S=.o)) # 替换
 COBJS			:= $(patsubst %, obj/%, $(CFILENDIR:.c=.o))
 OBJS			:= $(SOBJS) $(COBJS)
+$(warning $(SOBJS))
+$(warning $(COBJS))
+$(warning $(OBJS))
+
 
 VPATH			:= $(SRCDIRS)
 
