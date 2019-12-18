@@ -25,7 +25,7 @@ void exit_init(void)
 
     /* 1、设置IO复用 */
     IOMUXC_SetPinMux(IOMUXC_UART1_CTS_B_GPIO1_IO18, 0);			/* 复用为GPIO1_IO18 */
-    IOMUXC_SetPinConfig(IOMUXC_UART1_CTS_B_GPIO1_IO18, 0xF080);
+    IOMUXC_SetPinConfig(IOMUXC_UART1_CTS_B_GPIO1_IO18, 0xF080); /* 设置io时钟速率etc */
 
     /* 2、初始化GPIO为中断模式 */
     key_config.direction = kGPIO_DigitalInput;
