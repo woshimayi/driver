@@ -1,0 +1,3 @@
+/home/zs/Doc/driver/user/cmake/Hello-cmake-0/CMakeFiles/rebuild_cache.dir
+/home/zs/Doc/driver/user/cmake/Hello-cmake-0/CMakeFiles/Hello.dir
+/home/zs/Doc/driver/user/cmake/Hello-cmake-0/CMakeFiles/edit_cache.dir

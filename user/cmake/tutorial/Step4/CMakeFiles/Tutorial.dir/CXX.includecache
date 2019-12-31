@@ -1,0 +1,24 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/zs/Doc/driver/user/cmake/tutorial/Step4/TutorialConfig.h
+
+/home/zs/Doc/driver/user/cmake/tutorial/Step4/tutorial.cxx
+TutorialConfig.h
+/home/zs/Doc/driver/user/cmake/tutorial/Step4/TutorialConfig.h
+math.h
+-
+stdio.h
+-
+stdlib.h
+-
+MathFunctions.h
+/home/zs/Doc/driver/user/cmake/tutorial/Step4/MathFunctions.h
+
+MathFunctions/MathFunctions.h
+

@@ -1,23 +1,29 @@
 cmake_minimum_required (VERSION 0.1)
-project (Hello)
 
-# The version number
-set (Hello_VERSION_MAJOR 1)
-set (Hello_VERSION_MINOR 0)
+set (project_name Hello)
+
+project (${project_name})
+
+set (${project_name}_VERSION_MAJOR 0)
+set (${project_name}_VERSION_MINOR 1)
+
+message(STATUS ${PROJECT_NAME})
+message(STATUS ${PROJECT_VERSION})
+message(STATUS "saddsdf")
 
 # should we use our own math functions?
-option (USE_MYFUNC "Use Hello provided my function implementtation" ON)
+option (USE_MYFUNC "Use ${project_name} provided my function implementtation" ON)
 
 # configure a header file to pass some of the CMake settings
 # to the source code
 configure_file (
-    "${PROJECT_SOURCE_DIR}/HelloConfigure.h.in"
-    "${PROJECT_BINARY_DIR}/HelloConfigure.h"
+    "${PROJECT_SOURCE_DIR}/${project_name}Configure.h.in"
+    "${PROJECT_BINARY_DIR}/${project_name}Configure.h"
 )
 
 
 # add the binary tree to the search path for include files 
-# so the we will find HelloConfigure
+# so the we will find ${project_name}Configure
 include_directories ("${PROJECT_SOURCE_DIR}")
 
 if (USE_MYFUNC)
@@ -27,8 +33,25 @@ if (USE_MYFUNC)
 endif ()
 
 
-
 # add the executable
-add_executable(Hello Hello.c)
-target_link_libraries (Hello ${EXTRA_LIBS})
+add_executable(${project_name} ${project_name}.c)
+target_link_libraries (${project_name} ${EXTRA_LIBS})
+
+
+# default add executable to /usr/local/bin
+# default add head files to /usr/local/include
+install (TARGETS ${project_name} DESTINATION bin)
+install (FILES "${PROJECT_BINARY_DIR}/${project_name}Configure.h" DESTINATION include)
+
+
+
+
+
+
+
+
+
+
+
+
 

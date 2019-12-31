@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "HelloConfigure.h"
+#include "build/HelloConfigure.h"
 
 #ifdef USE_MYFUNC
 #include "world.h"

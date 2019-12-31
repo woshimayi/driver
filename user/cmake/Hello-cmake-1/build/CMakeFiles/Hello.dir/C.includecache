@@ -1,0 +1,24 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+../myfunction/world.h
+
+/home/zs/Doc/driver/user/cmake/Hello-cmake-1/Hello.c
+stdio.h
+-
+stdlib.h
+-
+string.h
+-
+build/HelloConfigure.h
+/home/zs/Doc/driver/user/cmake/Hello-cmake-1/build/HelloConfigure.h
+world.h
+/home/zs/Doc/driver/user/cmake/Hello-cmake-1/world.h
+
+/home/zs/Doc/driver/user/cmake/Hello-cmake-1/build/HelloConfigure.h
+
