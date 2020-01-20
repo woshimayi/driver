@@ -245,6 +245,10 @@ export	HOSTARCH HOSTOS
 
 #########################################################################
 
+ARCH ?= arm
+CROSS_COMPILE ?= arm-linux-gnueabihf-
+
+
 # set default to nothing for native builds
 ifeq ($(HOSTARCH),$(ARCH))
 CROSS_COMPILE ?=
@@ -378,6 +382,15 @@ export HOSTCXX HOSTCXXFLAGS DTC CHECK CHECKFLAGS
 
 export KBUILD_CPPFLAGS NOSTDINC_FLAGS UBOOTINCLUDE OBJCOPYFLAGS LDFLAGS
 export KBUILD_CFLAGS KBUILD_AFLAGS
+
+mytest:
+	@echo 'ARCH    =' $(ARCH)
+	@echo 'CPU     =' $(CPU)
+	@echo 'BOARD   =' $(BOARD)
+	@echo 'VENDOR  =' $(VENDOR)
+	@echo 'SOC     =' $(SOC)
+	@echo 'CPUDIR  =' $(CPUDIR)
+	@echo 'BOARDDIR=' $(BOARDDIR)
 
 # When compiling out-of-tree modules, put MODVERDIR in the module
 # tree rather than in the kernel tree. The kernel tree might
