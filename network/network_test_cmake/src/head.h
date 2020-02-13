@@ -25,10 +25,10 @@
 
 int www_ParseUrl(const char *url, char *proto, char *host, int *port, char *uri);
 
-int ifname_test(char *hostname, char *portnr, char * ifname);
+int ifname_test(char *hostname, char *portnr, char *ifname);
 
 int lookup(char *host, char *portnr, struct addrinfo **res);
 
-int fromIfnameGetIp(char **gwip, const char * ifname);
+int fromIfnameGetIp(char **gwip, char **ifname);
 
 #endif

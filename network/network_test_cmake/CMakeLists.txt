@@ -41,4 +41,4 @@ target_link_libraries (${project_name} ${EXTRA_LIBS})
 # default add executable to /usr/local/bin
 # default add head files to /usr/local/include
 install (TARGETS ${project_name} DESTINATION bin)
-install (FILES "${PROJECT_BINARY_DIR}/${project_name}Configure.h" DESTINATION include)
+install (FILES "${PROJECT_BINARY_DIR}/Configure.h" DESTINATION include)

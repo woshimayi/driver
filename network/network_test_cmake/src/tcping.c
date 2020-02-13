@@ -145,7 +145,7 @@ int connect_to(struct addrinfo *addr, const char *ifname)
         if ((fd = socket(addr->ai_family, addr->ai_socktype, addr->ai_protocol)) == -1)
             goto next_addr0;
 
-        strncpy(ifr.ifr_name, ifname, strlen(ifname)+1);
+        strncpy(ifr.ifr_name, ifname, strlen(ifname) + 1);
         if (setsockopt(fd, SOL_SOCKET, SO_BINDTODEVICE, &ifr, sizeof(ifr))  < 0)
         {
             perror("SO_BINDTODEVICE failed");
@@ -163,26 +163,26 @@ int connect_to(struct addrinfo *addr, const char *ifname)
             close(fd);
             return 0;
         }
-        else 
+        else
         {
-            if(errno != EINPROGRESS)
-                printf("connect error :%s\n",strerror(errno));
+            if (errno != EINPROGRESS)
+                printf("connect error :%s\n", strerror(errno));
             else
             {
                 struct timeval tm;
                 tm.tv_sec = 5;          // 连接超时时间为5秒
-                fd_set wset,rset;
+                fd_set wset, rset;
                 FD_ZERO(&wset);
                 FD_ZERO(&rset);
-                FD_SET(fd,&wset);
-                FD_SET(fd,&rset);
-                int res = select(fd+1,&rset,&wset,NULL,&tm);
-                if(res < 0)
+                FD_SET(fd, &wset);
+                FD_SET(fd, &rset);
+                int res = select(fd + 1, &rset, &wset, NULL, &tm);
+                if (res < 0)
                 {
                     printf("network error in connect\n");
                     goto next_addr0;
                 }
-                else if(res == 0)
+                else if (res == 0)
                 {
                     printf("connect time out\n");
                     close(fd);
@@ -190,16 +190,16 @@ int connect_to(struct addrinfo *addr, const char *ifname)
                 }
                 else if (1 == res)
                 {
-                    if(FD_ISSET(fd,&wset))
+                    if (FD_ISSET(fd, &wset))
                     {
                         printf("connect succeed.\n");
-                        fcntl(fd,F_SETFL,fcntl(fd,F_GETFL,0) & ~O_NONBLOCK);        // select 连接设置模式为阻塞模式
+                        fcntl(fd, F_SETFL, fcntl(fd, F_GETFL, 0) & ~O_NONBLOCK);    // select 连接设置模式为阻塞模式
                         close(fd);
                         return 0;
                     }
                     else
                     {
-                        printf("other error when select:%s\n",strerror(errno));
+                        printf("other error when select:%s\n", strerror(errno));
                     }
                 }
             }
@@ -216,7 +216,7 @@ next_addr0:
     return -errno;
 }
 
-int ifname_test(char *hostname, char *portnr, char * ifname)
+int ifname_test(char *hostname, char *portnr, char *ifname)
 {
     int c, count = -1, curncount = 0, wait = 1, ok = 0, err = 0, errcode, ret = -1;
     struct addrinfo *resolved;
