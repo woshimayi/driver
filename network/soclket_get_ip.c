@@ -30,7 +30,7 @@ int if_len;     /* 接口数量 */
 struct ifreq buf[MAXINTERFACES];    /* ifreq结构数组 */
 struct ifconf ifc;                  /* ifconf结构 */
 
-int main(argc, argv)
+int main(int argc, char *argv[])
 {
     /* 建立IPv4的UDP套接字fd */
     if ((fd = socket(AF_INET, SOCK_DGRAM, 0)) == -1)
