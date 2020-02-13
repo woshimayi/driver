@@ -216,7 +216,7 @@ next_addr0:
     return -errno;
 }
 
-int tr69_ifname_test(char *hostname, char *portnr, char * ifname)
+int ifname_test(char *hostname, char *portnr, char * ifname)
 {
     int c, count = -1, curncount = 0, wait = 1, ok = 0, err = 0, errcode, ret = -1;
     struct addrinfo *resolved;
@@ -230,7 +230,7 @@ int tr69_ifname_test(char *hostname, char *portnr, char * ifname)
         return 2;
     }
 
-    printf("zx %s\n", errcode);
+    printf("zx %s\n", strerror(errcode));
     if ((errcode = connect_to(resolved, ifname)) != 0)
     {
         if (errcode != -EADDRNOTAVAIL)
@@ -252,30 +252,4 @@ int tr69_ifname_test(char *hostname, char *portnr, char * ifname)
 
     freeaddrinfo(resolved);
     return ret;
-}
-
-
-int main(int argc, char * argv[])
-{
-    int ret = -1;
-    
-    if (argc  < 2)
-    {
-        perror("param < 2");
-        return 0;
-    }
-    // char *url = "http://80.80.80.40:9090/ACS-server/ACS";
-    char *url = "http://www.baidu.com";
-    char host[128] = {0};
-    int port = 80;
-    char buf[32] = {0};
-
-    www_ParseUrl(url, NULL, host, &port, NULL);
-    port = port?port:80;
-    sprintf(buf, "%d", port);
-    printf("host= %s\nport=%s\nifname=%s\n", host, buf, argv[1]);
-
-    ret = tr69_ifname_test(host, buf, argv[1]);
-    printf("ret = %d\n", ret);
-    return 0;
 }

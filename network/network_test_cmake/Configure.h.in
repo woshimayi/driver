@@ -1,0 +1,6 @@
+// the configured options and setting for Hello
+#define VERSION_MAJOR @VERSION_MAJOR@
+#define VERSION_MINOR @VERSION_MINOR@
+
+
+#cmakedefine SRC_FUNC
