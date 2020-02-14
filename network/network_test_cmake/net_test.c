@@ -4,7 +4,7 @@
 #include "build/Configure.h"
 
 #ifdef SRC_FUNC
-#include "head.h"
+    #include "head.h"
 #endif
 
 
@@ -16,6 +16,9 @@ int main(int argc, char *argv[])
     int port = 80;
     char buf[32] = {0};
 
+    char *gwip = NULL;
+    char *ifname = NULL;
+
     if (argc >= 2)
     {
         fprintf(stdout, "%s Version %d.%d\n", argv[0], VERSION_MAJOR, VERSION_MINOR);
@@ -24,11 +27,13 @@ int main(int argc, char *argv[])
     }
 
     www_ParseUrl(url, NULL, host, &port, NULL);
-    port = port?port:80;
-    sprintf(buf, "%d", port);
-    printf("host= %s\nport=%s\nifname=%s\n", host, buf, argv[1]);
 
-    ret = ifname_test(host, buf, argv[1]);
+    sprintf(buf, "%d", port ? port : 80);
+    printf("host= %s\nport=%s\n", host, buf);
+
+    fromIfnameGetIp(&gwip, &ifname);
+    printf("ipaddr = %s ifname = %s\n", gwip, ifname);
+    // ret = ifname_test(host, buf, ifname);
     printf("ret = %d\n", ret);
 
     return 0;
