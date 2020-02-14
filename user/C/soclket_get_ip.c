@@ -14,7 +14,7 @@ int if_len;     /* 接口数量 */
 struct ifreq buf[MAXINTERFACES];    /* ifreq结构数组 */
 struct ifconf ifc;                  /* ifconf结构 */
 
-int main(argc, argv)
+int main(int argc, char *argv[])
 {
     /* 建立IPv4的UDP套接字fd */
     if ((fd = socket(AF_INET, SOCK_DGRAM, 0)) == -1)
@@ -37,7 +37,7 @@ int main(argc, argv)
     if_len = ifc.ifc_len / sizeof(struct ifreq); /* 接口数量 */
     printf("接口数量:%d/n/n", if_len);
 
-    while (if_len– > 0) /* 遍历每个接口 */
+    while (if_len > 0) /* 遍历每个接口 */
     {
         printf("接口：%s/n", buf[if_len].ifr_name); /* 接口名称 */
 

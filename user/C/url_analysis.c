@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 int www_ParseUrl(const char *url, char *proto, char *host, int *port, char *uri)
 {
@@ -86,10 +87,10 @@ int main()
     char uri[128] = {0};
     char buf[32] = {0};
     www_ParseUrl(url, proto, host, &port, uri);
-    printf("proto = %s host= %s port=%d uri=%s\n", proto, host, port, uri);
-    itoa(port, buf, 10);
-    printf("%s\n", strcat(host, ":"));
-    printf("%s\n", strcat(host, buf));
+    printf("proto = %s\nhost= %s\nport=%d\nuri=%s\n", proto, host, port, uri);
+    //itoa(port, buf, 10);
+    // printf("%s\n", strcat(host, ":"));
+    // printf("%s\n", strcat(host, buf));
     return 0;
 }
 

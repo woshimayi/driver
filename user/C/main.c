@@ -1,61 +1,66 @@
-/************************ (C) COPYRIGHT 2013 yang_yulei ************************
-* File Name          : main.cpp
-* Author             : yang_yulei
-* Date First Issued  : 1/16/2012
-* Description        : 开发环境 VC++ 6.0 含EasyX图形库(http://www.easyx.cn)
-*                      俄罗斯方块
-*
-*
-********************************************************************************
-* History:
-*  1/16/2012 : V0.1
-* 12/18/2013 : V0.2
-********************************************************************************
-*
-*******************************************************************************/
-/* Includes ------------------------------------------------------------------*/
-#include "head.h"
 #include <windows.h>
-#include <dos.h>
 
-/* Typedef -------------------------------------------------------------------*/
-/* Variables -----------------------------------------------------------------*/
-//全局变量-游戏板的状态描述(即表示当前界面哪些位置有方块)
-//0表示没有，1表示有(多加了两行和两列，形成一个围墙，便于判断方块是否能够移动)
-char g_gameBoard[Y_ROCK_SQUARE_NUM + 2][X_ROCK_SQUARE_NUM + 2] = {0} ;
-//统计分数
-int  g_score = 0 ;
-//等级
-int  g_grade = 0 ;
-
-int  g_rockTypeNum = 0 ; //共有多少种俄罗斯方块
-RockType rockArray[50] = {(0, 0)} ;
-
-/*******************************************************************************
-* Function Name  : main
-* Description    : Main program
-* Input          : None
-* Output         : None
-* Return         : None
-*******************************************************************************/
-int main(void)
-{
-    //画出游戏界面
-    initgraph(WINDOW_WIDTH, WINDOW_HIGH) ; //初始化图形窗口
-    cleardevice() ;
-    DrawGameGUI() ;
-
-    //使用 API 函数修改窗口名称
-    HWND hWnd = GetHWnd();
-    SetWindowText(hWnd, "俄罗斯方块");
-
-    //初始化参数
-    InitProcParameters() ;
-
-    //游戏过程
-    PlayGame()    ;
-
-    closegraph()    ;
-    return 0 ;
+/* This is where all the input to the window goes to */
+LRESULT CALLBACK WndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam) {
+	switch(Message) {
+		
+		/* Upon destruction, tell the main thread to stop */
+		case WM_DESTROY: {
+			PostQuitMessage(0);
+			break;
+		}
+		
+		/* All other messages (a lot of them) are processed using default procedures */
+		default:
+			return DefWindowProc(hwnd, Message, wParam, lParam);
+	}
+	return 0;
 }
 
+/* The 'main' function of Win32 GUI programs: this is where execution starts */
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
+	WNDCLASSEX wc; /* A properties struct of our window */
+	HWND hwnd; /* A 'HANDLE', hence the H, or a pointer to our window */
+	MSG msg; /* A temporary location for all messages */
+
+	/* zero out the struct and set the stuff we want to modify */
+	memset(&wc,0,sizeof(wc));
+	wc.cbSize		 = sizeof(WNDCLASSEX);
+	wc.lpfnWndProc	 = WndProc; /* This is where we will send messages to */
+	wc.hInstance	 = hInstance;
+	wc.hCursor		 = LoadCursor(NULL, IDC_ARROW);
+	
+	/* White, COLOR_WINDOW is just a #define for a system color, try Ctrl+Clicking it */
+	wc.hbrBackground = (HBRUSH)(COLOR_WINDOW+1);
+	wc.lpszClassName = "WindowClass";
+	wc.hIcon		 = LoadIcon(NULL, IDI_APPLICATION); /* Load a standard icon */
+	wc.hIconSm		 = LoadIcon(NULL, IDI_APPLICATION); /* use the name "A" to use the project icon */
+
+	if(!RegisterClassEx(&wc)) {
+		MessageBox(NULL, "Window Registration Failed!","Error!",MB_ICONEXCLAMATION|MB_OK);
+		return 0;
+	}
+
+	hwnd = CreateWindowEx(WS_EX_CLIENTEDGE,"WindowClass","Caption",WS_VISIBLE|WS_OVERLAPPEDWINDOW,
+		CW_USEDEFAULT, /* x */
+		CW_USEDEFAULT, /* y */
+		640, /* width */
+		480, /* height */
+		NULL,NULL,hInstance,NULL);
+
+	if(hwnd == NULL) {
+		MessageBox(NULL, "Window Creation Failed!","Error!",MB_ICONEXCLAMATION|MB_OK);
+		return 0;
+	}
+
+	/*
+		This is the heart of our program where all input is processed and 
+		sent to WndProc. Note that GetMessage blocks code flow until it receives something, so
+		this loop will not produce unreasonably high CPU usage
+	*/
+	while(GetMessage(&msg, NULL, 0, 0) > 0) { /* If no error is received... */
+		TranslateMessage(&msg); /* Translate key codes to chars if present */
+		DispatchMessage(&msg); /* Send it to WndProc */
+	}
+	return msg.wParam;
+}

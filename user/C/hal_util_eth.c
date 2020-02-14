@@ -23,6 +23,7 @@ typedef u_int8_t u8;
 #endif /* DESKTOP_LINUX */
 #include "hal_gpon_mac.h"
 
+#define err(A)
 
 #define ETH_NET_DEV_FILE "/proc/net/dev"
 #define ETH_BUFF_LEN 512
@@ -284,7 +285,8 @@ static UBOOL8 hal_configIfMacAddr(const char *devName, const UINT8 mac[6])
 
 
         memset(cmd, 0, sizeof(cmd));
-        UTIL_SNPRINTF(cmd, sizeof(cmd), "ifconfig %s down && ifconfig %s hw ether %02x:%02x:%02x:%02x:%02x:%02x",
+        UTIL_SNPRINTF(cmd, sizeof(cmd),
+                      "ifconfig %s down && ifconfig %s hw ether %02x:%02x:%02x:%02x:%02x:%02x",
                       devName,
                       devName,
                       mac[0],
@@ -402,7 +404,8 @@ VOS_RET_E HAL_ethGetIfLinkState(const char *ifName, UBOOL8 *linkUp)
     {
         memset(string, 0, sizeof(string));
         fgets(string, sizeof(string), fp);
-        portNum = sscanf(string, "%d %d %d %d", lanStatus, lanStatus + 1, lanStatus + 2, lanStatus + 3);
+        portNum = sscanf(string, "%d %d %d %d", lanStatus, lanStatus + 1, lanStatus + 2,
+                         lanStatus + 3);
         fclose(fp);
 
         if (portNum == LAN_PORT_NUM)
@@ -430,7 +433,8 @@ VOS_RET_E HAL_ethGetIfLinkState(const char *ifName, UBOOL8 *linkUp)
 
 VOS_RET_E HAL_ethConvertWlanIntfName(char *ifName, int ifNameLen)
 {
-    if ((0 == util_strcasecmp(ifName, "wl0")) || (0 == util_strcasecmp(ifName, "wl0.")))
+    if ((0 == util_strcasecmp(ifName, "wl0"))
+            || (0 == util_strcasecmp(ifName, "wl0.")))
     {
         UTIL_STRNCPY(ifName, "ra0", ifNameLen);
     }
@@ -484,21 +488,29 @@ VOS_RET_E HAL_ethAddFilterRules(const char *vlanIfName, const char *wanIfName)
 {
     vosLog_debug("vlanIfName = %s, wanIfName = %s", vlanIfName, wanIfName);
 
-    UTIL_DO_SYSTEM_ACTION("ebtables -D %s -p IPv4 -i %s --ip-proto igmp -j ACCEPT > /var/err", UTIL_WAN_CONN_FWD_CHAIN,
+    UTIL_DO_SYSTEM_ACTION("ebtables -D %s -p IPv4 -i %s --ip-proto igmp -j ACCEPT > /var/err",
+                          UTIL_WAN_CONN_FWD_CHAIN,
                           vlanIfName, wanIfName);
-    UTIL_DO_SYSTEM_ACTION("ebtables -D %s -p IPv6 -i %s --ip6-icmpv6type 130 -j ACCEPT > /var/err", UTIL_WAN_CONN_FWD_CHAIN,
+    UTIL_DO_SYSTEM_ACTION("ebtables -D %s -p IPv6 -i %s --ip6-icmpv6type 130 -j ACCEPT > /var/err",
+                          UTIL_WAN_CONN_FWD_CHAIN,
                           vlanIfName, wanIfName);
-    UTIL_DO_SYSTEM_ACTION("ebtables -D %s -i %s -j DROP > /var/err", UTIL_WAN_CONN_FWD_CHAIN, vlanIfName, wanIfName);
-    UTIL_DO_SYSTEM_ACTION("ebtables -D %s -o %s -j DROP > /var/err", UTIL_WAN_CONN_FWD_CHAIN, vlanIfName);
+    UTIL_DO_SYSTEM_ACTION("ebtables -D %s -i %s -j DROP > /var/err",
+                          UTIL_WAN_CONN_FWD_CHAIN, vlanIfName, wanIfName);
+    UTIL_DO_SYSTEM_ACTION("ebtables -D %s -o %s -j DROP > /var/err",
+                          UTIL_WAN_CONN_FWD_CHAIN, vlanIfName);
 
     //for loop
-    UTIL_DO_SYSTEM_ACTION("ebtables -A %s -p IPv4 -i %s --ip-proto igmp -j ACCEPT > /var/err", UTIL_WAN_CONN_FWD_CHAIN,
+    UTIL_DO_SYSTEM_ACTION("ebtables -A %s -p IPv4 -i %s --ip-proto igmp -j ACCEPT > /var/err",
+                          UTIL_WAN_CONN_FWD_CHAIN,
                           vlanIfName, wanIfName);
-    UTIL_DO_SYSTEM_ACTION("ebtables -A %s -p IPv6 -i %s --ip6-icmpv6type 130 -j ACCEPT > /var/err", UTIL_WAN_CONN_FWD_CHAIN,
+    UTIL_DO_SYSTEM_ACTION("ebtables -A %s -p IPv6 -i %s --ip6-icmpv6type 130 -j ACCEPT > /var/err",
+                          UTIL_WAN_CONN_FWD_CHAIN,
                           vlanIfName, wanIfName);
-    UTIL_DO_SYSTEM_ACTION("ebtables -A %s -i %s -j DROP > /var/err", UTIL_WAN_CONN_FWD_CHAIN, vlanIfName, wanIfName);
+    UTIL_DO_SYSTEM_ACTION("ebtables -A %s -i %s -j DROP > /var/err",
+                          UTIL_WAN_CONN_FWD_CHAIN, vlanIfName, wanIfName);
     //when wan is other bridge, lan packets could not through pon interface of public mcast
-    UTIL_DO_SYSTEM_ACTION("ebtables -A %s -o %s -j DROP > /var/err", UTIL_WAN_CONN_FWD_CHAIN, vlanIfName);
+    UTIL_DO_SYSTEM_ACTION("ebtables -A %s -o %s -j DROP > /var/err",
+                          UTIL_WAN_CONN_FWD_CHAIN, vlanIfName);
 
     HAL_ethSetPubMvlanInterface(vlanIfName);
 
@@ -519,7 +531,8 @@ VOS_RET_E HAL_ethCounterMibDump(const int port, HAL_ETH_SW_MIBREGS *ethcounter)
  *
  * @return            :Success -- VOS_RET_SUCCESS, Failure -- VOS_RET_INTERNAL_ERROR.
  */
-VOS_RET_E HAL_ethGetIfStatistics(const char *devName, HAL_ETH_STATISTICS_T *statistics)
+VOS_RET_E HAL_ethGetIfStatistics(const char *devName,
+                                 HAL_ETH_STATISTICS_T *statistics)
 {
 #ifdef DESKTOP_LINUX
     return VOS_RET_SUCCESS;
@@ -932,7 +945,8 @@ VOS_RET_E HAL_ethGetIfNegMode(const char *devName, HAL_ETH_NEG_MODE_E *mode)
 
 }
 
-VOS_RET_E HAL_ethGetStatistics(const char *devName, unsigned long long *upBytes, unsigned long long *downBytes)
+VOS_RET_E HAL_ethGetStatistics(const char *devName, unsigned long long *upBytes,
+                               unsigned long long *downBytes)
 {
     VOS_RET_E ret = VOS_RET_SUCCESS;
     u8 sw_port = 0;
@@ -1010,7 +1024,8 @@ VOS_RET_E HAL_ethGetLanIfName(UINT8 port, char *ifName, UINT32 ifNameLen)
         return VOS_RET_INVALID_PARAM_VALUE;
     }
 
-    UTIL_SNPRINTF(ifName, ifNameLen, "%s%d", LAN_IF_NAME_PREFIX, port + hal_ethGetPortNameBase());
+    UTIL_SNPRINTF(ifName, ifNameLen, "%s%d", LAN_IF_NAME_PREFIX,
+                  port + hal_ethGetPortNameBase());
 
     return ret;
 }
@@ -1048,7 +1063,8 @@ VOS_RET_E HAL_ethGetWlanIfName(UINT8 port, char *ifName, UINT32 ifNameLen)
 }
 
 
-VOS_RET_E HAL_ethGetWanVlanIfName(const char *ifName, SINT32 idx, SINT16 vid, UINT8 priority,
+VOS_RET_E HAL_ethGetWanVlanIfName(const char *ifName, SINT32 idx, SINT16 vid,
+                                  UINT8 priority,
                                   char *vlanIfName, UINT32 vlanIfNameLen)
 {
 #ifdef DESKTOP_LINUX
@@ -1090,7 +1106,8 @@ VOS_RET_E HAL_ethGetLanVlanIfName(const char *ifName, SINT16 vid,
 }
 
 
-VOS_RET_E HAL_ethGetLanDefVlanIfName(const char *ifName, char *vlanIfName, UINT32 vlanIfNameLen)
+VOS_RET_E HAL_ethGetLanDefVlanIfName(const char *ifName, char *vlanIfName,
+                                     UINT32 vlanIfNameLen)
 {
 #ifdef DESKTOP_LINUX
     return VOS_RET_SUCCESS;
@@ -1137,7 +1154,8 @@ static VOS_RET_E HAL_ethSetLanMapWanList(HAL_LAN_MAP_L3IF_LIST *data)
 }
 
 
-VOS_RET_E HAL_ethCreateRouteWanVlanIf(const char *ifName, SINT32 idx, SINT16 vid, UINT8 priority, UBOOL8 isPppoe,
+VOS_RET_E HAL_ethCreateRouteWanVlanIf(const char *ifName, SINT32 idx,
+                                      SINT16 vid, UINT8 priority, UBOOL8 isPppoe,
                                       UBOOL8 isInternet, const char *lanIf, UBOOL8 isBridge, UBOOL8 ipv6Enable)
 {
 #ifdef DESKTOP_LINUX
@@ -1161,7 +1179,8 @@ VOS_RET_E HAL_ethCreateRouteWanVlanIf(const char *ifName, SINT32 idx, SINT16 vid
     HAL_LAN_MAP_L3IF_LIST lanMapL3IfList;
 
 
-    vosLog_debug("ifName=%s idx=%d vid=%d priority=%d isPppoe=%d isInternet %d", ifName, idx, vid, priority, isPppoe,
+    vosLog_debug("ifName=%s idx=%d vid=%d priority=%d isPppoe=%d isInternet %d",
+                 ifName, idx, vid, priority, isPppoe,
                  isInternet);
 
     memset(vlanIfName, 0, sizeof(vlanIfName));
@@ -1187,7 +1206,8 @@ VOS_RET_E HAL_ethCreateRouteWanVlanIf(const char *ifName, SINT32 idx, SINT16 vid
         UTIL_STRNCPY(protoStr, WAN_PROTO_IPOE_STR, sizeof(protoStr));
     }
 
-    if ((ret = HAL_ethGetWanVlanIfName(ifName, idx, vid, priority, vlanIfName, sizeof(vlanIfName))) != VOS_RET_SUCCESS)
+    if ((ret = HAL_ethGetWanVlanIfName(ifName, idx, vid, priority, vlanIfName,
+                                       sizeof(vlanIfName))) != VOS_RET_SUCCESS)
     {
         vosLog_error("HAL_ethCreateRouteWanVlanIf error! ret = %d", ret);
         return ret;
@@ -1240,7 +1260,8 @@ VOS_RET_E HAL_ethCreateRouteWanVlanIf(const char *ifName, SINT32 idx, SINT16 vid
         if (hal_ethIsInterfaceExist(vlanIfName) == FALSE)
         {
             memset(cmd, 0, sizeof(cmd));
-            UTIL_SNPRINTF(cmd, sizeof(cmd), "vconfig set_name_type %s", VLAN_NAME_TYPE_FLAG);
+            UTIL_SNPRINTF(cmd, sizeof(cmd), "vconfig set_name_type %s",
+                          VLAN_NAME_TYPE_FLAG);
             UTIL_DO_SYSTEM_ACTION(cmd);
 
             memset(cmd, 0, sizeof(cmd));
@@ -1255,7 +1276,8 @@ VOS_RET_E HAL_ethCreateRouteWanVlanIf(const char *ifName, SINT32 idx, SINT16 vid
 
 #if 0
             memset(cmd, 0, sizeof(cmd));
-            UTIL_SNPRINTF(cmd, sizeof(cmd), "ifconfig %s down && ifconfig %s hw ether %02x:%02x:%02x:%02x:%02x:%02x",
+            UTIL_SNPRINTF(cmd, sizeof(cmd),
+                          "ifconfig %s down && ifconfig %s hw ether %02x:%02x:%02x:%02x:%02x:%02x",
                           vlanIfName,
                           vlanIfName,
                           mac[0],
@@ -1271,7 +1293,8 @@ VOS_RET_E HAL_ethCreateRouteWanVlanIf(const char *ifName, SINT32 idx, SINT16 vid
 
             if (! ipv6Enable)
             {
-                UTIL_DO_SYSTEM_ACTION("echo 1 > /proc/sys/net/ipv6/conf/%s/disable_ipv6 ", vlanIfName);
+                UTIL_DO_SYSTEM_ACTION("echo 1 > /proc/sys/net/ipv6/conf/%s/disable_ipv6 ",
+                                      vlanIfName);
             }
 
             memset(cmd, 0, sizeof(cmd));
@@ -1294,7 +1317,8 @@ VOS_RET_E HAL_ethCreateRouteWanVlanIf(const char *ifName, SINT32 idx, SINT16 vid
         UTIL_STRNCPY(vlanIfName, ifName, sizeof(vlanIfName));
     }
 
-    if ((ret = HAL_ethGetWanVlanIfName(ifName, idx, vid, priority, L3IfName, sizeof(L3IfName))) != VOS_RET_SUCCESS)
+    if ((ret = HAL_ethGetWanVlanIfName(ifName, idx, vid, priority, L3IfName,
+                                       sizeof(L3IfName))) != VOS_RET_SUCCESS)
     {
         vosLog_error("HAL_ethCreateRouteWanVlanIf error! ret = %d", ret);
         return ret;
@@ -1316,7 +1340,8 @@ VOS_RET_E HAL_ethCreateRouteWanVlanIf(const char *ifName, SINT32 idx, SINT16 vid
 
 #if 0
         memset(cmd, 0, sizeof(cmd));
-        UTIL_SNPRINTF(cmd, sizeof(cmd), "ifconfig %s down && ifconfig %s hw ether %02x:%02x:%02x:%02x:%02x:%02x",
+        UTIL_SNPRINTF(cmd, sizeof(cmd),
+                      "ifconfig %s down && ifconfig %s hw ether %02x:%02x:%02x:%02x:%02x:%02x",
                       L3IfName,
                       L3IfName,
                       mac[0],
@@ -1334,11 +1359,15 @@ VOS_RET_E HAL_ethCreateRouteWanVlanIf(const char *ifName, SINT32 idx, SINT16 vid
         {
             if ((0 == sg_vlanEthNameList[i].used))
             {
-                memset(sg_vlanEthNameList[i].vlanIfName, 0, sizeof(sg_vlanEthNameList[i].vlanIfName));
-                UTIL_STRNCPY(sg_vlanEthNameList[i].vlanIfName, vlanIfName, sizeof(sg_vlanEthNameList[i].vlanIfName));
+                memset(sg_vlanEthNameList[i].vlanIfName, 0,
+                       sizeof(sg_vlanEthNameList[i].vlanIfName));
+                UTIL_STRNCPY(sg_vlanEthNameList[i].vlanIfName, vlanIfName,
+                             sizeof(sg_vlanEthNameList[i].vlanIfName));
 
-                memset(sg_vlanEthNameList[i].L3IfName, 0, sizeof(sg_vlanEthNameList[i].L3IfName));
-                UTIL_STRNCPY(sg_vlanEthNameList[i].L3IfName, L3IfName, sizeof(sg_vlanEthNameList[i].L3IfName));
+                memset(sg_vlanEthNameList[i].L3IfName, 0,
+                       sizeof(sg_vlanEthNameList[i].L3IfName));
+                UTIL_STRNCPY(sg_vlanEthNameList[i].L3IfName, L3IfName,
+                             sizeof(sg_vlanEthNameList[i].L3IfName));
 
                 sg_vlanEthNameList[i].used = 1;
                 break;
@@ -1358,7 +1387,8 @@ VOS_RET_E HAL_ethCreateRouteWanVlanIf(const char *ifName, SINT32 idx, SINT16 vid
                 UTIL_STRNCPY(lanMapL3IfList.lanIfName, pPath, sizeof(lanMapL3IfList.lanIfName));
 
                 memset(lanMapL3IfList.L3IfName, 0, sizeof(lanMapL3IfList.L3IfName));
-                UTIL_STRNCPY(lanMapL3IfList.L3IfName, L3IfName, sizeof(lanMapL3IfList.L3IfName));
+                UTIL_STRNCPY(lanMapL3IfList.L3IfName, L3IfName,
+                             sizeof(lanMapL3IfList.L3IfName));
 
                 lanMapL3IfList.action = 1; //add flag
                 lanMapL3IfList.used = 1;
@@ -1399,16 +1429,19 @@ VOS_RET_E HAL_ethDeletePubVlanIf(const char *wanIfName, const char *wanConnName)
                i,
                sg_vlanMapMcWanList[i].used,
                sg_vlanMapMcWanList[i].wanIfName[0] ? sg_vlanMapMcWanList[i].wanIfName : "",
-               sg_vlanMapMcWanList[i].mVlanIfName[0] ? sg_vlanMapMcWanList[i].mVlanIfName : "");
+               sg_vlanMapMcWanList[i].mVlanIfName[0] ? sg_vlanMapMcWanList[i].mVlanIfName :
+               "");
     }
 
     for (i = 0; i < UTIL_WAN_CONN_MAX_NUM; i++)
     {
-        if ((sg_vlanMapMcWanList[i].used) && (!util_strcmp(sg_vlanMapMcWanList[i].wanIfName, wanIfName)))
+        if ((sg_vlanMapMcWanList[i].used)
+                && (!util_strcmp(sg_vlanMapMcWanList[i].wanIfName, wanIfName)))
         {
             for (j = 0; j < UTIL_WAN_CONN_MAX_NUM; j++)
             {
-                if (!util_strcmp(sg_vlanMapMcWanList[j].mVlanIfName, sg_vlanMapMcWanList[i].mVlanIfName))
+                if (!util_strcmp(sg_vlanMapMcWanList[j].mVlanIfName,
+                                 sg_vlanMapMcWanList[i].mVlanIfName))
                 {
                     n++;
                 }
@@ -1416,24 +1449,31 @@ VOS_RET_E HAL_ethDeletePubVlanIf(const char *wanIfName, const char *wanConnName)
 
             if ((n == 1) && (hal_ethIsInterfaceExist(sg_vlanMapMcWanList[i].mVlanIfName)))
             {
-                if (NULL != strstr(wanConnName, "OTHER_B") || NULL != strstr(wanConnName, "INTERNET_B")
+                if (NULL != strstr(wanConnName, "OTHER_B")
+                        || NULL != strstr(wanConnName, "INTERNET_B")
                         || NULL != strstr(wanConnName, "IPTV_B"))
                 {
-                    UTIL_DO_SYSTEM_ACTION("ebtables -D %s -p IPv4 -i %s --ip-proto igmp -j ACCEPT > /var/err", UTIL_WAN_CONN_FWD_CHAIN,
+                    UTIL_DO_SYSTEM_ACTION("ebtables -D %s -p IPv4 -i %s --ip-proto igmp -j ACCEPT > /var/err",
+                                          UTIL_WAN_CONN_FWD_CHAIN,
                                           sg_vlanMapMcWanList[i].mVlanIfName);
-                    UTIL_DO_SYSTEM_ACTION("ebtables -D %s -p IPv6 -i %s --ip6-icmpv6type 130 -j ACCEPT > /var/err", UTIL_WAN_CONN_FWD_CHAIN,
+                    UTIL_DO_SYSTEM_ACTION("ebtables -D %s -p IPv6 -i %s --ip6-icmpv6type 130 -j ACCEPT > /var/err",
+                                          UTIL_WAN_CONN_FWD_CHAIN,
                                           sg_vlanMapMcWanList[i].mVlanIfName);
-                    UTIL_DO_SYSTEM_ACTION("ebtables -D %s -i %s -j DROP > /var/err", UTIL_WAN_CONN_FWD_CHAIN,
+                    UTIL_DO_SYSTEM_ACTION("ebtables -D %s -i %s -j DROP > /var/err",
+                                          UTIL_WAN_CONN_FWD_CHAIN,
                                           sg_vlanMapMcWanList[i].mVlanIfName);
-                    UTIL_DO_SYSTEM_ACTION("ebtables -D %s -o %s -j DROP > /var/err", UTIL_WAN_CONN_FWD_CHAIN,
+                    UTIL_DO_SYSTEM_ACTION("ebtables -D %s -o %s -j DROP > /var/err",
+                                          UTIL_WAN_CONN_FWD_CHAIN,
                                           sg_vlanMapMcWanList[i].mVlanIfName);
                 }
                 UTIL_DO_SYSTEM_ACTION("ifconfig %s down", sg_vlanMapMcWanList[i].mVlanIfName);
                 UTIL_DO_SYSTEM_ACTION("vconfig rem %s", sg_vlanMapMcWanList[i].mVlanIfName);
 
                 sg_vlanMapMcWanList[i].used = 0;
-                memset(sg_vlanMapMcWanList[i].wanIfName, 0, sizeof(sg_vlanMapMcWanList[i].wanIfName));
-                memset(sg_vlanMapMcWanList[i].mVlanIfName, 0, sizeof(sg_vlanMapMcWanList[i].mVlanIfName));
+                memset(sg_vlanMapMcWanList[i].wanIfName, 0,
+                       sizeof(sg_vlanMapMcWanList[i].wanIfName));
+                memset(sg_vlanMapMcWanList[i].mVlanIfName, 0,
+                       sizeof(sg_vlanMapMcWanList[i].mVlanIfName));
             }
         }
     }
@@ -1444,7 +1484,8 @@ VOS_RET_E HAL_ethDeletePubVlanIf(const char *wanIfName, const char *wanConnName)
                i,
                sg_vlanMapMcWanList[i].used,
                sg_vlanMapMcWanList[i].wanIfName[0] ? sg_vlanMapMcWanList[i].wanIfName : "",
-               sg_vlanMapMcWanList[i].mVlanIfName[0] ? sg_vlanMapMcWanList[i].mVlanIfName : "");
+               sg_vlanMapMcWanList[i].mVlanIfName[0] ? sg_vlanMapMcWanList[i].mVlanIfName :
+               "");
     }
 
 
@@ -1469,7 +1510,8 @@ static VOS_RET_E HAL_ethSetRouteWanPubMvlan(HAL_VLAN_MAP_MC_WAN_LIST *data)
         return VOS_RET_INTERNAL_ERROR;
     }
 
-    vosLog_debug("mVlanIfName[%s] wanIfName[%s]\n", data->mVlanIfName, data->wanIfName);
+    vosLog_debug("mVlanIfName[%s] wanIfName[%s]\n", data->mVlanIfName,
+                 data->wanIfName);
     ret = ioctl(fd, TW_MCAST_UPDATE_MAPING_VLAN_INFO, (void *)data);
 
     close(fd);
@@ -1479,7 +1521,8 @@ static VOS_RET_E HAL_ethSetRouteWanPubMvlan(HAL_VLAN_MAP_MC_WAN_LIST *data)
 #endif /* DESKTOP_LINUX */
 }
 
-VOS_RET_E HAL_ethCreatePubWanVlanIf(const char *ifName, SINT32 idx, SINT16 vid, UINT8 priority, UBOOL8 isPppoe,
+VOS_RET_E HAL_ethCreatePubWanVlanIf(const char *ifName, SINT32 idx, SINT16 vid,
+                                    UINT8 priority, UBOOL8 isPppoe,
                                     const char *wanConnName, const char *wanIfName)
 {
 #ifdef DESKTOP_LINUX
@@ -1492,7 +1535,8 @@ VOS_RET_E HAL_ethCreatePubWanVlanIf(const char *ifName, SINT32 idx, SINT16 vid, 
     UINT16 macId;
     UINT16 i;
 
-    vosLog_debug("ifName=%s idx=%d vid=%d wanIfName=%s", ifName, idx, vid, wanIfName);
+    vosLog_debug("ifName=%s idx=%d vid=%d wanIfName=%s", ifName, idx, vid,
+                 wanIfName);
 
     memset(vlanIfName, 0, sizeof(vlanIfName));
     memset(mac, 0, 18);
@@ -1507,8 +1551,10 @@ VOS_RET_E HAL_ethCreatePubWanVlanIf(const char *ifName, SINT32 idx, SINT16 vid, 
 
         if (hal_ethIsInterfaceExist(vlanIfName) == TRUE)
         {
-            if ((NULL != strstr(wanConnName, "INTERNET_R")) || (NULL != strstr(wanConnName, "OTHER_B"))
-                    || NULL != strstr(wanConnName, "INTERNET_B") || NULL != strstr(wanConnName, "IPTV"))
+            if ((NULL != strstr(wanConnName, "INTERNET_R"))
+                    || (NULL != strstr(wanConnName, "OTHER_B"))
+                    || NULL != strstr(wanConnName, "INTERNET_B")
+                    || NULL != strstr(wanConnName, "IPTV"))
             {
                 vosLog_debug("wanIfName=[%s]\n", wanIfName);
                 HAL_ethDeletePubVlanIf(wanIfName, wanConnName);
@@ -1516,7 +1562,8 @@ VOS_RET_E HAL_ethCreatePubWanVlanIf(const char *ifName, SINT32 idx, SINT16 vid, 
         }
 
         memset(cmd, 0, sizeof(cmd));
-        UTIL_SNPRINTF(cmd, sizeof(cmd), "vconfig set_name_type %s", VLAN_NAME_TYPE_FLAG);
+        UTIL_SNPRINTF(cmd, sizeof(cmd), "vconfig set_name_type %s",
+                      VLAN_NAME_TYPE_FLAG);
         UTIL_DO_SYSTEM_ACTION(cmd);
 
         memset(cmd, 0, sizeof(cmd));
@@ -1524,7 +1571,8 @@ VOS_RET_E HAL_ethCreatePubWanVlanIf(const char *ifName, SINT32 idx, SINT16 vid, 
         UTIL_DO_SYSTEM_ACTION(cmd);
 
         ret = HAL_sysGetMacAddr(mac);
-        vosLog_debug("mac[%02x:%02x:%02x:%02x:%02x:%02x]\n", mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
+        vosLog_debug("mac[%02x:%02x:%02x:%02x:%02x:%02x]\n", mac[0], mac[1], mac[2],
+                     mac[3], mac[4], mac[5]);
 
         if (VOS_RET_SUCCESS != ret)
         {
@@ -1545,7 +1593,8 @@ VOS_RET_E HAL_ethCreatePubWanVlanIf(const char *ifName, SINT32 idx, SINT16 vid, 
         }
 
         Hal_increaseMacValue(mac, macId);
-        vosLog_debug("mac[%02x:%02x:%02x:%02x:%02x:%02x]\n", mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
+        vosLog_debug("mac[%02x:%02x:%02x:%02x:%02x:%02x]\n", mac[0], mac[1], mac[2],
+                     mac[3], mac[4], mac[5]);
 
         if (!hal_ethWaitInterfaceExists(vlanIfName))
         {
@@ -1555,7 +1604,8 @@ VOS_RET_E HAL_ethCreatePubWanVlanIf(const char *ifName, SINT32 idx, SINT16 vid, 
 
 #if 0
         memset(cmd, 0, sizeof(cmd));
-        UTIL_SNPRINTF(cmd, sizeof(cmd), "ifconfig %s down && ifconfig %s hw ether %02x:%02x:%02x:%02x:%02x:%02x",
+        UTIL_SNPRINTF(cmd, sizeof(cmd),
+                      "ifconfig %s down && ifconfig %s hw ether %02x:%02x:%02x:%02x:%02x:%02x",
                       vlanIfName,
                       vlanIfName,
                       mac[0],
@@ -1581,7 +1631,8 @@ VOS_RET_E HAL_ethCreatePubWanVlanIf(const char *ifName, SINT32 idx, SINT16 vid, 
                    i,
                    sg_vlanMapMcWanList[i].used,
                    sg_vlanMapMcWanList[i].wanIfName[0] ? sg_vlanMapMcWanList[i].wanIfName : "",
-                   sg_vlanMapMcWanList[i].mVlanIfName[0] ? sg_vlanMapMcWanList[i].mVlanIfName : "");
+                   sg_vlanMapMcWanList[i].mVlanIfName[0] ? sg_vlanMapMcWanList[i].mVlanIfName :
+                   "");
         }
 
 
@@ -1589,11 +1640,15 @@ VOS_RET_E HAL_ethCreatePubWanVlanIf(const char *ifName, SINT32 idx, SINT16 vid, 
         {
             if ((0 == sg_vlanMapMcWanList[i].used))
             {
-                memset(sg_vlanMapMcWanList[i].mVlanIfName, 0, sizeof(sg_vlanMapMcWanList[i].mVlanIfName));
-                UTIL_STRNCPY(sg_vlanMapMcWanList[i].mVlanIfName, vlanIfName, sizeof(sg_vlanMapMcWanList[i].mVlanIfName));
+                memset(sg_vlanMapMcWanList[i].mVlanIfName, 0,
+                       sizeof(sg_vlanMapMcWanList[i].mVlanIfName));
+                UTIL_STRNCPY(sg_vlanMapMcWanList[i].mVlanIfName, vlanIfName,
+                             sizeof(sg_vlanMapMcWanList[i].mVlanIfName));
 
-                memset(sg_vlanMapMcWanList[i].wanIfName, 0, sizeof(sg_vlanMapMcWanList[i].wanIfName));
-                UTIL_STRNCPY(sg_vlanMapMcWanList[i].wanIfName, wanIfName, sizeof(sg_vlanMapMcWanList[i].wanIfName));
+                memset(sg_vlanMapMcWanList[i].wanIfName, 0,
+                       sizeof(sg_vlanMapMcWanList[i].wanIfName));
+                UTIL_STRNCPY(sg_vlanMapMcWanList[i].wanIfName, wanIfName,
+                             sizeof(sg_vlanMapMcWanList[i].wanIfName));
 
                 sg_vlanMapMcWanList[i].used = 1;
 
@@ -1607,10 +1662,12 @@ VOS_RET_E HAL_ethCreatePubWanVlanIf(const char *ifName, SINT32 idx, SINT16 vid, 
                    i,
                    sg_vlanMapMcWanList[i].used,
                    sg_vlanMapMcWanList[i].wanIfName[0] ? sg_vlanMapMcWanList[i].wanIfName : "",
-                   sg_vlanMapMcWanList[i].mVlanIfName[0] ? sg_vlanMapMcWanList[i].mVlanIfName : "");
+                   sg_vlanMapMcWanList[i].mVlanIfName[0] ? sg_vlanMapMcWanList[i].mVlanIfName :
+                   "");
         }
 
-        if ((NULL != strstr(wanConnName, "OTHER_B")) || (NULL != strstr(wanConnName, "IPTV_B")))
+        if ((NULL != strstr(wanConnName, "OTHER_B"))
+                || (NULL != strstr(wanConnName, "IPTV_B")))
         {
             memset(cmd, 0, sizeof(cmd));
             UTIL_SNPRINTF(cmd, sizeof(cmd), "brctl addif br1 %s ", vlanIfName);
@@ -1626,7 +1683,8 @@ VOS_RET_E HAL_ethCreatePubWanVlanIf(const char *ifName, SINT32 idx, SINT16 vid, 
 
             HAL_ethAddFilterRules(vlanIfName, wanIfName);
         }
-        else if ((NULL != strstr(wanConnName, "INTERNET_R")) || (NULL != strstr(wanConnName, "IPTV_R")))
+        else if ((NULL != strstr(wanConnName, "INTERNET_R"))
+                 || (NULL != strstr(wanConnName, "IPTV_R")))
         {
             HAL_ethSetRouteWanPubMvlan(&sg_vlanMapMcWanList[i]);
         }
@@ -1648,7 +1706,8 @@ VOS_RET_E HAL_ethCreatePubWanVlanIf(const char *ifName, SINT32 idx, SINT16 vid, 
 }
 
 
-VOS_RET_E HAL_ethCreateRouteIphostVlanIf(const char *ifName, const char *vlanIfName, SINT16 vid, UINT8 priority,
+VOS_RET_E HAL_ethCreateRouteIphostVlanIf(const char *ifName,
+        const char *vlanIfName, SINT16 vid, UINT8 priority,
         UBOOL8 isPppoe)
 {
 #ifndef JASON_DEBUG
@@ -1743,9 +1802,12 @@ VOS_RET_E HAL_ethCreateRouteIphostVlanIf(const char *ifName, const char *vlanIfN
         if (SF_FEATURE_UPLINK_TYPE_GPON)
         {
             //set default action of veip0 rx direction as drop
-            vlanCtl_setDefaultAction(ifName1, VLANCTL_DIRECTION_RX, 0, VLANCTL_ACTION_DROP, NULL);
-            vlanCtl_setDefaultAction(ifName1, VLANCTL_DIRECTION_RX, 1, VLANCTL_ACTION_DROP, NULL);
-            vlanCtl_setDefaultAction(ifName1, VLANCTL_DIRECTION_RX, 2, VLANCTL_ACTION_DROP, NULL);
+            vlanCtl_setDefaultAction(ifName1, VLANCTL_DIRECTION_RX, 0, VLANCTL_ACTION_DROP,
+                                     NULL);
+            vlanCtl_setDefaultAction(ifName1, VLANCTL_DIRECTION_RX, 1, VLANCTL_ACTION_DROP,
+                                     NULL);
+            vlanCtl_setDefaultAction(ifName1, VLANCTL_DIRECTION_RX, 2, VLANCTL_ACTION_DROP,
+                                     NULL);
         }
 
         /* Filter on receive interface and not allow for multicast.
@@ -1848,7 +1910,8 @@ VOS_RET_E HAL_ethCreateRouteIphostVlanIf(const char *ifName, const char *vlanIfN
 }
 
 
-VOS_RET_E HAL_ethCreateBridgeWanVlanIf(const char *ifName, SINT32 idx, SINT16 vid, UINT8 priority, UINT32 tpid,
+VOS_RET_E HAL_ethCreateBridgeWanVlanIf(const char *ifName, SINT32 idx,
+                                       SINT16 vid, UINT8 priority, UINT32 tpid,
                                        HAL_VLAN_MODE_E vlanMode, const char *lanIf, UBOOL8 ipv6Enable)
 {
 #ifdef DESKTOP_LINUX
@@ -1857,29 +1920,34 @@ VOS_RET_E HAL_ethCreateBridgeWanVlanIf(const char *ifName, SINT32 idx, SINT16 vi
     VOS_RET_E ret;
     UBOOL8 isBridge = TRUE;
 
-    ret = HAL_ethCreateRouteWanVlanIf(ifName, idx, vid, priority, 0, 0, lanIf, isBridge, ipv6Enable);
+    ret = HAL_ethCreateRouteWanVlanIf(ifName, idx, vid, priority, 0, 0, lanIf,
+                                      isBridge, ipv6Enable);
 
     return ret;
 #endif
 }
 
 
-VOS_RET_E HAL_ethDelRouteWanVlanIf(const char *vlanIfName, SINT32 idx, SINT16 vid, UINT8 priority)
+VOS_RET_E HAL_ethDelRouteWanVlanIf(const char *vlanIfName, SINT32 idx,
+                                   SINT16 vid, UINT8 priority)
 {
-    vosLog_error("vlanIfName = %s, idx = %d, vid = %d, priority = %u", vlanIfName, idx, vid, priority);
+    vosLog_error("vlanIfName = %s, idx = %d, vid = %d, priority = %u", vlanIfName,
+                 idx, vid, priority);
     hal_ethAddDelWanIpSubnet(vlanIfName, FALSE, FALSE, TRUE, vid);
     return HAL_ethDeleteVlanIf(vlanIfName);
 }
 
 
-VOS_RET_E HAL_ethDelBridgeWanVlanIf(const char *vlanIfName, SINT32 idx, SINT16 vid, UINT8 priority, const char *lanIf)
+VOS_RET_E HAL_ethDelBridgeWanVlanIf(const char *vlanIfName, SINT32 idx,
+                                    SINT16 vid, UINT8 priority, const char *lanIf)
 {
     char *pPath = NULL;
     char *saveStr = NULL;
     char fullPath[BUFLEN_1024] = {0};
     HAL_LAN_MAP_L3IF_LIST lanMapL3IfList;
 
-    vosLog_debug("vlanIfName = %s, idx = %d, vid = %d, priority = %u", vlanIfName, idx, vid, priority);
+    vosLog_debug("vlanIfName = %s, idx = %d, vid = %d, priority = %u", vlanIfName,
+                 idx, vid, priority);
     hal_ethAddDelWanIpSubnet(vlanIfName, FALSE, TRUE, TRUE, vid);
 
     if (SF_FEATURE_SUPPORT_LAN_WAN_BIND && (NULL != lanIf))
@@ -1891,7 +1959,8 @@ VOS_RET_E HAL_ethDelBridgeWanVlanIf(const char *vlanIfName, SINT32 idx, SINT16 v
         {
             lanMapL3IfList.action = 2;
             UTIL_STRNCPY(lanMapL3IfList.lanIfName, pPath, sizeof(lanMapL3IfList.lanIfName));
-            UTIL_STRNCPY(lanMapL3IfList.L3IfName, vlanIfName, sizeof(lanMapL3IfList.L3IfName));
+            UTIL_STRNCPY(lanMapL3IfList.L3IfName, vlanIfName,
+                         sizeof(lanMapL3IfList.L3IfName));
 
             HAL_ethSetLanMapWanList(&lanMapL3IfList);
 
@@ -1917,7 +1986,8 @@ VOS_RET_E HAL_ethDeleteVlanIf(const char *vlanIfName)
     vosLog_error("vlanIfName = %s", vlanIfName);
 
     /* bridgeEmulatorIfName: pon.16 */
-    UTIL_SNPRINTF(bridgeEmulatorIfName, sizeof(bridgeEmulatorIfName), "pon.%d", IFC_WAN_MAX);
+    UTIL_SNPRINTF(bridgeEmulatorIfName, sizeof(bridgeEmulatorIfName), "pon.%d",
+                  IFC_WAN_MAX);
 
 #ifdef MTK_SMUXCTL
     if (SF_AND_IF(SF_FEATURE_UPLINK_TYPE_GPON || SF_FEATURE_UPLINK_TYPE_EPON)
@@ -1931,26 +2001,31 @@ VOS_RET_E HAL_ethDeleteVlanIf(const char *vlanIfName)
             hal_ethIsInterfaceExist(vlanIfName)
             SF_AND_ENDIF)
     {
-        if (0 == util_strncmp(vlanIfName, WAN_EPON_IF_NAME_PREFIX, strlen(WAN_EPON_IF_NAME_PREFIX)))
+        if (0 == util_strncmp(vlanIfName, WAN_EPON_IF_NAME_PREFIX,
+                              strlen(WAN_EPON_IF_NAME_PREFIX)))
         {
             UTIL_DO_SYSTEM_ACTION("vnetconfig del %s", vlanIfName);
 
             for (i = 0; i < UTIL_WAN_CONN_MAX_NUM; i++)
             {
-                if ((sg_vlanEthNameList[i].used) && (!util_strcmp(sg_vlanEthNameList[i].L3IfName, vlanIfName)))
+                if ((sg_vlanEthNameList[i].used)
+                        && (!util_strcmp(sg_vlanEthNameList[i].L3IfName, vlanIfName)))
                 {
                     /* For bridge emulator if name info, should clear all of them */
                     if (!util_strcmp(sg_vlanEthNameList[i].L3IfName, bridgeEmulatorIfName))
                     {
                         sg_vlanEthNameList[i].used = 0;
-                        memset(sg_vlanEthNameList[i].L3IfName, 0, sizeof(sg_vlanEthNameList[i].L3IfName));
-                        memset(sg_vlanEthNameList[i].vlanIfName, 0, sizeof(sg_vlanEthNameList[i].vlanIfName));
+                        memset(sg_vlanEthNameList[i].L3IfName, 0,
+                               sizeof(sg_vlanEthNameList[i].L3IfName));
+                        memset(sg_vlanEthNameList[i].vlanIfName, 0,
+                               sizeof(sg_vlanEthNameList[i].vlanIfName));
                     }
                     else
                     {
                         for (j = 0; j < UTIL_WAN_CONN_MAX_NUM; j++)
                         {
-                            if (!util_strcmp(sg_vlanEthNameList[j].vlanIfName, sg_vlanEthNameList[i].vlanIfName))
+                            if (!util_strcmp(sg_vlanEthNameList[j].vlanIfName,
+                                             sg_vlanEthNameList[i].vlanIfName))
                             {
                                 n++;
                             }
@@ -1963,8 +2038,10 @@ VOS_RET_E HAL_ethDeleteVlanIf(const char *vlanIfName)
                                 UTIL_DO_SYSTEM_ACTION("vconfig rem %s", sg_vlanEthNameList[i].vlanIfName);
                             }
                             sg_vlanEthNameList[i].used = 0;
-                            memset(sg_vlanEthNameList[i].L3IfName, 0, sizeof(sg_vlanEthNameList[i].L3IfName));
-                            memset(sg_vlanEthNameList[i].vlanIfName, 0, sizeof(sg_vlanEthNameList[i].vlanIfName));
+                            memset(sg_vlanEthNameList[i].L3IfName, 0,
+                                   sizeof(sg_vlanEthNameList[i].L3IfName));
+                            memset(sg_vlanEthNameList[i].vlanIfName, 0,
+                                   sizeof(sg_vlanEthNameList[i].vlanIfName));
                         }
                         else
                         {
@@ -1973,8 +2050,10 @@ VOS_RET_E HAL_ethDeleteVlanIf(const char *vlanIfName)
                                 UTIL_DO_SYSTEM_ACTION("vconfig rem %s", sg_vlanEthNameList[i].vlanIfName);
 
                                 sg_vlanEthNameList[i].used = 0;
-                                memset(sg_vlanEthNameList[i].L3IfName, 0, sizeof(sg_vlanEthNameList[i].L3IfName));
-                                memset(sg_vlanEthNameList[i].vlanIfName, 0, sizeof(sg_vlanEthNameList[i].vlanIfName));
+                                memset(sg_vlanEthNameList[i].L3IfName, 0,
+                                       sizeof(sg_vlanEthNameList[i].L3IfName));
+                                memset(sg_vlanEthNameList[i].vlanIfName, 0,
+                                       sizeof(sg_vlanEthNameList[i].vlanIfName));
                             }
                         }
                     }
@@ -1992,7 +2071,8 @@ VOS_RET_E HAL_ethDeleteVlanIf(const char *vlanIfName)
 #endif /* DESKTOP_LINUX */
 }
 
-VOS_RET_E HAL_ethSetWanIgmpState(const char *vlanIfName, const UBOOL8 isBridge, SINT16 vid, UBOOL8 enable)
+VOS_RET_E HAL_ethSetWanIgmpState(const char *vlanIfName, const UBOOL8 isBridge,
+                                 SINT16 vid, UBOOL8 enable)
 {
 #ifndef JASON_DEBUG
     return VOS_RET_SUCCESS;
@@ -2017,7 +2097,8 @@ VOS_RET_E HAL_ethSetWanIgmpState(const char *vlanIfName, const UBOOL8 isBridge, 
     }
     else
     {
-        if ((ret = HAL_ethGetWanIfName(0, wanIfName, sizeof(wanIfName))) != VOS_RET_SUCCESS)
+        if ((ret = HAL_ethGetWanIfName(0, wanIfName,
+                                       sizeof(wanIfName))) != VOS_RET_SUCCESS)
         {
             vosLog_error("HAL_ethGetWanIfName error! ret = %d", ret);
             return ret;
@@ -2061,7 +2142,8 @@ VOS_RET_E HAL_ethSetWanMldState(const char *vlanIfName, UBOOL8 enable)
 
 
 #ifndef DESKTOP_LINUX
-VOS_RET_E hal_ethDelGponTagRuleById(const char *devInterface, SINT32 ruleId, SINT32 vid)
+VOS_RET_E hal_ethDelGponTagRuleById(const char *devInterface, SINT32 ruleId,
+                                    SINT32 vid)
 {
 #ifndef JASON_DEBUG
     return VOS_RET_SUCCESS;
@@ -2092,7 +2174,8 @@ VOS_RET_E hal_ethDelGponTagRuleById(const char *devInterface, SINT32 ruleId, SIN
 #endif
 }
 
-VOS_RET_E hal_ethDelOldGponTagRule(const char *devInterface, const char *wanConnName)
+VOS_RET_E hal_ethDelOldGponTagRule(const char *devInterface,
+                                   const char *wanConnName)
 {
     VOS_RET_E ret = VOS_RET_SUCCESS;
     char temp[128] = {0};
@@ -2163,7 +2246,8 @@ SINT32 hal_ethGetGponTagRuleId(const char *wanConnName)
 
 #ifdef DESKTOP_LINUX
 /* record wan conn multicast vlan rule file: /tmp/mcastAniFilterTagPopRule */
-static SINT32 hal_ethAddGponMcastVlanRule(const char *wanConnName, UINT32 vlanId, UINT32 tagRuleId)
+static SINT32 hal_ethAddGponMcastVlanRule(const char *wanConnName,
+        UINT32 vlanId, UINT32 tagRuleId)
 {
     char temp[128] = {0};
     FILE *fp = NULL;
@@ -2187,7 +2271,8 @@ static SINT32 hal_ethAddGponMcastVlanRule(const char *wanConnName, UINT32 vlanId
 #endif
 
     memset(temp, 0, sizeof(temp));
-    UTIL_SNPRINTF(temp, sizeof(temp), "%s %d %d\r\n", (wanConnName + 2), vlanId, tagRuleId);
+    UTIL_SNPRINTF(temp, sizeof(temp), "%s %d %d\r\n", (wanConnName + 2), vlanId,
+                  tagRuleId);
     fputs(temp, fp);
 
     fclose(fp);
@@ -2257,7 +2342,8 @@ VOS_RET_E HAL_ethGetMcastIfByIdx(HAL_ETH_MCAST_IF *mcastIf, UINT32 *idx)
 }
 
 
-VOS_RET_E HAL_ethSetWanMvlan(const char *vlanIfName, SINT32 priVid, SINT32 pubVid, UBOOL8 isBridge, UBOOL8 isInternet,
+VOS_RET_E HAL_ethSetWanMvlan(const char *vlanIfName, SINT32 priVid,
+                             SINT32 pubVid, UBOOL8 isBridge, UBOOL8 isInternet,
                              const char *ifname)
 {
 #ifdef DESKTOP_LINUX
@@ -2275,18 +2361,22 @@ VOS_RET_E HAL_ethSetWanMvlan(const char *vlanIfName, SINT32 priVid, SINT32 pubVi
                 idx = ifname[4] - '0' + 8;
                 vosLog_debug("idx [%d]\n", idx);
                 //epon interface and gpon interface is the same
-                HAL_ethCreatePubWanVlanIf(WAN_EPON_IF_NAME_PREFIX, idx, pubVid, 0, 0, vlanIfName, ifname);
+                HAL_ethCreatePubWanVlanIf(WAN_EPON_IF_NAME_PREFIX, idx, pubVid, 0, 0,
+                                          vlanIfName, ifname);
             }
         }
         else
         {
-            if ((NULL != strstr(vlanIfName, "OTHER_B")) || (NULL != strstr(vlanIfName, "INTERNET_R"))
-                    || (NULL != strstr(vlanIfName, "IPTV")) || (NULL != strstr(vlanIfName, "INTERNET_B")))
+            if ((NULL != strstr(vlanIfName, "OTHER_B"))
+                    || (NULL != strstr(vlanIfName, "INTERNET_R"))
+                    || (NULL != strstr(vlanIfName, "IPTV"))
+                    || (NULL != strstr(vlanIfName, "INTERNET_B")))
             {
                 idx = ifname[4] - '0' + 8;
                 vosLog_debug("idx [%d]\n", idx);
                 //epon interface and gpon interface is the same
-                HAL_ethCreatePubWanVlanIf(WAN_EPON_IF_NAME_PREFIX, idx, pubVid, 0, 0, vlanIfName, ifname);
+                HAL_ethCreatePubWanVlanIf(WAN_EPON_IF_NAME_PREFIX, idx, pubVid, 0, 0,
+                                          vlanIfName, ifname);
             }
         }
     }
@@ -2322,7 +2412,8 @@ VOS_RET_E HAL_ethSetWanPubMvlan(void *vlanInfo)
 #endif /* DESKTOP_LINUX */
 }
 
-VOS_RET_E HAL_ethSetWanMCastvlan(const char *vlanIfName, SINT32 priVid, SINT32 pubVid, UBOOL8 isBridge,
+VOS_RET_E HAL_ethSetWanMCastvlan(const char *vlanIfName, SINT32 priVid,
+                                 SINT32 pubVid, UBOOL8 isBridge,
                                  UBOOL8 isInternet, const char *ifname)
 {
     HAL_ethSetWanMvlan(vlanIfName, priVid,  pubVid, isBridge, isInternet, ifname);
@@ -2355,7 +2446,8 @@ VOS_RET_E HAL_ethCreateLanVlanIf(const char *ifName, SINT32 vid)
 }
 
 
-VOS_RET_E HAL_ethCreateLanDefVlanIf(const char *ifName, HAL_VLAN_MODE_E vlanMode)
+VOS_RET_E HAL_ethCreateLanDefVlanIf(const char *ifName,
+                                    HAL_VLAN_MODE_E vlanMode)
 {
 #ifdef DESKTOP_LINUX
     return VOS_RET_SUCCESS;
@@ -2450,7 +2542,8 @@ VOS_RET_E HAL_deleteEthernetFlows(char *rxL3Name, char *txL3Name, char *txIface)
 }
 
 
-VOS_RET_E HAL_ethAddIptvIpv6Address(const char *ifName, const HAL_ETH_GMP_MW_WAN_IPTV_IPV6_ADDR_T *iptvAddr)
+VOS_RET_E HAL_ethAddIptvIpv6Address(const char *ifName,
+                                    const HAL_ETH_GMP_MW_WAN_IPTV_IPV6_ADDR_T *iptvAddr)
 {
     VOS_RET_E ret = VOS_RET_SUCCESS;
 #ifdef DESKTOP_LINUX
@@ -2480,7 +2573,8 @@ VOS_RET_E HAL_ethAddIptvIpv6Address(const char *ifName, const HAL_ETH_GMP_MW_WAN
 }
 
 
-VOS_RET_E HAL_ethDelIptvIpv6Address(const char *ifName, const HAL_ETH_GMP_MW_WAN_IPTV_IPV6_ADDR_T *iptvAddr)
+VOS_RET_E HAL_ethDelIptvIpv6Address(const char *ifName,
+                                    const HAL_ETH_GMP_MW_WAN_IPTV_IPV6_ADDR_T *iptvAddr)
 {
     VOS_RET_E ret = VOS_RET_SUCCESS;
 
@@ -2511,7 +2605,8 @@ VOS_RET_E HAL_ethDelIptvIpv6Address(const char *ifName, const HAL_ETH_GMP_MW_WAN
 }
 
 
-VOS_RET_E HAL_ethSetPortEgressRate(const char *ifName, UINT32 kBitsSec, UINT32 kBitsburst)
+VOS_RET_E HAL_ethSetPortEgressRate(const char *ifName, UINT32 kBitsSec,
+                                   UINT32 kBitsburst)
 {
 #ifdef DESKTOP_LINUX
     return VOS_RET_SUCCESS;
@@ -2663,11 +2758,13 @@ VOS_RET_E HAL_ethSetPortState(int port, UBOOL8 enable)
             phyId = 1;//phy1
         }
 
-        vosLog_debug("Eth[%d]-Phy[%d] change state into [%s].\n", port, phyId, (enable) ? "Enable" : "Disable");
+        vosLog_debug("Eth[%d]-Phy[%d] change state into [%s].\n", port, phyId,
+                     (enable) ? "Enable" : "Disable");
 
         /* User app enable port only, kernel would disable phy port when detected loopback. */
         memset(cmd, 0, sizeof(cmd));
-        snprintf(cmd, sizeof(cmd) - 1, "echo %d %d > /proc/tc3162/eth_loopback", phyId, enable);
+        snprintf(cmd, sizeof(cmd) - 1, "echo %d %d > /proc/tc3162/eth_loopback", phyId,
+                 enable);
         UTIL_DO_SYSTEM_ACTION(cmd);
     }
     else
@@ -2704,7 +2801,8 @@ VOS_RET_E HAL_ethResetPort(const char *ifName)
 }
 
 
-VOS_RET_E HAL_addSwitchVlanTable(const char *connType, const char *serList, SINT32 vid)
+VOS_RET_E HAL_addSwitchVlanTable(const char *connType, const char *serList,
+                                 SINT32 vid)
 {
     return VOS_RET_SUCCESS;
 }
@@ -2715,7 +2813,8 @@ VOS_RET_E HAL_ethSetSwitchForMmeIntf(char *ifName, SINT32 vid)
     return VOS_RET_SUCCESS;
 }
 
-VOS_RET_E HAL_ethSetPortIngressRate(const char *ifName, UINT32 kBitsSec, UINT32 kBitsburst)
+VOS_RET_E HAL_ethSetPortIngressRate(const char *ifName, UINT32 kBitsSec,
+                                    UINT32 kBitsburst)
 {
 #ifdef DESKTOP_LINUX
     return VOS_RET_SUCCESS;
@@ -2743,7 +2842,8 @@ VOS_RET_E HAL_ethSetPortIngressRate(const char *ifName, UINT32 kBitsSec, UINT32 
 }
 
 
-VOS_RET_E HAL_ethCreateRouteTransparentVlanIf(const char *ifName, SINT32 idx, SINT16 vid, UINT8 priority,
+VOS_RET_E HAL_ethCreateRouteTransparentVlanIf(const char *ifName, SINT32 idx,
+        SINT16 vid, UINT8 priority,
         UBOOL8 isPppoe)
 {
 #ifdef DESKTOP_LINUX
@@ -2755,7 +2855,8 @@ VOS_RET_E HAL_ethCreateRouteTransparentVlanIf(const char *ifName, SINT32 idx, SI
 
 
 
-VOS_RET_E HAL_ethCreateBridgeTransparentVlanIf(const char *ifName, SINT32 idx, SINT16 vid, UINT8 priority)
+VOS_RET_E HAL_ethCreateBridgeTransparentVlanIf(const char *ifName, SINT32 idx,
+        SINT16 vid, UINT8 priority)
 {
 #ifdef DESKTOP_LINUX
     return VOS_RET_SUCCESS;
@@ -2774,7 +2875,8 @@ VOS_RET_E HAL_ethDeleteConnInterface(const char *vlanDevName, int vid, int pri)
 #endif
 }
 
-VOS_RET_E HAL_ethCreateConnInterface(const char *vlanDevName, int vid, int pri, SINT16 MultiVid, UBOOL8 *omciVlanMode)
+VOS_RET_E HAL_ethCreateConnInterface(const char *vlanDevName, int vid, int pri,
+                                     SINT16 MultiVid, UBOOL8 *omciVlanMode)
 {
 #ifdef DESKTOP_LINUX
     return VOS_RET_SUCCESS;
@@ -2824,13 +2926,15 @@ VOS_RET_E HAL_ethSetPortPower(UINT32 port, UINT32 portState)
             phyId = 1;//phy1
         }
 
-        printf("\nEth[%d]-Phy[%d] change state into [%s].\n", port, phyId, (0 == portState) ? "Enable" : "Disable");
+        printf("\nEth[%d]-Phy[%d] change state into [%s].\n", port, phyId,
+               (0 == portState) ? "Enable" : "Disable");
 
         /* User app enable port only, kernel would disable phy port when detected loopback. */
         if (enable)
         {
             memset(cmd, 0, sizeof(cmd));
-            snprintf(cmd, sizeof(cmd) - 1, "echo %d %d > /proc/tc3162/eth_loopback", phyId, enable);
+            snprintf(cmd, sizeof(cmd) - 1, "echo %d %d > /proc/tc3162/eth_loopback", phyId,
+                     enable);
             UTIL_DO_SYSTEM_ACTION(cmd);
         }
     }
@@ -2897,7 +3001,8 @@ VOS_RET_E HAL_ethRestoreLanMcastRule()
 }
 
 
-VOS_RET_E HAL_ethDelEponOamVlan(const UINT8 lanPort, const UINT16 vlan, UINT32 tagRuleId)
+VOS_RET_E HAL_ethDelEponOamVlan(const UINT8 lanPort, const UINT16 vlan,
+                                UINT32 tagRuleId)
 {
 #ifdef DESKTOP_LINUX
     return VOS_RET_SUCCESS;
@@ -2907,7 +3012,8 @@ VOS_RET_E HAL_ethDelEponOamVlan(const UINT8 lanPort, const UINT16 vlan, UINT32 t
 }
 
 
-VOS_RET_E HAL_ethAddEponOamVlan(const UINT8 lanPort, const UINT16 vlan, UINT32 tagRuleId)
+VOS_RET_E HAL_ethAddEponOamVlan(const UINT8 lanPort, const UINT16 vlan,
+                                UINT32 tagRuleId)
 {
 #ifdef DESKTOP_LINUX
     return VOS_RET_SUCCESS;
@@ -2926,7 +3032,8 @@ static VOS_RET_E hal_ethVlanExist(const UINT8 lanPort, const UINT16 eponVlan)
 #endif
 
 #ifdef DESKTOP_LINUX
-static VOS_RET_E hal_ethGetEponOamVlan(const UINT8 lanPort, UINT16 vlan[BUFLEN_8], UINT8 *vlanNum)
+static VOS_RET_E hal_ethGetEponOamVlan(const UINT8 lanPort,
+                                       UINT16 vlan[BUFLEN_8], UINT8 *vlanNum)
 {
 #ifdef DESKTOP_LINUX
     return VOS_RET_SUCCESS;
@@ -2937,7 +3044,8 @@ static VOS_RET_E hal_ethGetEponOamVlan(const UINT8 lanPort, UINT16 vlan[BUFLEN_8
 #endif
 
 
-VOS_RET_E HAL_ethGetEponOamRuleId(const UINT8 lanPort, const UINT16 vlan, char *ruleIdString)
+VOS_RET_E HAL_ethGetEponOamRuleId(const UINT8 lanPort, const UINT16 vlan,
+                                  char *ruleIdString)
 {
 #ifdef DESKTOP_LINUX
     return VOS_RET_SUCCESS;
@@ -2948,7 +3056,8 @@ VOS_RET_E HAL_ethGetEponOamRuleId(const UINT8 lanPort, const UINT16 vlan, char *
 #endif
 
 
-VOS_RET_E HAL_ethSetEponOamRuleId(const UINT8 lanPort, const UINT16 vlan, const UINT16 ruleId)
+VOS_RET_E HAL_ethSetEponOamRuleId(const UINT8 lanPort, const UINT16 vlan,
+                                  const UINT16 ruleId)
 {
 #ifdef DESKTOP_LINUX
     return VOS_RET_SUCCESS;
@@ -2958,7 +3067,8 @@ VOS_RET_E HAL_ethSetEponOamRuleId(const UINT8 lanPort, const UINT16 vlan, const 
 }
 
 
-VOS_RET_E HAL_ethUpdateLanPortMcastTag(const UINT8 lanPort, const UINT16 eponVlan, const UINT16 iptvVlan,
+VOS_RET_E HAL_ethUpdateLanPortMcastTag(const UINT8 lanPort,
+                                       const UINT16 eponVlan, const UINT16 iptvVlan,
                                        const UINT8 tagOp)
 {
 #ifndef JASON_DEBUG
@@ -3000,7 +3110,8 @@ VOS_RET_E HAL_ethUpdateLanPortMcastTag(const UINT8 lanPort, const UINT16 eponVla
         //only handle the configured vlan from oam.
         if (VOS_RET_SUCCESS != hal_ethVlanExist(lanPort, eponVlan))
         {
-            vosLog_error("tagOp is 2, but the eponVlan doesn't exist as a multicast vlan in Port %d.", lanPort);
+            vosLog_error("tagOp is 2, but the eponVlan doesn't exist as a multicast vlan in Port %d.",
+                         lanPort);
             return VOS_RET_INTERNAL_ERROR;
         }
         else
@@ -3366,7 +3477,8 @@ VOS_RET_E HAL_delHwnatByEthIfName(const char *ifName, const char *macAddr)
         }
         sscanf(arpBuf, " %s %17s", portNum, macEthAddr);
         portTemp = atoi(ifName + 3) + 1;
-        vosLog_debug("portTemp:%d, macEthAddr:%s,portNum:%s", portTemp, macEthAddr, portNum);
+        vosLog_debug("portTemp:%d, macEthAddr:%s,portNum:%s", portTemp, macEthAddr,
+                     portNum);
         if (portTemp == atoi(portNum))
         {
             FILE *fb1 = NULL;
