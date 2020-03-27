@@ -51,7 +51,7 @@ typedef struct _gpio_pin_config
 
 /* 函数声明 */
 void gpio_init(GPIO_Type *base, int pin, gpio_pin_config_t *config);
-int gpio_pinread(GPIO_Type *base, int pin);
+int  gpio_pinread(GPIO_Type *base, int pin);
 void gpio_pinwrite(GPIO_Type *base, int pin, int value);
 void gpio_intconfig(GPIO_Type *base, unsigned int pin, gpio_interrupt_mode_t pinInterruptMode);
 void gpio_enableint(GPIO_Type *base, unsigned int pin);
