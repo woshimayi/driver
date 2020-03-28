@@ -1,3 +1,3 @@
 make distclean
-make mx6ull_14x14_ddr256_nand_defconfig
+make mx6ull_my_nand_defconfig
 make V=1 -j4

@@ -6,3 +6,6 @@ git config --global user.name "woshidamayi"
 git config --global core.editor vim
 git config --global merge.tool vimdiff
 git config --global commit.template ../
+
+
+sudo apt install meld -y

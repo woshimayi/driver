@@ -90,7 +90,7 @@ int checkboard(void)
 {
 	int board_id = tegra_board_id();
 
-	printf("Board: %s", CONFIG_TEGRA_BOARD_STRING);
+	printf("Board: %s %s %d ", CONFIG_TEGRA_BOARD_STRING, __FUNCTION__, __LINE__);
 	if (board_id != -1)
 		printf(", ID: %d\n", board_id);
 	printf("\n");

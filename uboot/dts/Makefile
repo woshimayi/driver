@@ -18,6 +18,8 @@ else
 DTB := arch/$(ARCH)/dts/$(DEVICE_TREE).dtb
 endif
 
+$(warning ${DTB})
+
 $(obj)/dt.dtb: $(DTB) FORCE
 	$(call if_changed,shipped)
 

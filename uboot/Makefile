@@ -27,6 +27,7 @@ MAKEFLAGS += -rR --include-dir=$(CURDIR)
 unexport LC_ALL
 LC_COLLATE=C
 LC_NUMERIC=C
+$(warning ${LC_COLLATE} ${LC_NUMERIC})
 export LC_COLLATE LC_NUMERIC
 
 # Avoid interference with shell env settings
@@ -132,6 +133,8 @@ endif
 # That's our default target when none is given on the command line
 PHONY := _all
 _all:
+
+$(warning ${all})
 
 # Cancel implicit rules on top Makefile
 $(CURDIR)/Makefile Makefile: ;
@@ -243,6 +246,8 @@ HOSTOS := $(shell uname -s | tr '[:upper:]' '[:lower:]' | \
 
 export	HOSTARCH HOSTOS
 
+$(warning ${HOSTOS})
+
 #########################################################################
 
 ARCH ?= arm
@@ -287,13 +292,20 @@ ifeq ($(HOSTOS),darwin)
 DARWIN_MAJOR_VERSION	= $(shell sw_vers -productVersion | cut -f 1 -d '.')
 DARWIN_MINOR_VERSION	= $(shell sw_vers -productVersion | cut -f 2 -d '.')
 
+$(warning ${DARWIN_MAJOR_VERSION} ${DARWIN_MINOR_VERSION})
+
 os_x_before	= $(shell if [ $(DARWIN_MAJOR_VERSION) -le $(1) -a \
 	$(DARWIN_MINOR_VERSION) -le $(2) ] ; then echo "$(3)"; else echo "$(4)"; fi ;)
 
+$(warning ${os_x_before})
+
 # Snow Leopards build environment has no longer restrictions as described above
 HOSTCC       = $(call os_x_before, 10, 5, "cc", "gcc")
+$(warning ${HOSTCC})
 HOSTCFLAGS  += $(call os_x_before, 10, 4, "-traditional-cpp")
+$(warning ${HOSTCFLAGS})
 HOSTLDFLAGS += $(call os_x_before, 10, 5, "-multiply_defined suppress")
+$(warning ${HOSTLDFLAGS})
 
 # since Lion (10.7) ASLR is on by default, but we use linker generated lists
 # in some host tools which is a problem then ... so disable ASLR for these
@@ -315,6 +327,8 @@ KBUILD_BUILTIN := 1
 ifeq ($(MAKECMDGOALS),modules)
   KBUILD_BUILTIN := $(if $(CONFIG_MODVERSIONS),1)
 endif
+
+$(warning ${KBUILD_BUILTIN})
 
 # If we have "make <whatever> modules", compile modules
 # in addition to whatever we do anyway.
@@ -487,6 +501,7 @@ ifeq ($(config-targets),1)
 KBUILD_DEFCONFIG := sandbox_defconfig
 export KBUILD_DEFCONFIG KBUILD_KCONFIG
 
+# 配置uboot menuconfig
 config: scripts_basic outputmakefile FORCE
 	$(Q)$(MAKE) $(build)=scripts/kconfig $@
 

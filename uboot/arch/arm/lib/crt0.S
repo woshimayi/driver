@@ -68,6 +68,7 @@ ENTRY(_main)
 
 /*
  * Set up initial C runtime environment and call board_init_f(0).
+ * 设置C运行环境 调用 board_init_f
  */
 
 #if defined(CONFIG_SPL_BUILD) && defined(CONFIG_SPL_STACK)

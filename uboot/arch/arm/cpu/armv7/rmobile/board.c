@@ -10,6 +10,6 @@
 
 int checkboard(void)
 {
-	printf("Board: %s\n", sysinfo.board_string);
+	printf("Board: %s %s %d\n", sysinfo.board_string, __FUNCTION__, __LINE__);
 	return 0;
 }

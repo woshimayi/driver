@@ -1,0 +1,1648 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+ACK_TYPE	load.c	401;"	d	file:
+ACTEL_devices	ambapp.c	/^static ambapp_device_name ACTEL_devices[] = {$/;"	v	file:
+APPLECORE_devices	ambapp.c	/^static ambapp_device_name APPLECORE_devices[] = {$/;"	v	file:
+ASTRIUM_devices	ambapp.c	/^static ambapp_device_name ASTRIUM_devices[] = {$/;"	v	file:
+ATAPI_DRIVE_NOT_READY	ide.c	1231;"	d	file:
+ATAPI_READ_BLOCK_SIZE	ide.c	1394;"	d	file:
+ATAPI_READ_MAX_BLOCK	ide.c	1395;"	d	file:
+ATAPI_READ_MAX_BYTES	ide.c	1393;"	d	file:
+ATAPI_TIME_OUT	ide.c	70;"	d	file:
+ATAPI_UNIT_ATTN	ide.c	1232;"	d	file:
+ATTR_SEEN_MAX	efi.c	47;"	d	file:
+BREAK_TYPE	load.c	403;"	d	file:
+CAL_devices	ambapp.c	/^static ambapp_device_name CAL_devices[] = {$/;"	v	file:
+CETON_devices	ambapp.c	/^static ambapp_device_name CETON_devices[] = {$/;"	v	file:
+CHECK_IDE_DEVICE	pcmcia.c	84;"	d	file:
+CHECK_IDE_DEVICE	pcmcia.c	87;"	d	file:
+CHECK_IDE_DEVICE	pcmcia.c	91;"	d	file:
+COMMAND	fdc.c	52;"	d	file:
+COMPARE_ADDR	i2c.c	110;"	d	file:
+COMPARE_ADDR	i2c.c	116;"	d	file:
+COMPARE_BUS	i2c.c	109;"	d	file:
+COMPARE_BUS	i2c.c	115;"	d	file:
+CONFIG0	fdc.c	54;"	d	file:
+CONFIG1	fdc.c	57;"	d	file:
+CONFIG2	fdc.c	60;"	d	file:
+CONFIG_CMD_FDT_MAX_DUMP	fdt.c	24;"	d	file:
+CONFIG_DEFAULT_SPI_BUS	spi.c	27;"	d	file:
+CONFIG_DEFAULT_SPI_MODE	spi.c	30;"	d	file:
+CONFIG_MMC_SPI_BUS	mmc_spi.c	13;"	d	file:
+CONFIG_MMC_SPI_CS	mmc_spi.c	16;"	d	file:
+CONFIG_MMC_SPI_MODE	mmc_spi.c	29;"	d	file:
+CONFIG_MMC_SPI_SPEED	mmc_spi.c	20;"	d	file:
+CONFIG_SYS_ATA_PORT_ADDR	ide.c	77;"	d	file:
+CONFIG_SYS_EEPROM_PAGE_WRITE_BITS	eeprom.c	37;"	d	file:
+CONFIG_SYS_EEPROM_PAGE_WRITE_DELAY_MS	eeprom.c	33;"	d	file:
+CONFIG_SYS_FDC_DRIVE_NUMBER	fdc.c	150;"	d	file:
+CONFIG_SYS_I2C_SPEED	eeprom.c	29;"	d	file:
+CONFIG_SYS_ISA_IO_OFFSET	fdc.c	159;"	d	file:
+CONFIG_SYS_ISA_IO_STRIDE	fdc.c	155;"	d	file:
+CONFIG_SYS_MEMTEST_SCRATCH	mem.c	33;"	d	file:
+CONFIG_SYS_XIMG_LEN	ximg.c	28;"	d	file:
+CONTRIB_devices	ambapp.c	/^static ambapp_device_name CONTRIB_devices[] = {$/;"	v	file:
+DATA_TYPE	load.c	400;"	d	file:
+DEBUG	ubifs.c	13;"	d	file:
+DEBUGF	cramfs.c	27;"	d	file:
+DEBUGF	cramfs.c	29;"	d	file:
+DEBUGF	jffs2.c	100;"	d	file:
+DEBUGF	jffs2.c	98;"	d	file:
+DEBUG_CRAMFS	cramfs.c	23;"	d	file:
+DEBUG_CRAMFS	cramfs.c	24;"	d	file:
+DEBUG_DISP	display.c	12;"	d	file:
+DEBUG_JFFS	jffs2.c	94;"	d	file:
+DEBUG_JFFS	jffs2.c	95;"	d	file:
+DEFAULT_ADDR_LEN	i2c.c	129;"	d	file:
+DEFAULT_ADDR_LEN	i2c.c	131;"	d	file:
+DEVICE_LED	ide.c	275;"	d	file:
+DEV_TYPE_NAND	ubi.c	31;"	d	file:
+DEV_TYPE_NONE	ubi.c	30;"	d	file:
+DEV_TYPE_NOR	ubi.c	33;"	d	file:
+DEV_TYPE_ONENAND	ubi.c	32;"	d	file:
+DIGEST_LENGTH	tpm.c	/^	DIGEST_LENGTH		= 20,$/;"	e	enum:__anon5	file:
+DISP_LINE_LEN	fpgad.c	28;"	d	file:
+DISP_LINE_LEN	i2c.c	121;"	d	file:
+DISP_LINE_LEN	mem.c	52;"	d	file:
+DISP_LINE_LEN	pci.c	420;"	d	file:
+DOS_FS32_TYPE_OFFSET	zfs.c	33;"	d	file:
+DOS_FS_TYPE_OFFSET	zfs.c	32;"	d	file:
+DOS_PART_MAGIC_OFFSET	zfs.c	31;"	d	file:
+DRIVE	fdc.c	53;"	d	file:
+DTL	fdc.c	65;"	d	file:
+EEPROM_PAGE_OFFSET	eeprom.c	41;"	d	file:
+EEPROM_PAGE_SIZE	eeprom.c	40;"	d	file:
+EIEIO	ide.c	32;"	d	file:
+EIEIO	ide.c	35;"	d	file:
+EMBEDDIT_devices	ambapp.c	/^static ambapp_device_name EMBEDDIT_devices[] = {$/;"	v	file:
+END_CHAR	load.c	396;"	d	file:
+EONIC_devices	ambapp.c	/^static ambapp_device_name EONIC_devices[] = {$/;"	v	file:
+EQ	itest.c	22;"	d	file:
+ESA_devices	ambapp.c	/^static ambapp_device_name ESA_devices[] = {$/;"	v	file:
+ETHSW_EGR_VLAN_TAG_HELP	ethsw.c	83;"	d	file:
+ETHSW_FDB_HELP	ethsw.c	38;"	d	file:
+ETHSW_LEARN_HELP	ethsw.c	27;"	d	file:
+ETHSW_PORT_AGGR_HELP	ethsw.c	117;"	d	file:
+ETHSW_PORT_CONF_HELP	ethsw.c	1085;"	d	file:
+ETHSW_PORT_INGR_FLTR_HELP	ethsw.c	106;"	d	file:
+ETHSW_PORT_STATS_HELP	ethsw.c	17;"	d	file:
+ETHSW_PORT_UNTAG_HELP	ethsw.c	72;"	d	file:
+ETHSW_PVID_HELP	ethsw.c	50;"	d	file:
+ETHSW_VLAN_FDB_HELP	ethsw.c	95;"	d	file:
+ETHSW_VLAN_HELP	ethsw.c	61;"	d	file:
+ETX_CHAR	load.c	395;"	d	file:
+FDC_BASE	fdc.c	78;"	d	file:
+FDC_CAL_RETRIES	fdc.c	120;"	d	file:
+FDC_CCR	fdc.c	87;"	d	file:
+FDC_CMD_CONFIGURE	fdc.c	90;"	d	file:
+FDC_CMD_CONFIGURE_LEN	fdc.c	100;"	d	file:
+FDC_CMD_DUMP_REG	fdc.c	96;"	d	file:
+FDC_CMD_DUMP_REG_LEN	fdc.c	106;"	d	file:
+FDC_CMD_READ	fdc.c	93;"	d	file:
+FDC_CMD_READ_ID	fdc.c	95;"	d	file:
+FDC_CMD_READ_ID_LEN	fdc.c	105;"	d	file:
+FDC_CMD_READ_LEN	fdc.c	103;"	d	file:
+FDC_CMD_READ_TRACK	fdc.c	94;"	d	file:
+FDC_CMD_READ_TRACK_LEN	fdc.c	104;"	d	file:
+FDC_CMD_RECALIBRATE	fdc.c	92;"	d	file:
+FDC_CMD_RECALIBRATE_LEN	fdc.c	102;"	d	file:
+FDC_CMD_SEEK	fdc.c	97;"	d	file:
+FDC_CMD_SEEK_LEN	fdc.c	107;"	d	file:
+FDC_CMD_SENSE_INT	fdc.c	89;"	d	file:
+FDC_CMD_SENSE_INT_LEN	fdc.c	99;"	d	file:
+FDC_CMD_SPECIFY	fdc.c	91;"	d	file:
+FDC_CMD_SPECIFY_LEN	fdc.c	101;"	d	file:
+FDC_COMMAND_STRUCT	fdc.c	/^} FDC_COMMAND_STRUCT;$/;"	t	typeref:struct:__anon7	file:
+FDC_CONFIGURE	fdc.c	114;"	d	file:
+FDC_DEBUG	fdc.c	17;"	d	file:
+FDC_DIR	fdc.c	86;"	d	file:
+FDC_DOR	fdc.c	81;"	d	file:
+FDC_DSR	fdc.c	83;"	d	file:
+FDC_FIFO	fdc.c	85;"	d	file:
+FDC_FIFO_DIS	fdc.c	110;"	d	file:
+FDC_FIFO_THR	fdc.c	109;"	d	file:
+FDC_IMPLIED_SEEK	fdc.c	111;"	d	file:
+FDC_MFM_MODE	fdc.c	115;"	d	file:
+FDC_MSR	fdc.c	84;"	d	file:
+FDC_POLL_DIS	fdc.c	112;"	d	file:
+FDC_PRE_TRK	fdc.c	113;"	d	file:
+FDC_RW_RETRIES	fdc.c	119;"	d	file:
+FDC_SKIP_MODE	fdc.c	116;"	d	file:
+FDC_SRA	fdc.c	79;"	d	file:
+FDC_SRB	fdc.c	80;"	d	file:
+FDC_TDR	fdc.c	82;"	d	file:
+FDC_TIME_OUT	fdc.c	118;"	d	file:
+FD_GEO_STRUCT	fdc.c	/^} FD_GEO_STRUCT;$/;"	t	typeref:struct:__anon8	file:
+FLAG_SHOW_ALL	gpio.c	/^	FLAG_SHOW_ALL		= 1 << 0,$/;"	e	enum:__anon6	file:
+FLAG_SHOW_BANK	gpio.c	/^	FLAG_SHOW_BANK		= 1 << 1,$/;"	e	enum:__anon6	file:
+FLAG_SHOW_NEWLINE	gpio.c	/^	FLAG_SHOW_NEWLINE	= 1 << 2,$/;"	e	enum:__anon6	file:
+FPGA_DUMP	fpga.c	25;"	d	file:
+FPGA_INFO	fpga.c	22;"	d	file:
+FPGA_LOAD	fpga.c	23;"	d	file:
+FPGA_LOADB	fpga.c	24;"	d	file:
+FPGA_LOADBP	fpga.c	28;"	d	file:
+FPGA_LOADFS	fpga.c	29;"	d	file:
+FPGA_LOADMK	fpga.c	26;"	d	file:
+FPGA_LOADP	fpga.c	27;"	d	file:
+FPGA_NONE	fpga.c	21;"	d	file:
+GAISLER_devices	ambapp.c	/^static ambapp_device_name GAISLER_devices[] = {$/;"	v	file:
+GAP	fdc.c	64;"	d	file:
+GE	itest.c	27;"	d	file:
+GET_BUS_NUM	i2c.c	108;"	d	file:
+GET_BUS_NUM	i2c.c	114;"	d	file:
+GLEICHMANN_devices	ambapp.c	/^static ambapp_device_name GLEICHMANN_devices[] = {$/;"	v	file:
+GPIO_CLEAR	gpio.c	/^	GPIO_CLEAR,$/;"	e	enum:gpio_cmd	file:
+GPIO_INPUT	gpio.c	/^	GPIO_INPUT,$/;"	e	enum:gpio_cmd	file:
+GPIO_SET	gpio.c	/^	GPIO_SET,$/;"	e	enum:gpio_cmd	file:
+GPIO_TOGGLE	gpio.c	/^	GPIO_TOGGLE,$/;"	e	enum:gpio_cmd	file:
+GT	itest.c	25;"	d	file:
+HARGS	hash.c	41;"	d	file:
+HARGS	hash.c	43;"	d	file:
+HEAD	fdc.c	59;"	d	file:
+I2C_ERR_READ	i2c.c	/^	I2C_ERR_READ,$/;"	e	enum:i2c_err_op	file:
+I2C_ERR_WRITE	i2c.c	/^	I2C_ERR_WRITE,$/;"	e	enum:i2c_err_op	file:
+IDE_SPIN_UP_TIME_OUT	ide.c	72;"	d	file:
+IDE_TIME_OUT	ide.c	68;"	d	file:
+INDEX0	tpm_test.c	24;"	d	file:
+INDEX1	tpm_test.c	25;"	d	file:
+INDEX2	tpm_test.c	26;"	d	file:
+INDEX3	tpm_test.c	27;"	d	file:
+INDEX_INITIALISED	tpm_test.c	28;"	d	file:
+Image_header	bootm.c	/^struct Image_header {$/;"	s	file:
+KEY_DOWN	bootmenu.c	/^	KEY_DOWN,$/;"	e	enum:bootmenu_key	file:
+KEY_NONE	bootmenu.c	/^	KEY_NONE = 0,$/;"	e	enum:bootmenu_key	file:
+KEY_SELECT	bootmenu.c	/^	KEY_SELECT,$/;"	e	enum:bootmenu_key	file:
+KEY_UP	bootmenu.c	/^	KEY_UP,$/;"	e	enum:bootmenu_key	file:
+K_ESCAPE	load.c	398;"	d	file:
+LAST_TRACK	fdc.c	63;"	d	file:
+LE	itest.c	26;"	d	file:
+LED_BLINK	led.c	/^enum led_cmd { LED_ON, LED_OFF, LED_TOGGLE, LED_BLINK };$/;"	e	enum:led_cmd	file:
+LED_IDE1	ide.c	276;"	d	file:
+LED_IDE2	ide.c	277;"	d	file:
+LED_OFF	led.c	/^enum led_cmd { LED_ON, LED_OFF, LED_TOGGLE, LED_BLINK };$/;"	e	enum:led_cmd	file:
+LED_ON	led.c	/^enum led_cmd { LED_ON, LED_OFF, LED_TOGGLE, LED_BLINK };$/;"	e	enum:led_cmd	file:
+LED_TOGGLE	led.c	/^enum led_cmd { LED_ON, LED_OFF, LED_TOGGLE, LED_BLINK };$/;"	e	enum:led_cmd	file:
+LICENSE_MAX	license.c	11;"	d	file:
+LIMIT_DEV	pmic.c	13;"	d	file:
+LIMIT_DEVNAME	regulator.c	13;"	d	file:
+LIMIT_INFO	regulator.c	15;"	d	file:
+LIMIT_OFNAME	regulator.c	14;"	d	file:
+LIMIT_PARENT	pmic.c	14;"	d	file:
+LINUX_ARM64_IMAGE_MAGIC	bootm.c	685;"	d	file:
+LPCI_DEVICE	tsi148.c	20;"	d	file:
+LPCI_VENDOR	tsi148.c	19;"	d	file:
+LT	itest.c	24;"	d	file:
+L_KEYWORD	pxe.c	/^	L_KEYWORD,$/;"	e	enum:lex_state	file:
+L_NORMAL	pxe.c	/^	L_NORMAL = 0,$/;"	e	enum:lex_state	file:
+L_SLITERAL	pxe.c	/^	L_SLITERAL$/;"	e	enum:lex_state	file:
+MAKE_TPM_CMD_ENTRY	tpm.c	649;"	d	file:
+MAX_COUNT	bootmenu.c	16;"	d	file:
+MAX_ENV_SIZE	bootmenu.c	23;"	d	file:
+MAX_ENV_SIZE	nvedit.c	63;"	d	file:
+MAX_FEATURES	pcmcia.c	103;"	d	file:
+MAX_IDENT_CHARS	pcmcia.c	105;"	d	file:
+MAX_IDENT_FIELDS	pcmcia.c	106;"	d	file:
+MAX_IMAGES	armflash.c	15;"	d	file:
+MAX_LEVEL	fdt.c	21;"	d	file:
+MAX_LINE	ini.c	22;"	d	file:
+MAX_LINE	ini.c	24;"	d	file:
+MAX_NAME	ini.c	34;"	d	file:
+MAX_NAME	ini.c	36;"	d	file:
+MAX_NEST_LEVEL	pxe.c	1297;"	d	file:
+MAX_REGIONS	armflash.c	14;"	d	file:
+MAX_SECTION	ini.c	28;"	d	file:
+MAX_SECTION	ini.c	30;"	d	file:
+MAX_SPI_BYTES	spi.c	23;"	d	file:
+MAX_TFTP_PATH_LEN	pxe.c	22;"	d	file:
+MAX_TUPEL_SZ	pcmcia.c	102;"	d	file:
+MENTA_devices	ambapp.c	/^static ambapp_device_name MENTA_devices[] = {$/;"	v	file:
+MII_dump_0_to_5	mii.c	/^static void MII_dump_0_to_5($/;"	f	file:
+MII_field_desc_and_len_t	mii.c	/^} MII_field_desc_and_len_t;$/;"	t	typeref:struct:_MII_field_desc_and_len_t	file:
+MII_field_desc_t	mii.c	/^} MII_field_desc_t;$/;"	t	typeref:struct:_MII_field_desc_t	file:
+MII_reg_desc_t	mii.c	/^} MII_reg_desc_t;$/;"	t	typeref:struct:_MII_reg_desc_t	file:
+MIN_PART_SIZE	jffs2.c	113;"	d	file:
+MIN_PART_SIZE	mtdparts.c	105;"	d	file:
+MOVIDIA_devices	ambapp.c	/^static ambapp_device_name MOVIDIA_devices[] = {$/;"	v	file:
+MTDIDS_MAXLEN	mtdparts.c	125;"	d	file:
+MTDPARTS_MAXLEN	mtdparts.c	126;"	d	file:
+MTD_WRITEABLE_CMD	jffs2.c	117;"	d	file:
+MTD_WRITEABLE_CMD	mtdparts.c	109;"	d	file:
+NACK_TYPE	load.c	402;"	d	file:
+NASA_devices	ambapp.c	/^static ambapp_device_name NASA_devices[] = {$/;"	v	file:
+NE	itest.c	23;"	d	file:
+NO_PROBE_ADDR	i2c.c	111;"	d	file:
+NO_PROBE_ADDR	i2c.c	117;"	d	file:
+OFFSET_ADJUSTMENT	cramfs.c	36;"	d	file:
+OFFSET_ADJUSTMENT	cramfs.c	38;"	d	file:
+OFFSET_NOT_SPECIFIED	jffs2.c	110;"	d	file:
+OFFSET_NOT_SPECIFIED	mtdparts.c	102;"	d	file:
+OPENCHIP_devices	ambapp.c	/^static ambapp_device_name OPENCHIP_devices[] = {$/;"	v	file:
+OPENCORES_devices	ambapp.c	/^static ambapp_device_name OPENCORES_devices[] = {$/;"	v	file:
+OP_AND	test.c	15;"	d	file:
+OP_FILE_EXISTS	test.c	28;"	d	file:
+OP_INT_EQ	test.c	22;"	d	file:
+OP_INT_GE	test.c	27;"	d	file:
+OP_INT_GT	test.c	26;"	d	file:
+OP_INT_LE	test.c	25;"	d	file:
+OP_INT_LT	test.c	24;"	d	file:
+OP_INT_NEQ	test.c	23;"	d	file:
+OP_INVALID	test.c	12;"	d	file:
+OP_NOT	test.c	13;"	d	file:
+OP_OR	test.c	14;"	d	file:
+OP_STR_EMPTY	test.c	16;"	d	file:
+OP_STR_EQ	test.c	18;"	d	file:
+OP_STR_GT	test.c	21;"	d	file:
+OP_STR_LT	test.c	20;"	d	file:
+OP_STR_NEMPTY	test.c	17;"	d	file:
+OP_STR_NEQ	test.c	19;"	d	file:
+ORBITA_devices	ambapp.c	/^static ambapp_device_name ORBITA_devices[] = {$/;"	v	file:
+PARTITION_MAXLEN	mtdparts.c	127;"	d	file:
+PART_ADD_DESC_MAXLEN	mtdparts.c	1964;"	d	file:
+PA_NBITS	immap.c	204;"	d	file:
+PA_NBITS	immap.c	211;"	d	file:
+PA_NB_ODR	immap.c	205;"	d	file:
+PA_NB_ODR	immap.c	212;"	d	file:
+PB_NBITS	immap.c	206;"	d	file:
+PB_NBITS	immap.c	213;"	d	file:
+PB_NB_ODR	immap.c	207;"	d	file:
+PB_NB_ODR	immap.c	214;"	d	file:
+PCI_DEVICE	universe.c	16;"	d	file:
+PCI_VENDOR	universe.c	15;"	d	file:
+PC_NBITS	immap.c	208;"	d	file:
+PC_NBITS	immap.c	215;"	d	file:
+PD_NBITS	immap.c	209;"	d	file:
+PD_NBITS	immap.c	216;"	d	file:
+PENDER_devices	ambapp.c	/^static ambapp_device_name PENDER_devices[] = {$/;"	v	file:
+PERMPP	tpm_test.c	367;"	d	file:
+PERMPPGL	tpm_test.c	366;"	d	file:
+PHYS_PRESENCE	tpm_test.c	29;"	d	file:
+PRESENCE	tpm_test.c	30;"	d	file:
+PRINTF	fdc.c	20;"	d	file:
+PRINTF	fdc.c	22;"	d	file:
+PRINTF	reiser.c	28;"	d	file:
+PRINTF	reiser.c	30;"	d	file:
+PRINTF	yaffs2.c	22;"	d	file:
+PRINTF	yaffs2.c	24;"	d	file:
+PXELINUX_DIR	pxe.c	267;"	d	file:
+RADIONOR_devices	ambapp.c	/^static ambapp_device_name RADIONOR_devices[] = {$/;"	v	file:
+RELOC	date.c	24;"	d	file:
+RELOC	date.c	26;"	d	file:
+S3_devices	ambapp.c	/^static ambapp_device_name S3_devices[] = {$/;"	v	file:
+SCRATCHPAD	fdt.c	22;"	d	file:
+SCSI_DEV_ID	scsi.c	25;"	d	file:
+SCSI_DEV_ID	scsi.c	27;"	d	file:
+SCSI_DEV_ID	scsi.c	32;"	d	file:
+SCSI_DEV_LIST	scsi.c	20;"	d	file:
+SCSI_DEV_LIST	scsi.c	37;"	d	file:
+SCSI_LBA48_READ	scsi.c	377;"	d	file:
+SCSI_MAX_READ_BLK	scsi.c	376;"	d	file:
+SCSI_MAX_WRITE_BLK	scsi.c	444;"	d	file:
+SCSI_VEND_ID	scsi.c	23;"	d	file:
+SCSI_VEND_ID	scsi.c	31;"	d	file:
+SECTOR	fdc.c	61;"	d	file:
+SECTOR_SIZE	fdc.c	62;"	d	file:
+SEND_DATA_SIZE	load.c	680;"	d	file:
+SEND_TYPE	load.c	399;"	d	file:
+SF_TEST_HELP	sf.c	592;"	d	file:
+SF_TEST_HELP	sf.c	595;"	d	file:
+SIZE_GB	mtdparts.c	198;"	d	file:
+SIZE_KB	mtdparts.c	200;"	d	file:
+SIZE_MB	mtdparts.c	199;"	d	file:
+SIZE_REMAINING	jffs2.c	104;"	d	file:
+SIZE_REMAINING	mtdparts.c	96;"	d	file:
+SLRE_BUFSZ	setexpr.c	56;"	d	file:
+SLRE_PATSZ	setexpr.c	57;"	d	file:
+SPACE	load.c	397;"	d	file:
+SPEC_HLT	fdc.c	58;"	d	file:
+SPEC_HUTSRT	fdc.c	55;"	d	file:
+SREC3_END	load.c	311;"	d	file:
+SREC3_FORMAT	load.c	310;"	d	file:
+SREC3_START	load.c	309;"	d	file:
+SREC_BYTES_PER_RECORD	load.c	312;"	d	file:
+STAGE_CHECK	sf.c	/^	STAGE_CHECK,$/;"	e	enum:__anon1	file:
+STAGE_COUNT	sf.c	/^	STAGE_COUNT,$/;"	e	enum:__anon1	file:
+STAGE_ERASE	sf.c	/^	STAGE_ERASE,$/;"	e	enum:__anon1	file:
+STAGE_READ	sf.c	/^	STAGE_READ,$/;"	e	enum:__anon1	file:
+STAGE_WRITE	sf.c	/^	STAGE_WRITE,$/;"	e	enum:__anon1	file:
+START_CHAR	load.c	394;"	d	file:
+STATUS_0	fdc.c	67;"	d	file:
+STATUS_1	fdc.c	69;"	d	file:
+STATUS_2	fdc.c	70;"	d	file:
+STATUS_HEAD	fdc.c	72;"	d	file:
+STATUS_PCN	fdc.c	68;"	d	file:
+STATUS_SECT	fdc.c	73;"	d	file:
+STATUS_SECT_SIZE	fdc.c	74;"	d	file:
+STATUS_TRACK	fdc.c	71;"	d	file:
+SUN_devices	ambapp.c	/^static ambapp_device_name SUN_devices[] = {$/;"	v	file:
+SYNC	ide.c	33;"	d	file:
+SYNC	ide.c	36;"	d	file:
+SYNOPSYS_devices	ambapp.c	/^static ambapp_device_name SYNOPSYS_devices[] = {$/;"	v	file:
+TMP_ERASE	flash.c	672;"	d	file:
+TMP_ERASE	flash.c	676;"	d	file:
+TMP_ERASE	flash.c	727;"	d	file:
+TMP_PROT_OFF	flash.c	674;"	d	file:
+TMP_PROT_OFF	flash.c	678;"	d	file:
+TMP_PROT_OFF	flash.c	729;"	d	file:
+TMP_PROT_ON	flash.c	673;"	d	file:
+TMP_PROT_ON	flash.c	677;"	d	file:
+TMP_PROT_ON	flash.c	728;"	d	file:
+TPM_CHECK	tpm_test.c	13;"	d	file:
+TPM_COMMAND_NO_ARG	tpm.c	430;"	d	file:
+TPM_MAX_NV_WRITES_NOOWNER	tpm_test.c	449;"	d	file:
+TPM_PUBKEY_MAX_LENGTH	tpm.c	/^	TPM_PUBKEY_MAX_LENGTH	= 288,$/;"	e	enum:__anon5	file:
+TRACK	fdc.c	56;"	d	file:
+TSI148_DEV	tsi148.c	/^typedef struct _TSI148_DEV TSI148_DEV;$/;"	t	typeref:struct:_TSI148_DEV	file:
+TTPM_CHECK	tpm_test.c	411;"	d	file:
+T_APPEND	pxe.c	/^	T_APPEND,$/;"	e	enum:token_type	file:
+T_DEFAULT	pxe.c	/^	T_DEFAULT,$/;"	e	enum:token_type	file:
+T_EOF	pxe.c	/^	T_EOF,$/;"	e	enum:token_type	file:
+T_EOL	pxe.c	/^	T_EOL,$/;"	e	enum:token_type	file:
+T_FDT	pxe.c	/^	T_FDT,$/;"	e	enum:token_type	file:
+T_FDTDIR	pxe.c	/^	T_FDTDIR,$/;"	e	enum:token_type	file:
+T_INCLUDE	pxe.c	/^	T_INCLUDE,$/;"	e	enum:token_type	file:
+T_INITRD	pxe.c	/^	T_INITRD,$/;"	e	enum:token_type	file:
+T_INVALID	pxe.c	/^	T_INVALID$/;"	e	enum:token_type	file:
+T_IPAPPEND	pxe.c	/^	T_IPAPPEND,$/;"	e	enum:token_type	file:
+T_KERNEL	pxe.c	/^	T_KERNEL,$/;"	e	enum:token_type	file:
+T_LABEL	pxe.c	/^	T_LABEL,$/;"	e	enum:token_type	file:
+T_LINUX	pxe.c	/^	T_LINUX,$/;"	e	enum:token_type	file:
+T_LOCALBOOT	pxe.c	/^	T_LOCALBOOT,$/;"	e	enum:token_type	file:
+T_MENU	pxe.c	/^	T_MENU,$/;"	e	enum:token_type	file:
+T_ONTIMEOUT	pxe.c	/^	T_ONTIMEOUT,$/;"	e	enum:token_type	file:
+T_PROMPT	pxe.c	/^	T_PROMPT,$/;"	e	enum:token_type	file:
+T_STRING	pxe.c	/^	T_STRING,$/;"	e	enum:token_type	file:
+T_TIMEOUT	pxe.c	/^	T_TIMEOUT,$/;"	e	enum:token_type	file:
+T_TITLE	pxe.c	/^	T_TITLE,$/;"	e	enum:token_type	file:
+TlclStartupIfNeeded	tpm_test.c	/^static uint32_t TlclStartupIfNeeded(void)$/;"	f	file:
+UMS_NAME_LEN	usb_mass_storage.c	51;"	d	file:
+UNI_DEV	universe.c	/^typedef struct _UNI_DEV UNI_DEV;$/;"	t	typeref:struct:_UNI_DEV	file:
+VOIDENT	tpm_test.c	497;"	d	file:
+VOIDTEST	tpm_test.c	490;"	d	file:
+XOFF_CHAR	load.c	393;"	d	file:
+XON_CHAR	load.c	392;"	d	file:
+_MII_field_desc_and_len_t	mii.c	/^typedef struct _MII_field_desc_and_len_t {$/;"	s	file:
+_MII_field_desc_t	mii.c	/^typedef struct _MII_field_desc_t {$/;"	s	file:
+_MII_reg_desc_t	mii.c	/^typedef struct _MII_reg_desc_t {$/;"	s	file:
+_TSI148_DEV	tsi148.c	/^struct _TSI148_DEV {$/;"	s	file:
+_UNI_DEV	universe.c	/^struct _UNI_DEV {$/;"	s	file:
+__led_blink	led.c	/^void __weak __led_blink(led_id_t mask, int freq)$/;"	f
+__logbuffer_base	log.c	/^unsigned long __logbuffer_base(void)$/;"	f
+__sata_initialize	sata.c	/^int __sata_initialize(void)$/;"	f
+__sata_stop	sata.c	/^__weak int __sata_stop(void)$/;"	f
+_do_env_set	nvedit.c	/^static int _do_env_set(int flag, int argc, char * const argv[], int env_flag)$/;"	f	file:
+_initialize_dtt	dtt.c	/^static void _initialize_dtt(void)$/;"	f	file:
+a_b	load.c	/^static char a_b[24];$/;"	v	file:
+abbrev_spec	flash.c	/^abbrev_spec (char *str, flash_info_t ** pinfo, int *psf, int *psl)$/;"	f	file:
+active	bootmenu.c	/^	int active;			\/* active menu entry *\/$/;"	m	struct:bootmenu_data	file:
+addr	i2c.c	/^	uchar	addr;$/;"	m	struct:__anon4	file:
+addr_spec	flash.c	/^addr_spec(char *arg1, char *arg2, ulong *addr_first, ulong *addr_last)$/;"	f	file:
+adjust_size_for_badblocks	nand.c	/^static void adjust_size_for_badblocks(loff_t *size, loff_t offset, int dev)$/;"	f	file:
+adv	test.c	/^	int adv;$/;"	m	struct:__anon9	file:
+aes_help_text	aes.c	/^static char aes_help_text[] =$/;"	v	file:
+afs_image	armflash.c	/^struct afs_image {$/;"	s	file:
+afs_images	armflash.c	/^static struct afs_image afs_images[MAX_IMAGES];$/;"	v	typeref:struct:afs_image	file:
+afs_region	armflash.c	/^struct afs_region {$/;"	s	file:
+ambapp_device_id2desc	ambapp.c	/^char *ambapp_device_id2desc(int vendor, int id)$/;"	f
+ambapp_device_id2str	ambapp.c	/^char *ambapp_device_id2str(int vendor, int id)$/;"	f
+ambapp_device_name	ambapp.c	/^} ambapp_device_name;$/;"	t	typeref:struct:__anon2	file:
+ambapp_get_dev	ambapp.c	/^static ambapp_device_name *ambapp_get_dev(ambapp_device_name *devs, int id)$/;"	f	file:
+ambapp_init_reloc	ambapp.c	/^int ambapp_init_reloc(void)$/;"	f
+ambapp_print_ahb	ambapp.c	/^void ambapp_print_ahb(ambapp_ahbdev *dev, int index)$/;"	f
+ambapp_print_apb	ambapp.c	/^void ambapp_print_apb(ambapp_apbdev *dev, int index)$/;"	f
+ambapp_type_names	ambapp.c	/^char *ambapp_type_names[4] = {$/;"	v
+ambapp_vendor_devnames	ambapp.c	/^} ambapp_vendor_devnames;$/;"	t	typeref:struct:__anon3	file:
+ambapp_vendor_id2str	ambapp.c	/^char *ambapp_vendor_id2str(int vendor)$/;"	f
+append	pxe.c	/^	char *append;$/;"	m	struct:pxe_label	file:
+arg	test.c	/^	int arg;$/;"	m	struct:__anon9	file:
+arg_off_size_onenand	onenand.c	/^static int arg_off_size_onenand(int argc, char * const argv[], ulong *off,$/;"	f	file:
+arithcomp	itest.c	/^static int arithcomp (char *s, char *t, int op, int w)$/;"	f	file:
+atapi_inquiry	ide.c	/^static void atapi_inquiry(block_dev_desc_t *dev_desc)$/;"	f	file:
+atapi_issue	ide.c	/^unsigned char atapi_issue(int device, unsigned char *ccb, int ccblen,$/;"	f
+atapi_issue_autoreq	ide.c	/^unsigned char atapi_issue_autoreq(int device,$/;"	f
+atapi_read	ide.c	/^ulong atapi_read(block_dev_desc_t *block_dev, lbaint_t blknr, lbaint_t blkcnt,$/;"	f
+atapi_wait_mask	ide.c	/^static uchar atapi_wait_mask(int dev, ulong t, uchar mask, uchar res)$/;"	f	file:
+attempted	pxe.c	/^	int attempted;$/;"	m	struct:pxe_label	file:
+attr_info	efi.c	/^static struct attr_info {$/;"	s	file:
+attributes	armflash.c	/^	u32 attributes;$/;"	m	struct:afs_image	file:
+base_address	mem.c	/^static	ulong	base_address = 0;$/;"	v	file:
+base_ms	sf.c	/^	unsigned base_ms;$/;"	m	struct:test_info	file:
+bedbug_init	bedbug.c	/^void bedbug_init (void)$/;"	f
+bedbug_main_loop	bedbug.c	/^void bedbug_main_loop (unsigned long addr, struct pt_regs *regs)$/;"	f
+bedbug_puts	bedbug.c	/^int bedbug_puts (const char *str)$/;"	f
+bin_data_char	load.c	/^static void bin_data_char(char new_char)$/;"	f	file:
+bin_data_init	load.c	/^static void bin_data_init(void)$/;"	f	file:
+bin_start_address	load.c	/^static char *bin_start_address;$/;"	v	file:
+binary	immap.c	/^static void binary (char *label, uint value, int nbits)$/;"	f	file:
+binary_test	itest.c	/^static int binary_test(char *op, char *arg1, char *arg2, int w)$/;"	f	file:
+bitlen	spi.c	/^static int   		bitlen;$/;"	v	file:
+blnr	fdc.c	/^	unsigned long	blnr;		\/* Logical block nr *\/$/;"	m	struct:__anon7	file:
+blob_decap	blob.c	/^__weak int blob_decap(u8 *key_mod, u8 *src, u8 *dst, u32 len)$/;"	f
+blob_encap	blob.c	/^__weak int blob_encap(u8 *key_mod, u8 *src, u8 *dst, u32 len)$/;"	f
+blob_help_text	blob.c	/^static char blob_help_text[] =$/;"	v	file:
+bmp_display	bmp.c	/^int bmp_display(ulong addr, int x, int y)$/;"	f
+bmp_info	bmp.c	/^static int bmp_info(ulong addr)$/;"	f	file:
+bmp_reloc	bmp.c	/^void bmp_reloc(void) {$/;"	f
+board_detail	bdinfo.c	/^void __weak board_detail(void)$/;"	f
+board_show_dram	mem.c	/^__weak void board_show_dram(phys_size_t size)$/;"	f
+boot_unattempted_labels	pxe.c	/^static void boot_unattempted_labels(cmd_tbl_t *cmdtp, struct pxe_menu *cfg)$/;"	f	file:
+booti_help_text	bootm.c	/^static char booti_help_text[] =$/;"	v	file:
+booti_setup	bootm.c	/^static int booti_setup(bootm_headers_t *images)$/;"	f	file:
+booti_start	bootm.c	/^static int booti_start(cmd_tbl_t *cmdtp, int flag, int argc,$/;"	f	file:
+bootm_help_text	bootm.c	/^static char bootm_help_text[] =$/;"	v	file:
+bootm_maybe_autostart	bootm.c	/^int bootm_maybe_autostart(cmd_tbl_t *cmdtp, const char *cmd)$/;"	f
+bootmenu_autoboot_loop	bootmenu.c	/^static void bootmenu_autoboot_loop(struct bootmenu_data *menu,$/;"	f	file:
+bootmenu_choice_entry	bootmenu.c	/^static char *bootmenu_choice_entry(void *data)$/;"	f	file:
+bootmenu_create	bootmenu.c	/^static struct bootmenu_data *bootmenu_create(int delay)$/;"	f	file:
+bootmenu_data	bootmenu.c	/^struct bootmenu_data {$/;"	s	file:
+bootmenu_destroy	bootmenu.c	/^static void bootmenu_destroy(struct bootmenu_data *menu)$/;"	f	file:
+bootmenu_entry	bootmenu.c	/^struct bootmenu_entry {$/;"	s	file:
+bootmenu_getoption	bootmenu.c	/^static char *bootmenu_getoption(unsigned short int n)$/;"	f	file:
+bootmenu_key	bootmenu.c	/^enum bootmenu_key {$/;"	g	file:
+bootmenu_loop	bootmenu.c	/^static void bootmenu_loop(struct bootmenu_data *menu,$/;"	f	file:
+bootmenu_print_entry	bootmenu.c	/^static void bootmenu_print_entry(void *data)$/;"	f	file:
+bootmenu_show	bootmenu.c	/^static void bootmenu_show(int delay)$/;"	f	file:
+bootz_help_text	bootm.c	/^static char bootz_help_text[] =$/;"	v	file:
+bootz_setup	bootm.c	/^int __weak bootz_setup(ulong image, ulong *start, ulong *end)$/;"	f
+bootz_start	bootm.c	/^static int bootz_start(cmd_tbl_t *cmdtp, int flag, int argc,$/;"	f	file:
+buf	log.c	/^static char buf[1024];$/;"	v	file:
+buffer	ubi.c	/^static char buffer[80];$/;"	v	file:
+bug_ctx	bedbug.c	/^CPU_DEBUG_CTX bug_ctx;		\/* Bedbug context structure    *\/$/;"	v
+bus	i2c.c	/^	uchar	bus;$/;"	m	struct:__anon4	file:
+bus	spi.c	/^static unsigned int	bus;$/;"	v	file:
+bus	tsi148.c	/^	int           bus;$/;"	m	struct:_TSI148_DEV	file:
+bus	universe.c	/^	int            bus;$/;"	m	struct:_UNI_DEV	file:
+busdevfn	tsi148.c	/^	pci_dev_t     busdevfn;$/;"	m	struct:_TSI148_DEV	file:
+busdevfn	universe.c	/^	pci_dev_t      busdevfn;$/;"	m	struct:_UNI_DEV	file:
+bytes	sf.c	/^	int bytes;$/;"	m	struct:test_info	file:
+bytes_per_second	sf.c	/^static ulong bytes_per_second(unsigned int len, ulong start_ms)$/;"	f	file:
+call_bootm	spl.c	/^static int call_bootm(int argc, char * const argv[], const char *subcommand[])$/;"	f	file:
+cdp_update_env	net.c	/^static void cdp_update_env(void)$/;"	f	file:
+check_ide_device	pcmcia.c	/^int check_ide_device (int slot)$/;"	f
+check_voltage	otp.c	/^static int check_voltage(void)$/;"	f	file:
+chk1	load.c	/^static int chk1(char *buffer)$/;"	f	file:
+clk_help_text	clk.c	/^static char clk_help_text[] =$/;"	v	file:
+cmd	fdc.c	/^	uchar		cmd[16];	\/* cmd desc *\/$/;"	m	struct:__anon7	file:
+cmd	fdc.c	/^static FDC_COMMAND_STRUCT cmd; \/* global command struct *\/$/;"	v	file:
+cmd_bmp_sub	bmp.c	/^static cmd_tbl_t cmd_bmp_sub[] = {$/;"	v	file:
+cmd_bootm_sub	bootm.c	/^static cmd_tbl_t cmd_bootm_sub[] = {$/;"	v	file:
+cmd_bootstage_sub	bootstage.c	/^static cmd_tbl_t cmd_bootstage_sub[] = {$/;"	v	file:
+cmd_clk_sub	clk.c	/^static cmd_tbl_t cmd_clk_sub[] = {$/;"	v	file:
+cmd_cpu_sub	cpu.c	/^static cmd_tbl_t cmd_cpu_sub[] = {$/;"	v	file:
+cmd_cros_tpm_sub	tpm_test.c	/^static cmd_tbl_t cmd_cros_tpm_sub[] = {$/;"	v	file:
+cmd_env_sub	nvedit.c	/^static cmd_tbl_t cmd_env_sub[] = {$/;"	v	file:
+cmd_func_offset	ethsw.c	/^	int cmd_func_offset;$/;"	m	struct:keywords_to_function	file:
+cmd_host_sub	host.c	/^static cmd_tbl_t cmd_host_sub[] = {$/;"	v	file:
+cmd_i2c_set_bus_num	i2c.c	/^static int cmd_i2c_set_bus_num(unsigned int busnum)$/;"	f	file:
+cmd_i2c_sub	i2c.c	/^static cmd_tbl_t cmd_i2c_sub[] = {$/;"	v	file:
+cmd_keyword	ethsw.c	/^	enum ethsw_keyword_id cmd_keyword[ETHSW_MAX_CMD_PARAMS];$/;"	m	struct:keywords_to_function	typeref:enum:keywords_to_function::ethsw_keyword_id	file:
+cmd_keyword	ethsw.c	/^	int cmd_keyword[ETHSW_MAX_CMD_PARAMS];$/;"	m	struct:keywords_optional	file:
+cmd_keywords_check	ethsw.c	/^static void cmd_keywords_check(struct ethsw_command_def *parsed_cmd,$/;"	f	file:
+cmd_keywords_opt_check	ethsw.c	/^static void cmd_keywords_opt_check(const struct ethsw_command_def *parsed_cmd,$/;"	f	file:
+cmd_mmc	mmc.c	/^static cmd_tbl_t cmd_mmc[] = {$/;"	v	file:
+cmd_onenand_sub	onenand.c	/^static cmd_tbl_t cmd_onenand_sub[] = {$/;"	v	file:
+cmd_opt_def	ethsw.c	/^} cmd_opt_def[] = {$/;"	v	typeref:struct:keywords_optional
+cmd_pxe_sub	pxe.c	/^static cmd_tbl_t cmd_pxe_sub[] = {$/;"	v	file:
+cmd_remoteproc_sub	remoteproc.c	/^static cmd_tbl_t cmd_remoteproc_sub[] = {$/;"	v	file:
+cmd_rpmb	mmc.c	/^static cmd_tbl_t cmd_rpmb[] = {$/;"	v	file:
+cmd_sound_sub	sound.c	/^static cmd_tbl_t cmd_sound_sub[] = {$/;"	v	file:
+cmd_spl_export_sub	spl.c	/^static cmd_tbl_t cmd_spl_export_sub[] = {$/;"	v	file:
+cmd_spl_sub	spl.c	/^static cmd_tbl_t cmd_spl_sub[] = {$/;"	v	file:
+cmd_ubifs_umount	ubifs.c	/^void cmd_ubifs_umount(void)$/;"	f
+cmdlen	fdc.c	/^	uchar		cmdlen;		\/* cmd length *\/$/;"	m	struct:__anon7	file:
+cnvrt2	date.c	/^static int cnvrt2 (const char *str, int *valp)$/;"	f	file:
+code0	bootm.c	/^	uint32_t	code0;		\/* Executable code *\/$/;"	m	struct:Image_header	file:
+code1	bootm.c	/^	uint32_t	code1;		\/* Executable code *\/$/;"	m	struct:Image_header	file:
+command	bootmenu.c	/^	char *command;			\/* hush command of entry *\/$/;"	m	struct:bootmenu_entry	file:
+command_def_init	ethsw.c	/^static void command_def_init(struct ethsw_command_def *parsed_cmd)$/;"	f	file:
+common_diskboot	disk.c	/^int common_diskboot(cmd_tbl_t *cmdtp, const char *intf, int argc,$/;"	f
+compute_crc	armflash.c	/^static u32 compute_crc(ulong start, u32 len)$/;"	f	file:
+confirm_key_prog	mmc.c	/^static int confirm_key_prog(void)$/;"	f	file:
+confirm_prog	fuse.c	/^static int confirm_prog(void)$/;"	f	file:
+console_loglevel	log.c	/^static unsigned console_loglevel = 3;$/;"	v	file:
+constraint	regulator.c	/^static int constraint(const char *name, int val, const char *val_name)$/;"	f	file:
+count	bootmenu.c	/^	int count;			\/* total count of menu entries *\/$/;"	m	struct:bootmenu_data	file:
+counter	immap.c	/^static int counter;$/;"	v	file:
+cplb_page_size	cplbinfo.c	/^static const char *cplb_page_size(uint32_t data)$/;"	f	file:
+cpu_cmd	mp.c	/^cpu_cmd(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+cpu_feature_name	cpu.c	/^static const char *cpu_feature_name[CPU_FEAT_COUNT] = {$/;"	v	file:
+cpu_help_text	mp.c	/^static char cpu_help_text[] =$/;"	v	file:
+cpu_status_all	mp.c	/^static int cpu_status_all(void)$/;"	f	file:
+cramfs_check	jffs2.c	138;"	d	file:
+cramfs_info	jffs2.c	141;"	d	file:
+cramfs_load	jffs2.c	139;"	d	file:
+cramfs_ls	jffs2.c	140;"	d	file:
+create_call_list	trace.c	/^static int create_call_list(int argc, char * const argv[])$/;"	f	file:
+create_func_list	trace.c	/^static int create_func_list(int argc, char * const argv[])$/;"	f	file:
+cs	spi.c	/^static unsigned int	cs;$/;"	v	file:
+curr_dev_and_platdata	regulator.c	/^static int curr_dev_and_platdata(struct udevice **devp,$/;"	f	file:
+curr_device	ide.c	/^static int curr_device = -1;$/;"	v	file:
+curr_device	mmc.c	/^static int curr_device = -1;$/;"	v	file:
+currdev	pmic.c	/^static struct udevice *currdev;$/;"	v	typeref:struct:udevice	file:
+currdev	regulator.c	/^static struct udevice *currdev;$/;"	v	typeref:struct:udevice	file:
+current_mtd_dev	jffs2.c	/^struct mtd_device *current_mtd_dev = NULL;$/;"	v	typeref:struct:mtd_device
+current_mtd_dev	mtdparts.c	/^struct mtd_device *current_mtd_dev = NULL;$/;"	v	typeref:struct:mtd_device
+current_mtd_partnum	jffs2.c	/^u8 current_mtd_partnum = 0;$/;"	v
+current_mtd_partnum	mtdparts.c	/^u8 current_mtd_partnum = 0;$/;"	v
+current_save	mtdparts.c	/^static void current_save(void)$/;"	f	file:
+decode_bits	i2c.c	/^static void decode_bits (u_char const b, char const *str[], int const do_once)$/;"	f	file:
+default_label	pxe.c	/^	char *default_label;$/;"	m	struct:pxe_menu	file:
+default_message_loglevel	log.c	/^static unsigned default_message_loglevel = 4;$/;"	v	file:
+default_tm	date.c	/^static struct rtc_time default_tm = { 0, 0, 0, 1, 1, 2000, 6, 0, 0 };$/;"	v	typeref:struct:rtc_time	file:
+delay	bootmenu.c	/^	int delay;			\/* delay for autoboot *\/$/;"	m	struct:bootmenu_data	file:
+delete_partition	mtdparts.c	/^static int delete_partition(const char *id)$/;"	f	file:
+demo_commands	demo.c	/^static cmd_tbl_t demo_commands[] = {$/;"	v	file:
+demo_dev	demo.c	/^struct udevice *demo_dev;$/;"	v	typeref:struct:udevice
+desc	ambapp.c	/^	char *desc;$/;"	m	struct:__anon2	file:
+desc	ambapp.c	/^	char *desc;$/;"	m	struct:__anon3	file:
+desc	ldrinfo.c	/^	const char *desc;$/;"	m	struct:ldr_flag	file:
+desc_and_len_tbl	mii.c	/^static const MII_field_desc_and_len_t desc_and_len_tbl[] = {$/;"	v	file:
+destroy_pxe_menu	pxe.c	/^static void destroy_pxe_menu(struct pxe_menu *cfg)$/;"	f	file:
+dev	tsi148.c	/^static TSI148_DEV *dev;$/;"	v	file:
+dev	universe.c	/^static UNI_DEV   *dev;$/;"	v	file:
+device_add	mtdparts.c	/^static void device_add(struct mtd_device *dev)$/;"	f	file:
+device_del	mtdparts.c	/^static int device_del(struct mtd_device *dev)$/;"	f	file:
+device_delall	mtdparts.c	/^static int device_delall(struct list_head *head)$/;"	f	file:
+device_find	mtdparts.c	/^struct mtd_device *device_find(u8 type, u8 num)$/;"	f
+device_id	ambapp.c	/^	int device_id;$/;"	m	struct:__anon2	file:
+device_parse	mtdparts.c	/^static int device_parse(const char *const mtd_dev, const char **ret, struct mtd_device **retdev)$/;"	f	file:
+devices	ambapp.c	/^	ambapp_device_name *devices;$/;"	m	struct:__anon3	file:
+devices	mtdparts.c	/^static struct list_head devices;$/;"	v	typeref:struct:list_head	file:
+din	spi.c	/^static uchar 		din[MAX_SPI_BYTES];$/;"	v	file:
+dis_last_addr	bedbug.c	/^ulong dis_last_addr = 0;	\/* Last address disassembled   *\/$/;"	v
+dis_last_len	bedbug.c	/^ulong dis_last_len = 20;	\/* Default disassembler length *\/$/;"	v
+display_ubi_info	ubi.c	/^static void display_ubi_info(struct ubi_device *ubi)$/;"	f	file:
+display_volume_info	ubi.c	/^static void display_volume_info(struct ubi_device *ubi)$/;"	f	file:
+dma	fdc.c	/^	uchar		dma;		\/* if > 0 dma enabled *\/$/;"	m	struct:__anon7	file:
+do_aes	aes.c	/^static int do_aes(cmd_tbl_t *cmdtp, int flag, int argc, char *const argv[])$/;"	f	file:
+do_afs	armflash.c	/^static int do_afs(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_ambapp_print	ambapp.c	/^int do_ambapp_print(cmd_tbl_t * cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_bdinfo	bdinfo.c	/^int do_bdinfo(cmd_tbl_t * cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_bdinfo	bdinfo.c	/^int do_bdinfo(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_bdinfo	bdinfo.c	/^static int do_bdinfo(cmd_tbl_t *cmdtp, int flag, int argc,$/;"	f	file:
+do_bedbug_asm	bedbug.c	/^int do_bedbug_asm (cmd_tbl_t * cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_bedbug_break	bedbug.c	/^int do_bedbug_break (cmd_tbl_t * cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_bedbug_breakpoint	bedbug.c	/^void do_bedbug_breakpoint (struct pt_regs *regs)$/;"	f
+do_bedbug_continue	bedbug.c	/^int do_bedbug_continue (cmd_tbl_t * cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_bedbug_dis	bedbug.c	/^int do_bedbug_dis (cmd_tbl_t * cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_bedbug_next	bedbug.c	/^int do_bedbug_next (cmd_tbl_t * cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_bedbug_rdump	bedbug.c	/^int do_bedbug_rdump (cmd_tbl_t * cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_bedbug_stack	bedbug.c	/^int do_bedbug_stack (cmd_tbl_t * cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_bedbug_step	bedbug.c	/^int do_bedbug_step (cmd_tbl_t * cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_blob	blob.c	/^static int do_blob(cmd_tbl_t *cmdtp, int flag, int argc, char *const argv[])$/;"	f	file:
+do_bmp	bmp.c	/^static int do_bmp(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_bmp_display	bmp.c	/^static int do_bmp_display(cmd_tbl_t * cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_bmp_info	bmp.c	/^static int do_bmp_info(cmd_tbl_t * cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_boostage	bootstage.c	/^static int do_boostage(cmd_tbl_t *cmdtp, int flag, int argc,$/;"	f	file:
+do_bootd	bootm.c	/^int do_bootd(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_bootelf	elf.c	/^int do_bootelf(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_bootelf_exec	elf.c	/^static unsigned long do_bootelf_exec(ulong (*entry)(int, char * const[]),$/;"	f	file:
+do_booti	bootm.c	/^int do_booti(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_bootldr	bootldr.c	/^int do_bootldr(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_bootm	bootm.c	/^int do_bootm(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_bootm_subcommand	bootm.c	/^static int do_bootm_subcommand(cmd_tbl_t *cmdtp, int flag, int argc,$/;"	f	file:
+do_bootmenu	bootmenu.c	/^int do_bootmenu(cmd_tbl_t *cmdtp, int flag, int argc, char *const argv[])$/;"	f
+do_bootp	net.c	/^static int do_bootp(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_bootstage_report	bootstage.c	/^static int do_bootstage_report(cmd_tbl_t *cmdtp, int flag, int argc,$/;"	f	file:
+do_bootstage_stash	bootstage.c	/^static int do_bootstage_stash(cmd_tbl_t *cmdtp, int flag, int argc,$/;"	f	file:
+do_bootvx	elf.c	/^int do_bootvx(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_bootz	bootm.c	/^int do_bootz(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_brginfo	immap.c	/^do_brginfo (cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_carinfo	immap.c	/^do_carinfo (cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_cbfs_fsinfo	cbfs.c	/^int do_cbfs_fsinfo(cmd_tbl_t *cmdtp, int flag, int argc, char *const argv[])$/;"	f
+do_cbfs_fsload	cbfs.c	/^int do_cbfs_fsload(cmd_tbl_t *cmdtp, int flag, int argc, char *const argv[])$/;"	f
+do_cbfs_init	cbfs.c	/^int do_cbfs_init(cmd_tbl_t *cmdtp, int flag, int argc, char *const argv[])$/;"	f
+do_cbfs_ls	cbfs.c	/^int do_cbfs_ls(cmd_tbl_t *cmdtp, int flag, int argc, char *const argv[])$/;"	f
+do_cdp	net.c	/^int do_cdp(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_chpart	mtdparts.c	/^static int do_chpart(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_clk	clk.c	/^static int do_clk(cmd_tbl_t *cmdtp, int flag, int argc,$/;"	f	file:
+do_clk_dump	clk.c	/^static int do_clk_dump(cmd_tbl_t *cmdtp, int flag, int argc,$/;"	f	file:
+do_coninfo	console.c	/^static int do_coninfo(cmd_tbl_t *cmd, int flag, int argc, char * const argv[])$/;"	f	file:
+do_cplbinfo	cplbinfo.c	/^int do_cplbinfo(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_cpu	cpu.c	/^static int do_cpu(cmd_tbl_t *cmdtp, int flag, int argc,$/;"	f	file:
+do_cpu_detail	cpu.c	/^static int do_cpu_detail(cmd_tbl_t *cmdtp, int flag, int argc,$/;"	f	file:
+do_cpu_list	cpu.c	/^static int do_cpu_list(cmd_tbl_t *cmdtp, int flag, int argc, char *const argv[])$/;"	f	file:
+do_cramfs_load	cramfs.c	/^int do_cramfs_load(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_cramfs_ls	cramfs.c	/^int do_cramfs_ls(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_current	regulator.c	/^static int do_current(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_dataflash_mmc_mux	dataflash_mmc_mux.c	/^int do_dataflash_mmc_mux (cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_date	date.c	/^static int do_date(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_dcache	cache.c	/^static int do_dcache(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_demo	demo.c	/^static int do_demo(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_demo_hello	demo.c	/^static int do_demo_hello(cmd_tbl_t *cmdtp, int flag, int argc,$/;"	f	file:
+do_demo_light	demo.c	/^static int do_demo_light(cmd_tbl_t *cmdtp, int flag, int argc,$/;"	f	file:
+do_demo_list	demo.c	/^int do_demo_list(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_demo_status	demo.c	/^static int do_demo_status(cmd_tbl_t *cmdtp, int flag, int argc,$/;"	f	file:
+do_dev	pmic.c	/^static int do_dev(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_dev	regulator.c	/^static int do_dev(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_dfu	dfu.c	/^static int do_dfu(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_dhcp	net.c	/^static int do_dhcp(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_diag	diag.c	/^int do_diag (cmd_tbl_t * cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_disable	regulator.c	/^static int do_disable(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_diskboot	ide.c	/^int do_diskboot(cmd_tbl_t *cmdtp, int flag, int argc, char *const argv[])$/;"	f
+do_display	display.c	/^int do_display (cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_dmainfo	immap.c	/^do_dmainfo (cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_dns	net.c	/^int do_dns(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_dtt	dtt.c	/^int do_dtt(cmd_tbl_t *cmdtp, int flag, int argc, char *const argv[])$/;"	f
+do_dump	pmic.c	/^static int do_dump(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_echo	echo.c	/^static int do_echo(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_echo	load.c	/^static int do_echo = 1;$/;"	v	file:
+do_edid	i2c.c	/^int do_edid(cmd_tbl_t *cmdtp, int flag, int argc, char *const argv[])$/;"	f
+do_eeprom	eeprom.c	/^static int do_eeprom(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_efi	efi.c	/^static int do_efi(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_efi_mem	efi.c	/^static int do_efi_mem(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_enable	regulator.c	/^static int do_enable(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_env	nvedit.c	/^static int do_env(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_env_ask	nvedit.c	/^int do_env_ask(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_env_callback	nvedit.c	/^int do_env_callback(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_env_default	nvedit.c	/^static int do_env_default(cmd_tbl_t *cmdtp, int __flag,$/;"	f	file:
+do_env_delete	nvedit.c	/^static int do_env_delete(cmd_tbl_t *cmdtp, int flag,$/;"	f	file:
+do_env_edit	nvedit.c	/^static int do_env_edit(cmd_tbl_t *cmdtp, int flag, int argc,$/;"	f	file:
+do_env_exists	nvedit.c	/^static int do_env_exists(cmd_tbl_t *cmdtp, int flag, int argc,$/;"	f	file:
+do_env_export	nvedit.c	/^static int do_env_export(cmd_tbl_t *cmdtp, int flag,$/;"	f	file:
+do_env_flags	nvedit.c	/^int do_env_flags(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_env_grep	nvedit.c	/^static int do_env_grep(cmd_tbl_t *cmdtp, int flag,$/;"	f	file:
+do_env_import	nvedit.c	/^static int do_env_import(cmd_tbl_t *cmdtp, int flag,$/;"	f	file:
+do_env_print	nvedit.c	/^static int do_env_print(cmd_tbl_t *cmdtp, int flag, int argc,$/;"	f	file:
+do_env_save	nvedit.c	/^static int do_env_save(cmd_tbl_t *cmdtp, int flag, int argc,$/;"	f	file:
+do_env_set	nvedit.c	/^static int do_env_set(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_ethsw	ethsw.c	/^static int do_ethsw(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_exit	exit.c	/^static int do_exit(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_ext2load	ext2.c	/^int do_ext2load(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_ext2ls	ext2.c	/^static int do_ext2ls(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_ext4_load	ext4.c	/^int do_ext4_load(cmd_tbl_t *cmdtp, int flag, int argc,$/;"	f
+do_ext4_ls	ext4.c	/^int do_ext4_ls(cmd_tbl_t *cmdtp, int flag, int argc, char *const argv[])$/;"	f
+do_ext4_size	ext4.c	/^int do_ext4_size(cmd_tbl_t *cmdtp, int flag, int argc,$/;"	f
+do_ext4_write	ext4.c	/^int do_ext4_write(cmd_tbl_t *cmdtp, int flag, int argc,$/;"	f
+do_false	test.c	/^static int do_false(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_fastboot	fastboot.c	/^static int do_fastboot(cmd_tbl_t *cmdtp, int flag, int argc, char *const argv[])$/;"	f	file:
+do_fat_fsinfo	fat.c	/^static int do_fat_fsinfo(cmd_tbl_t *cmdtp, int flag, int argc,$/;"	f	file:
+do_fat_fsload	fat.c	/^int do_fat_fsload (cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_fat_fswrite	fat.c	/^static int do_fat_fswrite(cmd_tbl_t *cmdtp, int flag,$/;"	f	file:
+do_fat_ls	fat.c	/^static int do_fat_ls(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_fat_size	fat.c	/^int do_fat_size(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_fccinfo	immap.c	/^do_fccinfo (cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_fdcboot	fdc.c	/^int do_fdcboot (cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_fdt	fdt.c	/^static int do_fdt(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_fitupd	fitupd.c	/^static int do_fitupd(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_flerase	flash.c	/^static int do_flerase(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_flinfo	flash.c	/^static int do_flinfo(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_fpga	fpga.c	/^int do_fpga(cmd_tbl_t *cmdtp, int flag, int argc, char *const argv[])$/;"	f
+do_fpga_md	fpgad.c	/^int do_fpga_md(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_frd	mfsl.c	/^int do_frd (cmd_tbl_t * cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_fs_uuid_wrapper	fs_uuid.c	/^static int do_fs_uuid_wrapper(cmd_tbl_t *cmdtp, int flag,$/;"	f	file:
+do_fstype_wrapper	fs.c	/^static int do_fstype_wrapper(cmd_tbl_t *cmdtp, int flag, int argc,$/;"	f	file:
+do_fuse	fuse.c	/^static int do_fuse(cmd_tbl_t *cmdtp, int flag, int argc, char *const argv[])$/;"	f	file:
+do_fwr	mfsl.c	/^int do_fwr (cmd_tbl_t * cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_get_any	pxe.c	/^static int do_get_any(cmd_tbl_t *cmdtp, const char *file_path, char *file_addr)$/;"	f	file:
+do_get_ext2	pxe.c	/^static int do_get_ext2(cmd_tbl_t *cmdtp, const char *file_path, char *file_addr)$/;"	f	file:
+do_get_fat	pxe.c	/^static int do_get_fat(cmd_tbl_t *cmdtp, const char *file_path, char *file_addr)$/;"	f	file:
+do_get_tftp	pxe.c	/^static int do_get_tftp(cmd_tbl_t *cmdtp, const char *file_path, char *file_addr)$/;"	f	file:
+do_getdcr	dcr.c	/^int do_getdcr ( cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[] )$/;"	f
+do_getfile	pxe.c	/^static int (*do_getfile)(cmd_tbl_t *cmdtp, const char *file_path, char *file_addr);$/;"	v	file:
+do_getidcr	dcr.c	/^int do_getidcr (cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_gettime	gettime.c	/^static int do_gettime(cmd_tbl_t *cmdtp, int flag, int argc,$/;"	f	file:
+do_go	boot.c	/^static int do_go(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_go_exec	boot.c	/^unsigned long do_go_exec(ulong (*entry)(int, char * const []), int argc,$/;"	f
+do_gpio	gpio.c	/^static int do_gpio(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_gpio_status	gpio.c	/^static int do_gpio_status(bool all, const char *gpio_name)$/;"	f	file:
+do_gpt	gpt.c	/^static int do_gpt(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_gzwrite	unzip.c	/^static int do_gzwrite(cmd_tbl_t *cmdtp, int flag,$/;"	f	file:
+do_hash	hash.c	/^static int do_hash(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_help	help.c	/^static int do_help(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_host	host.c	/^static int do_host(cmd_tbl_t *cmdtp, int flag, int argc,$/;"	f	file:
+do_host_bind	host.c	/^static int do_host_bind(cmd_tbl_t *cmdtp, int flag, int argc,$/;"	f	file:
+do_host_dev	host.c	/^static int do_host_dev(cmd_tbl_t *cmdtp, int flag, int argc,$/;"	f	file:
+do_host_info	host.c	/^static int do_host_info(cmd_tbl_t *cmdtp, int flag, int argc,$/;"	f	file:
+do_host_load	host.c	/^static int do_host_load(cmd_tbl_t *cmdtp, int flag, int argc,$/;"	f	file:
+do_host_ls	host.c	/^static int do_host_ls(cmd_tbl_t *cmdtp, int flag, int argc,$/;"	f	file:
+do_host_save	host.c	/^static int do_host_save(cmd_tbl_t *cmdtp, int flag, int argc,$/;"	f	file:
+do_i2c	i2c.c	/^static int do_i2c(cmd_tbl_t * cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_i2c_bus_num	i2c.c	/^static int do_i2c_bus_num(cmd_tbl_t *cmdtp, int flag, int argc,$/;"	f	file:
+do_i2c_bus_speed	i2c.c	/^static int do_i2c_bus_speed(cmd_tbl_t * cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_i2c_crc	i2c.c	/^static int do_i2c_crc (cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_i2c_flags	i2c.c	/^static int do_i2c_flags(cmd_tbl_t *cmdtp, int flag, int argc,$/;"	f	file:
+do_i2c_loop	i2c.c	/^static int do_i2c_loop(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_i2c_md	i2c.c	/^static int do_i2c_md ( cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_i2c_mm	i2c.c	/^static int do_i2c_mm(cmd_tbl_t * cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_i2c_mw	i2c.c	/^static int do_i2c_mw ( cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_i2c_nm	i2c.c	/^static int do_i2c_nm(cmd_tbl_t * cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_i2c_olen	i2c.c	/^static int do_i2c_olen(cmd_tbl_t *cmdtp, int flag, int argc, char *const argv[])$/;"	f	file:
+do_i2c_probe	i2c.c	/^static int do_i2c_probe (cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_i2c_read	i2c.c	/^static int do_i2c_read ( cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_i2c_reset	i2c.c	/^static int do_i2c_reset(cmd_tbl_t * cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_i2c_show_bus	i2c.c	/^static int do_i2c_show_bus(cmd_tbl_t *cmdtp, int flag, int argc,$/;"	f	file:
+do_i2c_write	i2c.c	/^static int do_i2c_write(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_i2cinfo	immap.c	/^do_i2cinfo (cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_icache	cache.c	/^static int do_icache(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_icinfo	immap.c	/^do_icinfo (cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_ide	ide.c	/^int do_ide(cmd_tbl_t *cmdtp, int flag, int argc, char *const argv[])$/;"	f
+do_imgextract	ximg.c	/^do_imgextract(cmd_tbl_t * cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_iminfo	bootm.c	/^static int do_iminfo(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_imls	bootm.c	/^static int do_imls(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_imls_nand	bootm.c	/^static int do_imls_nand(void)$/;"	f	file:
+do_imls_nor	bootm.c	/^static int do_imls_nor(void)$/;"	f	file:
+do_info	regulator.c	/^static int do_info(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_ini	ini.c	/^static int do_ini(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_init	sound.c	/^static int do_init(cmd_tbl_t *cmdtp, int flag, int argc, char *const argv[])$/;"	f	file:
+do_interrupts	irq.c	/^static int do_interrupts(cmd_tbl_t *cmdtp, int flag, int argc,$/;"	f	file:
+do_io_iod	io.c	/^int do_io_iod(cmd_tbl_t *cmdtp, int flag, int argc, char *const argv[])$/;"	f
+do_io_iow	io.c	/^int do_io_iow(cmd_tbl_t *cmdtp, int flag, int argc, char *const argv[])$/;"	f
+do_iopinfo	immap.c	/^do_iopinfo (cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_iopset	immap.c	/^do_iopset (cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_iotrace	iotrace.c	/^int do_iotrace(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_itest	itest.c	/^static int do_itest(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_jffs2_fsinfo	jffs2.c	/^int do_jffs2_fsinfo(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_jffs2_fsload	jffs2.c	/^int do_jffs2_fsload(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_jffs2_ls	jffs2.c	/^int do_jffs2_ls(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_ldrinfo	ldrinfo.c	/^static int do_ldrinfo(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_led	led.c	/^int do_led (cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_license	license.c	/^int do_license(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_link_local	net.c	/^static int do_link_local(cmd_tbl_t *cmdtp, int flag, int argc,$/;"	f	file:
+do_list	pmic.c	/^static int do_list(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_list	regulator.c	/^static int do_list(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_load_serial	load.c	/^static int do_load_serial(cmd_tbl_t *cmdtp, int flag, int argc,$/;"	f	file:
+do_load_serial_bin	load.c	/^static int do_load_serial_bin(cmd_tbl_t *cmdtp, int flag, int argc,$/;"	f	file:
+do_load_wrapper	fs.c	/^static int do_load_wrapper(cmd_tbl_t *cmdtp, int flag, int argc,$/;"	f	file:
+do_log	log.c	/^int do_log(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_ls_wrapper	fs.c	/^static int do_ls_wrapper(cmd_tbl_t *cmdtp, int flag, int argc,$/;"	f	file:
+do_lzmadec	lzmadec.c	/^static int do_lzmadec(cmd_tbl_t *cmdtp, int flag, int argc, char *const argv[])$/;"	f	file:
+do_mccinfo	immap.c	/^do_mccinfo (cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_md5sum	md5sum.c	/^int do_md5sum(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_md5sum	md5sum.c	/^static int do_md5sum(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_mdio	mdio.c	/^static int do_mdio(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_mem_base	mem.c	/^static int do_mem_base(cmd_tbl_t *cmdtp, int flag, int argc,$/;"	f	file:
+do_mem_cmp	mem.c	/^static int do_mem_cmp(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_mem_cp	mem.c	/^static int do_mem_cp(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_mem_crc	mem.c	/^static int do_mem_crc(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_mem_info	mem.c	/^static int do_mem_info(cmd_tbl_t *cmdtp, int flag, int argc,$/;"	f	file:
+do_mem_loop	mem.c	/^static int do_mem_loop(cmd_tbl_t *cmdtp, int flag, int argc,$/;"	f	file:
+do_mem_loopw	mem.c	/^static int do_mem_loopw(cmd_tbl_t *cmdtp, int flag, int argc,$/;"	f	file:
+do_mem_md	mem.c	/^static int do_mem_md(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_mem_mdc	mem.c	/^static int do_mem_mdc(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_mem_mm	mem.c	/^static int do_mem_mm(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_mem_mtest	mem.c	/^static int do_mem_mtest(cmd_tbl_t *cmdtp, int flag, int argc,$/;"	f	file:
+do_mem_mw	mem.c	/^static int do_mem_mw(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_mem_mwc	mem.c	/^static int do_mem_mwc(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_mem_nm	mem.c	/^static int do_mem_nm(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_memcinfo	immap.c	/^do_memcinfo (cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_mii	mii.c	/^static int do_mii(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_mmc	mmc.c	/^int do_mmc (cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_mmc_boot_resize	mmc.c	/^static int do_mmc_boot_resize(cmd_tbl_t *cmdtp, int flag,$/;"	f	file:
+do_mmc_bootbus	mmc.c	/^static int do_mmc_bootbus(cmd_tbl_t *cmdtp, int flag,$/;"	f	file:
+do_mmc_dev	mmc.c	/^static int do_mmc_dev(cmd_tbl_t *cmdtp, int flag,$/;"	f	file:
+do_mmc_erase	mmc.c	/^static int do_mmc_erase(cmd_tbl_t *cmdtp, int flag,$/;"	f	file:
+do_mmc_hwpartition	mmc.c	/^static int do_mmc_hwpartition(cmd_tbl_t *cmdtp, int flag,$/;"	f	file:
+do_mmc_list	mmc.c	/^static int do_mmc_list(cmd_tbl_t *cmdtp, int flag,$/;"	f	file:
+do_mmc_part	mmc.c	/^static int do_mmc_part(cmd_tbl_t *cmdtp, int flag,$/;"	f	file:
+do_mmc_partconf	mmc.c	/^static int do_mmc_partconf(cmd_tbl_t *cmdtp, int flag,$/;"	f	file:
+do_mmc_read	mmc.c	/^static int do_mmc_read(cmd_tbl_t *cmdtp, int flag,$/;"	f	file:
+do_mmc_rescan	mmc.c	/^static int do_mmc_rescan(cmd_tbl_t *cmdtp, int flag,$/;"	f	file:
+do_mmc_rst_func	mmc.c	/^static int do_mmc_rst_func(cmd_tbl_t *cmdtp, int flag,$/;"	f	file:
+do_mmc_setdsr	mmc.c	/^static int do_mmc_setdsr(cmd_tbl_t *cmdtp, int flag,$/;"	f	file:
+do_mmc_spi	mmc_spi.c	/^static int do_mmc_spi(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_mmc_write	mmc.c	/^static int do_mmc_write(cmd_tbl_t *cmdtp, int flag,$/;"	f	file:
+do_mmcinfo	mmc.c	/^static int do_mmcinfo(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_mmcops	mmc.c	/^static int do_mmcops(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_mmcrpmb	mmc.c	/^static int do_mmcrpmb(cmd_tbl_t *cmdtp, int flag,$/;"	f	file:
+do_mmcrpmb_counter	mmc.c	/^static int do_mmcrpmb_counter(cmd_tbl_t *cmdtp, int flag,$/;"	f	file:
+do_mmcrpmb_key	mmc.c	/^static int do_mmcrpmb_key(cmd_tbl_t *cmdtp, int flag,$/;"	f	file:
+do_mmcrpmb_read	mmc.c	/^static int do_mmcrpmb_read(cmd_tbl_t *cmdtp, int flag,$/;"	f	file:
+do_mmcrpmb_write	mmc.c	/^static int do_mmcrpmb_write(cmd_tbl_t *cmdtp, int flag,$/;"	f	file:
+do_mode	regulator.c	/^static int do_mode(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_mtdparts	mtdparts.c	/^static int do_mtdparts(cmd_tbl_t *cmdtp, int flag, int argc,$/;"	f	file:
+do_muxinfo	immap.c	/^do_muxinfo (cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_nand	nand.c	/^int do_nand(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_nand_env_oob	nand.c	/^int do_nand_env_oob(cmd_tbl_t *cmdtp, int argc, char *const argv[])$/;"	f
+do_nand_status	nand.c	/^static void do_nand_status(nand_info_t *nand)$/;"	f	file:
+do_nandboot	nand.c	/^static int do_nandboot(cmd_tbl_t *cmdtp, int flag, int argc,$/;"	f	file:
+do_nfs	net.c	/^static int do_nfs(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_onenand	onenand.c	/^static int do_onenand(cmd_tbl_t * cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_onenand_bad	onenand.c	/^static int do_onenand_bad(cmd_tbl_t * cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_onenand_dump	onenand.c	/^static int do_onenand_dump(cmd_tbl_t * cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_onenand_erase	onenand.c	/^static int do_onenand_erase(cmd_tbl_t * cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_onenand_info	onenand.c	/^static int do_onenand_info(cmd_tbl_t * cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_onenand_markbad	onenand.c	/^static int do_onenand_markbad(cmd_tbl_t * cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_onenand_read	onenand.c	/^static int do_onenand_read(cmd_tbl_t * cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_onenand_test	onenand.c	/^static int do_onenand_test(cmd_tbl_t * cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_onenand_write	onenand.c	/^static int do_onenand_write(cmd_tbl_t * cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_otp	otp.c	/^int do_otp(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_part	part.c	/^static int do_part(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_part_list	part.c	/^static int do_part_list(int argc, char * const argv[])$/;"	f	file:
+do_part_size	part.c	/^static int do_part_size(int argc, char * const argv[])$/;"	f	file:
+do_part_start	part.c	/^static int do_part_start(int argc, char * const argv[])$/;"	f	file:
+do_part_uuid	part.c	/^static int do_part_uuid(int argc, char * const argv[])$/;"	f	file:
+do_pci	pci.c	/^static int do_pci(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_ping	net.c	/^static int do_ping(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_pinit	pcmcia.c	/^int do_pinit (cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_play	sound.c	/^static int do_play(cmd_tbl_t *cmdtp, int flag, int argc, char *const argv[])$/;"	f	file:
+do_pmic	pmic.c	/^static int do_pmic(cmd_tbl_t *cmdtp, int flag, int argc,$/;"	f	file:
+do_portio_in	portio.c	/^int do_portio_in (cmd_tbl_t * cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_portio_out	portio.c	/^int do_portio_out (cmd_tbl_t * cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_print_stats	iotrace.c	/^static void do_print_stats(void)$/;"	f	file:
+do_protect	flash.c	/^static int do_protect(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_pxe	pxe.c	/^static int do_pxe(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_pxe_boot	pxe.c	/^do_pxe_boot(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_pxe_get	pxe.c	/^do_pxe_get(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_rarpb	net.c	/^int do_rarpb(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_read	pmic.c	/^static int do_read(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_read	read.c	/^int do_read(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_reginfo	reginfo.c	/^static int do_reginfo(cmd_tbl_t *cmdtp, int flag, int argc,$/;"	f	file:
+do_regulator	regulator.c	/^static int do_regulator(cmd_tbl_t *cmdtp, int flag, int argc,$/;"	f	file:
+do_reiserload	reiser.c	/^int do_reiserload (cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_reiserls	reiser.c	/^int do_reiserls (cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_remoteproc	remoteproc.c	/^static int do_remoteproc(cmd_tbl_t *cmdtp, int flag, int argc,$/;"	f	file:
+do_remoteproc_list	remoteproc.c	/^static int do_remoteproc_list(cmd_tbl_t *cmdtp, int flag, int argc,$/;"	f	file:
+do_remoteproc_load	remoteproc.c	/^static int do_remoteproc_load(cmd_tbl_t *cmdtp, int flag, int argc,$/;"	f	file:
+do_remoteproc_wrapper	remoteproc.c	/^static int do_remoteproc_wrapper(cmd_tbl_t *cmdtp, int flag, int argc,$/;"	f	file:
+do_rproc_init	remoteproc.c	/^static int do_rproc_init(cmd_tbl_t *cmdtp, int flag, int argc,$/;"	f	file:
+do_rspr	mfsl.c	/^int do_rspr (cmd_tbl_t * cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_sata	sata.c	/^static int do_sata(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_save_serial	load.c	/^int do_save_serial (cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_save_wrapper	fs.c	/^static int do_save_wrapper(cmd_tbl_t *cmdtp, int flag, int argc,$/;"	f	file:
+do_sccinfo	immap.c	/^do_sccinfo (cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_scsi	scsi.c	/^int do_scsi (cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_scsiboot	scsi.c	/^int do_scsiboot (cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_sdram	i2c.c	/^static int do_sdram (cmd_tbl_t * cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_set_buffer	iotrace.c	/^static int do_set_buffer(int argc, char * const argv[])$/;"	f	file:
+do_setdcr	dcr.c	/^int do_setdcr (cmd_tbl_t * cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_setexpr	setexpr.c	/^static int do_setexpr(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_setidcr	dcr.c	/^int do_setidcr (cmd_tbl_t * cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_sha1sum	sha1sum.c	/^int do_sha1sum(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_siinfo	immap.c	/^do_siinfo (cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_sitinfo	immap.c	/^do_sitinfo (cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_siuinfo	immap.c	/^do_siuinfo (cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_size_wrapper	fs.c	/^static int do_size_wrapper(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_sleep	misc.c	/^static int do_sleep(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_smcinfo	immap.c	/^do_smcinfo (cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_sntp	net.c	/^int do_sntp(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_softswitch	softswitch.c	/^int do_softswitch(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_sound	sound.c	/^static int do_sound(cmd_tbl_t *cmdtp, int flag, int argc, char *const argv[])$/;"	f	file:
+do_source	source.c	/^static int do_source(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_spi	spi.c	/^int do_spi (cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_spi_flash	sf.c	/^static int do_spi_flash(cmd_tbl_t *cmdtp, int flag, int argc,$/;"	f	file:
+do_spi_flash_erase	sf.c	/^static int do_spi_flash_erase(int argc, char * const argv[])$/;"	f	file:
+do_spi_flash_probe	sf.c	/^static int do_spi_flash_probe(int argc, char * const argv[])$/;"	f	file:
+do_spi_flash_read_write	sf.c	/^static int do_spi_flash_read_write(int argc, char * const argv[])$/;"	f	file:
+do_spi_flash_test	sf.c	/^static int do_spi_flash_test(int argc, char * const argv[])$/;"	f	file:
+do_spi_protect	sf.c	/^static int do_spi_protect(int argc, char * const argv[])$/;"	f	file:
+do_spi_xfer	spi.c	/^static int do_spi_xfer(int bus, int cs)$/;"	f	file:
+do_spibootldr	spibootldr.c	/^int do_spibootldr(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_spiinfo	immap.c	/^do_spiinfo (cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_spl	spl.c	/^static int do_spl(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_status	regulator.c	/^static int do_status(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_status_detail	regulator.c	/^static void do_status_detail(struct udevice *dev,$/;"	f	file:
+do_status_line	regulator.c	/^static void do_status_line(struct udevice *dev)$/;"	f	file:
+do_strings	strings.c	/^int do_strings(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_sysboot	pxe.c	/^static int do_sysboot(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_terminal	terminal.c	/^int do_terminal(cmd_tbl_t * cmd, int flag, int argc, char * const argv[])$/;"	f
+do_test	test.c	/^static int do_test(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_tftpb	net.c	/^int do_tftpb(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_tftpput	net.c	/^int do_tftpput(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_tftpsrv	net.c	/^static int do_tftpsrv(cmd_tbl_t *cmdtp, int flag, int argc, char *const argv[])$/;"	f	file:
+do_thor_down	thordown.c	/^int do_thor_down(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_time	time.c	/^static int do_time(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_timer	misc.c	/^static int do_timer(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_tpm	tpm.c	/^static int do_tpm(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_tpm_extend	tpm.c	/^static int do_tpm_extend(cmd_tbl_t *cmdtp, int flag,$/;"	f	file:
+do_tpm_get_capability	tpm.c	/^static int do_tpm_get_capability(cmd_tbl_t *cmdtp, int flag,$/;"	f	file:
+do_tpm_get_pub_key_oiap	tpm.c	/^static int do_tpm_get_pub_key_oiap(cmd_tbl_t *cmdtp, int flag,$/;"	f	file:
+do_tpm_info	tpm.c	/^static int do_tpm_info(cmd_tbl_t *cmdtp, int flag, int argc,$/;"	f	file:
+do_tpm_load_key2_oiap	tpm.c	/^static int do_tpm_load_key2_oiap(cmd_tbl_t *cmdtp, int flag,$/;"	f	file:
+do_tpm_nv_define	tpm.c	/^static int do_tpm_nv_define(cmd_tbl_t *cmdtp, int flag,$/;"	f	file:
+do_tpm_nv_define_space	tpm.c	/^static int do_tpm_nv_define_space(cmd_tbl_t *cmdtp, int flag,$/;"	f	file:
+do_tpm_nv_read	tpm.c	/^static int do_tpm_nv_read(cmd_tbl_t *cmdtp, int flag,$/;"	f	file:
+do_tpm_nv_read_value	tpm.c	/^static int do_tpm_nv_read_value(cmd_tbl_t *cmdtp, int flag,$/;"	f	file:
+do_tpm_nv_write	tpm.c	/^static int do_tpm_nv_write(cmd_tbl_t *cmdtp, int flag,$/;"	f	file:
+do_tpm_nv_write_value	tpm.c	/^static int do_tpm_nv_write_value(cmd_tbl_t *cmdtp, int flag,$/;"	f	file:
+do_tpm_oiap	tpm.c	/^static int do_tpm_oiap(cmd_tbl_t *cmdtp, int flag,$/;"	f	file:
+do_tpm_pcr_read	tpm.c	/^static int do_tpm_pcr_read(cmd_tbl_t *cmdtp, int flag,$/;"	f	file:
+do_tpm_physical_set_deactivated	tpm.c	/^static int do_tpm_physical_set_deactivated(cmd_tbl_t *cmdtp, int flag,$/;"	f	file:
+do_tpm_raw_transfer	tpm.c	/^static int do_tpm_raw_transfer(cmd_tbl_t *cmdtp, int flag,$/;"	f	file:
+do_tpm_read_pubek	tpm.c	/^static int do_tpm_read_pubek(cmd_tbl_t *cmdtp, int flag,$/;"	f	file:
+do_tpm_startup	tpm.c	/^static int do_tpm_startup(cmd_tbl_t *cmdtp, int flag,$/;"	f	file:
+do_tpm_tsc_physical_presence	tpm.c	/^static int do_tpm_tsc_physical_presence(cmd_tbl_t *cmdtp, int flag,$/;"	f	file:
+do_tpmtest	tpm_test.c	/^static int do_tpmtest(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_trace	trace.c	/^int do_trace(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_true	test.c	/^static int do_true(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_tsi148	tsi148.c	/^int do_tsi148(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_ubi	ubi.c	/^static int do_ubi(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_ubifs_load	ubifs.c	/^static int do_ubifs_load(cmd_tbl_t *cmdtp, int flag, int argc,$/;"	f	file:
+do_ubifs_ls	ubifs.c	/^static int do_ubifs_ls(cmd_tbl_t *cmdtp, int flag, int argc,$/;"	f	file:
+do_ubifs_mount	ubifs.c	/^static int do_ubifs_mount(cmd_tbl_t *cmdtp, int flag, int argc,$/;"	f	file:
+do_ubifs_umount	ubifs.c	/^static int do_ubifs_umount(cmd_tbl_t *cmdtp, int flag, int argc,$/;"	f	file:
+do_universe	universe.c	/^int do_universe(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f
+do_unzip	unzip.c	/^static int do_unzip(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_usb	usb.c	/^static int do_usb(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_usb_mass_storage	usb_mass_storage.c	/^int do_usb_mass_storage(cmd_tbl_t *cmdtp, int flag,$/;"	f
+do_usb_start	usb.c	/^static void do_usb_start(void)$/;"	f	file:
+do_usb_stop_keyboard	usb.c	/^static int do_usb_stop_keyboard(int force)$/;"	f	file:
+do_usbboot	usb.c	/^static int do_usbboot(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_value	regulator.c	/^static int do_value(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_version	version.c	/^static int do_version(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_write	pmic.c	/^static int do_write(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_ydevconfig	yaffs2.c	/^int do_ydevconfig(cmd_tbl_t *cmdtp, int flag, int argc, char *const argv[])$/;"	f
+do_ydevls	yaffs2.c	/^int do_ydevls(cmd_tbl_t *cmdtp, int flag, int argc, char *const argv[])$/;"	f
+do_yls	yaffs2.c	/^int do_yls(cmd_tbl_t *cmdtp, int flag, int argc, char *const argv[])$/;"	f
+do_ymkdir	yaffs2.c	/^int do_ymkdir(cmd_tbl_t *cmdtp, int flag, int argc, char *const argv[])$/;"	f
+do_ymount	yaffs2.c	/^int do_ymount(cmd_tbl_t *cmdtp, int flag, int argc, char *const argv[])$/;"	f
+do_ymv	yaffs2.c	/^int do_ymv(cmd_tbl_t *cmdtp, int flag, int argc, char *const argv[])$/;"	f
+do_yrd	yaffs2.c	/^int do_yrd(cmd_tbl_t *cmdtp, int flag, int argc, char *const argv[])$/;"	f
+do_yrdm	yaffs2.c	/^int do_yrdm(cmd_tbl_t *cmdtp, int flag, int argc, char *const argv[])$/;"	f
+do_yrm	yaffs2.c	/^int do_yrm(cmd_tbl_t *cmdtp, int flag, int argc, char *const argv[])$/;"	f
+do_yrmdir	yaffs2.c	/^int do_yrmdir(cmd_tbl_t *cmdtp, int flag, int argc, char *const argv[])$/;"	f
+do_ytrace	yaffs2.c	/^int do_ytrace(cmd_tbl_t *cmdtp, int flag, int argc, char *const argv[])$/;"	f
+do_yumount	yaffs2.c	/^int do_yumount(cmd_tbl_t *cmdtp, int flag, int argc, char *const argv[])$/;"	f
+do_ywr	yaffs2.c	/^int do_ywr(cmd_tbl_t *cmdtp, int flag, int argc, char *const argv[])$/;"	f
+do_ywrm	yaffs2.c	/^int do_ywrm(cmd_tbl_t *cmdtp, int flag, int argc, char *const argv[])$/;"	f
+do_zfs_load	zfs.c	/^static int do_zfs_load(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_zfs_ls	zfs.c	/^static int do_zfs_ls(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+do_zip	zip.c	/^static int do_zip(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+dout	spi.c	/^static uchar 		dout[MAX_SPI_BYTES];$/;"	v	file:
+dp_last_addr	fpgad.c	/^static uint	dp_last_addr;$/;"	v	file:
+dp_last_addr	mem.c	/^static ulong	dp_last_addr, dp_last_size;$/;"	v	file:
+dp_last_fpga	fpgad.c	/^static uint	dp_last_fpga;$/;"	v	file:
+dp_last_length	fpgad.c	/^static uint	dp_last_length = 0x40;$/;"	v	file:
+dp_last_length	mem.c	/^static ulong	dp_last_length = 0x40;$/;"	v	file:
+dp_last_size	mem.c	/^static ulong	dp_last_addr, dp_last_size;$/;"	v	file:
+drive	fdc.c	/^	uchar		drive;		\/* drive no *\/$/;"	m	struct:__anon7	file:
+drv_logbuff_init	log.c	/^int drv_logbuff_init(void)$/;"	f
+dtt_i2c	dtt.c	/^int dtt_i2c(void)$/;"	f
+dtt_init	dtt.c	/^void dtt_init(void)$/;"	f
+dtt_tmu	dtt.c	/^int dtt_tmu(void)$/;"	f
+dump_reg	mii.c	/^static void dump_reg($/;"	f	file:
+eeprom_addr	eeprom.c	/^static int eeprom_addr(unsigned dev_addr, unsigned offset, uchar *addr)$/;"	f	file:
+eeprom_init	eeprom.c	/^void eeprom_init(int bus)$/;"	f
+eeprom_len	eeprom.c	/^static int eeprom_len(unsigned offset, unsigned end)$/;"	f	file:
+eeprom_read	eeprom.c	/^int eeprom_read(unsigned dev_addr, unsigned offset, uchar *buffer, unsigned cnt)$/;"	f
+eeprom_rw	eeprom.c	/^static int eeprom_rw(unsigned dev_addr, unsigned offset, uchar *buffer,$/;"	f	file:
+eeprom_rw_block	eeprom.c	/^static int eeprom_rw_block(unsigned offset, uchar *addr, unsigned alen,$/;"	f	file:
+eeprom_write	eeprom.c	/^int eeprom_write(unsigned dev_addr, unsigned offset,$/;"	f
+eeprom_write_enable	eeprom.c	/^__weak int eeprom_write_enable(unsigned dev_addr, int state)$/;"	f
+efi_build_mem_table	efi.c	/^void *efi_build_mem_table(struct efi_entry_memmap *map, int size, bool skip_bs)$/;"	f
+efi_commands	efi.c	/^static cmd_tbl_t efi_commands[] = {$/;"	v	file:
+efi_print_mem_table	efi.c	/^static void efi_print_mem_table(struct efi_entry_memmap *map,$/;"	f	file:
+entrypoint	armflash.c	/^	u32 entrypoint;$/;"	m	struct:afs_image	file:
+env_help_text	nvedit.c	/^static char env_help_text[] =$/;"	v	file:
+env_id	nvedit.c	/^static int env_id = 1;$/;"	v	file:
+env_print	nvedit.c	/^static int env_print(char *name, int flag)$/;"	f	file:
+env_reloc	nvedit.c	/^void env_reloc(void)$/;"	f
+envmatch	nvedit.c	/^int envmatch(uchar *s1, int i2)$/;"	f
+eol_or_eof	pxe.c	/^static void eol_or_eof(char **c)$/;"	f	file:
+ethsw_cmd_def	ethsw.c	/^} ethsw_cmd_def[] = {$/;"	v	typeref:struct:keywords_to_function	file:
+ethsw_define_functions	ethsw.c	/^int ethsw_define_functions(const struct ethsw_command_func *cmd_func)$/;"	f
+ethsw_egr_tag_help_key_func	ethsw.c	/^static int ethsw_egr_tag_help_key_func(struct ethsw_command_def *parsed_cmd)$/;"	f	file:
+ethsw_fdb_help_key_func	ethsw.c	/^static int ethsw_fdb_help_key_func(struct ethsw_command_def *parsed_cmd)$/;"	f	file:
+ethsw_ingr_fltr_help_key_func	ethsw.c	/^static int ethsw_ingr_fltr_help_key_func(struct ethsw_command_def *parsed_cmd)$/;"	f	file:
+ethsw_learn_help_key_func	ethsw.c	/^static int ethsw_learn_help_key_func(struct ethsw_command_def *parsed_cmd)$/;"	f	file:
+ethsw_name	ethsw.c	/^static const char *ethsw_name;$/;"	v	file:
+ethsw_port_aggr_help_key_func	ethsw.c	/^static int ethsw_port_aggr_help_key_func(struct ethsw_command_def *parsed_cmd)$/;"	f	file:
+ethsw_port_stats_help_key_func	ethsw.c	/^static int ethsw_port_stats_help_key_func(struct ethsw_command_def *parsed_cmd)$/;"	f	file:
+ethsw_port_untag_help_key_func	ethsw.c	/^static int ethsw_port_untag_help_key_func(struct ethsw_command_def *parsed_cmd)$/;"	f	file:
+ethsw_pvid_help_key_func	ethsw.c	/^static int ethsw_pvid_help_key_func(struct ethsw_command_def *parsed_cmd)$/;"	f	file:
+ethsw_vlan_help_key_func	ethsw.c	/^static int ethsw_vlan_help_key_func(struct ethsw_command_def *parsed_cmd)$/;"	f	file:
+ethsw_vlan_learn_help_key_func	ethsw.c	/^static int ethsw_vlan_learn_help_key_func(struct ethsw_command_def *parsed_cmd)$/;"	f	file:
+evalexp	itest.c	/^static long evalexp(char *s, int w)$/;"	f	file:
+evalstr	itest.c	/^static char * evalstr(char *s)$/;"	f	file:
+exists	armflash.c	/^static int exists(const char * const name)$/;"	f	file:
+extract_env	gpt.c	/^static int extract_env(const char *str, char **env)$/;"	f	file:
+extract_phy_range	mdio.c	/^static int extract_phy_range(char *const argv[], int argc, struct mii_dev **bus,$/;"	f	file:
+extract_range	mdio.c	/^static int extract_range(char *input, int *plo, int *phi)$/;"	f	file:
+extract_range	mii.c	/^static void extract_range($/;"	f	file:
+extract_reg_range	mdio.c	/^static int extract_reg_range(char *input, int *devadlo, int *devadhi,$/;"	f	file:
+extract_val	gpt.c	/^static char *extract_val(const char *str, const char *key)$/;"	f	file:
+failure	pmic.c	/^static int failure(int ret)$/;"	f	file:
+failure	regulator.c	/^static int failure(int ret)$/;"	f	file:
+false	test.c	186;"	d	file:
+fdc_check_drive	fdc.c	/^int fdc_check_drive(FDC_COMMAND_STRUCT *pCMD, FD_GEO_STRUCT *pFG)$/;"	f
+fdc_issue_cmd	fdc.c	/^int fdc_issue_cmd(FDC_COMMAND_STRUCT *pCMD,FD_GEO_STRUCT *pFG)$/;"	f
+fdc_need_more_output	fdc.c	/^int fdc_need_more_output(void)$/;"	f
+fdc_read_data	fdc.c	/^int fdc_read_data(unsigned char *buffer, unsigned long blocks,FDC_COMMAND_STRUCT *pCMD, FD_GEO_STRUCT *pFG)$/;"	f
+fdc_recalibrate	fdc.c	/^int fdc_recalibrate(FDC_COMMAND_STRUCT *pCMD,FD_GEO_STRUCT *pFG)$/;"	f
+fdc_seek	fdc.c	/^int fdc_seek(FDC_COMMAND_STRUCT *pCMD,FD_GEO_STRUCT *pFG)$/;"	f
+fdc_setup	fdc.c	/^int fdc_setup(int drive, FDC_COMMAND_STRUCT *pCMD, FD_GEO_STRUCT *pFG)$/;"	f
+fdc_terminate	fdc.c	/^int fdc_terminate(FDC_COMMAND_STRUCT *pCMD)$/;"	f
+fdt	pxe.c	/^	char *fdt;$/;"	m	struct:pxe_label	file:
+fdt_help_text	fdt.c	/^static char fdt_help_text[] =$/;"	v	file:
+fdt_parse_prop	fdt.c	/^static int fdt_parse_prop(char * const *newval, int count, char *data, int *len)$/;"	f	file:
+fdt_print	fdt.c	/^static int fdt_print(const char *pathp, char *prop, int depth)$/;"	f	file:
+fdt_valid	fdt.c	/^static int fdt_valid(struct fdt_header **blobp)$/;"	f	file:
+fdt_value_setenv	fdt.c	/^static int fdt_value_setenv(const void *nodep, int len, const char *var)$/;"	f	file:
+fdtdir	pxe.c	/^	char *fdtdir;$/;"	m	struct:pxe_label	file:
+find_char_or_comment	ini.c	/^static char *find_char_or_comment(const char *s, char c)$/;"	f	file:
+find_dev_and_part	mtdparts.c	/^int find_dev_and_part(const char *id, struct mtd_device **dev,$/;"	f
+first	bootmenu.c	/^	struct bootmenu_entry *first;	\/* first menu entry *\/$/;"	m	struct:bootmenu_data	typeref:struct:bootmenu_data::bootmenu_entry	file:
+flag	ldrinfo.c	/^	uint16_t flag;$/;"	m	struct:ldr_flag	file:
+flags	fdc.c	/^	int		flags;		\/* connected drives ect *\/$/;"	m	struct:__anon7	file:
+flash	sf.c	/^static struct spi_flash *flash;$/;"	v	typeref:struct:spi_flash	file:
+flash_fill_sect_ranges	flash.c	/^flash_fill_sect_ranges (ulong addr_first, ulong addr_last,$/;"	f	file:
+flash_mem_end	armflash.c	/^	ulong flash_mem_end;$/;"	m	struct:afs_image	file:
+flash_mem_start	armflash.c	/^	ulong flash_mem_start;$/;"	m	struct:afs_image	file:
+flash_sect_erase	flash.c	/^int flash_sect_erase (ulong addr_first, ulong addr_last)$/;"	f
+flash_sect_protect	flash.c	/^int flash_sect_protect (int p, ulong addr_first, ulong addr_last)$/;"	f
+flash_sect_roundb	flash.c	/^int flash_sect_roundb (ulong *addr)$/;"	f
+flinfo	armflash.c	/^	flash_info_t *flinfo;$/;"	m	struct:afs_image	file:
+floppy_type	fdc.c	/^const static FD_GEO_STRUCT floppy_type[2] = {$/;"	v	file:
+flush_dcache_all	cache.c	/^void __weak flush_dcache_all(void)$/;"	f
+fmt_gap	fdc.c	/^	unsigned char	fmt_gap;\/* gap2 size *\/$/;"	m	struct:__anon8	file:
+format_mac_pxe	pxe.c	/^static int format_mac_pxe(char *outbuf, size_t outbuf_len)$/;"	f	file:
+found_key	gpt.c	/^static bool found_key(const char *str, const char *key)$/;"	f	file:
+fpga_get_op	fpga.c	/^static int fpga_get_op(char *opstr)$/;"	f	file:
+from_env	pxe.c	/^static char *from_env(const char *envvar)$/;"	f	file:
+fs_argv	pxe.c	/^static char *fs_argv[5];$/;"	v	file:
+gap	fdc.c	/^	unsigned char	gap;	\/* gap1 size *\/$/;"	m	struct:__anon8	file:
+generate_mtdparts	mtdparts.c	/^static int generate_mtdparts(char *buf, u32 buflen)$/;"	f	file:
+generate_mtdparts_save	mtdparts.c	/^static int generate_mtdparts_save(char *buf, u32 buflen)$/;"	f	file:
+get_alen	i2c.c	/^static uint get_alen(char *arg, int default_len)$/;"	f	file:
+get_arg	setexpr.c	/^static ulong get_arg(char *s, int w)$/;"	f	file:
+get_args	trace.c	/^static int get_args(int argc, char * const argv[], char **buff,$/;"	f	file:
+get_base_size	bootstage.c	/^static int get_base_size(int argc, char * const argv[], ulong *basep,$/;"	f	file:
+get_bootfile_path	pxe.c	/^static int get_bootfile_path(const char *file_path, char *bootfile_path,$/;"	f	file:
+get_env_id	nvedit.c	/^int get_env_id(void)$/;"	f
+get_keyword	pxe.c	/^static void get_keyword(struct token *t)$/;"	f	file:
+get_led_cmd	led.c	/^enum led_cmd get_led_cmd(char *var)$/;"	f
+get_mode_name	regulator.c	/^static const char *get_mode_name(struct dm_regulator_mode *mode,$/;"	f	file:
+get_mtd_info	mtdparts.c	/^static int get_mtd_info(u8 type, u8 num, struct mtd_info **mtd)$/;"	f	file:
+get_part_sector_size	jffs2.c	/^static inline u32 get_part_sector_size(struct mtdids *id, struct part_info *part)$/;"	f	file:
+get_part_sector_size_nand	jffs2.c	/^static inline u32 get_part_sector_size_nand(struct mtdids *id)$/;"	f	file:
+get_part_sector_size_nor	jffs2.c	/^static inline u32 get_part_sector_size_nor(struct mtdids *id, struct part_info *part)$/;"	f	file:
+get_part_sector_size_onenand	jffs2.c	/^static inline u32 get_part_sector_size_onenand(void)$/;"	f	file:
+get_pci_dev	pci.c	/^static pci_dev_t get_pci_dev(char *name)$/;"	f	file:
+get_pxe_file	pxe.c	/^static int get_pxe_file(cmd_tbl_t *cmdtp, const char *file_path,$/;"	f	file:
+get_pxelinux_path	pxe.c	/^static int get_pxelinux_path(cmd_tbl_t *cmdtp, const char *file,$/;"	f	file:
+get_relfile	pxe.c	/^static int get_relfile(cmd_tbl_t *cmdtp, const char *file_path,$/;"	f	file:
+get_relfile_envaddr	pxe.c	/^static int get_relfile_envaddr(cmd_tbl_t *cmdtp, const char *file_path, const char *envaddr_name)$/;"	f	file:
+get_string	pxe.c	/^static char *get_string(char **p, struct token *t, char delim, int lower)$/;"	f	file:
+get_token	pxe.c	/^static void get_token(char **p, struct token *t, enum lex_state state)$/;"	f	file:
+get_tpm	tpm.c	/^static int get_tpm(struct udevice **devp)$/;"	f	file:
+getcxmodem	load.c	/^static int getcxmodem(void) {$/;"	f	file:
+getenv	nvedit.c	/^char *getenv(const char *name)$/;"	f
+getenv_f	nvedit.c	/^int getenv_f(const char *name, char *buf, unsigned len)$/;"	f
+getenv_hex	nvedit.c	/^ulong getenv_hex(const char *varname, ulong default_val)$/;"	f
+getenv_ulong	nvedit.c	/^ulong getenv_ulong(const char *name, int base, ulong default_val)$/;"	f
+gpio_cmd	gpio.c	/^enum gpio_cmd {$/;"	g	file:
+gpio_get_description	gpio.c	/^static void gpio_get_description(struct udevice *dev, const char *bank_name,$/;"	f	file:
+gpt_default	gpt.c	/^static int gpt_default(block_dev_desc_t *blk_dev_desc, const char *str_part)$/;"	f	file:
+gpt_verify	gpt.c	/^static int gpt_verify(block_dev_desc_t *blk_dev_desc, const char *str_part)$/;"	f	file:
+gunzip_bmp	bmp.c	/^struct bmp_image *gunzip_bmp(unsigned long addr, unsigned long *lenp,$/;"	f
+h_cmp_entry	efi.c	/^static int h_cmp_entry(const void *v1, const void *v2)$/;"	f	file:
+handle_include	pxe.c	/^static int handle_include(cmd_tbl_t *cmdtp, char **c, unsigned long base,$/;"	f	file:
+handle_pxe_menu	pxe.c	/^static void handle_pxe_menu(cmd_tbl_t *cmdtp, struct pxe_menu *cfg)$/;"	f	file:
+handle_send_packet	load.c	/^static void handle_send_packet(int n)$/;"	f	file:
+head	fdc.c	/^	unsigned int head;	\/* nr of heads *\/$/;"	m	struct:__anon8	file:
+header	immap.c	/^header(void)$/;"	f	file:
+hi	mii.c	/^	ushort hi;$/;"	m	struct:_MII_field_desc_t	file:
+his_eol	load.c	/^static char his_eol;        \/* character he needs at end of packet *\/$/;"	v	file:
+his_pad_char	load.c	/^static char his_pad_char;   \/* pad chars he needs *\/$/;"	v	file:
+his_pad_count	load.c	/^static int  his_pad_count;  \/* number of pad chars he needs *\/$/;"	v	file:
+his_quote	load.c	/^static char his_quote;      \/* quote chars he'll use *\/$/;"	v	file:
+hlt	fdc.c	/^	unsigned char hlt;	\/* head load time *\/$/;"	m	struct:__anon8	file:
+host_curr_device	host.c	/^static int host_curr_device = -1;$/;"	v	file:
+i2c_cur_bus	i2c.c	/^static struct udevice *i2c_cur_bus;$/;"	v	typeref:struct:udevice	file:
+i2c_dp_last_addr	i2c.c	/^static uint	i2c_dp_last_addr;$/;"	v	file:
+i2c_dp_last_alen	i2c.c	/^static uint	i2c_dp_last_alen;$/;"	v	file:
+i2c_dp_last_chip	i2c.c	/^static uint	i2c_dp_last_chip;$/;"	v	file:
+i2c_dp_last_length	i2c.c	/^static uint	i2c_dp_last_length = 0x10;$/;"	v	file:
+i2c_err_op	i2c.c	/^enum i2c_err_op {$/;"	g	file:
+i2c_get_bus_speed	i2c.c	/^unsigned int i2c_get_bus_speed(void)$/;"	f
+i2c_get_cur_bus	i2c.c	/^static int i2c_get_cur_bus(struct udevice **busp)$/;"	f	file:
+i2c_get_cur_bus_chip	i2c.c	/^static int i2c_get_cur_bus_chip(uint chip_addr, struct udevice **devp)$/;"	f	file:
+i2c_help_text	i2c.c	/^static char i2c_help_text[] =$/;"	v	file:
+i2c_init_board	i2c.c	/^void i2c_init_board(void)$/;"	f
+i2c_mm_last_addr	i2c.c	/^static uint	i2c_mm_last_addr;$/;"	v	file:
+i2c_mm_last_alen	i2c.c	/^static uint	i2c_mm_last_alen;$/;"	v	file:
+i2c_mm_last_chip	i2c.c	/^static uint	i2c_mm_last_chip;$/;"	v	file:
+i2c_no_probes	i2c.c	/^static uchar i2c_no_probes[] = CONFIG_SYS_I2C_NOPROBES;$/;"	v	file:
+i2c_no_probes	i2c.c	/^} i2c_no_probes[] = CONFIG_SYS_I2C_NOPROBES;$/;"	v	typeref:struct:__anon4	file:
+i2c_reloc	i2c.c	/^static __maybe_unused void i2c_reloc(void)$/;"	f	file:
+i2c_report_err	i2c.c	/^static int i2c_report_err(int ret, enum i2c_err_op op)$/;"	f	file:
+i2c_set_bus_speed	i2c.c	/^int i2c_set_bus_speed(unsigned int speed)$/;"	f
+id_find	mtdparts.c	/^static struct mtdids* id_find(u8 type, u8 num)$/;"	f	file:
+id_find_by_mtd_id	mtdparts.c	/^static struct mtdids* id_find_by_mtd_id(const char *mtd_id, unsigned int mtd_id_len)$/;"	f	file:
+ide_bus_offset	ide.c	/^ulong ide_bus_offset[CONFIG_SYS_IDE_MAXBUS] = {$/;"	v
+ide_bus_ok	ide.c	/^static int ide_bus_ok[CONFIG_SYS_IDE_MAXBUS];$/;"	v	file:
+ide_dev_desc	ide.c	/^block_dev_desc_t ide_dev_desc[CONFIG_SYS_IDE_MAXDEVICE];$/;"	v
+ide_device_present	ide.c	/^int ide_device_present(int dev)$/;"	f
+ide_devices_found	pcmcia.c	/^int		ide_devices_found;$/;"	v
+ide_get_dev	ide.c	/^block_dev_desc_t *ide_get_dev(int dev)$/;"	f
+ide_ident	ide.c	/^static void ide_ident(block_dev_desc_t *dev_desc)$/;"	f	file:
+ide_inb	ide.c	/^__weak unsigned char ide_inb(int dev, int port)$/;"	f
+ide_init	ide.c	/^void ide_init(void)$/;"	f
+ide_input_data	ide.c	/^__weak void ide_input_data(int dev, ulong *sect_buf, int words)$/;"	f
+ide_input_data_shorts	ide.c	/^__weak void ide_input_data_shorts(int dev, ushort *sect_buf, int shorts)$/;"	f
+ide_input_swap_data	ide.c	/^__weak void ide_input_swap_data(int dev, ulong *sect_buf, int words)$/;"	f
+ide_led	ide.c	/^__weak void ide_led(uchar led, uchar status)$/;"	f
+ide_outb	ide.c	/^__weak void ide_outb(int dev, int port, unsigned char val)$/;"	f
+ide_output_data	ide.c	/^__weak void ide_output_data(int dev, const ulong *sect_buf, int words)$/;"	f
+ide_output_data_shorts	ide.c	/^__weak void ide_output_data_shorts(int dev, ushort *sect_buf, int shorts)$/;"	f
+ide_read	ide.c	/^ulong ide_read(block_dev_desc_t *block_dev, lbaint_t blknr, lbaint_t blkcnt,$/;"	f
+ide_reset	ide.c	/^static void ide_reset(void)$/;"	f	file:
+ide_reset	ide.c	62;"	d	file:
+ide_wait	ide.c	/^static uchar ide_wait(int dev, ulong t)$/;"	f	file:
+ide_write	ide.c	/^ulong ide_write(block_dev_desc_t *block_dev, lbaint_t blknr, lbaint_t blkcnt,$/;"	f
+ident_cpy	ide.c	/^static void ident_cpy(unsigned char *dst, unsigned char *src,$/;"	f	file:
+identify	pcmcia.c	/^static int identify  (volatile uchar *p)$/;"	f	file:
+image_info	bootm.c	/^static int image_info(ulong addr)$/;"	f	file:
+image_size	bootm.c	/^	uint64_t	image_size;	\/* Effective Image size, LE *\/$/;"	m	struct:Image_header	file:
+images	bootm.c	/^bootm_headers_t images;		\/* pointers to os\/initrd\/fdt images *\/$/;"	v
+imgextract_help_text	ximg.c	/^static char imgextract_help_text[] =$/;"	v	file:
+in_last_addr	portio.c	/^static uint in_last_addr, in_last_size;$/;"	v	file:
+in_last_size	portio.c	/^static uint in_last_addr, in_last_size;$/;"	v	file:
+indent	pcmcia.c	108;"	d	file:
+index_partitions	mtdparts.c	/^static void index_partitions(void)$/;"	f	file:
+ini_handler	ini.c	/^static int ini_handler(void *user, char *section, char *name, char *value)$/;"	f	file:
+ini_parse	ini.c	/^static int ini_parse(char *filestart, size_t filelen,$/;"	f	file:
+init_mmc_device	mmc.c	/^static struct mmc *init_mmc_device(int dev, bool force_init)$/;"	f	file:
+initialise_spaces	tpm_test.c	/^static void initialise_spaces(void)$/;"	f	file:
+initrd	pxe.c	/^	char *initrd;$/;"	m	struct:pxe_label	file:
+invalidate_icache_all	cache.c	/^void __weak invalidate_icache_all(void)$/;"	f
+ipappend	pxe.c	/^	int ipappend;$/;"	m	struct:pxe_label	file:
+is_boot_services	efi.c	/^static inline bool is_boot_services(int type)$/;"	f	file:
+is_printable_string	fdt.c	/^static int is_printable_string(const void *data, int len)$/;"	f	file:
+is_pxe	pxe.c	/^static bool is_pxe;$/;"	v	file:
+jffs2_part_info	jffs2.c	/^static struct part_info* jffs2_part_info(struct mtd_device *dev, unsigned int part_num)$/;"	f	file:
+k_data_char	load.c	/^static void k_data_char(char new_char)$/;"	f	file:
+k_data_escape	load.c	/^static int k_data_escape, k_data_escape_saved;$/;"	v	file:
+k_data_escape_saved	load.c	/^static int k_data_escape, k_data_escape_saved;$/;"	v	file:
+k_data_init	load.c	/^static void k_data_init(void)$/;"	f	file:
+k_data_restore	load.c	/^static void k_data_restore(void)$/;"	f	file:
+k_data_save	load.c	/^static void k_data_save(void)$/;"	f	file:
+k_recv	load.c	/^static int k_recv(void)$/;"	f	file:
+kernel	pxe.c	/^	char *kernel;$/;"	m	struct:pxe_label	file:
+key	bootmenu.c	/^	char key[3];			\/* key identifier of number *\/$/;"	m	struct:bootmenu_entry	file:
+keyword	ethsw.c	/^} keyword[] = {$/;"	v	typeref:struct:keyword_def
+keyword_def	ethsw.c	/^struct keyword_def {$/;"	s	file:
+keyword_function	ethsw.c	/^	int (*keyword_function)(struct ethsw_command_def *parsed_cmd);$/;"	m	struct:keywords_to_function	file:
+keyword_match_aggr	ethsw.c	/^static int keyword_match_aggr(enum ethsw_keyword_id key_id, int argc,$/;"	f	file:
+keyword_match_gen	ethsw.c	/^static int keyword_match_gen(enum ethsw_keyword_id key_id, int argc,$/;"	f	file:
+keyword_match_mac_addr	ethsw.c	/^static int keyword_match_mac_addr(enum ethsw_keyword_id key_id, int argc,$/;"	f	file:
+keyword_match_port	ethsw.c	/^static int keyword_match_port(enum ethsw_keyword_id key_id, int argc,$/;"	f	file:
+keyword_match_pvid	ethsw.c	/^static int keyword_match_pvid(enum ethsw_keyword_id key_id, int argc,$/;"	f	file:
+keyword_match_vlan	ethsw.c	/^static int keyword_match_vlan(enum ethsw_keyword_id key_id, int argc,$/;"	f	file:
+keyword_name	ethsw.c	/^	const char *keyword_name;$/;"	m	struct:keyword_def	file:
+keywords	pxe.c	/^static const struct token keywords[] = {$/;"	v	typeref:struct:token	file:
+keywords_find	ethsw.c	/^static int keywords_find(int argc, char * const argv[],$/;"	f	file:
+keywords_optional	ethsw.c	/^struct keywords_optional {$/;"	s	file:
+keywords_to_function	ethsw.c	/^static struct keywords_to_function {$/;"	s	file:
+known_cards	pcmcia.c	/^static uchar	*known_cards[] = {$/;"	v	file:
+ktrans	load.c	/^static char ktrans(char in)$/;"	f	file:
+label_boot	pxe.c	/^static int label_boot(cmd_tbl_t *cmdtp, struct pxe_label *label)$/;"	f	file:
+label_create	pxe.c	/^static struct pxe_label *label_create(void)$/;"	f	file:
+label_destroy	pxe.c	/^static void label_destroy(struct pxe_label *label)$/;"	f	file:
+label_localboot	pxe.c	/^static int label_localboot(struct pxe_label *label)$/;"	f	file:
+label_print	pxe.c	/^static void label_print(void *data)$/;"	f	file:
+labels	pxe.c	/^	struct list_head labels;$/;"	m	struct:pxe_menu	typeref:struct:pxe_menu::list_head	file:
+last_addr	strings.c	/^static char *start_addr, *last_addr;$/;"	v	file:
+last_addr_hi	mdio.c	/^static uint last_addr_hi;$/;"	v	file:
+last_addr_hi	mii.c	/^static uint last_addr_hi;$/;"	v	file:
+last_addr_lo	mdio.c	/^static uint last_addr_lo;$/;"	v	file:
+last_addr_lo	mii.c	/^static uint last_addr_lo;$/;"	v	file:
+last_data	mdio.c	/^static uint last_data;$/;"	v	file:
+last_data	mii.c	/^static uint last_data;$/;"	v	file:
+last_devad_hi	mdio.c	/^static uint last_devad_hi;$/;"	v	file:
+last_devad_lo	mdio.c	/^static uint last_devad_lo;$/;"	v	file:
+last_ids	mtdparts.c	/^static char last_ids[MTDIDS_MAXLEN];$/;"	v	file:
+last_mask	mii.c	/^static uint last_mask;$/;"	v	file:
+last_op	mdio.c	/^static char last_op[2];$/;"	v	file:
+last_op	mii.c	/^static char last_op[2];$/;"	v	file:
+last_partition	mtdparts.c	/^static char last_partition[PARTITION_MAXLEN];$/;"	v	file:
+last_parts	mtdparts.c	/^static char last_parts[MTDPARTS_MAXLEN];$/;"	v	file:
+last_reg_hi	mdio.c	/^static uint last_reg_hi;$/;"	v	file:
+last_reg_hi	mii.c	/^static uint last_reg_hi;$/;"	v	file:
+last_reg_lo	mdio.c	/^static uint last_reg_lo;$/;"	v	file:
+last_reg_lo	mii.c	/^static uint last_reg_lo;$/;"	v	file:
+lbuf	log.c	/^static char *lbuf;$/;"	v	file:
+ldr_exec	bootldr.c	/^static void ldr_exec(void *addr)$/;"	f	file:
+ldr_flag	ldrinfo.c	/^struct ldr_flag {$/;"	s	file:
+ldr_load	bootldr.c	/^static void ldr_load(uint8_t *base_addr)$/;"	f	file:
+ldr_valid_signature	bootldr.c	/^static bool ldr_valid_signature(uint8_t *data)$/;"	f	file:
+ldrinfo_block	ldrinfo.c	/^static uint32_t ldrinfo_block(const void *base_addr)$/;"	f	file:
+ldrinfo_header	ldrinfo.c	/^static uint32_t ldrinfo_header(const void *addr)$/;"	f	file:
+led_cmd	led.c	/^enum led_cmd { LED_ON, LED_OFF, LED_TOGGLE, LED_BLINK };$/;"	g	file:
+led_commands	led.c	/^static const led_tbl_t led_commands[] = {$/;"	v	file:
+led_tbl_s	led.c	/^struct led_tbl_s {$/;"	s	file:
+led_tbl_t	led.c	/^typedef struct led_tbl_s led_tbl_t;$/;"	t	typeref:struct:led_tbl_s	file:
+len	mii.c	/^	ushort len;$/;"	m	struct:_MII_field_desc_and_len_t	file:
+lex_state	pxe.c	/^enum lex_state {$/;"	g	file:
+list	pxe.c	/^	struct list_head list;$/;"	m	struct:pxe_label	typeref:struct:pxe_label::list_head	file:
+list_partitions	mtdparts.c	/^static void list_partitions(void)$/;"	f	file:
+lo	mii.c	/^	ushort lo;$/;"	m	struct:_MII_field_desc_t	file:
+load_address	armflash.c	/^	u32 load_address;$/;"	m	struct:afs_region	file:
+load_elf_image_phdr	elf.c	/^static unsigned long load_elf_image_phdr(unsigned long addr)$/;"	f	file:
+load_elf_image_shdr	elf.c	/^static unsigned long load_elf_image_shdr(unsigned long addr)$/;"	f	file:
+load_image	armflash.c	/^static int load_image(const char * const name, const ulong address)$/;"	f	file:
+load_serial	load.c	/^static ulong load_serial(long offset)$/;"	f	file:
+load_serial_bin	load.c	/^static ulong load_serial_bin(ulong offset)$/;"	f	file:
+load_serial_ymodem	load.c	/^static ulong load_serial_ymodem(ulong offset, int mode)$/;"	f	file:
+localboot	pxe.c	/^	int localboot;$/;"	m	struct:pxe_label	file:
+localboot_val	pxe.c	/^	int localboot_val;$/;"	m	struct:pxe_label	file:
+log	log.c	/^static logbuff_t *log;$/;"	v	file:
+log	log.c	/^static volatile logbuff_t *log;$/;"	v	file:
+log_version	log.c	/^static unsigned log_version = 1;$/;"	v	file:
+logbuff_init_ptrs	log.c	/^void logbuff_init_ptrs(void)$/;"	f
+logbuff_log	log.c	/^void logbuff_log(char *msg)$/;"	f
+logbuff_printk	log.c	/^static int logbuff_printk(const char *line)$/;"	f	file:
+logbuff_putc	log.c	/^static void logbuff_putc(struct stdio_dev *dev, const char c)$/;"	f	file:
+logbuff_puts	log.c	/^static void logbuff_puts(struct stdio_dev *dev, const char *s)$/;"	f	file:
+logbuff_reset	log.c	/^void logbuff_reset(void)$/;"	f
+lowup	otp.c	41;"	d	file:
+lskip	ini.c	/^static char *lskip(const char *s)$/;"	f	file:
+magic	bootm.c	/^	uint32_t	magic;		\/* Magic number *\/$/;"	m	struct:Image_header	file:
+mask	led.c	/^	led_id_t	mask;		\/* Mask used for calling __led_set() *\/$/;"	m	struct:led_tbl_s	file:
+mask	mii.c	/^	ushort mask;$/;"	m	struct:_MII_field_desc_t	file:
+match	ethsw.c	/^	int (*match)(enum ethsw_keyword_id key_id, int argc, char *const argv[],$/;"	m	struct:keyword_def	file:
+mdio_read_ranges	mdio.c	/^static int mdio_read_ranges(struct phy_device *phydev, struct mii_dev *bus,$/;"	f	file:
+mdio_write_ranges	mdio.c	/^static int mdio_write_ranges(struct phy_device *phydev, struct mii_dev *bus,$/;"	f	file:
+mem_attr	efi.c	/^} mem_attr[] = {$/;"	v	typeref:struct:attr_info	file:
+mem_test_alt	mem.c	/^static ulong mem_test_alt(vu_long *buf, ulong start_addr, ulong end_addr,$/;"	f	file:
+mem_test_quick	mem.c	/^static ulong mem_test_quick(vu_long *buf, ulong start_addr, ulong end_addr,$/;"	f	file:
+memgets	ini.c	/^static char *memgets(char *str, int num, char **mem, size_t *memsize)$/;"	f	file:
+memsize_format	mtdparts.c	/^static void memsize_format(char *buf, u64 size)$/;"	f	file:
+memsize_parse	mtdparts.c	/^static u64 memsize_parse (const char *const ptr, const char **retptr)$/;"	f	file:
+memstr	setexpr.c	/^static char *memstr(const char *s1, int l1, const char *s2, int l2)$/;"	f	file:
+menu	bootmenu.c	/^	struct bootmenu_data *menu;	\/* this bootmenu *\/$/;"	m	struct:bootmenu_entry	typeref:struct:bootmenu_entry::bootmenu_data	file:
+menu	pxe.c	/^	char *menu;$/;"	m	struct:pxe_label	file:
+menu_display_statusline	bootmenu.c	/^void menu_display_statusline(struct menu *m)$/;"	f
+menu_show	bootmenu.c	/^int menu_show(int bootdelay)$/;"	f
+mk_date	date.c	/^int mk_date (const char *datestr, struct rtc_time *tmp)$/;"	f
+mkmodestr	cramfs.c	/^char *mkmodestr(unsigned long mode, char *str)$/;"	f
+mm_last_addr	mem.c	/^static ulong	mm_last_addr, mm_last_size;$/;"	v	file:
+mm_last_size	mem.c	/^static ulong	mm_last_addr, mm_last_size;$/;"	v	file:
+mmc_nspi	dataflash_mmc_mux.c	/^static int mmc_nspi (const char *s)$/;"	f	file:
+mod_i2c_mem	i2c.c	/^mod_i2c_mem(cmd_tbl_t *cmdtp, int incrflag, int flag, int argc, char * const argv[])$/;"	f	file:
+mod_mem	mem.c	/^mod_mem(cmd_tbl_t *cmdtp, int incrflag, int flag, int argc, char * const argv[])$/;"	f	file:
+mode	spi.c	/^static unsigned int	mode;$/;"	v	file:
+mtd	onenand.c	/^static struct mtd_info *mtd;$/;"	v	typeref:struct:mtd_info	file:
+mtd_device_validate	jffs2.c	/^static int mtd_device_validate(u8 type, u8 num, u32 *size)$/;"	f	file:
+mtd_device_validate	mtdparts.c	/^static int mtd_device_validate(u8 type, u8 num, u64 *size)$/;"	f	file:
+mtd_devices_init	mtdparts.c	/^static int mtd_devices_init(void)$/;"	f	file:
+mtd_id_parse	jffs2.c	/^static int mtd_id_parse(const char *id, const char **ret_id, u8 *dev_type, u8 *dev_num)$/;"	f	file:
+mtd_id_parse	mtdparts.c	/^int mtd_id_parse(const char *id, const char **ret_id, u8 *dev_type,$/;"	f
+mtd_info	ubi.c	/^	struct mtd_info *mtd_info;$/;"	m	struct:selected_dev	typeref:struct:selected_dev::mtd_info	file:
+mtd_part_info	mtdparts.c	/^static struct part_info* mtd_part_info(struct mtd_device *dev, unsigned int part_num)$/;"	f	file:
+mtdids	mtdparts.c	/^static struct list_head mtdids;$/;"	v	typeref:struct:list_head	file:
+mtdids_default	mtdparts.c	/^static const char *const mtdids_default = MTDIDS_DEFAULT;$/;"	v	file:
+mtdids_default	mtdparts.c	/^static const char *const mtdids_default = NULL;$/;"	v	file:
+mtdparts_default	mtdparts.c	/^static const char *const mtdparts_default = MTDPARTS_DEFAULT;$/;"	v	file:
+mtdparts_default	mtdparts.c	/^static const char *const mtdparts_default = NULL;$/;"	v	file:
+mtdparts_help_text	mtdparts.c	/^static char mtdparts_help_text[] =$/;"	v	file:
+mtdparts_init	jffs2.c	/^int mtdparts_init(void)$/;"	f
+mtdparts_init	mtdparts.c	/^int mtdparts_init(void)$/;"	f
+name	ambapp.c	/^	char *name;$/;"	m	struct:__anon2	file:
+name	ambapp.c	/^	char *name;$/;"	m	struct:__anon3	file:
+name	armflash.c	/^	const char *name;$/;"	m	struct:afs_image	file:
+name	efi.c	/^	const char *name;$/;"	m	struct:attr_info	file:
+name	fdc.c	/^	const char	* name;	\/* used only for predefined formats *\/$/;"	m	struct:__anon8	file:
+name	mii.c	/^	char * name;$/;"	m	struct:_MII_field_desc_t	file:
+name	mii.c	/^	char * name;$/;"	m	struct:_MII_reg_desc_t	file:
+name	pci.c	/^	const char *name;$/;"	m	struct:pci_reg_info	file:
+name	pxe.c	/^	char *name;$/;"	m	struct:pxe_label	file:
+name_to_gpio	gpio.c	/^__weak int name_to_gpio(const char *name)$/;"	f
+nand_dump	nand.c	/^static int nand_dump(nand_info_t *nand, ulong off, int only_oob, int repeat)$/;"	f	file:
+nand_env_oob_offset	nand.c	/^unsigned long nand_env_oob_offset;$/;"	v
+nand_help_text	nand.c	/^static char nand_help_text[] =$/;"	v	file:
+nand_imls_fitimage	bootm.c	/^static int nand_imls_fitimage(nand_info_t *nand, int nand_dev, loff_t off,$/;"	f	file:
+nand_imls_legacyimage	bootm.c	/^static int nand_imls_legacyimage(nand_info_t *nand, int nand_dev, loff_t off,$/;"	f	file:
+nand_load_image	nand.c	/^static int nand_load_image(cmd_tbl_t *cmdtp, nand_info_t *nand,$/;"	f	file:
+nand_print_and_set_info	nand.c	/^static void nand_print_and_set_info(int idx)$/;"	f	file:
+net_part_size	mtdparts.c	/^static uint64_t net_part_size(struct mtd_info *mtd, struct part_info *part)$/;"	f	file:
+netboot_common	net.c	/^static int netboot_common(enum proto_t proto, cmd_tbl_t *cmdtp, int argc,$/;"	f	file:
+netboot_update_env	net.c	/^static void netboot_update_env(void)$/;"	f	file:
+next	bootmenu.c	/^	struct bootmenu_entry *next;	\/* next menu entry (num+1) *\/$/;"	m	struct:bootmenu_entry	typeref:struct:bootmenu_entry::bootmenu_entry	file:
+next_ofs	onenand.c	/^static loff_t next_ofs;$/;"	v	file:
+nr	ubi.c	/^	int nr;$/;"	m	struct:selected_dev	file:
+num	bootmenu.c	/^	unsigned short int num;		\/* unique number 0 .. MAX_COUNT *\/$/;"	m	struct:bootmenu_entry	file:
+num	pxe.c	/^	char num[4];$/;"	m	struct:pxe_label	file:
+num_afs_images	armflash.c	/^static int num_afs_images;$/;"	v	file:
+off	led.c	/^	void		(*off)(void);	\/* Optional function for turning LED off *\/$/;"	m	struct:led_tbl_s	file:
+offset	armflash.c	/^	u32 offset;$/;"	m	struct:afs_region	file:
+offset	pci.c	/^	u8 offset;$/;"	m	struct:pci_reg_info	file:
+on	led.c	/^	void		(*on)(void);	\/* Optional function for turning LED on *\/$/;"	m	struct:led_tbl_s	file:
+onenand_block_erase	onenand.c	/^static int onenand_block_erase(u32 start, u32 size, int force)$/;"	f	file:
+onenand_block_read	onenand.c	/^static int onenand_block_read(loff_t from, size_t len,$/;"	f	file:
+onenand_block_test	onenand.c	/^static int onenand_block_test(u32 start, u32 size)$/;"	f	file:
+onenand_block_write	onenand.c	/^static int onenand_block_write(loff_t to, size_t len,$/;"	f	file:
+onenand_dump	onenand.c	/^static int onenand_dump(struct mtd_info *mtd, ulong off, int only_oob)$/;"	f	file:
+onenand_reloc	onenand.c	/^void onenand_reloc(void) {$/;"	f
+onenand_write_oneblock_withoob	onenand.c	/^static int onenand_write_oneblock_withoob(loff_t to, const u_char * buf,$/;"	f	file:
+op	itest.c	/^	char	*op;		\/* operator string *\/$/;"	m	struct:op_tbl_s	file:
+op	test.c	/^	int op;$/;"	m	struct:__anon9	file:
+op_adv	test.c	/^} op_adv[] = {$/;"	v	typeref:struct:__anon9
+op_table	itest.c	/^static const op_tbl_t op_table [] = {$/;"	v	file:
+op_tbl_s	itest.c	/^struct op_tbl_s {$/;"	s	file:
+op_tbl_t	itest.c	/^typedef struct op_tbl_s op_tbl_t;$/;"	t	typeref:struct:op_tbl_s	file:
+opcode	itest.c	/^	int	opcode;		\/* internal representation of opcode *\/$/;"	m	struct:op_tbl_s	file:
+os_data_addr	load.c	/^static char *os_data_addr, *os_data_addr_saved;$/;"	v	file:
+os_data_addr_saved	load.c	/^static char *os_data_addr, *os_data_addr_saved;$/;"	v	file:
+os_data_char	load.c	/^static void (*os_data_char)(char new_char);$/;"	v	file:
+os_data_init	load.c	/^static void (*os_data_init)(void);$/;"	v	file:
+os_data_restore	load.c	/^static void os_data_restore(void)$/;"	f	file:
+os_data_save	load.c	/^static void os_data_save(void)$/;"	f	file:
+os_data_state	load.c	/^static int os_data_state, os_data_state_saved;$/;"	v	file:
+os_data_state_saved	load.c	/^static int os_data_state, os_data_state_saved;$/;"	v	file:
+otp_strerror	otp.c	/^static const char *otp_strerror(uint32_t err)$/;"	f	file:
+out_last_addr	portio.c	/^static uint out_last_addr, out_last_size, out_last_value;$/;"	v	file:
+out_last_size	portio.c	/^static uint out_last_addr, out_last_size, out_last_value;$/;"	v	file:
+out_last_value	portio.c	/^static uint out_last_addr, out_last_size, out_last_value;$/;"	v	file:
+parse_argv	cache.c	/^static int parse_argv(const char *s)$/;"	f	file:
+parse_bank	armflash.c	/^static void parse_bank(ulong bank)$/;"	f	file:
+parse_byte_string	tpm.c	/^static void *parse_byte_string(char *bytes, uint8_t *data, size_t *count_ptr)$/;"	f	file:
+parse_flash	armflash.c	/^static void parse_flash(void)$/;"	f	file:
+parse_hwpart_gp	mmc.c	/^static int parse_hwpart_gp(struct mmc_hwpart_conf *pconf, int pidx,$/;"	f	file:
+parse_hwpart_user	mmc.c	/^static int parse_hwpart_user(struct mmc_hwpart_conf *pconf,$/;"	f	file:
+parse_integer	pxe.c	/^static int parse_integer(char **c, int *dst)$/;"	f	file:
+parse_label	pxe.c	/^static int parse_label(char **c, struct pxe_menu *cfg)$/;"	f	file:
+parse_label_menu	pxe.c	/^static int parse_label_menu(char **c, struct pxe_menu *cfg,$/;"	f	file:
+parse_menu	pxe.c	/^static int parse_menu(cmd_tbl_t *cmdtp, char **c, struct pxe_menu *cfg,$/;"	f	file:
+parse_mtdids	mtdparts.c	/^static int parse_mtdids(const char *const ids)$/;"	f	file:
+parse_mtdparts	mtdparts.c	/^static int parse_mtdparts(const char *const mtdparts)$/;"	f	file:
+parse_pxefile	pxe.c	/^static struct pxe_menu *parse_pxefile(cmd_tbl_t *cmdtp, unsigned long menucfg)$/;"	f	file:
+parse_pxefile_top	pxe.c	/^static int parse_pxefile_top(cmd_tbl_t *cmdtp, char *p, unsigned long base,$/;"	f	file:
+parse_sliteral	pxe.c	/^static int parse_sliteral(char **c, char **dst)$/;"	f	file:
+parse_verify_sum	md5sum.c	/^static int parse_verify_sum(char *verify_str, u8 *vsum)$/;"	f	file:
+part_add	mtdparts.c	/^static int part_add(struct mtd_device *dev, struct part_info *part)$/;"	f	file:
+part_del	mtdparts.c	/^static int part_del(struct mtd_device *dev, struct part_info *part)$/;"	f	file:
+part_delall	mtdparts.c	/^static void part_delall(struct list_head *head)$/;"	f	file:
+part_name	ubi.c	/^	char part_name[80];$/;"	m	struct:selected_dev	file:
+part_parse	mtdparts.c	/^static int part_parse(const char *const partdef, const char **ret, struct part_info **retpart)$/;"	f	file:
+part_sort_add	mtdparts.c	/^static int part_sort_add(struct mtd_device *dev, struct part_info *part)$/;"	f	file:
+part_validate	mtdparts.c	/^static int part_validate(struct mtdids *id, struct part_info *part)$/;"	f	file:
+part_validate_eraseblock	mtdparts.c	/^static int part_validate_eraseblock(struct mtdids *id, struct part_info *part)$/;"	f	file:
+pci_bs	tsi148.c	/^	unsigned int  pci_bs;$/;"	m	struct:_TSI148_DEV	file:
+pci_bs	universe.c	/^	unsigned int   pci_bs;$/;"	m	struct:_UNI_DEV	file:
+pci_byte_size	pci.c	/^static int pci_byte_size(enum pci_size_t size)$/;"	f	file:
+pci_cfg_display	pci.c	/^static int pci_cfg_display(struct udevice *dev, ulong addr,$/;"	f	file:
+pci_cfg_modify	pci.c	/^static int pci_cfg_modify(struct udevice *dev, ulong addr, ulong size,$/;"	f	file:
+pci_cfg_write	pci.c	/^static int pci_cfg_write (pci_dev_t bdf, ulong addr, ulong size, ulong value)$/;"	f	file:
+pci_field_width	pci.c	/^static int pci_field_width(enum pci_size_t size)$/;"	f	file:
+pci_header_show	pci.c	/^void pci_header_show(struct udevice *dev)$/;"	f
+pci_header_show_brief	pci.c	/^static void pci_header_show_brief(struct udevice *dev)$/;"	f	file:
+pci_header_show_brief	pci.c	/^void pci_header_show_brief(pci_dev_t dev)$/;"	f
+pci_help_text	pci.c	/^static char pci_help_text[] =$/;"	v	file:
+pci_read_config	pci.c	/^static unsigned long pci_read_config(pci_dev_t dev, int offset,$/;"	f	file:
+pci_reg_info	pci.c	/^struct pci_reg_info {$/;"	s	file:
+pci_show_regs	pci.c	/^static void pci_show_regs(pci_dev_t dev, struct pci_reg_info *regs)$/;"	f	file:
+pci_show_regs	pci.c	/^static void pci_show_regs(struct udevice *dev, struct pci_reg_info *regs)$/;"	f	file:
+pciinfo	pci.c	/^static void pciinfo(struct udevice *bus, bool short_listing)$/;"	f	file:
+pciinfo	pci.c	/^void pciinfo(int bus_num, int short_pci_listing)$/;"	f
+pciinfo_header	pci.c	/^void pciinfo_header(int busnum, bool short_listing)$/;"	f
+pdesc	mii.c	/^	const MII_field_desc_t *pdesc;$/;"	m	struct:_MII_field_desc_and_len_t	file:
+portspeed	usb.c	/^static inline char *portspeed(int speed)$/;"	f	file:
+prbrg	immap.c	/^static void prbrg (int n, uint val)$/;"	f	file:
+print_active_callback	nvedit.c	/^static int print_active_callback(ENTRY *entry)$/;"	f	file:
+print_active_flags	nvedit.c	/^static int print_active_flags(ENTRY *entry)$/;"	f	file:
+print_byte_string	tpm.c	/^static void print_byte_string(uint8_t *data, size_t count)$/;"	f	file:
+print_cpu_list	cpu.c	/^static int print_cpu_list(bool detail)$/;"	f	file:
+print_data	fdt.c	/^static void print_data(const void *data, int len)$/;"	f	file:
+print_ddr2_tcyc	i2c.c	/^static void print_ddr2_tcyc (u_char const b)$/;"	f	file:
+print_eth	bdinfo.c	/^static void print_eth(int idx)$/;"	f	file:
+print_eths	bdinfo.c	/^static void print_eths(void)$/;"	f	file:
+print_fixed	pcmcia.c	/^static void print_fixed (volatile uchar *p)$/;"	f	file:
+print_funcid	pcmcia.c	/^static void print_funcid (int func)$/;"	f	file:
+print_images	armflash.c	/^static void print_images(void)$/;"	f	file:
+print_lnum	bdinfo.c	/^static void print_lnum(const char *name, unsigned long long value)$/;"	f	file:
+print_mhz	bdinfo.c	/^static void print_mhz(const char *name, unsigned long hz)$/;"	f	file:
+print_mmcinfo	mmc.c	/^static void print_mmcinfo(struct mmc *mmc)$/;"	f	file:
+print_num	bdinfo.c	/^static void print_num(const char *name, ulong value)$/;"	f	file:
+print_partition_table	mtdparts.c	/^static void print_partition_table(void)$/;"	f	file:
+print_remoteproc_list	remoteproc.c	/^static int print_remoteproc_list(void)$/;"	f	file:
+print_static_binding	nvedit.c	/^static int print_static_binding(const char *var_name, const char *callback_name,$/;"	f	file:
+print_static_flags	nvedit.c	/^static int print_static_flags(const char *var_name, const char *flags,$/;"	f	file:
+print_status	nand.c	/^static void print_status(ulong start, ulong end, ulong erasesize, int status)$/;"	f	file:
+prompt	pxe.c	/^	int prompt;$/;"	m	struct:pxe_menu	file:
+pxe_default_paths	pxe.c	/^const char *pxe_default_paths[] = {$/;"	v
+pxe_ipaddr_paths	pxe.c	/^static int pxe_ipaddr_paths(cmd_tbl_t *cmdtp, unsigned long pxefile_addr_r)$/;"	f	file:
+pxe_label	pxe.c	/^struct pxe_label {$/;"	s	file:
+pxe_mac_path	pxe.c	/^static int pxe_mac_path(cmd_tbl_t *cmdtp, unsigned long pxefile_addr_r)$/;"	f	file:
+pxe_menu	pxe.c	/^struct pxe_menu {$/;"	s	file:
+pxe_menu_to_menu	pxe.c	/^static struct menu *pxe_menu_to_menu(struct pxe_menu *cfg)$/;"	f	file:
+pxe_uuid_path	pxe.c	/^static int pxe_uuid_path(cmd_tbl_t *cmdtp, unsigned long pxefile_addr_r)$/;"	f	file:
+rate	fdc.c	/^	unsigned char	rate;	\/* data rate. |= 0x40 for perpendicular *\/$/;"	m	struct:__anon8	file:
+raw_access	nand.c	/^static int raw_access(nand_info_t *nand, ulong addr, loff_t off, ulong count,$/;"	f	file:
+read_fdc_byte	fdc.c	/^int read_fdc_byte(void)$/;"	f
+read_fdc_reg	fdc.c	/^unsigned char read_fdc_reg(unsigned int addr)$/;"	f
+read_record	load.c	/^static int read_record(char *buf, ulong len)$/;"	f	file:
+reboot	tpm_test.c	161;"	d	file:
+reg_0_5_desc_tbl	mii.c	/^static const MII_reg_desc_t reg_0_5_desc_tbl[] = {$/;"	v	file:
+reg_0_desc_tbl	mii.c	/^static const MII_field_desc_t reg_0_desc_tbl[] = {$/;"	v	file:
+reg_1_desc_tbl	mii.c	/^static const MII_field_desc_t reg_1_desc_tbl[] = {$/;"	v	file:
+reg_2_desc_tbl	mii.c	/^static const MII_field_desc_t reg_2_desc_tbl[] = {$/;"	v	file:
+reg_3_desc_tbl	mii.c	/^static const MII_field_desc_t reg_3_desc_tbl[] = {$/;"	v	file:
+reg_4_desc_tbl	mii.c	/^static const MII_field_desc_t reg_4_desc_tbl[] = {$/;"	v	file:
+reg_5_desc_tbl	mii.c	/^static const MII_field_desc_t reg_5_desc_tbl[] = {$/;"	v	file:
+regex_sub	setexpr.c	/^static int regex_sub(const char *name,$/;"	f	file:
+region_count	armflash.c	/^	u32 region_count;$/;"	m	struct:afs_image	file:
+regions	armflash.c	/^	struct afs_region regions[MAX_REGIONS];$/;"	m	struct:afs_image	typeref:struct:afs_image::afs_region	file:
+regno	mii.c	/^	ushort regno;$/;"	m	struct:_MII_reg_desc_t	file:
+regs_bridge	pci.c	/^static struct pci_reg_info regs_bridge[] = {$/;"	v	typeref:struct:pci_reg_info	file:
+regs_cardbus	pci.c	/^static struct pci_reg_info regs_cardbus[] = {$/;"	v	typeref:struct:pci_reg_info	file:
+regs_normal	pci.c	/^static struct pci_reg_info regs_normal[] = {$/;"	v	typeref:struct:pci_reg_info	file:
+regs_rest	pci.c	/^static struct pci_reg_info regs_rest[] = {$/;"	v	typeref:struct:pci_reg_info	file:
+regs_start	pci.c	/^static struct pci_reg_info regs_start[] = {$/;"	v	typeref:struct:pci_reg_info	file:
+report_return_code	tpm.c	/^static int report_return_code(int return_code)$/;"	f	file:
+report_time	time.c	/^static void report_time(ulong cycles)$/;"	f	file:
+res1	bootm.c	/^	uint64_t	res1;		\/* reserved *\/$/;"	m	struct:Image_header	file:
+res2	bootm.c	/^	uint64_t	res2;		\/* reserved *\/$/;"	m	struct:Image_header	file:
+res3	bootm.c	/^	uint64_t	res3;		\/* reserved *\/$/;"	m	struct:Image_header	file:
+res4	bootm.c	/^	uint64_t	res4;		\/* reserved *\/$/;"	m	struct:Image_header	file:
+res5	bootm.c	/^	uint32_t	res5;$/;"	m	struct:Image_header	file:
+result	fdc.c	/^	uchar		result[11];	\/* status information *\/$/;"	m	struct:__anon7	file:
+resultlen	fdc.c	/^	uchar		resultlen;	\/* lenght of result *\/$/;"	m	struct:__anon7	file:
+rstrip	ini.c	/^static char *rstrip(char *s)$/;"	f	file:
+s1_sendpacket	load.c	/^static void s1_sendpacket(char *packet)$/;"	f	file:
+sata_bread	sata.c	/^static unsigned long sata_bread(block_dev_desc_t *block_dev, lbaint_t start,$/;"	f	file:
+sata_bwrite	sata.c	/^static unsigned long sata_bwrite(block_dev_desc_t *block_dev, lbaint_t start,$/;"	f	file:
+sata_curr_device	sata.c	/^int sata_curr_device = -1;$/;"	v
+sata_dev_desc	sata.c	/^block_dev_desc_t sata_dev_desc[CONFIG_SYS_SATA_MAX_DEVICE];$/;"	v
+sata_get_dev	sata.c	/^block_dev_desc_t *sata_get_dev(int dev)$/;"	f
+save_serial	load.c	/^static int save_serial(ulong address, ulong count)$/;"	f	file:
+scsi_curr_dev	scsi.c	/^static int scsi_curr_dev; \/* current device *\/$/;"	v	file:
+scsi_dev_desc	scsi.c	/^static block_dev_desc_t scsi_dev_desc[CONFIG_SYS_SCSI_MAX_DEVICE];$/;"	v	file:
+scsi_device_list	scsi.c	/^const struct pci_device_id scsi_device_list[] = { SCSI_DEV_LIST };$/;"	v	typeref:struct:pci_device_id
+scsi_get_dev	scsi.c	/^block_dev_desc_t * scsi_get_dev(int dev)$/;"	f
+scsi_get_disk_count	scsi.c	/^int scsi_get_disk_count(void)$/;"	f
+scsi_ident_cpy	scsi.c	/^void scsi_ident_cpy (unsigned char *dest, unsigned char *src, unsigned int len)$/;"	f
+scsi_init	scsi.c	/^void scsi_init(void)$/;"	f
+scsi_max_devs	scsi.c	/^static int scsi_max_devs; \/* number of highest available scsi device *\/$/;"	v	file:
+scsi_read	scsi.c	/^static ulong scsi_read(block_dev_desc_t *block_dev, lbaint_t blknr,$/;"	f	file:
+scsi_read_capacity	scsi.c	/^int scsi_read_capacity(ccb *pccb, lbaint_t *capacity, unsigned long *blksz)$/;"	f
+scsi_scan	scsi.c	/^void scsi_scan(int mode)$/;"	f
+scsi_setup_inquiry	scsi.c	/^void scsi_setup_inquiry(ccb * pccb)$/;"	f
+scsi_setup_read16	scsi.c	/^void scsi_setup_read16(ccb * pccb, lbaint_t start, unsigned long blocks)$/;"	f
+scsi_setup_read6	scsi.c	/^void scsi_setup_read6(ccb * pccb, lbaint_t start, unsigned short blocks)$/;"	f
+scsi_setup_read_ext	scsi.c	/^void scsi_setup_read_ext(ccb * pccb, lbaint_t start, unsigned short blocks)$/;"	f
+scsi_setup_test_unit_ready	scsi.c	/^void scsi_setup_test_unit_ready(ccb * pccb)$/;"	f
+scsi_setup_write_ext	scsi.c	/^void scsi_setup_write_ext(ccb *pccb, lbaint_t start, unsigned short blocks)$/;"	f
+scsi_trim_trail	scsi.c	/^void scsi_trim_trail (unsigned char *str, unsigned int len)$/;"	f
+scsi_write	scsi.c	/^static ulong scsi_write(block_dev_desc_t *block_dev, lbaint_t blknr,$/;"	f	file:
+sect	fdc.c	/^	unsigned int sect;	\/* sectors per track *\/$/;"	m	struct:__anon8	file:
+sect_code	fdc.c	/^	unsigned char sect_code;\/* Sector Size code *\/$/;"	m	struct:__anon8	file:
+select_fdc_drive	fdc.c	/^void select_fdc_drive(FDC_COMMAND_STRUCT *pCMD)$/;"	f
+selected	ubi.c	/^	int selected;$/;"	m	struct:selected_dev	file:
+selected_dev	ubi.c	/^struct selected_dev {$/;"	s	file:
+send_ack	load.c	/^static void send_ack(int n)$/;"	f	file:
+send_nack	load.c	/^static void send_nack(int n)$/;"	f	file:
+send_pad	load.c	/^static void send_pad(void)$/;"	f	file:
+send_parms	load.c	/^static char send_parms[SEND_DATA_SIZE];$/;"	v	file:
+send_ptr	load.c	/^static char *send_ptr;$/;"	v	file:
+sensor_initialized	dtt.c	/^static unsigned long sensor_initialized;$/;"	v	file:
+set_dev	nand.c	/^static int set_dev(int dev)$/;"	f	file:
+set_gpt_info	gpt.c	/^static int set_gpt_info(block_dev_desc_t *dev_desc,$/;"	f	file:
+set_kerm_bin_mode	load.c	/^static void set_kerm_bin_mode(unsigned long *addr)$/;"	f	file:
+set_otp_timing	otp.c	/^static void set_otp_timing(bool write)$/;"	f	file:
+set_working_fdt_addr	fdt.c	/^void set_working_fdt_addr(ulong addr)$/;"	f
+setenv	nvedit.c	/^int setenv(const char *varname, const char *varvalue)$/;"	f
+setenv_hex	nvedit.c	/^int setenv_hex(const char *varname, ulong value)$/;"	f
+setenv_ulong	nvedit.c	/^int setenv_ulong(const char *varname, ulong value)$/;"	f
+sf_parse_len_arg	sf.c	/^static int sf_parse_len_arg(char *arg, ulong *len)$/;"	f	file:
+shift	efi.c	/^	int shift;$/;"	m	struct:attr_info	file:
+show_bus	i2c.c	/^static void show_bus(struct udevice *bus)$/;"	f	file:
+show_cplb_table	cplbinfo.c	/^static void show_cplb_table(uint32_t *addr, uint32_t *data)$/;"	f	file:
+show_info	usb.c	/^static void show_info(struct udevice *dev)$/;"	f	file:
+show_time	sf.c	/^static void show_time(struct test_info *test, int stage)$/;"	f	file:
+size	armflash.c	/^	u32 size;$/;"	m	struct:afs_region	file:
+size	fdc.c	/^	unsigned int size;	\/* nr of sectors total *\/$/;"	m	struct:__anon8	file:
+size	pci.c	/^	enum pci_size_t size;$/;"	m	struct:pci_reg_info	typeref:enum:pci_reg_info::pci_size_t	file:
+skip_ofs	onenand.c	/^static loff_t skip_ofs;$/;"	v	file:
+soc_clk_dump	clk.c	/^int __weak soc_clk_dump(void)$/;"	f
+source	source.c	/^source (ulong addr, const char *fit_uname)$/;"	f
+source_help_text	source.c	/^static char source_help_text[] =$/;"	v	file:
+spec1	fdc.c	/^	unsigned char	spec1;	\/* stepping rate, head unload time *\/$/;"	m	struct:__anon8	file:
+special_field	mii.c	/^static int special_field($/;"	f	file:
+spi_flash_test	sf.c	/^static int spi_flash_test(struct spi_flash *flash, uint8_t *buf, ulong len,$/;"	f	file:
+spi_flash_update	sf.c	/^static int spi_flash_update(struct spi_flash *flash, u32 offset,$/;"	f	file:
+spi_flash_update_block	sf.c	/^static const char *spi_flash_update_block(struct spi_flash *flash, u32 offset,$/;"	f	file:
+spi_test_next_stage	sf.c	/^static void spi_test_next_stage(struct test_info *test)$/;"	f	file:
+spl_export	spl.c	/^static int spl_export(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+spread_partition	mtdparts.c	/^static void spread_partition(struct mtd_info *mtd, struct part_info *part,$/;"	f	file:
+spread_partitions	mtdparts.c	/^static int spread_partitions(void)$/;"	f	file:
+stage	sf.c	/^	int stage;$/;"	m	struct:test_info	file:
+stage_name	sf.c	/^static char *stage_name[STAGE_COUNT] = {$/;"	v	file:
+start_addr	strings.c	/^static char *start_addr, *last_addr;$/;"	v	file:
+stop_fdc_drive	fdc.c	/^void stop_fdc_drive(FDC_COMMAND_STRUCT *pCMD)$/;"	f
+store_result	md5sum.c	/^static void store_result(const u8 *sum, const char *dest)$/;"	f	file:
+str	test.c	/^	const char *str;$/;"	m	struct:__anon9	file:
+stretch	fdc.c	/^	unsigned int stretch;	\/* !=0 means double track steps *\/$/;"	m	struct:__anon8	file:
+string	led.c	/^	char		*string;	\/* String for use in the command *\/$/;"	m	struct:led_tbl_s	file:
+stringcomp	itest.c	/^static int stringcomp(char *s, char *t, int op)$/;"	f	file:
+strncpy0	ini.c	/^static char *strncpy0(char *dest, const char *src, size_t size)$/;"	f	file:
+strtou32	fuse.c	/^static int strtou32(const char *str, unsigned int base, u32 *result)$/;"	f	file:
+subcmd	pmic.c	/^static cmd_tbl_t subcmd[] = {$/;"	v	file:
+subcmd	regulator.c	/^static cmd_tbl_t subcmd[] = {$/;"	v	file:
+subcmd_list	spl.c	/^static const char **subcmd_list[] = {$/;"	v	file:
+substitute	setexpr.c	/^static char *substitute(char *string,	\/* string buffer *\/$/;"	f	file:
+tempbuff	scsi.c	/^static unsigned char tempbuff[512]; \/* temporary data buffer *\/$/;"	v	file:
+tempccb	scsi.c	/^static ccb tempccb;	\/* temporary scsi command buffer *\/$/;"	v	file:
+test_early_extend	tpm_test.c	/^static int test_early_extend(void)$/;"	f	file:
+test_early_nvram	tpm_test.c	/^static int test_early_nvram(void)$/;"	f	file:
+test_early_nvram2	tpm_test.c	/^static int test_early_nvram2(void)$/;"	f	file:
+test_enable	tpm_test.c	/^static int test_enable(void)$/;"	f	file:
+test_fast_enable	tpm_test.c	/^static int test_fast_enable(void)$/;"	f	file:
+test_global_lock	tpm_test.c	/^static int test_global_lock(void)$/;"	f	file:
+test_info	sf.c	/^struct test_info {$/;"	s	file:
+test_lock	tpm_test.c	/^static int test_lock(void)$/;"	f	file:
+test_readonly	tpm_test.c	/^static int test_readonly(void)$/;"	f	file:
+test_redefine_unowned	tpm_test.c	/^static int test_redefine_unowned(void)$/;"	f	file:
+test_space_perm	tpm_test.c	/^static int test_space_perm(void)$/;"	f	file:
+test_startup	tpm_test.c	/^static int test_startup(void)$/;"	f	file:
+test_timer	tpm_test.c	/^static int test_timer(void)$/;"	f	file:
+test_timing	tpm_test.c	/^static int test_timing(void)$/;"	f	file:
+test_write_limit	tpm_test.c	/^static int test_write_limit(void)$/;"	f	file:
+text_offset	bootm.c	/^	uint64_t	text_offset;	\/* Image load offset, LE *\/$/;"	m	struct:Image_header	file:
+time_ms	sf.c	/^	unsigned time_ms[STAGE_COUNT];$/;"	m	struct:test_info	file:
+timeout	pxe.c	/^	int timeout;$/;"	m	struct:pxe_menu	file:
+title	bootmenu.c	/^	char *title;			\/* title of entry *\/$/;"	m	struct:bootmenu_entry	file:
+title	pxe.c	/^	char *title;$/;"	m	struct:pxe_menu	file:
+tochar	load.c	404;"	d	file:
+toggle	led.c	/^	void		(*toggle)(void);\/* Optional function for toggling LED *\/$/;"	m	struct:led_tbl_s	file:
+token	pxe.c	/^struct token {$/;"	s	file:
+token_type	pxe.c	/^enum token_type {$/;"	g	file:
+tpm_commands	tpm.c	/^static cmd_tbl_t tpm_commands[] = {$/;"	v	file:
+tpm_get_flags	tpm_test.c	/^static uint32_t tpm_get_flags(uint8_t *disable, uint8_t *deactivated,$/;"	f	file:
+tpm_is_owned	tpm_test.c	/^static int tpm_is_owned(void)$/;"	f	file:
+tpm_nv_set_locked	tpm_test.c	/^static uint32_t tpm_nv_set_locked(void)$/;"	f	file:
+tpm_nv_write_value_lock	tpm_test.c	/^static uint32_t tpm_nv_write_value_lock(uint32_t index)$/;"	f	file:
+tpm_set_global_lock	tpm_test.c	/^static uint32_t tpm_set_global_lock(void)$/;"	f	file:
+track	fdc.c	/^	unsigned int track;	\/* nr of tracks *\/$/;"	m	struct:__anon8	file:
+true	test.c	185;"	d	file:
+tsi148_eval_vam	tsi148.c	/^unsigned int tsi148_eval_vam(int vam)$/;"	f
+tsi148_init	tsi148.c	/^int tsi148_init(void)$/;"	f
+tsi148_pci_slave_window	tsi148.c	/^int tsi148_pci_slave_window(unsigned int pciAddr, unsigned int vmeAddr,$/;"	f
+tsi148_vme_crcsr_window	tsi148.c	/^int tsi148_vme_crcsr_window(unsigned int vmeAddr)$/;"	f
+tsi148_vme_crg_window	tsi148.c	/^int tsi148_vme_crg_window(unsigned int vmeAddr, int vam)$/;"	f
+tsi148_vme_gcsr_window	tsi148.c	/^int tsi148_vme_gcsr_window(unsigned int vmeAddr, int vam)$/;"	f
+tsi148_vme_slave_window	tsi148.c	/^int tsi148_vme_slave_window(unsigned int vmeAddr, unsigned int pciAddr,$/;"	f
+type	pxe.c	/^	enum token_type type;$/;"	m	struct:token	typeref:enum:token::token_type	file:
+type_name	efi.c	/^static const char *const type_name[] = {$/;"	v	file:
+type_string_alloc	tpm.c	/^static void *type_string_alloc(const char *type_str, uint32_t *count)$/;"	f	file:
+type_string_get_num_values	tpm.c	/^static int type_string_get_num_values(const char *type_str)$/;"	f	file:
+type_string_get_space_size	tpm.c	/^static size_t type_string_get_space_size(const char *type_str)$/;"	f	file:
+type_string_pack	tpm.c	/^static int type_string_pack(const char *type_str, char * const values[],$/;"	f	file:
+type_string_write_vars	tpm.c	/^static int type_string_write_vars(const char *type_str, uint8_t *data,$/;"	f	file:
+ubi	ubi.c	/^static struct ubi_device *ubi;$/;"	v	typeref:struct:ubi_device	file:
+ubi_check	ubi.c	/^static int ubi_check(char *name)$/;"	f	file:
+ubi_check_volumename	ubi.c	/^static int ubi_check_volumename(const struct ubi_volume *vol, char *name)$/;"	f	file:
+ubi_create_vol	ubi.c	/^static int ubi_create_vol(char *volume, int64_t size, int dynamic)$/;"	f	file:
+ubi_dev	ubi.c	/^static struct selected_dev ubi_dev;$/;"	v	typeref:struct:selected_dev	file:
+ubi_dev_scan	ubi.c	/^static int ubi_dev_scan(struct mtd_info *info, char *ubidev,$/;"	f	file:
+ubi_find_volume	ubi.c	/^static struct ubi_volume *ubi_find_volume(char *volume)$/;"	f	file:
+ubi_info	ubi.c	/^static int ubi_info(int layout)$/;"	f	file:
+ubi_initialized	ubi.c	/^static int ubi_initialized;$/;"	v	file:
+ubi_msg	ubi.c	27;"	d	file:
+ubi_msg	ubi.c	28;"	d	file:
+ubi_part	ubi.c	/^int ubi_part(char *part_name, const char *vid_header_offset)$/;"	f
+ubi_remove_vol	ubi.c	/^static int ubi_remove_vol(char *volume)$/;"	f	file:
+ubi_volume_begin_write	ubi.c	/^int ubi_volume_begin_write(char *volume, void *buf, size_t size,$/;"	f
+ubi_volume_continue_write	ubi.c	/^static int ubi_volume_continue_write(char *volume, void *buf, size_t size)$/;"	f	file:
+ubi_volume_read	ubi.c	/^int ubi_volume_read(char *volume, char *buf, size_t size)$/;"	f
+ubi_volume_write	ubi.c	/^int ubi_volume_write(char *volume, void *buf, size_t size)$/;"	f
+ubifs_initialized	ubifs.c	/^static int ubifs_initialized;$/;"	v	file:
+ubifs_is_mounted	ubifs.c	/^int ubifs_is_mounted(void)$/;"	f
+ubifs_mounted	ubifs.c	/^static int ubifs_mounted;$/;"	v	file:
+ums	usb_mass_storage.c	/^static struct ums *ums;$/;"	v	typeref:struct:ums	file:
+ums_count	usb_mass_storage.c	/^static int ums_count;$/;"	v	file:
+ums_fini	usb_mass_storage.c	/^static void ums_fini(void)$/;"	f	file:
+ums_init	usb_mass_storage.c	/^static int ums_init(const char *devtype, const char *devnums)$/;"	f	file:
+ums_read_sector	usb_mass_storage.c	/^static int ums_read_sector(struct ums *ums_dev,$/;"	f	file:
+ums_write_sector	usb_mass_storage.c	/^static int ums_write_sector(struct ums *ums_dev,$/;"	f	file:
+unimplemented	immap.c	/^unimplemented ( cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])$/;"	f	file:
+universe_init	universe.c	/^int universe_init(void)$/;"	f
+universe_pci_slave_window	universe.c	/^int universe_pci_slave_window(unsigned int pciAddr, unsigned int vmeAddr, int size, int vam, int pms, int vdw)$/;"	f
+universe_vme_slave_window	universe.c	/^int universe_vme_slave_window(unsigned int vmeAddr, unsigned int pciAddr, int size, int vam, int pms)$/;"	f
+unknown	ambapp.c	/^static char *unknown = "unknown";$/;"	v	file:
+untochar	load.c	405;"	d	file:
+uregs	tsi148.c	/^	TSI148       *uregs;$/;"	m	struct:_TSI148_DEV	file:
+uregs	universe.c	/^	UNIVERSE       *uregs;$/;"	m	struct:_UNI_DEV	file:
+usb_device_info	usb.c	/^static int usb_device_info(void)$/;"	f	file:
+usb_display_class_sub	usb.c	/^static void usb_display_class_sub(unsigned char dclass, unsigned char subclass,$/;"	f	file:
+usb_display_conf_desc	usb.c	/^static void usb_display_conf_desc(struct usb_config_descriptor *config,$/;"	f	file:
+usb_display_config	usb.c	/^static void usb_display_config(struct usb_device *dev)$/;"	f	file:
+usb_display_desc	usb.c	/^static void usb_display_desc(struct usb_device *dev)$/;"	f	file:
+usb_display_ep_desc	usb.c	/^static void usb_display_ep_desc(struct usb_endpoint_descriptor *epdesc)$/;"	f	file:
+usb_display_if_desc	usb.c	/^static void usb_display_if_desc(struct usb_interface_descriptor *ifdesc,$/;"	f	file:
+usb_display_string	usb.c	/^static void usb_display_string(struct usb_device *dev, int index)$/;"	f	file:
+usb_ether_curr_dev	usb.c	/^static int __maybe_unused usb_ether_curr_dev = -1; \/* current ethernet device *\/$/;"	v	file:
+usb_find_device	usb.c	/^static struct usb_device *usb_find_device(int devnum)$/;"	f	file:
+usb_get_class_desc	usb.c	/^static char *usb_get_class_desc(unsigned char dclass)$/;"	f	file:
+usb_show_subtree	usb.c	/^static void usb_show_subtree(struct usb_device *dev)$/;"	f	file:
+usb_show_tree	usb.c	/^void usb_show_tree(void)$/;"	f
+usb_show_tree_graph	usb.c	/^static void usb_show_tree_graph(struct usb_device *dev, char *pre)$/;"	f	file:
+usb_stor_curr_dev	usb.c	/^static int usb_stor_curr_dev = -1; \/* current device *\/$/;"	v	file:
+usb_test	usb.c	/^static int usb_test(struct usb_device *dev, int port, char* arg)$/;"	f	file:
+val	pxe.c	/^	char *val;$/;"	m	struct:token	file:
+valid_elf_image	elf.c	/^int valid_elf_image(unsigned long addr)$/;"	f
+vendor_id	ambapp.c	/^	unsigned int vendor_id;$/;"	m	struct:__anon3	file:
+vendors	ambapp.c	/^static ambapp_vendor_devnames vendors[] = {$/;"	v	file:
+verify_mkvol_req	ubi.c	/^static int verify_mkvol_req(const struct ubi_device *ubi,$/;"	f	file:
+version	armflash.c	/^	u32 version;$/;"	m	struct:afs_image	file:
+version_string	version.c	/^const char __weak version_string[] = U_BOOT_VERSION_STRING;$/;"	v
+wait_for_fdc_int	fdc.c	/^int wait_for_fdc_int(void)$/;"	f
+weekdays	date.c	/^static const char * const weekdays[] = {$/;"	v	file:
+working_fdt	fdt.c	/^struct fdt_header *working_fdt;$/;"	v	typeref:struct:fdt_header
+write_fdc_byte	fdc.c	/^int write_fdc_byte(unsigned char val)$/;"	f
+write_fdc_reg	fdc.c	/^void write_fdc_reg(unsigned int addr, unsigned char val)$/;"	f
+write_record	load.c	/^static int write_record(char *buf)$/;"	f	file:
+zfs_print	zfs.c	/^int zfs_print(const char *entry, const struct zfs_dirhook_info *data)$/;"	f
