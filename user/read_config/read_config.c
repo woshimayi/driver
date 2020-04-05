@@ -143,6 +143,6 @@ void main()
     printf("port = %s\n", port);
     GetProfileString("./cls.conf", "cls_server", "ip", ip);
     printf("ip = %s\n", ip);
-    GetProfileString("./cls.conf", "cls_server", "ifname", ifname);
+    GetProfileString("./cls.conf", "cls_server", "ifnamed", ifname);
     printf("ifname = %s\n", ifname);
 }

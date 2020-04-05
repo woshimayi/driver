@@ -34,7 +34,7 @@
 
 reset:
 	/* Allow the board to save important registers */
-	b	save_boot_params
+	b	save_boot_params      /* reset 调到 save_boot_params 函数处*/
 save_boot_params_ret:
 	/*
 	 * disable interrupts (FIQ and IRQ), also set the cpu to SVC32 mode,
@@ -98,7 +98,7 @@ ENDPROC(c_runtime_cpu_setup)
  *
  *************************************************************************/
 ENTRY(save_boot_params)
-	b	save_boot_params_ret		@ back to my caller
+	b	save_boot_params_ret		@ back to my caller 
 ENDPROC(save_boot_params)
 	.weak	save_boot_params
 

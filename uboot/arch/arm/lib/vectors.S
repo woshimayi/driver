@@ -46,7 +46,7 @@
  *************************************************************************
  */
 
-_start:
+_start:  // 后面是终端向量表
 
 #ifdef CONFIG_SYS_DV_NOR_BOOT_CFG
 	.word	CONFIG_SYS_DV_NOR_BOOT_CFG
