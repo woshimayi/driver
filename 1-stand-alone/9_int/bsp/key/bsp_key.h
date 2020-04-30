@@ -23,7 +23,14 @@ enum keyvalue
 };
 
 /* 函数声明 */
+/**
+ * [key_init description]
+ */
 void key_init(void);
+/**
+ * [key_getvalue description]
+ * @return  [description]
+ */
 int key_getvalue(void);
 
 

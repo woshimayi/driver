@@ -14,8 +14,16 @@ Copyright © zuozhongkai Co., Ltd. 1998-2019. All rights reserved.
 
 #define LED0	0
 
-/* 函数声明 */
+/**
+ * [led_init description]
+ * led init
+ */
 void led_init(void);
+/**
+ * [led_switch description]
+ * @param led    [GPIO num]
+ * @param status [on or off]
+ */
 void led_switch(int led, int status);
 #endif
 

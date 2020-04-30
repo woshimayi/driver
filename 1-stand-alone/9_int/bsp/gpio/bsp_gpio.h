@@ -50,12 +50,51 @@ typedef struct _gpio_pin_config
 
 
 /* 函数声明 */
+/**
+ * [gpio_init description]
+ * @param base   [description]
+ * @param pin    [description]
+ * @param config [description]
+ */
 void gpio_init(GPIO_Type *base, int pin, gpio_pin_config_t *config);
+/**
+ * [gpio_pinread description]
+ * @param  base [description]
+ * @param  pin  [description]
+ * @return      [description]
+ */
 int  gpio_pinread(GPIO_Type *base, int pin);
+/**
+ * [gpio_pinwrite description]
+ * @param base  [description]
+ * @param pin   [description]
+ * @param value [description]
+ */
 void gpio_pinwrite(GPIO_Type *base, int pin, int value);
+/**
+ * [gpio_intconfig description]
+ * @param base             [description]
+ * @param pin              [description]
+ * @param pinInterruptMode [description]
+ */
 void gpio_intconfig(GPIO_Type *base, unsigned int pin, gpio_interrupt_mode_t pinInterruptMode);
+/**
+ * [gpio_enableint description]
+ * @param base [description]
+ * @param pin  [description]
+ */
 void gpio_enableint(GPIO_Type *base, unsigned int pin);
+/**
+ * [gpio_disableint description]
+ * @param base [description]
+ * @param pin  [description]
+ */
 void gpio_disableint(GPIO_Type *base, unsigned int pin);
+/**
+ * [gpio_clearintflags description]
+ * @param base [description]
+ * @param pin  [description]
+ */
 void gpio_clearintflags(GPIO_Type *base, unsigned int pin);
 
 #endif

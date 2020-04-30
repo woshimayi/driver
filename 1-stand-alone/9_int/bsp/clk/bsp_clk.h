@@ -14,7 +14,13 @@ Copyright © zuozhongkai Co., Ltd. 1998-2019. All rights reserved.
 #include "imx6ul.h"
 
 /* 函数声明 */
+/**
+ * [clk_enable description]
+ */
 void clk_enable(void);
+/**
+ * [imx6u_clkinit description]
+ */
 void imx6u_clkinit(void);
 
 

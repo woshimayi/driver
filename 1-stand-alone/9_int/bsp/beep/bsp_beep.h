@@ -14,7 +14,14 @@ Copyright © zuozhongkai Co., Ltd. 1998-2019. All rights reserved.
 
 
 /* 函数声明 */
+/**
+ * [beep_init description]
+ */
 void beep_init(void);
+/**
+ * [beep_switch description]
+ * @param status [description]
+ */
 void beep_switch(int status);
 #endif
 

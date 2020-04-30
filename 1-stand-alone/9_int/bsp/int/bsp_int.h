@@ -25,10 +25,31 @@ typedef struct _sys_irq_handle
 
 
 /* 函数声明 */
+/**
+ * [int_init description]
+ */
 void int_init(void);
+/**
+ * [system_irqtable_init description]
+ */
 void system_irqtable_init(void);
+/**
+ * [system_register_irqhandler description]
+ * @param irq       [description]
+ * @param handler   [description]
+ * @param userParam [description]
+ */
 void system_register_irqhandler(IRQn_Type irq, system_irq_handler_t handler, void *userParam);
+/**
+ * [system_irqhandler description]
+ * @param giccIar [description]
+ */
 void system_irqhandler(unsigned int giccIar);
+/**
+ * [default_irqhandler description]
+ * @param giccIar   [description]
+ * @param userParam [description]
+ */
 void default_irqhandler(unsigned int giccIar, void *userParam);
 
 

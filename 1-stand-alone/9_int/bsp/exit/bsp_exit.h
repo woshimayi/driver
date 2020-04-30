@@ -13,7 +13,13 @@ Copyright © zuozhongkai Co., Ltd. 1998-2019. All rights reserved.
 #include "imx6ul.h"
 
 /* 函数声明 */
+/**
+ * [exit_init description]
+ */
 void exit_init(void);						/* 中断初始化 */
+/**
+ * [gpio1_io18_irqhandler description]
+ */
 void gpio1_io18_irqhandler(void); 			/* 中断处理函数 */
 
 #endif

@@ -390,7 +390,10 @@ typedef union
 /*******************************************************************************
  *       			CP15 访问函数
  ******************************************************************************/
-
+/**
+ * [__get_SCTLR description]
+ * @return  [description]
+ */
 FORCEDINLINE __STATIC_INLINE uint32_t __get_SCTLR(void)
 {
     return __MRC(15, 0, 1, 0, 0);
@@ -619,6 +622,9 @@ typedef struct
  * GIC初始化
  * 为了简单使用GIC的group0
  */
+/**
+ * [GIC_Init description]
+ */
 FORCEDINLINE __STATIC_INLINE void GIC_Init(void)
 {
     uint32_t i;
@@ -649,6 +655,10 @@ FORCEDINLINE __STATIC_INLINE void GIC_Init(void)
 /*
  * 使能指定的中断
  */
+/**
+ * [GIC_EnableIRQ description]
+ * @param IRQn [description]
+ */
 FORCEDINLINE __STATIC_INLINE void GIC_EnableIRQ(IRQn_Type IRQn)
 {
     GIC_Type *gic = (GIC_Type *)(__get_CBAR() & 0xFFFF0000UL);
@@ -658,7 +668,10 @@ FORCEDINLINE __STATIC_INLINE void GIC_EnableIRQ(IRQn_Type IRQn)
 /*
  * 关闭指定的中断
  */
-
+/**
+ * [GIC_DisableIRQ description]
+ * @param IRQn [description]
+ */
 FORCEDINLINE __STATIC_INLINE void GIC_DisableIRQ(IRQn_Type IRQn)
 {
     GIC_Type *gic = (GIC_Type *)(__get_CBAR() & 0xFFFF0000UL);
@@ -667,6 +680,10 @@ FORCEDINLINE __STATIC_INLINE void GIC_DisableIRQ(IRQn_Type IRQn)
 
 /*
  * 返回中断号
+ */
+/**
+ * [GIC_AcknowledgeIRQ description]
+ * @return  [description]
  */
 FORCEDINLINE __STATIC_INLINE uint32_t GIC_AcknowledgeIRQ(void)
 {
@@ -677,6 +694,10 @@ FORCEDINLINE __STATIC_INLINE uint32_t GIC_AcknowledgeIRQ(void)
 /*
  * 向EOIR写入发送中断的中断号来释放中断
  */
+/**
+ * [GIC_DeactivateIRQ description]
+ * @param value [description]
+ */
 FORCEDINLINE __STATIC_INLINE void GIC_DeactivateIRQ(uint32_t value)
 {
     GIC_Type *gic = (GIC_Type *)(__get_CBAR() & 0xFFFF0000UL);
@@ -685,6 +706,10 @@ FORCEDINLINE __STATIC_INLINE void GIC_DeactivateIRQ(uint32_t value)
 
 /*
  * 获取运行优先级
+ */
+/**
+ * [GIC_GetRunningPriority description]
+ * @return  [description]
  */
 FORCEDINLINE __STATIC_INLINE uint32_t GIC_GetRunningPriority(void)
 {
@@ -695,6 +720,10 @@ FORCEDINLINE __STATIC_INLINE uint32_t GIC_GetRunningPriority(void)
 /*
  * 设置组优先级
  */
+/**
+ * [GIC_SetPriorityGrouping description]
+ * @param PriorityGroup [description]
+ */
 FORCEDINLINE __STATIC_INLINE void GIC_SetPriorityGrouping(uint32_t PriorityGroup)
 {
     GIC_Type *gic = (GIC_Type *)(__get_CBAR() & 0xFFFF0000UL);
@@ -703,6 +732,10 @@ FORCEDINLINE __STATIC_INLINE void GIC_SetPriorityGrouping(uint32_t PriorityGroup
 
 /*
  * 获取组优先级
+ */
+/**
+ * [GIC_GetPriorityGrouping description]
+ * @return  [description]
  */
 FORCEDINLINE __STATIC_INLINE uint32_t GIC_GetPriorityGrouping(void)
 {
@@ -714,6 +747,11 @@ FORCEDINLINE __STATIC_INLINE uint32_t GIC_GetPriorityGrouping(void)
 /*
  * 设置优先级
  */
+/**
+ * [GIC_SetPriority description]
+ * @param IRQn     [description]
+ * @param priority [description]
+ */
 FORCEDINLINE __STATIC_INLINE void GIC_SetPriority(IRQn_Type IRQn, uint32_t priority)
 {
     GIC_Type *gic = (GIC_Type *)(__get_CBAR() & 0xFFFF0000UL);
@@ -722,6 +760,11 @@ FORCEDINLINE __STATIC_INLINE void GIC_SetPriority(IRQn_Type IRQn, uint32_t prior
 
 /*
  * 获取优先级
+ */
+/**
+ * [GIC_GetPriority description]
+ * @param  IRQn [description]
+ * @return      [description]
  */
 FORCEDINLINE __STATIC_INLINE uint32_t GIC_GetPriority(IRQn_Type IRQn)
 {

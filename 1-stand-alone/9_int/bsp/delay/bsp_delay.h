@@ -14,6 +14,10 @@ Copyright © zuozhongkai Co., Ltd. 1998-2019. All rights reserved.
 
 
 /* 函数声明 */
+/**
+ * [delay description]
+ * @param n [description]
+ */
 void delay(volatile unsigned int n);
 
 #endif
