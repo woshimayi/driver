@@ -26,7 +26,7 @@ _start:
 	ldr pc, =PrefAbort_Handler	/* 预取终止中断 					*/
 	ldr pc, =DataAbort_Handler	/* 数据终止中断 					*/
 	ldr	pc, =NotUsed_Handler	/* 未使用中断					*/
-	ldr pc, =IRQ_Handler		/* IRQ中断 					*/
+	ldr pc, =IRQ_Handler		/* IRQ中断 重点					*/
 	ldr pc, =FIQ_Handler		/* FIQ(快速中断)未定义中断 			*/
 
 /* 复位中断 */	
@@ -39,8 +39,8 @@ Reset_Handler:
 	 */
 	mrc     p15, 0, r0, c1, c0, 0     /* 读取CP15的C1寄存器到R0中       		        	*/
     bic     r0,  r0, #(0x1 << 12)     /* 清除C1寄存器的bit12位(I位)，关闭I Cache   	*/
-    bic     r0,  r0, #(0x1 <<  2)     /* 清除C1寄存器的bit2位 (C位)， 关闭D Cache  	*/
-    bic     r0,  r0, #0x2             /* 清除C1寄存器的bit1位 (A位)， 关闭对齐					*/
+    bic     r0,  r0, #(0x1 <<  2)     /* 清除C1寄存器的bit2位 (C位)，关闭D Cache  	*/
+    bic     r0,  r0, #0x2             /* 清除C1寄存器的bit1位 (A位)，关闭对齐					*/
     bic     r0,  r0, #(0x1 << 11)     /* 清除C1寄存器的bit11位(Z位)，关闭分支预测			*/
     bic     r0,  r0, #0x1             /* 清除C1寄存器的bit0(M位)， 关闭MMU				    */
     mcr     p15, 0, r0, c1, c0, 0     /* 将r0寄存器中的值写入到CP15的C1寄存器中	 				*/

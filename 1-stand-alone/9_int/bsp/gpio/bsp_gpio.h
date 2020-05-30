@@ -72,26 +72,26 @@ int  gpio_pinread(GPIO_Type *base, int pin);
  */
 void gpio_pinwrite(GPIO_Type *base, int pin, int value);
 /**
- * [gpio_intconfig description]
+ * [gpio_intconfig 中断配置]
  * @param base             [description]
  * @param pin              [description]
  * @param pinInterruptMode [description]
  */
 void gpio_intconfig(GPIO_Type *base, unsigned int pin, gpio_interrupt_mode_t pinInterruptMode);
 /**
- * [gpio_enableint description]
+ * [gpio_enableint 使能中断]
  * @param base [description]
  * @param pin  [description]
  */
 void gpio_enableint(GPIO_Type *base, unsigned int pin);
 /**
- * [gpio_disableint description]
+ * [gpio_disableint 关闭中断]
  * @param base [description]
  * @param pin  [description]
  */
 void gpio_disableint(GPIO_Type *base, unsigned int pin);
 /**
- * [gpio_clearintflags description]
+ * [gpio_clearintflags 清理中断标志位]
  * @param base [description]
  * @param pin  [description]
  */

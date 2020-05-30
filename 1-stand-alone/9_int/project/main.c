@@ -38,8 +38,8 @@ int main(void)
 
     while (1)
     {
-        state = !state;
-        led_switch(LED0, state);
+//        state = !state;
+//        led_switch(LED0, state);
         delay(500);
     }
 

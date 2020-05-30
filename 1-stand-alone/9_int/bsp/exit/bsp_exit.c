@@ -29,8 +29,8 @@ void exit_init(void)
 
     /* 2、初始化GPIO为中断模式 */
     key_config.direction = kGPIO_DigitalInput;
-    key_config.interruptMode = kGPIO_IntFallingEdge;
     key_config.outputLogic = 1;
+    key_config.interruptMode = kGPIO_IntFallingEdge;
     gpio_init(GPIO1, 18, &key_config);
 
     GIC_EnableIRQ(GPIO1_Combined_16_31_IRQn);				/* 使能GIC中对应的中断 */
