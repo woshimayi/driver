@@ -8,7 +8,13 @@
 //t == 0 为当前时间
 //t != 0 位标准时间加t
 
-
+/**
+ * [oalTms_getXSIDateTime 获取从1970之后指定的时间]
+ * @param  t      [1970 之后的秒数]
+ * @param  buf    [description]
+ * @param  bufLen [description]
+ * @return        [description]
+ */
 int oalTms_getXSIDateTime(int t, char *buf, int bufLen)
 {
     int          c;
@@ -50,6 +56,7 @@ int main()
     int bufLen = 100;
     int ret = -1;
     ret = oalTms_getXSIDateTime(10, buf, bufLen);
+    printf("%s\n", buf);
     printf("ret = %d\n", ret);
     return 0;
 }

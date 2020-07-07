@@ -10,12 +10,12 @@
 
 #include "../include/vos_log.h"
 
-int main(int argc, char *argv[])
+int main(int argc, char * argv[])
 {
 
-    vos_print("asd\n");
-    vos_error("asd\n");
-    vos_notic("ads\n");
-    vos_debug("ads\n");
-    return 0;
+	vos_print("asd\n");
+	vos_error("asd\n");
+	vos_notic("ads\n");
+	vos_debug("ads\n");
+	return 0;
 }

@@ -1,6 +1,8 @@
+#include <stdio.h>
 #include <pthread.h>
 #include <stdlib.h>
 #include <unistd.h>
+
 void *thread_function(void *arg)
 {
     int i;
@@ -27,3 +29,4 @@ int main(void)
     }
     exit(0);
 }
+
