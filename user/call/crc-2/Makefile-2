@@ -1,0 +1,24 @@
+CFLAGS = -DLINUX
+
+CC=gcc
+
+SHARED_FLAG = -fPIC -shared
+
+
+
+INC += -I.
+
+CC += $(SHARED_FLAG)
+
+object = crc16.o crc32.o crc64.o 
+
+lib: $(object)
+	$(CC) -o lib $(object)
+
+crc16.o: crc16.h
+crc32.o: crc32.h
+crc64.o: crc64.h
+
+.PHONE: clean
+clean:
+	rm -rf *.o lib

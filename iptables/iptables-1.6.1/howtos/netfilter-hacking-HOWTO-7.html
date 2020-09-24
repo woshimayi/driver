@@ -1,0 +1,250 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+ <META NAME="GENERATOR" CONTENT="LinuxDoc-Tools 0.9.72">
+ <TITLE>Linux netfilter Hacking HOWTO: The Test Suite</TITLE>
+ <LINK HREF="netfilter-hacking-HOWTO-8.html" REL=next>
+ <LINK HREF="netfilter-hacking-HOWTO-6.html" REL=previous>
+ <LINK HREF="netfilter-hacking-HOWTO.html#toc7" REL=contents>
+</HEAD>
+<BODY>
+<A HREF="netfilter-hacking-HOWTO-8.html">Next</A>
+<A HREF="netfilter-hacking-HOWTO-6.html">Previous</A>
+<A HREF="netfilter-hacking-HOWTO.html#toc7">Contents</A>
+<HR>
+<H2><A NAME="s7">7.</A> <A HREF="netfilter-hacking-HOWTO.html#toc7">The Test Suite</A></H2>
+
+<P>Within the CVS repository lives a test suite: the more the test
+suite covers, the greater confidence you can have that changes to the
+code hasn't quietly broken something. Trivial tests are at least as
+important as tricky tests: it's the trivial tests which simplify the
+complex tests (since you know the basics work fine before the complex
+test gets run).</P>
+
+<P>The tests are simple: they are just shell scripts under the
+testsuite/ subdirectory which are supposed to succeed.  The scripts
+are run in alphabetical order, so `01test' is run before `02test'.
+Currently there are 5 test directories:</P>
+<P>
+<DL>
+<DT><B>00netfilter/</B><DD>
+<P>General netfilter framework tests.</P>
+<DT><B>01iptables/</B><DD>
+<P>iptables tests.</P>
+<DT><B>02conntrack/</B><DD>
+<P>connection tracking tests.</P>
+<DT><B>03NAT/</B><DD>
+<P>NAT tests</P>
+<DT><B>04ipchains-compat/</B><DD>
+<P>ipchains/ipfwadm compatibility tests</P>
+</DL>
+</P>
+<P>Inside the testsuite/ directory is a script called `test.sh'.  It
+configures two dummy interfaces (tap0 and tap1), turns forwarding on,
+and removes all netfilter modules.  Then it runs through the
+directories above and runs each of their test.sh scripts until one
+fails.  This script takes two optional arguments: `-v' meaning to
+print out each test as it proceeds, and an optional test name: if this
+is given, it will skip over all tests until this one is found.</P>
+
+<H2><A NAME="ss7.1">7.1</A> <A HREF="netfilter-hacking-HOWTO.html#toc7.1">Writing a Test</A>
+</H2>
+
+<P>Create a new file in the appropriate directory: try to number your
+test so that it gets run at the right time.  For example, in order to
+test ICMP reply tracking (02conntrack/02reply.sh), we need to first
+check that outgoing ICMPs are tracked properly
+(02conntrack/01simple.sh).</P>
+
+<P>It's usually better to create many small files, each of which
+covers one area, because it helps to isolate problems immediately for
+people running the testsuite.</P>
+
+<P>If something goes wrong in the test, simply do an `exit 1', which
+causes failure; if it's something you expect may fail, you should
+print a unique message.  Your test should end with `exit 0' if
+everything goes OK.  You should check the success of <B>every</B>
+command, either using `set -e' at the top of the script, or
+appending `|| exit 1' to the end of each command.</P>
+
+<P>The helper functions `load_module' and `remove_module' can be used
+to load modules: you should never rely on autoloading in the testsuite
+unless that is what you are specifically testing.</P>
+
+<H2><A NAME="ss7.2">7.2</A> <A HREF="netfilter-hacking-HOWTO.html#toc7.2">Variables And Environment</A>
+</H2>
+
+<P>You have two play interfaces: tap0 and tap1.  Their interface
+addresses are in variables <CODE>$TAP0</CODE> and <CODE>$TAP1</CODE>
+respectively.  They both have netmasks of 255.255.255.0; their
+networks are in $TAP0NET and $TAP1NET respectively.</P>
+
+<P>There is an empty temporary file in $TMPFILE.  It is deleted at the
+end of your test.</P>
+
+<P>Your script will be run from the testsuite/ directory, wherever it
+is.  Hence you should access tools (such as iptables) using path
+starting with `../userspace'.</P>
+
+<P>Your script can print out more information if $VERBOSE is set
+(meaning that the user specified `-v' on the command line).</P>
+
+<H2><A NAME="ss7.3">7.3</A> <A HREF="netfilter-hacking-HOWTO.html#toc7.3">Useful Tools</A>
+</H2>
+
+<P>There are several useful testsuite tools in the "tools" subdirectory:
+each one exits with a non-zero exit status if there is a problem.</P>
+
+<H3>gen_ip</H3>
+
+<P>You can generate IP packets using `gen_ip', which outputs an IP
+packet to standard input.  You can feed packets in the tap0 and tap1
+by sending standard output to /dev/tap0 and /dev/tap1 (these are
+created upon first running the testsuite if they don't exist).</P>
+
+<P>gen_ip is a simplistic program which is currently very fussy about
+its argument order.  First are the general optional arguments:</P>
+<P>
+<DL>
+
+<DT><B>FRAG=offset,length</B><DD>
+<P>Generate the packet, then turn it into a
+fragment at the following offset and length.</P>
+
+<DT><B>MF</B><DD>
+<P>Set the `More Fragments' bit on the packet.</P>
+
+<DT><B>MAC=xx:xx:xx:xx:xx:xx</B><DD>
+<P>Set the source MAC address on the
+packet.</P>
+
+<DT><B>TOS=tos</B><DD>
+<P>Set the TOS field on the packet (0 to 255).</P>
+
+</DL>
+</P>
+<P>Next come the compulsory arguments:</P>
+<P>
+<DL>
+<DT><B>source ip</B><DD>
+<P>Source IP address of the packet.</P>
+
+<DT><B>dest ip</B><DD>
+<P>Destination IP address of the packet.</P>
+
+<DT><B>length</B><DD>
+<P>Total length of the packet, including headers.</P>
+
+<DT><B>protocol</B><DD>
+<P>Protocol number of the packet, eg 17 = UDP.</P>
+
+</DL>
+</P>
+<P>Then the arguments depend on the protocol: for UDP (17), they are the
+source and destination port numbers.  For ICMP (1), they are the type
+and code of the ICMP message: if the type is 0 or 8 (ping-reply or
+ping), then two additional arguments (the ID and sequence fields) are
+required.  For TCP, the source and destination ports, and flags
+("SYN", "SYN/ACK", "ACK", "RST" or "FIN") are required.  There are
+three optional arguments: "OPT=" followed by a comma-separated list of
+options, "SYN=" followed by a sequence number, and "ACK=" followed by
+a sequence number.  Finally, the optional argument "DATA" indicates
+that the payload of the TCP packet is to be filled with the contents
+of standard input.</P>
+
+<H3>rcv_ip</H3>
+
+<P>You can see IP packets using `rcv_ip', which prints out the command
+line as close as possible to the original value fed to gen_ip
+(fragments are the exception).</P>
+
+<P>This is extremely useful for analyzing packets.  It takes two
+compulsory arguments:</P>
+<P>
+<DL>
+<DT><B>wait time</B><DD>
+<P>The maximum time in seconds to wait for a packet
+from standard input.</P>
+
+<DT><B>iterations</B><DD>
+<P>The number of packets to receive.</P>
+</DL>
+</P>
+<P>There is one optional argument, "DATA", which causes the payload of a
+TCP packet to be printed on standard output after the packet header.</P>
+
+<P>The standard way to use `rcv_ip' in a shell script is as follows:</P>
+<P>
+<PRE>
+# Set up job control, so we can use &amp; in shell scripts.
+set -m
+
+# Wait two seconds for one packet from tap0
+../tools/rcv_ip 2 1 &lt; /dev/tap0 > $TMPFILE &amp;
+
+# Make sure that rcv_ip has started running.
+sleep 1
+
+# Send a ping packet
+../tools/gen_ip $TAP1NET.2 $TAP0NET.2 100 1 8 0 55 57 > /dev/tap1 || exit 1
+
+# Wait for rcv_ip,
+if wait %../tools/rcv_ip; then :
+else
+    echo rcv_ip failed:
+    cat $TMPFILE
+    exit 1
+fi
+</PRE>
+</P>
+
+<H3>gen_err</H3>
+
+<P>This program takes a packet (as generated by gen_ip, for example)
+on standard input, and turns it into an ICMP error.</P>
+
+<P>It takes three arguments: a source IP address, a type and a code.
+The destination IP address will be set to the source IP address of the
+packet fed in standard input.</P>
+
+<H3>local_ip</H3>
+
+<P>This takes a packet from standard input and injects it into the
+system from a raw socket.  This give the appearance of a
+locally-generated packet (as separate from feeding a packet in one of
+the ethertap devices, which looks like a remotely-generated packet).</P>
+
+<H2><A NAME="ss7.4">7.4</A> <A HREF="netfilter-hacking-HOWTO.html#toc7.4">Random Advice</A>
+</H2>
+
+<P>All the tools assume they can do everything in one read or write:
+this is true for the ethertap devices, but might not be true if you're
+doing something tricky with pipes.</P>
+
+<P>dd can be used to cut packets: dd has an obs (output block size)
+option which can be used to make it output the packet in a single
+write.</P>
+
+<P>Test for success first: eg. testing that packets are successfully
+blocked.  First test that packets pass through normally, <B>then</B>
+test that some packets are blocked.  Otherwise an unrelated failure
+could be stopping the packets...</P>
+
+<P>Try to write exact tests, not `throw random stuff and see what
+happens' tests.  If an exact test goes wrong, it's a useful thing to
+know.  If a random test goes wrong once, it doesn't help much.</P>
+
+<P>If a test fails without a message, you can add `-x' to the top line
+of the script (ie. `#! /bin/sh -x') to see what commands it's running.</P>
+
+<P>If a test fails randomly, check for random network traffic
+interfering (try downing all your external interfaces).  Sitting on
+the same network as Andrew Tridgell, I tend to get plagued by Windows
+broadcasts, for example.</P>
+
+<HR>
+<A HREF="netfilter-hacking-HOWTO-8.html">Next</A>
+<A HREF="netfilter-hacking-HOWTO-6.html">Previous</A>
+<A HREF="netfilter-hacking-HOWTO.html#toc7">Contents</A>
+</BODY>
+</HTML>

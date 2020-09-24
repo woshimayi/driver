@@ -1,0 +1,86 @@
+CFLAGS = -DLINUX
+
+CC=gcc
+SHARED_FLAG = -fPIC -shared
+
+
+INC += -I./inc
+
+# $(shell mkdir obj)
+
+# OBJ_DIR = ./obj
+# SOURCES = $(wildcard src/*.c)
+# INCLUDE = $(wildcard inc/*.h)
+# # OBJS = $(patsubst ./src/%.c, ./obj/%.o, $(wildcard src/*.c))
+# # OBJS = $(patsubst %.c, %.o, $(notdir $(SOURCES)))
+# OBJS = $(foreach )
+
+# # SRC_C   = $(wildcard $(D_SRC)/*.c)
+#          # wildcard表示把$(D_SRC)目录下的.c文件遍历出来
+ 
+# # SRC_C   = $(foreach dir, $(D_SRC), $(wildcard $(dir)/*.c))
+#        # foreach表示遍历$(D_SRC)的所有子目录同时把子目录下的.c文件遍历出来
+
+
+CC += $(SHARED_FLAG)
+
+# %.o : %.c
+# 	$(CC) $(INC) -c ./src/$^ -o ./obj/$@
+
+
+# all : libcrc.a
+# 	@echo	"SOURCES"
+# 	@echo	$(SOURCES)
+# 	@echo	"INCLUDE"
+# 	@echo	$(INCLUDE)
+# 	@echo	"OBJS"
+# 	@echo	$(OBJS)
+# 	@echo   $(dir)
+
+
+# libcrc.a : $(OBJS)
+# 	@echo ./obj/$@  ./src/$^
+# 	ar -rs ./obj/$@  ./src/$^
+
+# clean:
+# 	rm -rf $(OBJ_DIR) *.a
+
+
+
+
+# D_SRC = src
+# D_INC = -I./inc
+# D_OBJ = obj
+# TATGET = libcrc.a 
+ 
+# SRC_C   = $(foreach dir, $(D_SRC), $(wildcard $(dir)/*.c))
+# OBJ_C   = $(addprefix $(D_OBJ)/,$(patsubst %.c,%.o,$(notdir $(SRC_C))))
+ 
+# $(OBJ_C): $(SRC_C)
+# 	$(CC) -c $(SRC_C) -o $(OBJ_C)
+
+# $(TATGET): $(OBJ_C)
+# 	@echo  $(SRC_C)
+# 	@echo  $(OBJ_C)
+# 	ar -rs  $(OBJ_C) $(SRC_C)
+ 
+# .PHONY: clean
+# clean:
+# 	rm -f $(D_OBJ)/* $(TATGET)
+
+objects = crc16.o crc32.o crc64.o
+
+lib: $(objects)
+	$(CC) -o bin/lib $(addprefix obj/, $(objects))
+
+crc16.o: src/crc16.c inc/crc16.h
+	$(CC) $(INC) -c src/crc16.c -o obj/crc16.o
+
+crc32.o: src/crc32.c inc/crc32.h
+	$(CC) $(INC) -c src/crc32.c -o obj/crc32.o
+
+crc64.o: src/crc64.c inc/crc64.h
+	$(CC) $(INC) -c src/crc64.c -o obj/crc64.o
+
+clean:
+	rm -rf  ./*.o obj/*.o bin/lib

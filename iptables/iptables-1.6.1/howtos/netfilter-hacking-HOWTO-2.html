@@ -1,0 +1,54 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+ <META NAME="GENERATOR" CONTENT="LinuxDoc-Tools 0.9.72">
+ <TITLE>Linux netfilter Hacking HOWTO: Where Can I Get The Latest?</TITLE>
+ <LINK HREF="netfilter-hacking-HOWTO-3.html" REL=next>
+ <LINK HREF="netfilter-hacking-HOWTO-1.html" REL=previous>
+ <LINK HREF="netfilter-hacking-HOWTO.html#toc2" REL=contents>
+</HEAD>
+<BODY>
+<A HREF="netfilter-hacking-HOWTO-3.html">Next</A>
+<A HREF="netfilter-hacking-HOWTO-1.html">Previous</A>
+<A HREF="netfilter-hacking-HOWTO.html#toc2">Contents</A>
+<HR>
+<H2><A NAME="s2">2.</A> <A HREF="netfilter-hacking-HOWTO.html#toc2">Where Can I Get The Latest?</A></H2>
+
+<P>There is a CVS server on netfilter.org which contains the latest
+HOWTOs, userspace tools and testsuite.  For casual browsing, you
+can use the
+<A HREF="http://cvs.netfilter.org/">Web Interface</A>.</P>
+<P>To grab the latest sources, you can do the following:</P>
+<P>
+<OL>
+<LI> Log in to the netfilter CVS server anonymously:
+<BLOCKQUOTE><CODE>
+<PRE>
+cvs -d :pserver:cvs@pserver.netfilter.org:/cvspublic login
+</PRE>
+</CODE></BLOCKQUOTE>
+</LI>
+<LI> When it asks you for a password type `cvs'.</LI>
+<LI> Check out the code using:
+<BLOCKQUOTE><CODE>
+<PRE>
+# cvs -d :pserver:cvs@pserver.netfilter.org:/cvspublic co netfilter/userspace
+</PRE>
+</CODE></BLOCKQUOTE>
+</LI>
+<LI> To update to the latest version, use
+<BLOCKQUOTE><CODE>
+<PRE>
+cvs update -d -P
+</PRE>
+</CODE></BLOCKQUOTE>
+</LI>
+</OL>
+</P>
+
+<HR>
+<A HREF="netfilter-hacking-HOWTO-3.html">Next</A>
+<A HREF="netfilter-hacking-HOWTO-1.html">Previous</A>
+<A HREF="netfilter-hacking-HOWTO.html#toc2">Contents</A>
+</BODY>
+</HTML>

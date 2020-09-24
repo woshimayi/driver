@@ -114,62 +114,62 @@ int main(void)
     led_init();					/* 初始化led 					*/
     beep_init();				/* 初始化beep	 				*/
     uart_init();				/* 初始化串口，波特率115200 */
-    lcd_init();					/* 初始化LCD 					*/
+//    lcd_init();					/* 初始化LCD 					*/
 
-    tftlcd_dev.forecolor = LCD_RED;
-    lcd_show_string(50, 10, 400, 24, 24, (char *)"IMX6U-ZERO SPI TEST");
-    lcd_show_string(50, 40, 200, 16, 16, (char *)"ICM20608 TEST");
-    lcd_show_string(50, 60, 200, 16, 16, (char *)"ATOM@ALIENTEK");
-    lcd_show_string(50, 80, 200, 16, 16, (char *)"2019/3/27");
+//    tftlcd_dev.forecolor = LCD_RED;
+//    lcd_show_string(50, 10, 400, 24, 24, (char *)"IMX6U-ZERO SPI TEST");
+//    lcd_show_string(50, 40, 200, 16, 16, (char *)"ICM20608 TEST");
+//    lcd_show_string(50, 60, 200, 16, 16, (char *)"ATOM@ALIENTEK");
+//    lcd_show_string(50, 80, 200, 16, 16, (char *)"2019/3/27");
 
     while (icm20608_init())		/* 初始化ICM20608	 			*/
     {
-        lcd_show_string(50, 100, 200, 16, 16, (char *)"ICM20608 Check Failed!");
+//        lcd_show_string(50, 100, 200, 16, 16, (char *)"ICM20608 Check Failed!");
         delayms(500);
-        lcd_show_string(50, 100, 200, 16, 16, (char *)"Please Check!        ");
+//        lcd_show_string(50, 100, 200, 16, 16, (char *)"Please Check!        ");
         delayms(500);
     }
 
-    lcd_show_string(50, 100, 200, 16, 16, (char *)"ICM20608 Ready");
+//    lcd_show_string(50, 100, 200, 16, 16, (char *)"ICM20608 Ready");
+//
+//    lcd_show_string(50, 130, 200, 16, 16, (char *)"accel x:");
+//    lcd_show_string(50, 150, 200, 16, 16, (char *)"accel y:");
+//    lcd_show_string(50, 170, 200, 16, 16, (char *)"accel z:");
+//    lcd_show_string(50, 190, 200, 16, 16, (char *)"gyro  x:");
+//    lcd_show_string(50, 210, 200, 16, 16, (char *)"gyro  y:");
+//    lcd_show_string(50, 230, 200, 16, 16, (char *)"gyro  z:");
+//    lcd_show_string(50, 250, 200, 16, 16, (char *)"temp   :");
+//
+//    lcd_show_string(50 + 181, 130, 200, 16, 16, (char *)"g");
+//    lcd_show_string(50 + 181, 150, 200, 16, 16, (char *)"g");
+//    lcd_show_string(50 + 181, 170, 200, 16, 16, (char *)"g");
+//    lcd_show_string(50 + 181, 190, 200, 16, 16, (char *)"o/s");
+//    lcd_show_string(50 + 181, 210, 200, 16, 16, (char *)"o/s");
+//    lcd_show_string(50 + 181, 230, 200, 16, 16, (char *)"o/s");
+//    lcd_show_string(50 + 181, 250, 200, 16, 16, (char *)"C");
 
-    lcd_show_string(50, 130, 200, 16, 16, (char *)"accel x:");
-    lcd_show_string(50, 150, 200, 16, 16, (char *)"accel y:");
-    lcd_show_string(50, 170, 200, 16, 16, (char *)"accel z:");
-    lcd_show_string(50, 190, 200, 16, 16, (char *)"gyro  x:");
-    lcd_show_string(50, 210, 200, 16, 16, (char *)"gyro  y:");
-    lcd_show_string(50, 230, 200, 16, 16, (char *)"gyro  z:");
-    lcd_show_string(50, 250, 200, 16, 16, (char *)"temp   :");
-
-    lcd_show_string(50 + 181, 130, 200, 16, 16, (char *)"g");
-    lcd_show_string(50 + 181, 150, 200, 16, 16, (char *)"g");
-    lcd_show_string(50 + 181, 170, 200, 16, 16, (char *)"g");
-    lcd_show_string(50 + 181, 190, 200, 16, 16, (char *)"o/s");
-    lcd_show_string(50 + 181, 210, 200, 16, 16, (char *)"o/s");
-    lcd_show_string(50 + 181, 230, 200, 16, 16, (char *)"o/s");
-    lcd_show_string(50 + 181, 250, 200, 16, 16, (char *)"C");
-
-    tftlcd_dev.forecolor = LCD_BLUE;
+//    tftlcd_dev.forecolor = LCD_BLUE;
 
     while (1)
     {
         icm20608_getdata();
-        integer_display(50 + 70, 130, 16, icm20608_dev.accel_x_adc);
-        integer_display(50 + 70, 150, 16, icm20608_dev.accel_y_adc);
-        integer_display(50 + 70, 170, 16, icm20608_dev.accel_z_adc);
-        integer_display(50 + 70, 190, 16, icm20608_dev.gyro_x_adc);
-        integer_display(50 + 70, 210, 16, icm20608_dev.gyro_y_adc);
-        integer_display(50 + 70, 230, 16, icm20608_dev.gyro_z_adc);
-        integer_display(50 + 70, 250, 16, icm20608_dev.temp_adc);
+//        integer_display(50 + 70, 130, 16, icm20608_dev.accel_x_adc);
+//        integer_display(50 + 70, 150, 16, icm20608_dev.accel_y_adc);
+//        integer_display(50 + 70, 170, 16, icm20608_dev.accel_z_adc);
+//        integer_display(50 + 70, 190, 16, icm20608_dev.gyro_x_adc);
+//        integer_display(50 + 70, 210, 16, icm20608_dev.gyro_y_adc);
+//        integer_display(50 + 70, 230, 16, icm20608_dev.gyro_z_adc);
+//        integer_display(50 + 70, 250, 16, icm20608_dev.temp_adc);
+//
+//        decimals_display(50 + 70 + 50, 130, 16, icm20608_dev.accel_x_act);
+//        decimals_display(50 + 70 + 50, 150, 16, icm20608_dev.accel_y_act);
+//        decimals_display(50 + 70 + 50, 170, 16, icm20608_dev.accel_z_act);
+//        decimals_display(50 + 70 + 50, 190, 16, icm20608_dev.gyro_x_act);
+//        decimals_display(50 + 70 + 50, 210, 16, icm20608_dev.gyro_y_act);
+//        decimals_display(50 + 70 + 50, 230, 16, icm20608_dev.gyro_z_act);
+//        decimals_display(50 + 70 + 50, 250, 16, icm20608_dev.temp_act);
 
-        decimals_display(50 + 70 + 50, 130, 16, icm20608_dev.accel_x_act);
-        decimals_display(50 + 70 + 50, 150, 16, icm20608_dev.accel_y_act);
-        decimals_display(50 + 70 + 50, 170, 16, icm20608_dev.accel_z_act);
-        decimals_display(50 + 70 + 50, 190, 16, icm20608_dev.gyro_x_act);
-        decimals_display(50 + 70 + 50, 210, 16, icm20608_dev.gyro_y_act);
-        decimals_display(50 + 70 + 50, 230, 16, icm20608_dev.gyro_z_act);
-        decimals_display(50 + 70 + 50, 250, 16, icm20608_dev.temp_act);
-
-#if 0
+#if 1
         printf("accel x = %d\r\n", icm20608_dev.accel_x_adc);
         printf("accel y = %d\r\n", icm20608_dev.accel_y_adc);
         printf("accel z = %d\r\n", icm20608_dev.accel_z_adc);

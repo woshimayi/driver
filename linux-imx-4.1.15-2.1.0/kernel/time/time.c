@@ -333,9 +333,8 @@ time64_t mktime64(const unsigned int year0, const unsigned int mon0,
 		year -= 1;
 	}
 
-	return ((((time64_t)
-		  (year/4 - year/100 + year/400 + 367*mon/12 + day) +
-		  year*365 - 719499
+	return ((( (time64_t)
+		  ((year - 1) * 365 + year / 4 - year / 100 + year / 400 + 367 * mon / 12 - 30 + 59 + day - 1 - 719162
 	    )*24 + hour /* now have hours */
 	  )*60 + min /* now have minutes */
 	)*60 + sec; /* finally seconds */

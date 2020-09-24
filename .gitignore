@@ -1,0 +1,9 @@
+*.exe
+*.o
+a.out
+*.so
+*.a
+*.bin
+1-stand-alone/imx_test/myshared_driver.si4project/
+
+

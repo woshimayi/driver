@@ -36,7 +36,7 @@ void exit_init(void)
     GIC_EnableIRQ(GPIO1_Combined_16_31_IRQn);				/* 使能GIC中对应的中断 */
     system_register_irqhandler(GPIO1_Combined_16_31_IRQn, (system_irq_handler_t)gpio1_io18_irqhandler,
                                NULL);	/* 注册中断服务函数 */
-    gpio_enableint(GPIO1, 18);								/* 使能GPIO1_IO18的中断功能 */
+    gpio_enableint(GPIO1, 18);								/* 使能GPIO1_IO18的中断功能           IMR  mask register  */
 }
 
 /*

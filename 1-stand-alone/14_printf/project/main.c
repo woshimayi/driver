@@ -39,9 +39,9 @@ int main(void)
 
     while (1)
     {
-        printf("输入两个整数，使用空格隔开:");
+        printf("input two numbe, and space:");
         scanf("%d %d", &a, &b);					 		/* 输入两个整数 */
-        printf("\r\n数据%d + %d = %d\r\n\r\n", a, b, a + b);	/* 输出两个数相加的和 */
+        printf("\r\n data %d + %d = %d\r\n\r\n", a, b, a + b);	/* 输出两个数相加的和 */
 
         state = !state;
         led_switch(LED0, state);

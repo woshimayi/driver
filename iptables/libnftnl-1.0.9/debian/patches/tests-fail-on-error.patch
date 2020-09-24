@@ -1,0 +1,22 @@
+From: Matthias Klose <doko@ubuntu.com>
+Subject:  Let the tests fail on error
+ This patch allows the testsuite of libnftnl to fail if there was an error
+ during one of the internal checks.
+ .
+ [ Arturo Borrero Gonzalez ]
+ Currently, I don't see the need to forward this upstream.
+ .
+ Patch copied from the ubuntu version of libnftnl.
+Forwarded: not-needed
+Last-Update: 2016-06-07
+
+--- a/tests/test-script.sh
++++ b/tests/test-script.sh
+@@ -1,3 +1,7 @@
++#!/bin/sh
++
++set -e
++
+ ./nft-chain-test
+ ./nft-expr_bitwise-test
+ ./nft-expr_byteorder-test

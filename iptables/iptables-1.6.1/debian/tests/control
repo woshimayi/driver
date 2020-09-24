@@ -1,0 +1,72 @@
+Test-Command: iptables -h
+Depends: @
+Restrictions: needs-root, isolation-container
+
+Test-Command: ip6tables -h
+Depends: @
+Restrictions: needs-root, isolation-container
+
+Test-Command: iptables-save
+Depends: @
+Restrictions: needs-root, isolation-container
+
+Test-Command: ip6tables-save
+Depends: @
+Restrictions: needs-root, isolation-container
+
+Test-Command: iptables-restore -h
+Depends: @
+Restrictions: needs-root, isolation-container
+
+Test-Command: ip6tables-restore -h
+Depends: @
+Restrictions: needs-root, isolation-container
+
+Test-Command: iptables-compat -h
+Depends: @
+Restrictions: needs-root, isolation-container
+
+Test-Command: ip6tables-compat -h
+Depends: @
+Restrictions: needs-root, isolation-container
+
+Test-Command: iptables-compat-save
+Depends: @
+Restrictions: needs-root, isolation-container
+
+Test-Command: ip6tables-compat-save
+Depends: @
+Restrictions: needs-root, isolation-container
+
+Test-Command: iptables-compat-restore -h
+Depends: @
+Restrictions: needs-root, isolation-container
+
+Test-Command: ip6tables-compat-restore -h
+Depends: @
+Restrictions: needs-root, isolation-container
+
+Test-Command: arptables-compat -h
+Depends: @
+Restrictions: needs-root, isolation-container
+
+Test-Command: ebtables-compat -h
+Depends: @
+Restrictions: needs-root, isolation-container
+
+Test-Command: iptables-translate -h
+Depends: @
+Restrictions: needs-root, isolation-container
+
+Test-Command: iptables-restore-translate -h
+Depends: @
+Restrictions: needs-root, isolation-container
+
+Test-Command: ip6tables-translate -h
+Depends: @
+Restrictions: needs-root, isolation-container
+
+Test-Command: ip6tables-restore-translate -h
+Depends: @
+Restrictions: needs-root, isolation-container
+

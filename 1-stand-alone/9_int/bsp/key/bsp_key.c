@@ -40,7 +40,6 @@ void key_init(void)
     //GPIO1->GDIR &= ~(1 << 18);	/* GPIO1_IO18设置为输入 */
     key_config.direction = kGPIO_DigitalInput;
     gpio_init(GPIO1, 18, &key_config);
-
 }
 
 /*

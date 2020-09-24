@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+//#include <arpa/inet.h>
+#include <assert.h>
+#include<time.h>
 
 #define DBG_MSG(fmt, arg...) fprintf(stderr, "%s:%s:%d:" fmt "\n", __FILE__, __func__, __LINE__, ##arg);
 
@@ -59,26 +62,40 @@ int main(int argc, const char *argv[])
    
 //   printf( "%s\n", token );
 
-	char value[64] = {0};
 	
 //	printf("%d\n", strtoul(value, NULL, 10));
 //	printf("value = %s\n", value);
 	
 	
-	FILE *fd1 = NULL;
-	fd1 = fopen("123.bin", "rb");
-	if (NULL == fd1)
-	{
-		printf("fail open file");
-		return -1;
-	}
-	
-	fseek (fd1, -4, 2);
-	fread(value, 1, 4, fd1);
-//	printf("ssssssssss %s\n", (unsight int*)value);
-	snprintf(value, sizeof(value), "%02X%02X%02X%02X", value[0]&0xFF, value[1]&0xFF, value[2]&0xFF, value[3]&0xFF);
-	printf("value = %s\n", value);
-	fclose(fd1);
+//	char value[64] = {0};
+//	char data[1024] = {0};
+//	FILE *fid = NULL;
+//	int realFilesize = 0;
+//	int writeCrc = 0;
+//	fid = fopen("123.bin", "rb");
+//	if (NULL == fid)
+//	{
+//		printf("fail open file");
+//		return -1;
+//	}
+//	
+//	fread(data, sizeof(char), 512, fid);
+//	fread(data, sizeof(char), strlen("encrpted_img"), fid);
+//	fread(data, 1, 4, fid);
+//	printf("data = %s\n", data);
+//    realFilesize = ntohl(*((unsigned int *)data));
+//    fread(data, 1, 4, fid);
+//    printf("realFilesize = %d\n", realFilesize);
+//	
+//	fseek (fid, -4, 2);
+//	fread(value, 1, 4, fid);
+//	writeCrc = ntohl(*((unsigned int *)value));
+//	snprintf(value, sizeof(value), "%02X%02X%02X%02X", value[0]&0xFF, value[1]&0xFF, value[2]&0xFF, value[3]&0xFF);
+//	printf("111 value = %s\n", value);
+//	
+//	snprintf(value, sizeof(value), "%02X%02X%02X%02X", (writeCrc >> 24) & 0xFF, (writeCrc >> 16) & 0xFF, (writeCrc >> 8)  & 0xFF, (writeCrc >> 0)  & 0xFF);
+//	printf("222 value = %s\n", value);
+//	fclose(fid);
 	
    
    
@@ -98,6 +115,25 @@ int main(int argc, const char *argv[])
 //	{
 //		printf("bbbbbbbbbb");
 //	}
+
+//	int n = 0;
+//	assert(n);
+	
+
+
+    time_t timep;
+    struct tm* p;
+    time(&timep);
+    printf("time():%d\n",timep);
+    p=localtime(&timep);
+    timep=mktime(p);
+    printf("time()->localtime()->mktime():%d\n",timep);
+    return 0;
+
+	
+	
+	
+
 	
 	return 0;
 }

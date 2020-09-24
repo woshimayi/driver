@@ -1,0 +1,2 @@
+debian/examples/*
+examples/*.c

@@ -1,0 +1,102 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+ <META NAME="GENERATOR" CONTENT="LinuxDoc-Tools 0.9.72">
+ <TITLE>Linux netfilter Hacking HOWTO: Motivation</TITLE>
+ <LINK HREF="netfilter-hacking-HOWTO-9.html" REL=next>
+ <LINK HREF="netfilter-hacking-HOWTO-7.html" REL=previous>
+ <LINK HREF="netfilter-hacking-HOWTO.html#toc8" REL=contents>
+</HEAD>
+<BODY>
+<A HREF="netfilter-hacking-HOWTO-9.html">Next</A>
+<A HREF="netfilter-hacking-HOWTO-7.html">Previous</A>
+<A HREF="netfilter-hacking-HOWTO.html#toc8">Contents</A>
+<HR>
+<H2><A NAME="s8">8.</A> <A HREF="netfilter-hacking-HOWTO.html#toc8">Motivation</A></H2>
+
+<P>As I was developing ipchains, I realized (in one of those
+blinding-flash-while-waiting-for-entree moments in a Chinese
+restaurant in Sydney) that packet filtering was being done in the
+wrong place.  I can't find it now, but I remember sending mail to Alan
+Cox, who kind of said `why don't you finish what you're doing, first,
+even though you're probably right'.  In the short term, pragmatism was
+to win over The Right Thing.</P>
+
+<P>After I finished ipchains, which was initially going to be a minor
+modification of the kernel part of ipfwadm, and turned into a larger
+rewrite, and wrote the HOWTO, I became aware of just how much
+confusion there is in the wider Linux community about issues like
+packet filtering, masquerading, port forwarding and the like.</P>
+
+<P>This is the joy of doing your own support: you get a closer feel
+for what the users are trying to do, and what they are struggling
+with.  Free software is most rewarding when it's in the hands of the
+most users (that's the point, right?), and that means making it easy.
+The architecture, not the documentation, was the key flaw.</P>
+
+<P>So I had the experience, with the ipchains code, and a good idea of
+what people out there were doing.  There were only two problems.</P>
+
+<P>Firstly, I didn't want to get back into security.  Being a security
+consultant is a constant moral tug-of-war between your conscience and
+your wallet.  At a fundamental level, you are selling the feeling of
+security, which is at odds with actual security.  Maybe working in a
+military setting, where they understand security, it'd be different.</P>
+
+<P>The second problem is that newbie users aren't the only concern; an
+increasing number of large companies and ISPs are using this stuff.  I
+needed reliable input from that class of users if it was to scale to
+tomorrow's home users.</P>
+
+<P>These problems were resolved, when I ran into David Bonn, of
+WatchGuard fame, at Usenix in July 1998.  They were looking for a
+Linux kernel coder; in the end we agreed that I'd head across to their
+Seattle offices for a month and we'd see if we could hammer out an
+agreement whereby they'd sponsor my new code, and my current support
+efforts.  The rate we agreed on was more than I asked, so I didn't
+take a pay cut.  This means I don't have to even think about external
+conslutting for a while.</P>
+
+<P>Exposure to WatchGuard gave me exposure to the large clients I
+need, and being independent from them allowed me to support all users
+(eg. WatchGuard competitors) equally.</P>
+
+<P>So I could have simply written netfilter, ported ipchains over the
+top, and been done with it.  Unfortunately, that would leave all the
+masquerading code in the kernel: making masquerading independent from
+filtering is the one of the major wins point of moving the packet
+filtering points, but to do that masquerading also needed to be moved
+over to the netfilter framework as well.</P>
+
+<P>Also, my experience with ipfwadm's `interface-address' feature (the
+one I removed in ipchains) had taught me that there was no hope of
+simply ripping out the masquerading code and expecting someone who
+needed it to do the work of porting it onto netfilter for me.</P>
+
+<P>So I needed to have at least as many features as the current code;
+preferably a few more, to encourage niche users to become early
+adopters.  This means replacing transparent proxying (gladly!),
+masquerading and port forwarding.  In other words, a complete NAT layer.</P>
+
+<P>Even if I had decided to port the existing masquerading layer,
+instead of writing a generic NAT system, the masquerading code was
+showing its age, and lack of maintenance.  See, there was no
+masquerading maintainer, and it shows.  It seems that serious users
+generally don't use masquerading, and there aren't many home users up
+to the task of doing maintenance.  Brave people like Juan Ciarlante
+were doing fixes, but it had reached to the stage (being extended over
+and over) that a rewrite was needed.</P>
+
+<P>Please note that I wasn't the person to do a NAT rewrite: I didn't
+use masquerading any more, and I'd not studied the existing code at
+the time.  That's probably why it took me longer than it should have.
+But the result is fairly good, in my opinion, and I sure as hell
+learned a lot.  No doubt the second version will be even better, once
+we see how people use it.</P>
+
+<HR>
+<A HREF="netfilter-hacking-HOWTO-9.html">Next</A>
+<A HREF="netfilter-hacking-HOWTO-7.html">Previous</A>
+<A HREF="netfilter-hacking-HOWTO.html#toc8">Contents</A>
+</BODY>
+</HTML>

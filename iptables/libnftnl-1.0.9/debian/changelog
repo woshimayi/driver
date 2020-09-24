@@ -1,0 +1,171 @@
+libnftnl (1.0.9-2) unstable; urgency=medium
+
+  * [3376f15] d/compat: bump to v11
+  * [f8afd43] d/control: bump std-version to 4.1.3
+  * The previous upload to experimental was bogus:
+    - there was no SONAME bump, so there was no transition involved
+    - version number was wrong, it should have been somehing like 1.0.9-1~exp1
+    - but hey, the upload to experimental was unnecessary in first place
+    - let this changelog entry be a reminder about how important is to double
+      check the work before uploading, and how peer-reviewing could be of a
+      great benefit: I make mistakes :-)
+
+ -- Arturo Borrero Gonzalez <arturo@debian.org>  Wed, 17 Jan 2018 13:43:39 +0100
+
+libnftnl (1.0.9-1) experimental; urgency=medium
+
+  * [e866ce5] d/control: update git URLs
+  * [68fc561] New upstream version 1.0.9
+  * [f18952b] libnftnl: refresh symbols file
+
+ -- Arturo Borrero Gonzalez <arturo@debian.org>  Wed, 03 Jan 2018 12:34:36 +0100
+
+libnftnl (1.0.8-1) unstable; urgency=medium
+
+  * [9138a65] New upstream version 1.0.8
+  * [8ea7602] libnftnl: bump package soname from 4 to 7
+  * [7704b86] libnftnl: bump std-version to 4.1.1
+
+ -- Arturo Borrero Gonzalez <arturo@debian.org>  Fri, 13 Oct 2017 15:36:16 +0200
+
+libnftnl (1.0.7-2) unstable; urgency=medium
+
+  [ Arturo Borrero Gonzalez ]
+  * [34e97e2] d/control: move package to pkg-netfilter
+
+  [ Helmut Grohne ]
+  * [b60a9b1] d/rules: libnftnl FTCBFS: configures for the build architecture
+    (Closes: #872326)
+  * [c05f390] d/rules: honour DEB_BUILD_OPTIONS=nocheck (Closes: #872326)
+
+  [ Arturo Borrero Gonzalez ]
+  * [71d7ec2] libnftnl: switch to use dbgsym package
+  * [5fea681] d/control: bump std-version to 4.0.1
+  * [c833dd7] d/: wrap-and-sort
+
+ -- Arturo Borrero Gonzalez <arturo@debian.org>  Thu, 17 Aug 2017 10:56:49 +0200
+
+libnftnl (1.0.7-1) unstable; urgency=medium
+
+  * [7b8a6bc] d/libnftnl4.symbols: delete debian revision from symbols
+  * [656dbef] New upstream version 1.0.7
+  * [695d39c] libnftnl: refresh symbols file
+  * [cdb457d] d/copyright: refresh file
+
+ -- Arturo Borrero Gonzalez <arturo@debian.org>  Wed, 21 Dec 2016 12:46:36 +0100
+
+libnftnl (1.0.6+snapshot20161117-1) unstable; urgency=medium
+
+  * [f58caed] New upstream version 1.0.6+snapshot20161117
+  * [087181e] d/patches: drop patch 'drop-xml-tests-patch'.
+  * [96649f3] d/libnftnl4.symbols: refresh file
+
+ -- Arturo Borrero Gonzalez <arturo@debian.org>  Thu, 17 Nov 2016 11:05:49 +0100
+
+libnftnl (1.0.6-3) unstable; urgency=medium
+
+  * [6b0ecb8] d/rules: don't run testsuite at buildtime in big endian arches
+    (Closes: #841352)
+  * [ec015a9] libnftnl: bindnow hardened build
+
+ -- Arturo Borrero Gonzalez <arturo@debian.org>  Fri, 21 Oct 2016 11:20:23 +0200
+
+libnftnl (1.0.6-2) unstable; urgency=medium
+
+  * [daa2393] d/rules: run tests and fail the build if the tests fail
+  * [74ac377] d/: update email address to 'arturo@debian.org'
+  * [aa177d6] libnftnl: disable XML parsing
+
+ -- Arturo Borrero Gonzalez <arturo@debian.org>  Mon, 10 Oct 2016 11:41:08 +0200
+
+libnftnl (1.0.6-1) unstable; urgency=medium
+
+  * [b98a331] d/control: bump standars version to 3.9.8
+  * [b5707be] Imported Upstream version 1.0.6
+
+ -- Arturo Borrero Gonzalez <arturo.borrero.glez@gmail.com>  Mon, 30 May 2016 13:17:35 +0200
+
+libnftnl (1.0.5+snapshot20160416-1) unstable; urgency=medium
+
+  * [796ad93] d/control: bump standards to 3.9.7
+  * [f84de65] Imported Upstream version 1.0.5+snapshot20160416
+  * [74d97d5] d/libnftnl4.symbols: update file with new 1.0.5+snapshot20160416
+  symbols
+  * [377c9b6] d/control: use HTTPS in Vcs-git filed
+  * [6254c3e] d/control: remove XS-Testsuite filed
+
+ -- Arturo Borrero Gonzalez <arturo.borrero.glez@gmail.com>  Tue, 19 Apr 2016 15:07:09 +0200
+
+libnftnl (1.0.5+snapshot20151106-1) unstable; urgency=medium
+
+  * [c3afd66] Imported Upstream version 1.0.5+snapshot20151106
+
+ -- Arturo Borrero Gonzalez <arturo.borrero.glez@gmail.com>  Fri, 06 Nov 2015 13:09:07 +0100
+
+libnftnl (1.0.5-1) unstable; urgency=medium
+
+  * [cf56f2d] Imported Upstream version 1.0.4
+  * [5dd1bdd] d/rules: drop get-orig-source target
+  * [a2c863e] d/: fix place of upstream signing key
+  * [11ec045] Imported Upstream version 1.0.5
+  * [85914ac] d/control: cleanup unused ${shlibs:Depends} variable in
+  libnftnl-dev
+  * [b9ff15b] d/: update symbols and bump SONAME
+
+ -- Arturo Borrero Gonzalez <arturo.borrero.glez@gmail.com>  Fri, 18 Sep 2015 09:25:31 +0200
+
+libnftnl (1.0.3-4) unstable; urgency=medium
+
+  * [9e3ab1d] d/t/control: internaltest: replace Depends build-essential
+  with @builddeps@
+
+ -- Arturo Borrero Gonzalez <arturo.borrero.glez@gmail.com>  Wed, 14 Jan 2015 12:28:14 +0100
+
+libnftnl (1.0.3-3) unstable; urgency=medium
+
+  * [c163e8b] d/tests/: internaltest: add build-essential dependency
+
+ -- Arturo Borrero Gonzalez <arturo.borrero.glez@gmail.com>  Fri, 09 Jan 2015 09:18:37 +0100
+
+libnftnl (1.0.3-2) unstable; urgency=medium
+
+  * Rebuild the experimental version to upload to unstable.
+
+ -- Arturo Borrero Gonzalez <arturo.borrero.glez@gmail.com>  Tue, 23 Dec 2014 13:48:04 +0100
+
+libnftnl (1.0.3-1) experimental; urgency=medium
+
+  * [1f87a22] d/control: bump standars to 3.9.6
+  * [b12a0b0] d/examples: README.examples: fix several typos
+  * [7fd3f3e] d/: add DEP-8 tests
+  * [2a2ef64] d/: drop README.source
+  * [99e8c35] d/control: add XS-Testsuite
+  * [e62d229] d/tests/internaltest: use sh instead of bash
+  * [dd1b749] Imported Upstream version 1.0.3
+  * [0b8cfd7] d/libnftnl0.symbols: update symbols file with 1.0.3 symbols
+  * [45d47fd] d/copyright: update file to match 1.0.3 source
+  * [e9c7f61] d/examples/: update XML and JSON file examples
+
+ -- Arturo Borrero Gonzalez <arturo.borrero.glez@gmail.com>  Fri, 19 Dec 2014 12:11:36 +0100
+
+libnftnl (1.0.2-1) unstable; urgency=medium
+
+  * [79a5a5e] Imported Upstream version 1.0.2
+
+ -- Arturo Borrero Gonzalez <arturo.borrero.glez@gmail.com>  Wed, 25 Jun 2014 18:43:44 +0200
+
+libnftnl (1.0.1-1) unstable; urgency=low
+
+  * [c84453e] d/rules: configure: disable silent rules
+  * [54c5aa8] d/control: architecture is linux-any
+  * [83a3229] Imported Upstream version 1.0.1
+  * [aae240c] d/changelog: target version is now 1.0.1-1
+  * [4d7789f] d/libnftnl0.symbols: add new symbols
+
+ -- Arturo Borrero Gonzalez <arturo.borrero.glez@gmail.com>  Thu, 17 Apr 2014 13:57:47 +0200
+
+libnftnl (1.0.0+git20140122-1) unstable; urgency=low
+
+  * Initial release (Closes: #736146)
+
+ -- Arturo Borrero Gonzalez <arturo.borrero.glez@gmail.com>  Tue, 11 Mar 2014 11:28:25 +0200

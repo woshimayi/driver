@@ -1,0 +1,29 @@
+#!/usr/bin/make -f
+
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
+
+export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+DPKG_EXPORT_BUILDFLAGS = 1
+include /usr/share/dpkg/buildflags.mk
+
+DEB_BUILD_ARCH_ENDIAN ?= $(shell dpkg-architecture -qDEB_BUILD_ARCH_ENDIAN)
+
+%:
+	dh $@ --with autoreconf
+
+override_dh_auto_configure:
+	dh_auto_configure -- --with-json-parsing
+
+override_dh_strip:
+	dh_strip --dbgsym-migration='libnftnl-dbg (<< 1.0.7-2~)'
+
+ifeq ($(filter nocheck,$(DEB_BUILD_OPTIONS)),)
+override_dh_auto_test:
+	dh_auto_test
+
+	# there are json testsuites issues in big endian arches
+ifeq (little,$(DEB_BUILD_ARCH_ENDIAN))
+	sh -c "cd tests; set -e; ./test-script.sh"
+endif
+endif

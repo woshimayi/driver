@@ -1,0 +1,9 @@
+usr/share/man/man8/xtables-compat.8.gz		usr/share/man/man8/arptables-compat.8.gz
+usr/share/man/man8/xtables-compat.8.gz		usr/share/man/man8/ebtables-compat.8.gz
+usr/share/man/man8/xtables-compat.8.gz		usr/share/man/man8/ip6tables-compat-restore.8.gz
+usr/share/man/man8/xtables-compat.8.gz		usr/share/man/man8/ip6tables-compat-save.8.gz
+usr/share/man/man8/xtables-compat.8.gz		usr/share/man/man8/ip6tables-compat.8.gz
+usr/share/man/man8/xtables-compat.8.gz		usr/share/man/man8/iptables-compat-restore.8.gz
+usr/share/man/man8/xtables-compat.8.gz		usr/share/man/man8/iptables-compat-save.8.gz
+usr/share/man/man8/xtables-compat.8.gz		usr/share/man/man8/iptables-compat.8.gz
+usr/share/man/man8/xtables-compat.8.gz		usr/share/man/man8/xtables-compat-multi.8.gz

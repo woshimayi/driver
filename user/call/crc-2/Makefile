@@ -8,27 +8,17 @@ SHARED_FLAG = -fPIC -shared
 
 INC += -I.
 
-# SOURCES = $(foreach d,.,$(wildcard $(d)/*.c))
-SOURCES = $(wildcard *.c)
-OBJS = $(patsubst %.c, %.o, $(SOURCES))
-OBJS += crchash.o
-
-%.o : %.c
-	$(CC) $(INC) -c $< -o $@
-
 CC += $(SHARED_FLAG)
 
-all : libcrc.a
-	@echo "SOURCES"
-	@echo $(SOURCES)
-	@echo "OBJS"
-	@echo $(OBJS)
-	@echo $@ $<
+object = crc16.o crc32.o crc64.o 
 
-libcrc.a : $(OBJS)
-	ar -rs $@ $^
+lib: $(object)
+	$(CC) -o lib $(object)
+
+$(object): crc16.c crc16.h crc32.c crc32.h crc64.c crc64.h
+	$(CC) $(INC) -c ./%.c -o ./%.o
 
 
+.PHONE: clean
 clean:
-	rm -rf *.o *.a
-
+	rm -rf *.o lib

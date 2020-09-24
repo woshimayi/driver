@@ -1,0 +1,3 @@
+debian/nfnl_osf.8
+debian/xtables-multi.8
+iptables/*.8

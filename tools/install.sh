@@ -9,3 +9,5 @@ git config --global commit.template ../
 
 
 sudo apt install meld -y
+sudo apt install ncdu -y
+sudo npm install -g tldr

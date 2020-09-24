@@ -68,17 +68,23 @@ CC += $(SHARED_FLAG)
 # clean:
 # 	rm -f $(D_OBJ)/* $(TATGET)
 
-lib: obj/crc16.o obj/crc32.o obj/crc64.o
-	$(CC) -o lib obj/crc16.o obj/crc32.o obj/crc64.o 
+objects = crc16.o crc32.o crc64.o
 
-crc16.o: src/crc16.c inc/crc16.h
-	$(CC) $(INC) -c src/crc16.c -o obj/crc16.o
+lib: $(objects)
+	$(CC) -o bin/lib $(addprefix obj/, $(objects))
 
-crc32.o: src/crc32.c inc/crc32.h
-	$(CC) $(INC) -c src/crc32.c -o obj/crc32.o
+# crc16.o: src/crc16.c inc/crc16.h
+# 	$(CC) $(INC) -c src/crc16.c -o obj/crc16.o
 
-crc64.o: src/crc64.c inc/crc64.h
-	$(CC) $(INC) -c src/crc64.c -o obj/crc64.o
+# crc32.o: src/crc32.c inc/crc32.h
+# 	$(CC) $(INC) -c src/crc32.c -o obj/crc32.o
+
+# crc64.o: src/crc64.c inc/crc64.h
+# 	$(CC) $(INC) -c src/crc64.c -o obj/crc64.o
+
+$(objects): src/crc16.c inc/crc16.h src/crc32.c inc/crc32.h src/crc64.c inc/crc64.h
+	src/crc16.c:inc/crc16.h src/crc32.c:inc/crc32.h src/crc64.c:inc/crc64.h
+
 
 clean:
-	rm -rf  ./*.o obj/*.o lib
+	rm -rf   obj/* bin/*

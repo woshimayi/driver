@@ -91,7 +91,7 @@ void gpio_enableint(GPIO_Type *base, unsigned int pin);
  */
 void gpio_disableint(GPIO_Type *base, unsigned int pin);
 /**
- * [gpio_clearintflags 清理中断标志位]
+ * [gpio_clearintflags description]
  * @param base [description]
  * @param pin  [description]
  */

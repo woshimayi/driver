@@ -113,12 +113,15 @@ unsigned char i2c_check_and_clear_error(I2C_Type *base, unsigned int status)
 
         base->I2CR &= ~(1 << 7);	/* 先关闭I2C 				*/
         base->I2CR |= (1 << 7);		/* 重新打开I2C 				*/
+        printf("I2C_STATUS_ARBITRATIONLOST");
         return I2C_STATUS_ARBITRATIONLOST;
     }
     else if (status & (1 << 0))     	/* 没有接收到从机的应答信号 */
     {
+        printf("I2C_STATUS_NAK");
         return I2C_STATUS_NAK;		/* 返回NAK(No acknowledge) */
     }
+    printf("I2C_STATUS_OK");
     return I2C_STATUS_OK;
 }
 
@@ -142,8 +145,13 @@ unsigned char i2c_master_stop(I2C_Type *base)
     {
         timeout--;
         if (timeout == 0)	/* 超时跳出 */
+        {
+            printf("I2C_STATUS_TIMEOUT");
             return I2C_STATUS_TIMEOUT;
+        }
+            
     }
+    printf("I2C_STATUS_OKb");
     return I2C_STATUS_OK;
 }
 
