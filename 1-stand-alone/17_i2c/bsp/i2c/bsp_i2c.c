@@ -94,7 +94,7 @@ unsigned char i2c_master_start(I2C_Type *base, unsigned char address,  enum i2c_
      * bit[7:0] : 要发送的数据，这里写入从设备地址
      *            参考资料:IMX6UL参考手册P1249
      */
-    base->I2DR = ((unsigned int)address << 1) | ((direction == kI2C_Read) ? 1 : 0);
+    base->I2DR = (unsigned int)address | ((direction == kI2C_Read) ? 1 : 0);
     return 0;
 }
 
