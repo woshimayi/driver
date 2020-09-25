@@ -44,7 +44,8 @@ void integer_display(unsigned short x, unsigned short y, unsigned char size, sig
         sprintf(buf, "-%d", -num);
     else
         sprintf(buf, "%d", num);
-    lcd_show_string(x, y, 50, size, size, buf);
+//    lcd_show_string(x, y, 50, size, size, buf);
+    printf("size=%d, buf=%s\r\n", size, buf);
 }
 
 
@@ -73,8 +74,9 @@ void decimals_display(unsigned short x, unsigned short y, unsigned char size, si
         sprintf(buf, "-%d.%d", integ, fract);
     else
         sprintf(buf, "%d.%d", integ, fract);
-    lcd_fill(x, y, x + 60, y + size, tftlcd_dev.backcolor);
-    lcd_show_string(x, y, 60, size, size, buf);
+//    lcd_fill(x, y, x + 60, y + size, tftlcd_dev.backcolor);
+//    lcd_show_string(x, y, 60, size, size, buf);
+    printf("size=%d, buf=%s\r\n", size, buf);
 }
 
 /*
@@ -125,8 +127,10 @@ int main(void)
     while (icm20608_init())		/* 初始化ICM20608	 			*/
     {
 //        lcd_show_string(50, 100, 200, 16, 16, (char *)"ICM20608 Check Failed!");
+        printf("ICM20608 Check Failed!\r\n");
         delayms(500);
 //        lcd_show_string(50, 100, 200, 16, 16, (char *)"Please Check!        ");
+        printf("Please Check!        \r\n");
         delayms(500);
     }
 
@@ -177,6 +181,8 @@ int main(void)
         printf("gyro  y = %d\r\n", icm20608_dev.gyro_y_adc);
         printf("gyro  z = %d\r\n", icm20608_dev.gyro_z_adc);
         printf("temp    = %d\r\n", icm20608_dev.temp_adc);
+        printf("\033[7A");
+        printf("\033[K");
 #endif
         delayms(120);
         state = !state;

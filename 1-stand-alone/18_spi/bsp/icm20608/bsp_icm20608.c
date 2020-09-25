@@ -12,6 +12,8 @@ Copyright © zuozhongkai Co., Ltd. 1998-2019. All rights reserved.
 #include "bsp_delay.h"
 #include "bsp_spi.h"
 #include "stdio.h"
+#include "unistd.h"
+
 
 struct icm20608_dev_struc icm20608_dev;	/* icm20608设备 */
 
@@ -53,7 +55,7 @@ unsigned char icm20608_init(void)
     IOMUXC_SetPinConfig(IOMUXC_UART2_TX_DATA_GPIO1_IO20, 0X10B0);
     cs_config.direction = kGPIO_DigitalOutput;
     cs_config.outputLogic = 0;
-    gpio_init(GPIO1, 20, &cs_config);
+    gpio_init(GPIO1, 20, &cs_config);  //gpio模拟片选信号
 
     /* 2、初始化SPI */
     spi_init(ECSPI3);
