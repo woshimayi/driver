@@ -25,7 +25,7 @@ GPS数据解析开源项目。
 您只需要修改`gps.h`文件中的两个地方，就可以完成配置：
 
 1.以下宏定义参数需要和您的GPS数据相对应；
-```bash
+```c
 // 根据实际的数据修改前缀
 #define PRE_GGA     "$GNGGA"
 #define PRE_GLL     "$GNGLL"
@@ -38,7 +38,7 @@ GPS数据解析开源项目。
 ```
 
 2.通过以下宏定义，可以设置某个语句是否需要解析，从而减小您的代码体积。
-```bash
+```c
 // 语句解析控制 1：使能，0：禁用
 #define ENABLE_GGA  1
 #define ENABLE_GLL  1
@@ -85,7 +85,7 @@ GPS数据解析开源项目。
 字段13：校验值（$与\*之间的数异或后的值）  
 ### GPGGA GPS定位数据
 例：$GPGGA,092204.999,4250.5589,S,14718.5084,E,1,04,24.4,12.2,M,19.7,M,,0000\*1F  
-  
+
 字段0：$GPGGA，语句ID，表明该语句为Global Positioning System Fix Data（GGA）GPS定位信息  
 字段1：UTC 时间，hhmmss.sss，时分秒格式  
 字段2：纬度ddmm.mmmm，度分格式（前导位数不足则补0）  
@@ -102,7 +102,7 @@ GPS数据解析开源项目。
 字段13：差分时间（从接收到差分信号开始的秒数，如果不是差分定位将为空）  
 字段14：差分站ID号0000 - 1023（前导位数不足则补0，如果不是差分定位将为空）  
 字段15：校验值（$与\*之间的数异或后的值）  
-  
+
 ### GPVTG 地面速度信息
 例：$GPVTG,89.68,T,,M,0.00,N,0.0,K*5F  
 
@@ -167,7 +167,7 @@ GPS数据解析开源项目。
 
 ### RMC解析
 RMC结构体  
-```bash  
+```c
 //RMC数据结构体（推荐定位信息数据格式）
 typedef struct
 {
@@ -187,7 +187,7 @@ typedef struct
 ```
 
 RMC解析函数  
-```bash
+```c
 // RMC数据解析
 static RMC rmc_data_parse(char *rmc_data)             // 定义RMC结构体函数
 {
@@ -251,7 +251,7 @@ static RMC rmc_data_parse(char *rmc_data)             // 定义RMC结构体函�
 
 ### GSA解析
 GSA结构体  
-```bash
+```c
 #pragma pack(1)                       // 便于指针偏移取值
 // 信道信息结构体
 typedef struct
@@ -275,7 +275,7 @@ typedef struct
 ```
 
 GSA解析函数  
-```bash
+```c
 // 得到GSA数据中的信道信息,由于一帧GPS数据中，GSA语句的个数不一致，所以需要传入原始的GPS数据，找出所有的GSA字段
 static GSA_PRN *get_prn_data(char *gps_data)
 {
@@ -390,7 +390,7 @@ static GSA gsa_data_parse(char *gsa_data, char *gpsdata)
 ```
 ### GSV解析
 GSV结构体
-```bash
+```c
 // 可见卫星信息结构体
 typedef struct
 {
@@ -412,7 +412,7 @@ typedef struct
 ```
 
 GSV解析函数  
-```bash
+```c
 /*
  * function:  获取GSV字段中的GPS信息
  * gps_data:  最原始的GPS字符串，用于找到所有的GSV语句
