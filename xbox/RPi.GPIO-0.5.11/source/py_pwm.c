@@ -135,65 +135,67 @@ static PyObject *PWM_stop(PWMObject *self, PyObject *args)
 static void PWM_dealloc(PWMObject *self)
 {
     pwm_stop(self->gpio);
-    Py_TYPE(self)->tp_free((PyObject*)self);
+    Py_TYPE(self)->tp_free((PyObject *)self);
 }
 
 static PyMethodDef
-PWM_methods[] = {
-   { "start", (PyCFunction)PWM_start, METH_VARARGS, "Start software PWM\ndutycycle - the duty cycle (0.0 to 100.0)" },
-   { "ChangeDutyCycle", (PyCFunction)PWM_ChangeDutyCycle, METH_VARARGS, "Change the duty cycle\ndutycycle - between 0.0 and 100.0" },
-   { "ChangeFrequency", (PyCFunction)PWM_ChangeFrequency, METH_VARARGS, "Change the frequency\nfrequency - frequency in Hz (freq > 1.0)" },
-   { "stop", (PyCFunction)PWM_stop, METH_VARARGS, "Stop software PWM" },
-   { NULL }
+PWM_methods[] =
+{
+    { "start", (PyCFunction)PWM_start, METH_VARARGS, "Start software PWM\ndutycycle - the duty cycle (0.0 to 100.0)" },
+    { "ChangeDutyCycle", (PyCFunction)PWM_ChangeDutyCycle, METH_VARARGS, "Change the duty cycle\ndutycycle - between 0.0 and 100.0" },
+    { "ChangeFrequency", (PyCFunction)PWM_ChangeFrequency, METH_VARARGS, "Change the frequency\nfrequency - frequency in Hz (freq > 1.0)" },
+    { "stop", (PyCFunction)PWM_stop, METH_VARARGS, "Stop software PWM" },
+    { NULL }
 };
 
-PyTypeObject PWMType = {
-   PyVarObject_HEAD_INIT(NULL,0)
-   "RPi.GPIO.PWM",            // tp_name
-   sizeof(PWMObject),         // tp_basicsize
-   0,                         // tp_itemsize
-   (destructor)PWM_dealloc,   // tp_dealloc
-   0,                         // tp_print
-   0,                         // tp_getattr
-   0,                         // tp_setattr
-   0,                         // tp_compare
-   0,                         // tp_repr
-   0,                         // tp_as_number
-   0,                         // tp_as_sequence
-   0,                         // tp_as_mapping
-   0,                         // tp_hash
-   0,                         // tp_call
-   0,                         // tp_str
-   0,                         // tp_getattro
-   0,                         // tp_setattro
-   0,                         // tp_as_buffer
-   Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, // tp_flag
-   "Pulse Width Modulation class",    // tp_doc
-   0,                         // tp_traverse
-   0,                         // tp_clear
-   0,                         // tp_richcompare
-   0,                         // tp_weaklistoffset
-   0,                         // tp_iter
-   0,                         // tp_iternext
-   PWM_methods,               // tp_methods
-   0,                         // tp_members
-   0,                         // tp_getset
-   0,                         // tp_base
-   0,                         // tp_dict
-   0,                         // tp_descr_get
-   0,                         // tp_descr_set
-   0,                         // tp_dictoffset
-   (initproc)PWM_init,        // tp_init
-   0,                         // tp_alloc
-   0,                         // tp_new
+PyTypeObject PWMType =
+{
+    PyVarObject_HEAD_INIT(NULL, 0)
+    "RPi.GPIO.PWM",            // tp_name
+    sizeof(PWMObject),         // tp_basicsize
+    0,                         // tp_itemsize
+    (destructor)PWM_dealloc,   // tp_dealloc
+    0,                         // tp_print
+    0,                         // tp_getattr
+    0,                         // tp_setattr
+    0,                         // tp_compare
+    0,                         // tp_repr
+    0,                         // tp_as_number
+    0,                         // tp_as_sequence
+    0,                         // tp_as_mapping
+    0,                         // tp_hash
+    0,                         // tp_call
+    0,                         // tp_str
+    0,                         // tp_getattro
+    0,                         // tp_setattro
+    0,                         // tp_as_buffer
+    Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, // tp_flag
+    "Pulse Width Modulation class",    // tp_doc
+    0,                         // tp_traverse
+    0,                         // tp_clear
+    0,                         // tp_richcompare
+    0,                         // tp_weaklistoffset
+    0,                         // tp_iter
+    0,                         // tp_iternext
+    PWM_methods,               // tp_methods
+    0,                         // tp_members
+    0,                         // tp_getset
+    0,                         // tp_base
+    0,                         // tp_dict
+    0,                         // tp_descr_get
+    0,                         // tp_descr_set
+    0,                         // tp_dictoffset
+    (initproc)PWM_init,        // tp_init
+    0,                         // tp_alloc
+    0,                         // tp_new
 };
 
 PyTypeObject *PWM_init_PWMType(void)
 {
-   // Fill in some slots in the type, and make it ready
-   PWMType.tp_new = PyType_GenericNew;
-   if (PyType_Ready(&PWMType) < 0)
-      return NULL;
+    // Fill in some slots in the type, and make it ready
+    PWMType.tp_new = PyType_GenericNew;
+    if (PyType_Ready(&PWMType) < 0)
+        return NULL;
 
-   return &PWMType;
+    return &PWMType;
 }

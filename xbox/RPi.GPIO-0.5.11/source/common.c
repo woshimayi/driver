@@ -54,14 +54,15 @@ int get_gpio_number(int channel, unsigned int *gpio)
     // check setmode() has been run
     if (gpio_mode != BOARD && gpio_mode != BCM)
     {
-        PyErr_SetString(PyExc_RuntimeError, "Please set pin numbering mode using GPIO.setmode(GPIO.BOARD) or GPIO.setmode(GPIO.BCM)");
+        PyErr_SetString(PyExc_RuntimeError,
+                        "Please set pin numbering mode using GPIO.setmode(GPIO.BOARD) or GPIO.setmode(GPIO.BCM)");
         return 3;
     }
 
     // check channel number is in range
-    if ( (gpio_mode == BCM && (channel < 0 || channel > 53))
-      || (gpio_mode == BOARD && (channel < 1 || channel > 26) && rpiinfo.p1_revision != 3)
-      || (gpio_mode == BOARD && (channel < 1 || channel > 40) && rpiinfo.p1_revision == 3) )
+    if ((gpio_mode == BCM && (channel < 0 || channel > 53))
+            || (gpio_mode == BOARD && (channel < 1 || channel > 26) && rpiinfo.p1_revision != 3)
+            || (gpio_mode == BOARD && (channel < 1 || channel > 40) && rpiinfo.p1_revision == 3))
     {
         PyErr_SetString(PyExc_ValueError, "The channel sent is invalid on a Raspberry Pi");
         return 4;
@@ -70,12 +71,14 @@ int get_gpio_number(int channel, unsigned int *gpio)
     // convert channel to gpio
     if (gpio_mode == BOARD)
     {
-        if (*(*pin_to_gpio+channel) == -1)
+        if (*(*pin_to_gpio + channel) == -1)
         {
             PyErr_SetString(PyExc_ValueError, "The channel sent is invalid on a Raspberry Pi");
             return 5;
-        } else {
-            *gpio = *(*pin_to_gpio+channel);
+        }
+        else
+        {
+            *gpio = *(*pin_to_gpio + channel);
         }
     }
     else // gpio_mode == BCM

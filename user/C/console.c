@@ -67,7 +67,7 @@ int log_log(const char *fmt, ...)
     j++;
     printf("%s", cmd);
 //    fflush(stdout);
-    setTimer(100);
+    setTimer(10);
 
     free(allocBuf);
     return ret;

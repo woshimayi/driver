@@ -57,7 +57,9 @@ void remove_pwm(unsigned int gpio)
             temp = p;
             p = p->next;
             free(temp);
-        } else {
+        }
+        else
+        {
             prev = p;
             p = p->next;
         }
@@ -73,7 +75,7 @@ void calculate_times(struct pwm *p)
     usec -= (long long)p->req_on.tv_sec * 1000000LL;
     p->req_on.tv_nsec = (long)usec * 1000L;
 
-    usec = (long long)((100.0-p->dutycycle) * p->slicetime * 1000.0);
+    usec = (long long)((100.0 - p->dutycycle) * p->slicetime * 1000.0);
     p->req_off.tv_sec = (int)(usec / 1000000LL);
     usec -= (long long)p->req_off.tv_sec * 1000000LL;
     p->req_off.tv_nsec = (long)usec * 1000L;
@@ -83,7 +85,7 @@ void full_sleep(struct timespec *req)
 {
     struct timespec rem = {0};
 
-    if (nanosleep(req,&rem) == -1)
+    if (nanosleep(req, &rem) == -1)
         full_sleep(&rem);
 }
 
