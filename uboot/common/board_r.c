@@ -989,7 +989,7 @@ init_fnc_t init_sequence_r[] = {
 #endif
 
 	/* Light up LED2 */
-        imx6_light_up_led2,
+        //imx6_light_up_led2,
 
 	run_main_loop,
 };

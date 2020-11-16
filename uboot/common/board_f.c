@@ -1068,7 +1068,7 @@ void board_init_f(ulong boot_flags)
 #endif
 
 	/* Light up LED1 */
-	imx6_light_up_led1();
+	//imx6_light_up_led1();
 }
 
 #if defined(CONFIG_X86) || defined(CONFIG_ARC)
