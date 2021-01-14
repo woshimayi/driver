@@ -140,6 +140,13 @@
 #define CONFIG_SMC911X_32_BIT		1
 #define CONFIG_SMC911X_BASE		V2M_LAN9118
 
+#define CONFIG_IPADDR 10.8.8.1
+#define CONFIG_NETMASK 255.255.255.0
+#define CONFIG_SERVERIP 10.8.8.4
+
+#define CONFIG_BOOTFILE "uImage"
+#define CONFIG_BOOTCOMMAND "tftp 0x60003000 uImage; tftp 0x60500000 vexpress-v2p-ca9.dtb; setenv bootargs'/dev/mmcblk0 console=ttyAMA0'; bootm 0x60003000 - 0x60500000"
+
 /* PL011 Serial Configuration */
 #define CONFIG_PL011_SERIAL
 #define CONFIG_PL011_CLOCK		24000000
@@ -191,9 +198,11 @@
 #include <config_distro_defaults.h>
 
 /* Basic environment settings */
+/*
 #define CONFIG_BOOTCOMMAND \
 	"run distro_bootcmd; " \
 	"run bootflash; "
+*/
 
 #define BOOT_TARGET_DEVICES(func) \
         func(MMC, mmc, 1) \
