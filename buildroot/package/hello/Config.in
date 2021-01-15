@@ -1,0 +1,4 @@
+config BR2_PACKAGE_HELLO
+    bool "hello"
+    help
+      This is a demo to add local app.
