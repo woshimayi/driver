@@ -160,6 +160,7 @@ endif
 endif # CONFIG_SPL_BUILD
 
 obj-$(CONFIG_CMD_BLOB) += blob.o
+obj-$(CONFIG_CMD_MY_CMD) += my_cmd.o
 
 # core command
 obj-y += nvedit.o

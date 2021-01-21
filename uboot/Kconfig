@@ -248,4 +248,11 @@ config MY_TESTCONFIG
 	help 
 		This is empty config , just for test 
 	
+
+config CMD_MY_CMD
+	bool "Dof test my application"
+	default y
+	help
+	test dof my cmd or application
+
 endmenu      # my test menu
