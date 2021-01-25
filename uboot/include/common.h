@@ -94,6 +94,10 @@ typedef volatile unsigned char	vu_char;
 #define CONFIG_SYS_SUPPORT_64BIT_DATA
 #endif
 
+
+/*  dof debug */
+/* #define DEBUG */
+
 #ifdef DEBUG
 #define _DEBUG	1
 #else
@@ -112,7 +116,7 @@ typedef volatile unsigned char	vu_char;
 #define debug_cond(cond, fmt, args...)			\
 	do {						\
 		if (cond)				\
-			printf(pr_fmt(fmt), ##args);	\
+            printf("[%30s]:[%20s:%5d]    " fmt "\n", __FILE__, __func__, __LINE__, ##args); \
 	} while (0)
 
 #define debug(fmt, args...)			\
