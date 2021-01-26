@@ -11,8 +11,12 @@
 /* LED1 & LED2 configuration  */
 #define CONFIG_LED1_IOMUXC   MX6_PAD_GPIO1_IO03__GPIO1_IO03
 #define CONFIG_LED2_IOMUXC   MX6_PAD_GPIO1_IO04__GPIO1_IO04
+#define CONFIG_LED3_IOMUXC   MX6_PAD_GPIO1_IO08__GPIO1_IO08
+
 #define CONFIG_LED1          IMX_GPIO_NR(1, 3)
 #define CONFIG_LED2          IMX_GPIO_NR(1, 4)
+#define CONFIG_LED3          IMX_GPIO_NR(1, 8)
+
 
 /* ALIENTEK LCD configuration number */
 #define CONFIG_ATKLCD_10_1_1280x800           	5

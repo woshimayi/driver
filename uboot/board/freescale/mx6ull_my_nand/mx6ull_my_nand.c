@@ -1032,6 +1032,7 @@ void select_display_dev (void) {
 static iomux_v3_cfg_t const leds_pads[] = {
 	CONFIG_LED1_IOMUXC | MUX_PAD_CTRL(NO_PAD_CTRL),
 	CONFIG_LED2_IOMUXC | MUX_PAD_CTRL(NO_PAD_CTRL),
+	CONFIG_LED3_IOMUXC | MUX_PAD_CTRL(NO_PAD_CTRL),
 };
 
 static iomux_v3_cfg_t const ts_int_pads[] = {
