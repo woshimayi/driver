@@ -27,6 +27,8 @@ CFILES			:= $(foreach dir, $(SRCDIRS), $(wildcard $(dir)/*.c))
 SFILENDIR		:= $(notdir  $(SFILES))
 CFILENDIR		:= $(notdir  $(CFILES))
 
+$(shell test -d obj || mkdir -p obj)     # 判断 是否有obj文件夹, 没有创建
+
 SOBJS			:= $(patsubst %, obj/%, $(SFILENDIR:.S=.o))
 COBJS			:= $(patsubst %, obj/%, $(CFILENDIR:.c=.o))
 OBJS			:= $(SOBJS) $(COBJS)
@@ -47,6 +49,6 @@ $(COBJS) : obj/%.o : %.c
 	$(CC) -Wall -nostdlib -c -O2  $(INCLUDE) -o $@ $<
 	
 clean:
-	rm -rf $(TARGET).elf $(TARGET).dis $(TARGET).bin $(COBJS) $(SOBJS)
+	rm -rf $(TARGET).elf $(TARGET).dis $(TARGET).bin $(COBJS) $(SOBJS) obj
 
 	

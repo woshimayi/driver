@@ -546,7 +546,7 @@ typedef enum _iomuxc_sw_pad_ctl_pad
  */
 typedef enum _iomuxc_select_input
 {
-    kIOMUXC_ANATOP_USB_OTG_ID_SELECT_INPUT  = 0UU,   /**< IOMUXC select input index */
+    kIOMUXC_ANATOP_USB_OTG_ID_SELECT_INPUT  = 0U,   /**< IOMUXC select input index */
     kIOMUXC_USB_OTG2_ID_SELECT_INPUT        = 1U,     /**< IOMUXC select input index */
     kIOMUXC_CCM_PMIC_READY_SELECT_INPUT     = 2U,     /**< IOMUXC select input index */
     kIOMUXC_CSI_DATA02_SELECT_INPUT         = 3U,     /**< IOMUXC select input index */
@@ -594,9 +594,9 @@ typedef enum _iomuxc_select_input
     kIOMUXC_ECSPI4_MOSI_SELECT_INPUT        = 45U,     /**< IOMUXC select input index */
     kIOMUXC_ECSPI4_SS0_B_SELECT_INPUT       = 46U,     /**< IOMUXC select input index */
     kIOMUXC_ENET1_REF_CLK1_SELECT_INPUT     = 47U,     /**< IOMUXC select input index */
-    kIOMUXC_ENET1_MAC0_MDIO_SELECT_INPUT    = 48U,,    /**< IOMUXC select input index */
+    kIOMUXC_ENET1_MAC0_MDIO_SELECT_INPUT    = 48U,    /**< IOMUXC select input index */
     kIOMUXC_ENET2_REF_CLK2_SELECT_INPUT     = 49U,     /**< IOMUXC select input index */
-    kIOMUXC_ENET2_MAC0_MDIO_SELECT_INPUT    = 50U,,    /**< IOMUXC select input index */
+    kIOMUXC_ENET2_MAC0_MDIO_SELECT_INPUT    = 50U,    /**< IOMUXC select input index */
     kIOMUXC_FLEXCAN1_RX_SELECT_INPUT        = 51U,     /**< IOMUXC select input index */
     kIOMUXC_FLEXCAN2_RX_SELECT_INPUT        = 52U,     /**< IOMUXC select input index */
     kIOMUXC_GPT1_CAPTURE1_SELECT_INPUT      = 53U,     /**< IOMUXC select input index */

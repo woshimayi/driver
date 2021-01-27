@@ -35,6 +35,8 @@ CFILES			:= $(foreach dir, $(SRCDIRS), $(wildcard $(dir)/*.c))
 SFILENDIR		:= $(notdir  $(SFILES))
 CFILENDIR		:= $(notdir  $(CFILES))
 
+$(shell test -d obj  || mkdir -p obj)
+
 SOBJS			:= $(patsubst %, obj/%, $(SFILENDIR:.S=.o))
 COBJS			:= $(patsubst %, obj/%, $(CFILENDIR:.c=.o))
 OBJS			:= $(SOBJS) $(COBJS)
@@ -47,6 +49,7 @@ $(TARGET).bin : $(OBJS)
 	$(LD) -Timx6ul.lds -o $(TARGET).elf $^
 	$(OBJCOPY) -O binary -S $(TARGET).elf $@
 	$(OBJDUMP) -D -m arm $(TARGET).elf > $(TARGET).dis
+	imxdown $(TARGET).bin
 
 $(SOBJS) : obj/%.o : %.S
 	$(CC) -Wall -nostdlib -c -O2  $(INCLUDE) -o $@ $<
@@ -55,6 +58,5 @@ $(COBJS) : obj/%.o : %.c
 	$(CC) -Wall -nostdlib -c -O2  $(INCLUDE) -o $@ $<
 	
 clean:
-	rm -rf $(TARGET).elf $(TARGET).dis $(TARGET).bin $(COBJS) $(SOBJS)
+	rm -rf $(TARGET).elf $(TARGET).dis $(TARGET).bin $(COBJS) $(SOBJS) obj *.imx
 
-	

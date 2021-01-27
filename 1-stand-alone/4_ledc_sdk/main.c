@@ -48,6 +48,8 @@ void clk_enable(void)
 void led_init(void)
 {
     /* 1、初始化IO复用 */
+    // base asddr   复用为GPIO1_IO0     
+    // 0x020E0068U, 0x5U,               0x00000000U, 0x0U, 0x020E02F4U
     IOMUXC_SetPinMux(IOMUXC_GPIO1_IO03_GPIO1_IO03, 0);		/* 复用为GPIO1_IO0 */
 
     /* 2、、配置GPIO1_IO03的IO属性

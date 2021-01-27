@@ -29,7 +29,9 @@ CFILENDIR		:= $(notdir  $(CFILES)) # notdir 去掉路径
 $(warning $(SFILENDIR))
 $(warning $(CFILENDIR))
 
-SOBJS			:= $(patsubst %, obj/%, $(SFILENDIR:.S=.o)) # 替换
+$(shell test -d obj || mkdir -p obj)     # 判断 是否有obj文件夹, 没有创建
+
+SOBJS			:= $(patsubst %, obj/%, $(SFILENDIR:.S=.o)) # 添加路径
 COBJS			:= $(patsubst %, obj/%, $(CFILENDIR:.c=.o))
 OBJS			:= $(SOBJS) $(COBJS)
 $(warning $(SOBJS))
@@ -41,7 +43,7 @@ VPATH			:= $(SRCDIRS)
 
 .PHONY: clean
 	
-$(TARGET).bin : $(OBJS)
+$(TARGET).bin : $(OBJS)                                               # $(TARGET).bin == $@          $^ 
 	$(LD) -Timx6ul.lds -o $(TARGET).elf $^
 	$(OBJCOPY) -O binary -S $(TARGET).elf $@
 	$(OBJDUMP) -D -m arm $(TARGET).elf > $(TARGET).dis
@@ -53,6 +55,4 @@ $(COBJS) : obj/%.o : %.c
 	$(CC) -Wall -nostdlib -c -O2  $(INCLUDE) -o $@ $<
 	
 clean:
-	rm -rf $(TARGET).elf $(TARGET).dis $(TARGET).bin $(COBJS) $(SOBJS)
-
-	
+	rm -rf $(TARGET).elf $(TARGET).dis $(TARGET).bin $(COBJS) $(SOBJS) obj
