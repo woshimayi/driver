@@ -1,10 +1,14 @@
-#include "stdio.h"
-#include "stdlib.h"
-#include "string.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "imxdownload.h"
 
 #define SHELLCMD_LEN	(200)
 #define BIN_OFFSET		(3072)
+
+#define NONE          printf("\033[m");
+#define RED           printf("\033[0;32;31m");
+#define WHITE         printf("\033[1;37m");
 
 /* 此宏指明是否打印u-boot.imx的IVT DCD表信息，不同的开发板其IVT和DCD
  * 表的数据是不同的，因此需要获取所使用的开发板的IVT和DCD表信息，最
@@ -145,7 +149,8 @@ int main(int argc, char *argv[])
     printf("Delete Old load.imx\r\n");
     system("rm -rf load.imx");		/* 先删除旧的load.imx文件	*/
 
-    printf("Create New load.imx\r\n");
+
+    RED printf("Create New load.imx\r\n"); WHITE
     system("touch load.imx");		/* 创建新的load.imx文件		*/
     fp = fopen("load.imx", "wb");	/* 打开laod.imx				*/
     if (fp == NULL)
@@ -165,8 +170,8 @@ int main(int argc, char *argv[])
     free(buf);
     fclose(fp);
 
-    /* 构建烧写的shell命令 */
-    if (argv[2])
+    /* 构建烧写 sd卡的shell命令 */
+    if (argc == 4)
     {
         cmdbuf = malloc(SHELLCMD_LEN);
         sprintf(cmdbuf, "sudo dd iflag=dsync oflag=dsync if=load.imx of=%s bs=512 seek=2", argv[2]);
