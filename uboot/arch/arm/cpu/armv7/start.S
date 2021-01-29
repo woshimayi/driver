@@ -40,13 +40,13 @@ save_boot_params_ret:
 	 * disable interrupts (FIQ and IRQ), also set the cpu to SVC32 mode,
 	 * except if in HYP mode already
 	 */
-	mrs	r0, cpsr
+	mrs	r0, cpsr			@ read cpsr register to r0 (r0=cpsr)
 	and	r1, r0, #0x1f		@ mask mode bits
-	teq	r1, #0x1a		@ test for HYP mode
-	bicne	r0, r0, #0x1f		@ clear all mode bits
-	orrne	r0, r0, #0x13		@ set SVC mode
+	teq	r1, #0x1a			@ test for HYP mode
+	bicne	r0, r0, #0x1f	@ clear all mode bits
+	orrne	r0, r0, #0x13	@ set SVC mode
 	orr	r0, r0, #0xc0		@ disable FIQ and IRQ
-	msr	cpsr,r0
+	msr	cpsr,r0             @ write r0 to cpsr register (cpsr=r0)
 
 /*
  * Setup vector:
@@ -61,7 +61,7 @@ save_boot_params_ret:
 
 	/* Set vector address in CP15 VBAR register */
 	ldr	r0, =_start
-	mcr	p15, 0, r0, c12, c0, 0	@Set VBAR
+	mcr	p15, 0, r0, c12, c0, 0	@Set VBAR  向量表基地址寄存器 设置中断向量表偏移 0x87800000
 #endif
 
 	/* the mask ROM code should have PLL and others stable */
@@ -134,7 +134,7 @@ ENTRY(cpu_init_cp15)
 #else
 	orr	r0, r0, #0x00001000	@ set bit 12 (I) I-cache
 #endif
-	mcr	p15, 0, r0, c1, c0, 0
+	mcr	p15, 0, r0, c1, c0, 0 @ write control register and disenable MMU
 
 #ifdef CONFIG_ARM_ERRATA_716044
 	mrc	p15, 0, r0, c1, c0, 0	@ read system control register
@@ -201,7 +201,7 @@ skip_errata_798870:
 	mrc	p15, 0, r0, c0, c0, 6	@ pick up REVIDR reg
 	and	r0, r0, #1 << 3		@ check REVIDR[3]
 	cmp	r0, #1 << 3
-	beq	skip_errata_801819	@ skip erratum if REVIDR[3] is set
+	beq	skip_errata_801819	@ skip erratum if REVIDR[3] is set  如果 cmp 等于 跳转到skip_errata_801819
 
 	mrc	p15, 0, r0, c1, c0, 1	@ read auxilary control register
 	orr	r0, r0, #3 << 27	@ Disables streaming. All write-allocate
