@@ -128,7 +128,7 @@ static int keyio_init(void)
 	
 	/* 初始化key所使用的IO，并且设置成中断模式 */
 	for (i = 0; i < KEY_NUM; i++) {
-		memset(imx6uirq.irqkeydesc[i].name, 0, sizeof(name));	/* 缓冲区清零 */
+		memset(imx6uirq.irqkeydesc[i].name, 0, sizeof(imx6uirq.irqkeydesc[i].name));	/* 缓冲区清零 */
 		sprintf(imx6uirq.irqkeydesc[i].name, "KEY%d", i);		/* 组合名字 */
 		gpio_request(imx6uirq.irqkeydesc[i].gpio, imx6uirq.irqkeydesc[i].name);
 		gpio_direction_input(imx6uirq.irqkeydesc[i].gpio);	

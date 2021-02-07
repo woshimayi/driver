@@ -251,8 +251,8 @@ static void __exit led_exit(void)
 	cdev_del(&newchrled.cdev);/*  删除cdev */
 	unregister_chrdev_region(newchrled.devid, NEWCHRLED_CNT); /* 注销设备号 */
 
-	device_destroy(newchrled.class, newchrled.devid);
-	class_destroy(newchrled.class);
+	device_destroy(newchrled.class, newchrled.devid);   /*  注销device */
+	class_destroy(newchrled.class);    /*  注销class */
 }
 
 module_init(led_init);

@@ -1,4 +1,4 @@
-KERNELDIR := /home/zuozhongkai/linux/IMX6ULL/linux/temp/linux-imx-rel_imx_4.1.15_2.1.0_ga_alientek
+KERNELDIR := ../../linux-imx-4.1.15-2.1.0
 CURRENT_PATH := $(shell pwd)
 
 obj-m := leddriver.o
