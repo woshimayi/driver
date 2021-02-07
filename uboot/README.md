@@ -21,3 +21,21 @@ ARCH=arm CROSS_COMPILE=arm-none-linux-gnueabi- make all -j16
 qemu-system-arm -M vexpress-a9 -m 512M -kernel u-boot -nographic
 ```
 
+
+
+## qemu gdb 调试
+
+### 1:qemu 调试 u-boot
+
+``` shell
+qemu-system-arm -M vexpress-a9 -m 256M -nographic -kernel u-boot -gdb tcp::1234  -S
+```
+
+### 2: 另一个终端打开
+
+``` shell
+
+arm-linux-gnueabihf-gdb -tui u-boot
+target remote : 123412
+```
+

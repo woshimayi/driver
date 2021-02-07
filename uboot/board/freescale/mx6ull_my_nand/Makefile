@@ -4,6 +4,7 @@
 #
 
 obj-y  := mx6ull_my_nand.o
+obj-y  := mx6ull_driver.o
 
 extra-$(CONFIG_USE_PLUGIN) :=  plugin.bin
 $(obj)/plugin.bin: $(obj)/plugin.o

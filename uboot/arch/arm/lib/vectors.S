@@ -79,13 +79,13 @@ _start:  // 后面是终端向量表
 	.globl	_irq
 	.globl	_fiq
 
-_undefined_instruction:	.word undefined_instruction
-_software_interrupt:	.word software_interrupt
-_prefetch_abort:	.word prefetch_abort
-_data_abort:		.word data_abort
-_not_used:		.word not_used
-_irq:			.word irq
-_fiq:			.word fiq
+_undefined_instruction:	    .word undefined_instruction
+_software_interrupt:	    .word software_interrupt
+_prefetch_abort:	        .word prefetch_abort
+_data_abort:		        .word data_abort
+_not_used:		            .word not_used
+_irq:			            .word irq
+_fiq:			            .word fiq
 
 	.balignl 16,0xdeadbeef
 
@@ -188,7 +188,7 @@ FIQ_STACK_START:
 	stmdb	r8, {sp, lr}^		@ Calling SP, LR
 	str	lr, [r8, #0]		@ Save calling PC
 	mrs	r6, spsr
-	str	r6, [r8, #4]		@ Save CPSR
+	str	r6, [r8, #4]		@ Save SPSR
 	str	r0, [r8, #8]		@ Save OLD_R0
 	mov	r0, sp
 	.endm

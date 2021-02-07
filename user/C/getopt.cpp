@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#if 0
+
 int main(int argc, char *argv[])
 {
     int flags, opt;
@@ -43,7 +45,9 @@ int main(int argc, char *argv[])
     exit(EXIT_SUCCESS);
 }
 
-The following example program illustrates the use of getopt_long() with most of its features.
+#else
+
+// The following example program illustrates the use of getopt_long() with most of its features.
 
 #include <stdio.h>     /* for printf */
 #include <stdlib.h>    /* for exit */
@@ -127,3 +131,4 @@ int main(int argc, char **argv)
     exit(EXIT_SUCCESS);
 }
 
+#endif

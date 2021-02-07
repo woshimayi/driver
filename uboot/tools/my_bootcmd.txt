@@ -1,0 +1,26 @@
+qemu-system-arm -M vexpress-a9 -smp 1 -m 256 -kernel zImage -dtb vexpress-v2p-ca9.dtb -drive file=rootfs.ext2,if=sd,format=raw -append "console=ttyAMA0,115200 rootwait root=/dev/mmcblk0"  -net nic,model=lan9118 -net user  ${EXTRA_ARGS}
+
+qemu-system-arm -M vexpress-a9 -m 512 -nographic  -net nic -net tap,ifname=$LAN,script=no -kernel u-boot 
+
+
+setenv bootargs noinitrd 'console=ttyAMA0,115200 root=/dev/nfs nfsroot=10.8.8.4:/home/zs/Doc/driver/buildroot/output/images/nfs,v3 rw ip=10.8.8.10:10.8.8.4:10.8.8.1:255.255.255.0::eth0:on init=/linuxrc'
+
+                                        root=/dev/nfs nfsroot=192.168.10.150:/xxx/fs,tcp rw ip=192.168.10.110:192.168.10.150:192.168.10.1:255.255.255.0::eth0:on    init=/linuxrc
+                                        
+                                        
+
+
+qemu-system-arm        -M vexpress-a9 -m 512 -nographic          -net nic -net tap,ifname=$LAN,script=no         -kernel u-boot    -sd rootfs.ext2
+
+
+
+
+bootcmd=tftp 0x60003000 uImage; tftp 0x60500000 vexpress-v2p-ca9.dtb; setenv bootargs noinitrd 'console=ttyAMA0,115200 root=/dev/nfs nfsroot=10.8.8.4:/home/zs/Doc/driver/buildroot/output/images/nfs,v3 rw ip=10.8.8.10:10.8.8.4:10.8.8.1:255.255.255.0::eth0:on init=/linuxrc''; bootm 0x60003000 - 0x60500000
+
+
+bootcmd=tftp 0x60008000 zImage; tftp 0x61000000 vexpress-v2p-ca9.dtb; setenv bootargs noinitrd 'console=ttyAMA0,115200 root=/dev/nfs nfsroot=10.8.8.4:/home/zs/Doc/driver/buildroot/output/images/nfs,v3 rw ip=10.8.8.10:10.8.8.4:10.8.8.1:255.255.255.0::eth0:on init=/linuxrc''; bootz 0x60008000 - 0x61000000
+
+
+
+
+setenv bootargs noinitrd 'console=ttyAMA0,115200 root=/dev/nfs nfsroot=10.8.8.4:/home/zs/Doc/driver/buildroot/output/images/nfs,v3 rw ip=10.8.8.10:10.8.8.4:10.8.8.1:255.255.255.0::eth0:on init=/linuxrc'; bootz 0x60008000 - 0x61000000

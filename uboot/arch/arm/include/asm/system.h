@@ -144,7 +144,7 @@ void smc_call(struct pt_regs *args);
 #define CPU_ARCH_ARMv7		9
 
 /*
- * CR1 bits (CP#15 CR1)
+ * CR1 bits (CP#15 CR1)  zzzzz MMU cache
  */
 #define CR_M	(1 << 0)	/* MMU enable				*/
 #define CR_A	(1 << 1)	/* Alignment abort enable		*/

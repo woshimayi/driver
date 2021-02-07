@@ -784,6 +784,12 @@ void do_enable_parallel_lcd(struct display_info_t const *dev)
 
 	/* Set Brightness to high */
 	gpio_direction_output(IMX_GPIO_NR(1, 8) , 1);
+
+
+    imx_iomux_v3_setup_pad(MX6_PAD_GPIO1_IO00__GPIO1_IO00 | MUX_PAD_CTRL(NO_PAD_CTRL));
+    gpio_direction_output(IMX_GPIO_NR(1, 0) , 1);
+
+    
 }
 
 struct display_info_t const displays[] = {

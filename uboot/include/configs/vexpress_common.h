@@ -145,7 +145,10 @@
 #define CONFIG_SERVERIP 10.8.8.4
 
 #define CONFIG_BOOTFILE "uImage"
-#define CONFIG_BOOTCOMMAND "tftp 0x60003000 uImage; tftp 0x60500000 vexpress-v2p-ca9.dtb; setenv bootargs'/dev/mmcblk0 console=ttyAMA0'; bootm 0x60003000 - 0x60500000"
+/* #define CONFIG_BOOTCOMMAND "tftp 0x60003000 uImage; tftp 0x60500000 vexpress-v2p-ca9.dtb; setenv bootargs'/dev/mmcblk0 console=ttyAMA0'; bootm 0x60003000 - 0x60500000" */
+/* #define CONFIG_BOOTCOMMAND "tftp 0x60003000 uImage; tftp 0x60500000 vexpress-v2p-ca9.dtb; setenv bootargs noinitrd 'console=ttyAMA0,115200 root=/dev/nfs nfsroot=10.8.8.4:/home/zs/Doc/driver/buildroot/output/images/nfs,v3 rw ip=10.8.8.10:10.8.8.4:10.8.8.1:255.255.255.0::eth0:on init=/linuxrc'; bootm 0x60003000 - 0x60500000" */
+/* #define CONFIG_BOOTCOMMAND "tftp 0x60008000 zImage; tftp 0x61000000 imx6ull-14x14-evk-my-nand.dtb; setenv bootargs noinitrd 'console=ttyAMA0,115200 root=/dev/nfs nfsroot=10.8.8.4:/home/zs/Doc/driver/buildroot/output/images/nfs,v3 rw ip=10.8.8.10:10.8.8.4:10.8.8.1:255.255.255.0::eth0:on init=/linuxrc'; bootz 0x60008000 - 0x61000000" */
+#define CONFIG_BOOTCOMMAND "tftp 0x60008000 zImage; tftp 0x61000000 vexpress-v2p-ca9.dtb; setenv bootargs noinitrd 'console=ttyAMA0,115200 root=/dev/nfs nfsroot=10.8.8.4:/home/zs/Doc/driver/buildroot/output/images/nfs,v3 rw ip=10.8.8.10:10.8.8.4:10.8.8.1:255.255.255.0::eth0:on init=/linuxrc'; bootz 0x60008000 - 0x61000000"
 
 /* PL011 Serial Configuration */
 #define CONFIG_PL011_SERIAL

@@ -339,6 +339,7 @@ static void boot_jump_linux(bootm_headers_t *images, int flag)
 int do_bootm_linux(int flag, int argc, char * const argv[],
 		   bootm_headers_t *images)
 {
+	printf("[%s]:[%s]:[%d] arm lib do_bootm_linux", __FILE__, __FUNCTION__, __LINE__);
 	/* No need for those on ARM */
 	if (flag & BOOTM_STATE_OS_BD_T || flag & BOOTM_STATE_OS_CMDLINE)
 		return -1;

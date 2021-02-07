@@ -13,6 +13,13 @@ then
 	ip tuntap del mode tap dev $LAN
 	echo "delete tap $LAN"
 	exit 0
+elif test '-g' = "$1"
+then 
+	qemu-system-arm -M vexpress-a9 -m 256M -nographic -kernel u-boot -gdb tcp::1234  -S
+	exit 0
+elif test '-local' = "$1"
+then 
+	arm-linux-gnueabihf-gdb  u-boot
 fi
 
 
@@ -29,6 +36,7 @@ qemu-system-arm \
 	-M vexpress-a9 -m 512 -nographic  \
 	-net nic -net tap,ifname=$LAN,script=no \
 	-kernel u-boot
+	-gdb tcp::1234 -S
 
 ip addr flush dev $LAN
 ip link set dev $LAN down

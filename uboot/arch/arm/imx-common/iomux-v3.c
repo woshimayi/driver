@@ -14,6 +14,7 @@
 #include <asm/imx-common/iomux-v3.h>
 #include <asm/imx-common/sys_proto.h>
 
+/*  base = 0x20e0000 */
 static void *base = (void *)IOMUXC_BASE_ADDR;
 
 /*

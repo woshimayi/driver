@@ -157,4 +157,6 @@ obj-y += command.o
 obj-y += s_record.o
 obj-y += xyzModem.o
 
+obj-$(CONFIG_CMD_MX6ULL_MY_CMD) += cmd_my_mx6ull.o
+
 CFLAGS_env_embedded.o := -Wa,--no-warn -DENV_CRC=$(shell tools/envcrc 2>/dev/null)
