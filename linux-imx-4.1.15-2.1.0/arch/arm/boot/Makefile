@@ -55,7 +55,7 @@ $(obj)/zImage:	$(obj)/compressed/vmlinux FORCE
 	$(call if_changed,objcopy)
 	@$(kecho) '  Kernel: $@ is ready'
 	$(warning $(obj))
-	@echo cp /home/zs/Documents/linux-imx-4.1.15-2.1.0-g49efdaa-v1.0/arch/arm/boot/zImage /home/zs/linux/nfs
+	cp -f $(obj)/zImage /home/zs/Doc/driver/buildroot/output/images
 
 
 endif
@@ -106,7 +106,6 @@ zinstall:
 	$(CONFIG_SHELL) $(srctree)/$(src)/install.sh "$(KERNELRELEASE)" \
 	$(obj)/zImage System.map "$(INSTALL_PATH)"
 	$(warning $(obj))
-	@echo cp $(obj)/zImage /home/zs/linux/nfs/
 
 uinstall:
 	$(CONFIG_SHELL) $(srctree)/$(src)/install.sh "$(KERNELRELEASE)" \

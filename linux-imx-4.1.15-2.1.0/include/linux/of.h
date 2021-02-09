@@ -47,13 +47,13 @@ struct of_irq_controller;
 #endif
 
 struct device_node {
-	const char *name;
-	const char *type;
+	const char *name;               /*  node name */
+	const char *type;               /*  device type */
 	phandle phandle;
-	const char *full_name;
+	const char *full_name;          /* node full name */
 	struct fwnode_handle fwnode;
 
-	struct	property *properties;
+	struct	property *properties;   /* device properties */
 	struct	property *deadprops;	/* removed properties */
 	struct	device_node *parent;
 	struct	device_node *child;

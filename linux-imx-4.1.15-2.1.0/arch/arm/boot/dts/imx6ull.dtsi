@@ -52,9 +52,9 @@
 		#size-cells = <0>;
 
 		cpu0: cpu@0 {
-			compatible = "arm,cortex-a7";
+			compatible = "arm,cortex-a7";     /* 字符串: 节点属性         属性值也可以是字符串列表，使用 ， 号隔开, 用于将设备和驱动联系起来,                      */
 			device_type = "cpu";
-			reg = <0>;
+			reg = <0>; /* 32位无符号整形 */
 			clock-latency = <61036>; /* two CLK32 periods */
 			operating-points = <
 				/* kHz	uV */
@@ -93,7 +93,7 @@
 		compatible = "arm,cortex-a7-gic";
 		#interrupt-cells = <3>;
 		interrupt-controller;
-		reg = <0x00a01000 0x1000>,
+		reg = <0x00a01000 0x1000>,    /*  reg 属性的值一般是(address 首地址，length)对。reg 属性一般用于描述设备地址空间资源信息，一般都是某个外设的寄存器地址范围信息 */
 		      <0x00a02000 0x100>;
 	};
 
@@ -506,8 +506,8 @@
 				reg = <0x0209c000 0x4000>;
 				interrupts = <GIC_SPI 66 IRQ_TYPE_LEVEL_HIGH>,
 					     <GIC_SPI 67 IRQ_TYPE_LEVEL_HIGH>;
-				gpio-controller;
-				#gpio-cells = <2>;
+				gpio-controller;        /* gpio control register  */
+				#gpio-cells = <2>;      /* 表示一共有两个 cell，第一个 cell 为 GPIO 编号，比如“&gpio1 3”就表示 GPIO1_IO03。第二个 cell 表示GPIO 极 性*/
 				interrupt-controller;
 				#interrupt-cells = <2>;
 			};

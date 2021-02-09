@@ -12,8 +12,8 @@
 #include "imx6ull.dtsi"
 
 / {
-	model = "Freescale i.MX6 ULL 14x14 EVK Board";
-	compatible = "fsl,imx6ull-14x14-evk", "fsl,imx6ull";
+	model = "Freescale i.MX6 ULL 14x14 EVK dof nand Board";
+	compatible = "fsl,imx6ull-14x14-evk-dof-nand", "fsl,imx6ull";
 
 	chosen {
 		stdout-path = &uart1;

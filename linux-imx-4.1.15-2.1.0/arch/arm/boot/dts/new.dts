@@ -1,0 +1,81 @@
+/ {
+    compatible = "fsl,imx6ull-alientek-evk", "fsl,imx6ull";
+
+    cpus {
+        #address-cells = <1>;
+        #size-cells = <0>;
+
+        // CPU0 node
+        cpu0: cpu@0 {
+            compatible = "arm,cortex-a7";
+            device_type = "cpu";
+            reg = <0>;
+        };
+    };
+
+    // soc
+    soc {
+        #address-cells = <1>;
+        #size-cells = <1>;
+        compatible = "simple-bus";
+        ranges;
+
+        //ocram node
+        ocram: sram@00900000 {
+            compatible = "fsl,lpm-sram";
+            reg = <0x00900000 0x20000>
+        };
+
+        //aips1 node
+        aips1: aips-bus@02000000 {
+            compatible = "fsl,aips-bus", "simple-bus";
+            #address-cells = <1>;
+            #size-cells = <1>;
+            reg = <0x02000000 0x100000>;
+            ranges;
+
+            // ecspi1 node
+            ecspi1: ecspi@02008000 {
+                #address-cells = <1>;
+                #size-cells = <0>;
+                compatible = "fsl,imx6ul-ecspi", "fsl,imx51-ecspi";
+                reg = <0x0200800 0x4000>;
+                status = "disabled";
+            };
+        }
+
+        
+        //aips2 node
+        aips2: aips-bus@02000000 {
+            compatible = "fsl,aips-bus", "simple-bus";
+            #address-cells = <1>;
+            #size-cells = <1>;
+            reg = <0x02100000 0x100000>;
+            ranges;
+
+            usbotg1: usb@02184000 {
+                compatible = 'fsl,imx6ul-usb', "fsl,imx27-usb";
+                reg = <0x02184000 0x200>;
+                    status = "disabled";
+            };
+            
+        }
+
+        
+        //aips3 node
+        aips3: aips-bus@02000000 {
+            compatible = "fsl,aips-bus", "simple-bus";
+            #address-cells = <1>;
+            #size-cells = <1>;
+            reg = <0x02200000 0x100000>;
+            ranges;
+
+            rngb: rngb@02284000 {
+                compatible = "fsl,imx6sl-rng", "fsl,imx-rng", "imx-rng";
+                reg = <0x02284000 0x4000>
+            };
+        }
+    }
+
+    
+}
