@@ -6,9 +6,7 @@ SUB_DIRS=$(shell ls -d */)
 SUBDIRS := $(SUB_DIRS)
 CLEAN := $(SUB_DIRS)
 
-all: sub clean
-
-
+all: sub
 
 # 循环遍历执行子目录Makefile
 sub:$(SUBDIRS)

@@ -30,48 +30,54 @@ Copyright © ALIENTEK Co., Ltd. 1998-2029. All rights reserved.
  */
 int main(int argc, char *argv[])
 {
-	int fd, retvalue;
-	char *filename;
-	unsigned char cnt = 0;
-	unsigned char databuf[1];
-	
-	if(argc != 3){
-		printf("Error Usage!\r\n");
-		return -1;
-	}
+    int fd, retvalue;
+    char *filename;
+    unsigned char cnt = 0;
+    unsigned char databuf[1];
 
-	filename = argv[1];
+    if (argc != 3)
+    {
+        printf("Error Usage!\r\n");
+        return -1;
+    }
 
-	/* 打开beep驱动 */
-	fd = open(filename, O_RDWR);
-	if(fd < 0){
-		printf("file %s open failed!\r\n", argv[1]);
-		return -1;
-	}
+    filename = argv[1];
 
-	databuf[0] = atoi(argv[2]);	/* 要执行的操作：打开或关闭 */
+    /* 打开beep驱动 */
+    fd = open(filename, O_RDWR);
+    if (fd < 0)
+    {
+        printf("file %s open failed!\r\n", argv[1]);
+        return -1;
+    }
 
-	/* 向/dev/gpioled文件写入数据 */
-	retvalue = write(fd, databuf, sizeof(databuf));
-	if(retvalue < 0){
-		printf("LED Control Failed!\r\n");
-		close(fd);
-		return -1;
-	}
+    databuf[0] = atoi(argv[2]);	/* 要执行的操作：打开或关闭 */
 
-	/* 模拟占用25S LED */
-	while(1) {
-		sleep(5);
-		cnt++;
-		printf("App running times:%d\r\n", cnt);
-		if(cnt >= 5) break;
-	}
+    /* 向/dev/gpioled文件写入数据 */
+    retvalue = write(fd, databuf, sizeof(databuf));
+    if (retvalue < 0)
+    {
+        printf("LED Control Failed!\r\n");
+        close(fd);
+        return -1;
+    }
 
-	printf("App running finished!\r\n");
-	retvalue = close(fd); /* 关闭文件 */
-	if(retvalue < 0){
-		printf("file %s close failed!\r\n", argv[1]);
-		return -1;
-	}
-	return 0;
+    /* 模拟占用25S LED */
+    while (1)
+    {
+        sleep(5);
+        cnt++;
+        printf("App running times:%d\r\n", cnt);
+        if (cnt >= 5)
+            break;
+    }
+
+    printf("App running finished!\r\n");
+    retvalue = close(fd); /* 关闭文件 */
+    if (retvalue < 0)
+    {
+        printf("file %s close failed!\r\n", argv[1]);
+        return -1;
+    }
+    return 0;
 }

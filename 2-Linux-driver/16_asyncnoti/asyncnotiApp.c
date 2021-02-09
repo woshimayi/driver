@@ -31,15 +31,18 @@ static int fd = 0;	/* 文件描述符 */
  */
 static void sigio_signal_func(int signum)
 {
-	int err = 0;
-	unsigned int keyvalue = 0;
+    int err = 0;
+    unsigned int keyvalue = 0;
 
-	err = read(fd, &keyvalue, sizeof(keyvalue));
-	if(err < 0) {
-		/* 读取错误 */
-	} else {
-		printf("sigio signal! key value=%d\r\n", keyvalue);
-	}
+    err = read(fd, &keyvalue, sizeof(keyvalue));
+    if (err < 0)
+    {
+        /* 读取错误 */
+    }
+    else
+    {
+        printf("sigio signal! key value=%d\r\n", keyvalue);
+    }
 }
 
 /*
@@ -50,32 +53,35 @@ static void sigio_signal_func(int signum)
  */
 int main(int argc, char *argv[])
 {
-	int flags = 0;
-	char *filename;
+    int flags = 0;
+    char *filename;
 
-	if (argc != 2) {
-		printf("Error Usage!\r\n");
-		return -1;
-	}
+    if (argc != 2)
+    {
+        printf("Error Usage!\r\n");
+        return -1;
+    }
 
-	filename = argv[1];
-	fd = open(filename, O_RDWR);
-	if (fd < 0) {
-		printf("Can't open file %s\r\n", filename);
-		return -1;
-	}
+    filename = argv[1];
+    fd = open(filename, O_RDWR);
+    if (fd < 0)
+    {
+        printf("Can't open file %s\r\n", filename);
+        return -1;
+    }
 
-	/* 设置信号SIGIO的处理函数 */
-	signal(SIGIO, sigio_signal_func);
-	
-	fcntl(fd, F_SETOWN, getpid());		/* 设置当前进程接收SIGIO信号 	*/
-	flags = fcntl(fd, F_GETFL);			/* 获取当前的进程状态 			*/
-	fcntl(fd, F_SETFL, flags | FASYNC);	/* 设置进程启用异步通知功能 	*/	
+    /* 设置信号SIGIO的处理函数 */
+    signal(SIGIO, sigio_signal_func);
 
-	while(1) {
-		sleep(2);
-	}
+    fcntl(fd, F_SETOWN, getpid());		/* 设置当前进程接收SIGIO信号 	*/
+    flags = fcntl(fd, F_GETFL);			/* 获取当前的进程状态 			*/
+    fcntl(fd, F_SETFL, flags | FASYNC);	/* 设置进程启用异步通知功能 	*/
 
-	close(fd);
-	return 0;
+    while (1)
+    {
+        sleep(2);
+    }
+
+    close(fd);
+    return 0;
 }

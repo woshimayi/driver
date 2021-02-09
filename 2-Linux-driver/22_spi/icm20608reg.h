@@ -13,7 +13,7 @@ Copyright © ALIENTEK Co., Ltd. 1998-2029. All rights reserved.
 #define ICM20608G_ID			0XAF	/* ID值 */
 #define ICM20608D_ID			0XAE	/* ID值 */
 
-/* ICM20608寄存器 
+/* ICM20608寄存器
  *复位后所有寄存器地址都为0，除了
  *Register 107(0X6B) Power Management 1 	= 0x40
  *Register 117(0X75) WHO_AM_I 				= 0xAF或0xAE
