@@ -256,12 +256,6 @@ config CMD_MY_CMD
 	test dof my cmd or application
 
 
-config CMD_MX6ULL_MY_CMD
-	bool "mx6ull_my_cmd"
-	default y
-	help
-	test dof my cmd or application
-
 
 
 
