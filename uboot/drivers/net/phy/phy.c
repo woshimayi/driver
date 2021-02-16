@@ -229,7 +229,10 @@ int genphy_update_link(struct phy_device *phydev)
         {
                 bmcr_reg = phy_read(phydev, MDIO_DEVAD_NONE, MII_BMCR);   /* Read the default value of BCMR register */
                 phy_write(phydev, MDIO_DEVAD_NONE, MII_BMCR, BMCR_RESET); /* Software reset*/
-                mdelay(10);
+                while (phy_read(phydev, MDIO_DEVAD_NONE, MII_BMCR) & 0X8000)
+                {
+                    udelay(100);
+                }
                 phy_write(phydev, MDIO_DEVAD_NONE, MII_BMCR, bmcr_reg);   /* Write the default value to BCMR register */
                 lan8720_flag = 1;
         }
