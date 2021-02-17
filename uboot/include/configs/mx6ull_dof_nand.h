@@ -87,6 +87,13 @@
 #define CONFIG_POWER_PFUZE3000_I2C_ADDR  0x08
 #endif
 
+#define CONFIG_IPADDR 10.8.8.1
+#define CONFIG_NETMASK 255.255.255.0
+#define CONFIG_SERVERIP 10.8.8.4
+#define CONFIG_GATEWAYIP 10.8.8.1
+
+
+
 #define CONFIG_SYS_MMC_IMG_LOAD_PART	1
 
 #ifdef CONFIG_SYS_USE_NAND
@@ -345,12 +352,13 @@
 #define IMX_FEC_BASE			ENET_BASE_ADDR
 #define CONFIG_FEC_MXC_PHYADDR          0x0
 #define CONFIG_FEC_XCV_TYPE             RMII
+#define CONFIG_ETHPRIME			"FEC"
 #elif (CONFIG_FEC_ENET_DEV == 1)
 #define IMX_FEC_BASE			ENET2_BASE_ADDR
 #define CONFIG_FEC_MXC_PHYADDR		0x1
 #define CONFIG_FEC_XCV_TYPE		RMII
+#define CONFIG_ETHPRIME			"FEC1"      /*     ethprime"表示上电后初始eth_current的名称                 Net:  FEC1         */
 #endif
-#define CONFIG_ETHPRIME			"FEC"
 
 #define CONFIG_PHYLIB
 #define CONFIG_PHY_SMSC
