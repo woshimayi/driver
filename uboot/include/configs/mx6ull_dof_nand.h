@@ -103,6 +103,7 @@
 #endif
 
 #define CONFIG_MFG_ENV_SETTINGS \
+    /*
 	"mfgtool_args=setenv bootargs console=${console},${baudrate} " \
 	    CONFIG_BOOTARGS_CMA_SIZE \
 		"rdinit=/linuxrc " \
@@ -117,7 +118,7 @@
 	"initrd_high=0xffffffff\0" \
 	"bootcmd_mfg=run mfgtool_args;bootz ${loadaddr} ${initrd_addr} ${fdt_addr};\0" \
 
-#if defined(CONFIG_SYS_USE_NAND) && !defined(CONFIG_SYS_BOOT_SD)
+#if defined(CONFIG_SYS_USE_NAND) && !defined(CONFIG_SYS_BOOT_SD) && 0
 #define CONFIG_EXTRA_ENV_SETTINGS \
 	CONFIG_MFG_ENV_SETTINGS \
 	"panel=TFT43AB\0" \
@@ -216,6 +217,9 @@
 				"if test $fdt_file = undefined; then " \
 					"echo WARNING: Could not determine dtb to use; fi; " \
 			"fi;\0" \
+*/
+
+/*
 
 #define CONFIG_BOOTCOMMAND \
 	   "run findfdt;" \
@@ -231,6 +235,14 @@
 		   "fi; " \
 	   "else run netboot; fi"
 #endif
+*/
+
+
+#define CONFIG_BOOTCOMMAND "tftp 0x80800000 zImage; \
+                            tftp 0x83000000 imx6ull-14x14-evk-dof-nand.dtb; \
+                            setenv bootargs noinitrd 'console=ttymxc0,115200 root=/dev/nfs nfsroot=10.8.8.4:/home/zs/linux/nfs/rootfs,v3 rw ip=10.8.8.1:10.8.8.4:10.8.8.1:255.255.255.0::eth0:on init=/linuxrc'; \
+                            bootz 0x80800000 - 0x83000000"
+
 
 /* Miscellaneous configurable options */
 #define CONFIG_CMD_MEMTEST
