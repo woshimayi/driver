@@ -237,11 +237,19 @@
 #endif
 */
 
+#define CONFIG_EXTRA_ENV_SETTINGS \
+        findfdt="\
+            setenv bootargs noinitrd 'console=ttymxc0,115200 root=/dev/nfs nfsroot=10.8.8.4:/home/zs/linux/nfs/rootfs,v3 rw ip=10.8.8.1:10.8.8.4:10.8.8.1:255.255.255.0::eth0:on init=/linuxrc'
+        "
 
-#define CONFIG_BOOTCOMMAND "tftp 0x80800000 zImage; \
-                            tftp 0x83000000 imx6ull-14x14-evk-dof-nand.dtb; \
-                            setenv bootargs noinitrd 'console=ttymxc0,115200 root=/dev/nfs nfsroot=10.8.8.4:/home/zs/linux/nfs/rootfs,v3 rw ip=10.8.8.1:10.8.8.4:10.8.8.1:255.255.255.0::eth0:on init=/linuxrc'; \
-                            bootz 0x80800000 - 0x83000000"
+
+
+
+#define CONFIG_BOOTCOMMAND \
+                            "run findfdt;"\
+                            "tftp 0x80800000 zImage;" \
+                            "tftp 0x83000000 imx6ull-14x14-evk-dof-nand.dtb;" \
+                            "bootz 0x80800000 - 0x83000000;"
 
 
 /* Miscellaneous configurable options */
@@ -369,7 +377,7 @@
 #define IMX_FEC_BASE			ENET2_BASE_ADDR
 #define CONFIG_FEC_MXC_PHYADDR		0x1
 #define CONFIG_FEC_XCV_TYPE		RMII
-#define CONFIG_ETHPRIME			"FEC1"      /*     ethprime"表示上电后初始eth_current的名称                 Net:  FEC1         */
+#define CONFIG_ETHPRIME			"FEC1"      /*     ethprime"表示上电后初始eth_current的名�?                Net:  FEC1         */
 #endif
 
 #define CONFIG_PHYLIB

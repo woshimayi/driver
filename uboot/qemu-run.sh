@@ -36,7 +36,6 @@ qemu-system-arm \
 	-M vexpress-a9 -m 512 -nographic  \
 	-net nic -net tap,ifname=$LAN,script=no \
 	-kernel u-boot
-	-gdb tcp::1234 -S
 
 ip addr flush dev $LAN
 ip link set dev $LAN down
