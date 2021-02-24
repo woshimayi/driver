@@ -103,15 +103,15 @@ extern void bus_remove_file(struct bus_type *, struct bus_attribute *);
  * private data.
  */
 struct bus_type {
-	const char		*name;
+	const char		*name;                              /* 总线名称 */
 	const char		*dev_name;
 	struct device		*dev_root;
 	struct device_attribute	*dev_attrs;	/* use dev_groups instead */
-	const struct attribute_group **bus_groups;
-	const struct attribute_group **dev_groups;
-	const struct attribute_group **drv_groups;
+	const struct attribute_group **bus_groups;          /* 总线属性 */
+	const struct attribute_group **dev_groups;          /* 设备属性 */
+	const struct attribute_group **drv_groups;          /* 驱动属性 */
 
-	int (*match)(struct device *dev, struct device_driver *drv);
+	int (*match)(struct device *dev, struct device_driver *drv);        /* 完成设备和驱动之间的匹配 */
 	int (*uevent)(struct device *dev, struct kobj_uevent_env *env);
 	int (*probe)(struct device *dev);
 	int (*remove)(struct device *dev);
@@ -236,7 +236,7 @@ struct device_driver {
 
 	bool suppress_bind_attrs;	/* disables bind/unbind via sysfs */
 
-	const struct of_device_id	*of_match_table;
+	const struct of_device_id	*of_match_table;            /* 采用设备树时  的驱动使用的匹配表       */
 	const struct acpi_device_id	*acpi_match_table;
 
 	int (*probe) (struct device *dev);

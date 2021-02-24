@@ -172,7 +172,7 @@ static struct gpio_leds_priv *gpio_leds_create(struct platform_device *pdev)
 	int count, ret;
 	struct device_node *np;
 
-	count = device_get_child_node_count(dev);
+	count = device_get_child_node_count(dev);           /*   统计子节点数量     */
 	if (!count)
 		return ERR_PTR(-ENODEV);
 
@@ -180,11 +180,11 @@ static struct gpio_leds_priv *gpio_leds_create(struct platform_device *pdev)
 	if (!priv)
 		return ERR_PTR(-ENOMEM);
 
-	device_for_each_child_node(dev, child) {
+	device_for_each_child_node(dev, child) {            /*    遍历每个子节点，获取子节点的信息        */
 		struct gpio_led led = {};
 		const char *state = NULL;
 
-		led.gpiod = devm_get_gpiod_from_child(dev, NULL, child);
+		led.gpiod = devm_get_gpiod_from_child(dev, NULL, child);        /*    获取led 灯所使用的GPIO 的信息      */
 		if (IS_ERR(led.gpiod)) {
 			fwnode_handle_put(child);
 			ret = PTR_ERR(led.gpiod);
@@ -194,17 +194,17 @@ static struct gpio_leds_priv *gpio_leds_create(struct platform_device *pdev)
 		np = of_node(child);
 
 		if (fwnode_property_present(child, "label")) {
-			fwnode_property_read_string(child, "label", &led.name);
+			fwnode_property_read_string(child, "label", &led.name);     /*    读取子节点label属性值，因为label属性作为led的名字              */
 		} else {
 			if (IS_ENABLED(CONFIG_OF) && !led.name && np)
 				led.name = np->name;
 			if (!led.name)
 				return ERR_PTR(-EINVAL);
 		}
-		fwnode_property_read_string(child, "linux,default-trigger",
+		fwnode_property_read_string(child, "linux,default-trigger",     /*  获取linux,default-trigger  属性值，可以通过次属性设置某个led灯在linux系统中的默认功能，如系统心跳           */
 					    &led.default_trigger);
 
-		if (!fwnode_property_read_string(child, "default-state",
+		if (!fwnode_property_read_string(child, "default-state",        /* line：207-215 获取default-state 属性值，也就是led 灯的默认状态属性        */
 						 &state)) {
 			if (!strcmp(state, "keep"))
 				led.default_state = LEDS_GPIO_DEFSTATE_KEEP;
@@ -217,7 +217,7 @@ static struct gpio_leds_priv *gpio_leds_create(struct platform_device *pdev)
 		if (fwnode_property_present(child, "retain-state-suspended"))
 			led.retain_state_suspended = 1;
 
-		ret = create_gpio_led(&led, &priv->leds[priv->num_leds++],
+		ret = create_gpio_led(&led, &priv->leds[priv->num_leds++],      /*  创建LED相关的io，设置led所使用的io为输出io            */
 				      dev, NULL);
 		if (ret < 0) {
 			fwnode_handle_put(child);

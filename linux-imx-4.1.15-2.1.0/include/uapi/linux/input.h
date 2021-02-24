@@ -175,20 +175,20 @@ struct input_keymap_entry {
  * Event types
  */
 
-#define EV_SYN			0x00
-#define EV_KEY			0x01
-#define EV_REL			0x02
-#define EV_ABS			0x03
-#define EV_MSC			0x04
-#define EV_SW			0x05
-#define EV_LED			0x11
-#define EV_SND			0x12
-#define EV_REP			0x14
-#define EV_FF			0x15
-#define EV_PWR			0x16
-#define EV_FF_STATUS		0x17
-#define EV_MAX			0x1f
-#define EV_CNT			(EV_MAX+1)
+#define EV_SYN			0x00                    /* 同步事件 */
+#define EV_KEY			0x01                    /* 按键事件 */
+#define EV_REL			0x02                    /* 相对坐标事件   */
+#define EV_ABS			0x03                    /* 绝对坐标事件   */
+#define EV_MSC			0x04                    /* 杂项(其他)事件 */
+#define EV_SW			0x05                    /* 开关事件  */
+#define EV_LED			0x11                    /* LED */
+#define EV_SND			0x12                    /* sound(声音) */
+#define EV_REP			0x14                    /* 重复事件 */
+#define EV_FF			0x15                    /* 压力事件 */
+#define EV_PWR			0x16                    /* 电源事件 */
+#define EV_FF_STATUS		0x17                /* 压力状态事件 */
+#define EV_MAX			0x1f                    
+#define EV_CNT			(EV_MAX+1)              
 
 /*
  * Synchronization events.

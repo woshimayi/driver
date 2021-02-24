@@ -126,15 +126,15 @@ struct input_dev {
 
 	unsigned long propbit[BITS_TO_LONGS(INPUT_PROP_CNT)];
 
-	unsigned long evbit[BITS_TO_LONGS(EV_CNT)];
-	unsigned long keybit[BITS_TO_LONGS(KEY_CNT)];
-	unsigned long relbit[BITS_TO_LONGS(REL_CNT)];
-	unsigned long absbit[BITS_TO_LONGS(ABS_CNT)];
-	unsigned long mscbit[BITS_TO_LONGS(MSC_CNT)];
-	unsigned long ledbit[BITS_TO_LONGS(LED_CNT)];
-	unsigned long sndbit[BITS_TO_LONGS(SND_CNT)];
-	unsigned long ffbit[BITS_TO_LONGS(FF_CNT)];
-	unsigned long swbit[BITS_TO_LONGS(SW_CNT)];
+	unsigned long evbit[BITS_TO_LONGS(EV_CNT)];         /* 事件类型的位图 */
+	unsigned long keybit[BITS_TO_LONGS(KEY_CNT)];       /* 按键值的位图 */
+	unsigned long relbit[BITS_TO_LONGS(REL_CNT)];       /* 相对坐标的位图 */
+	unsigned long absbit[BITS_TO_LONGS(ABS_CNT)];       /* 绝对坐标的位图 */
+	unsigned long mscbit[BITS_TO_LONGS(MSC_CNT)];       /* 杂项事件的位图 */
+	unsigned long ledbit[BITS_TO_LONGS(LED_CNT)];       /*LED 相关的位图 */
+	unsigned long sndbit[BITS_TO_LONGS(SND_CNT)];       /* sound 有关的位图 */
+	unsigned long ffbit[BITS_TO_LONGS(FF_CNT)];         /* 压力反馈的位图 */
+	unsigned long swbit[BITS_TO_LONGS(SW_CNT)];         /*开关状态的位图 */
 
 	unsigned int hint_events_per_packet;
 

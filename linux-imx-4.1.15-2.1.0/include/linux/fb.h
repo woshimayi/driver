@@ -449,17 +449,17 @@ struct fb_info {
 	atomic_t count;
 	int node;
 	int flags;
-	struct mutex lock;		/* Lock for open/release/ioctl funcs */
-	struct mutex mm_lock;		/* Lock for fb_mmap and smem_* fields */
+	struct mutex lock;		        /* Lock for open/release/ioctl funcs */
+	struct mutex mm_lock;		    /* Lock for fb_mmap and smem_* fields */
 	struct fb_var_screeninfo var;	/* Current var */
 	struct fb_fix_screeninfo fix;	/* Current fix */
 	struct fb_monspecs monspecs;	/* Current Monitor specs */
-	struct work_struct queue;	/* Framebuffer event queue */
-	struct fb_pixmap pixmap;	/* Image hardware mapper */
-	struct fb_pixmap sprite;	/* Cursor hardware mapper */
-	struct fb_cmap cmap;		/* Current cmap */
+	struct work_struct queue;	    /* Framebuffer event queue */
+	struct fb_pixmap pixmap;	    /* Image hardware mapper */
+	struct fb_pixmap sprite;	    /* Cursor hardware mapper */
+	struct fb_cmap cmap;		    /* Current cmap */
 	struct list_head modelist;      /* mode list */
-	struct fb_videomode *mode;	/* current mode */
+	struct fb_videomode *mode;	    /* current mode */
 
 #ifdef CONFIG_FB_BACKLIGHT
 	/* assigned backlight device */

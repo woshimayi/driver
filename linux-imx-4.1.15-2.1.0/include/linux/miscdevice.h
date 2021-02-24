@@ -55,9 +55,9 @@ struct device;
 struct attribute_group;
 
 struct miscdevice  {
-	int minor;
-	const char *name;
-	const struct file_operations *fops;
+	int minor;                                          /* 子设备号       */
+	const char *name;                                   /* 设备名字         */
+	const struct file_operations *fops;                 /* 设别操作集         */
 	struct list_head list;
 	struct device *parent;
 	struct device *this_device;

@@ -223,7 +223,7 @@ struct serio_device_id {
 struct of_device_id {
 	char	name[32];
 	char	type[32];
-	char	compatible[128];
+	char	compatible[128];            /*     设备树匹配项          */
 	const void *data;
 };
 
