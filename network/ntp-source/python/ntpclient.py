@@ -1,4 +1,13 @@
 '''
+FilePath: /network/ntp-source/python/ntpclient.py
+version: 
+Author: dof
+Date: 2020-10-10 13:47:37
+LastEditors: dof
+LastEditTime: 2021-02-25 17:06:07
+Descripttion: 
+'''
+'''
 
 (C) 2014 David Lettier.
 

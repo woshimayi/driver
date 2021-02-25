@@ -1,3 +1,13 @@
+/*
+ * @FilePath: /network/network_test/tcping_select_timeout.c
+ * @version: 
+ * @Author: sueRimn
+ * @Date: 2020-03-29 09:46:25
+ * @LastEditors: sueRimn
+ * @LastEditTime: 2021-02-25 16:41:58
+ * @Descripttion: 
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -230,7 +240,7 @@ int tr69_ifname_test(char *hostname, char *portnr, char * ifname)
         return 2;
     }
 
-    printf("zx %s\n", errcode);
+    printf("zx %d\n", errcode);
     if ((errcode = connect_to(resolved, ifname)) != 0)
     {
         if (errcode != -EADDRNOTAVAIL)

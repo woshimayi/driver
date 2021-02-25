@@ -1,4 +1,13 @@
 /*
+ * @FilePath: /network/ntp-source/c/main.c
+ * @version: 
+ * @Author: dof
+ * @Date: 2020-10-10 13:47:37
+ * @LastEditors: dof
+ * @LastEditTime: 2021-02-25 17:20:01
+ * @Descripttion: 
+ */
+/*
  *
  * (C) 2014 David Lettier.
  *
@@ -84,8 +93,8 @@ int main(int argc, char *argv[ ])
 
     int portno = 123; // NTP UDP port number.
 
-    char *host_name = "time-h.netgear.com"; // NTP server host-name.
-//    char *host_name = "edu.ntp.org.cn";
+    // char *host_name = "time-h.netgear.com"; // NTP server host-name.
+   char *host_name = "edu.ntp.org.cn";
 
 
     // Structure that defines the 48 byte NTP packet protocol.

@@ -1,3 +1,12 @@
+/*
+ * @FilePath: /network/get_network_if_device_status.c
+ * @version: 
+ * @Author: sueRimn
+ * @Date: 2020-11-27 16:45:15
+ * @LastEditors: sueRimn
+ * @LastEditTime: 2021-02-25 17:02:40
+ * @Descripttion: 
+ */
 #if 0
 #include <stdio.h>
 #include <stdlib.h>

@@ -1,3 +1,12 @@
+/*
+ * @FilePath: /network/bind_ifname.c
+ * @version: 
+ * @Author: sueRimn
+ * @Date: 2020-03-29 09:46:25
+ * @LastEditors: sueRimn
+ * @LastEditTime: 2021-02-25 17:02:59
+ * @Descripttion: 
+ */
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>

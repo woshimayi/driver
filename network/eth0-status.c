@@ -1,3 +1,12 @@
+/*
+ * @FilePath: /network/eth0-status.c
+ * @version: 
+ * @Author: sueRimn
+ * @Date: 2020-09-30 16:51:19
+ * @LastEditors: sueRimn
+ * @LastEditTime: 2021-02-25 17:02:50
+ * @Descripttion: 
+ */
 #include <sys/types.h>
 #include <string.h>
 #include <stdlib.h>

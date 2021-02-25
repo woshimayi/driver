@@ -1,3 +1,12 @@
+/*
+ * @FilePath: /network/dns.c
+ * @version: 
+ * @Author: sueRimn
+ * @Date: 2020-10-10 13:53:43
+ * @LastEditors: sueRimn
+ * @LastEditTime: 2021-02-25 17:02:53
+ * @Descripttion: 
+ */
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netdb.h>

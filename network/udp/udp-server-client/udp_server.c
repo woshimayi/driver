@@ -1,3 +1,12 @@
+/*
+ * @FilePath: /network/udp/udp-server-client/udp_server.c
+ * @version: 
+ * @Author: dof
+ * @Date: 2020-10-10 09:57:00
+ * @LastEditors: dof
+ * @LastEditTime: 2021-02-25 17:04:14
+ * @Descripttion: 
+ */
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -10,25 +19,25 @@
 
 void handle_udp_msg(int fd)
 {
-    char buf[BUFF_LEN];  //½ÓÊÕ»º³åÇø£¬1024×Ö½Ú
+    char buf[BUFF_LEN];  //ï¿½ï¿½ï¿½Õ»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1024ï¿½Ö½ï¿½
     socklen_t len;
     int count;
-    struct sockaddr_in clent_addr;  //clent_addrÓÃÓÚ¼ÇÂ¼·¢ËÍ·½µÄµØÖ·ÐÅÏ¢
+    struct sockaddr_in clent_addr;  //clent_addrï¿½ï¿½ï¿½Ú¼ï¿½Â¼ï¿½ï¿½ï¿½Í·ï¿½ï¿½Äµï¿½Ö·ï¿½ï¿½Ï¢
     while(1)
     {
         memset(buf, 0, BUFF_LEN);
         len = sizeof(clent_addr);
-        count = recvfrom(fd, buf, BUFF_LEN, 0, (struct sockaddr*)&clent_addr, &len);  //recvfromÊÇÓµÈûº¯Êý£¬Ã»ÓÐÊý¾Ý¾ÍÒ»Ö±ÓµÈû
+        count = recvfrom(fd, buf, BUFF_LEN, 0, (struct sockaddr*)&clent_addr, &len);  //recvfromï¿½ï¿½Óµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½Ý¾ï¿½Ò»Ö±Óµï¿½ï¿½
         if(count == -1)
         {
             printf("recieve data fail!\n");
             return;
         }
-        printf("client:%s\n",buf);  //´òÓ¡client·¢¹ýÀ´µÄÐÅÏ¢
+        printf("client:%s\n",buf);  //ï¿½ï¿½Ó¡clientï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
         memset(buf, 0, BUFF_LEN);
-        sprintf(buf, "I have recieved %d bytes data!\n", count);  //»Ø¸´client
-        printf("server:%s\n",buf);  //´òÓ¡×Ô¼º·¢ËÍµÄÐÅÏ¢¸ø
-        sendto(fd, buf, BUFF_LEN, 0, (struct sockaddr*)&clent_addr, len);  //·¢ËÍÐÅÏ¢¸øclient£¬×¢ÒâÊ¹ÓÃÁËclent_addr½á¹¹ÌåÖ¸Õë
+        sprintf(buf, "I have recieved %d bytes data!\n", count);  //ï¿½Ø¸ï¿½client
+        printf("server:%s\n",buf);  //ï¿½ï¿½Ó¡ï¿½Ô¼ï¿½ï¿½ï¿½ï¿½Íµï¿½ï¿½ï¿½Ï¢ï¿½ï¿½
+        sendto(fd, buf, BUFF_LEN, 0, (struct sockaddr*)&clent_addr, len);  //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½clientï¿½ï¿½×¢ï¿½ï¿½Ê¹ï¿½ï¿½ï¿½ï¿½clent_addrï¿½á¹¹ï¿½ï¿½Ö¸ï¿½ï¿½
 
     }
 }
@@ -53,8 +62,8 @@ int main(int argc, char* argv[])
 
     memset(&ser_addr, 0, sizeof(ser_addr));
     ser_addr.sin_family = AF_INET;
-    ser_addr.sin_addr.s_addr = htonl(INADDR_ANY); //IPµØÖ·£¬ÐèÒª½øÐÐÍøÂçÐò×ª»»£¬INADDR_ANY£º±¾µØµØÖ·
-    ser_addr.sin_port = htons(SERVER_PORT);  //¶Ë¿ÚºÅ£¬ÐèÒªÍøÂçÐò×ª»»
+    ser_addr.sin_addr.s_addr = htonl(INADDR_ANY); //IPï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½INADDR_ANYï¿½ï¿½ï¿½ï¿½ï¿½Øµï¿½Ö·
+    ser_addr.sin_port = htons(SERVER_PORT);  //ï¿½Ë¿ÚºÅ£ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½
 
     ret = bind(server_fd, (struct sockaddr*)&ser_addr, sizeof(ser_addr));
     if(ret < 0)
@@ -63,7 +72,7 @@ int main(int argc, char* argv[])
         return -1;
     }
 
-    handle_udp_msg(server_fd);   //´¦Àí½ÓÊÕµ½µÄÊý¾Ý
+    handle_udp_msg(server_fd);   //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
     close(server_fd);
     return 0;

@@ -1,7 +1,13 @@
-/*************************************************************************
-  > File Name: client.c
-  > Author: SongLee
- ************************************************************************/
+/*
+ * @FilePath: /network/udp-file-trans/udp-file-trans-client.c
+ * @version: 
+ * @Author: sueRimn
+ * @Date: 2020-10-10 17:25:04
+ * @LastEditors: sueRimn
+ * @LastEditTime: 2021-02-25 17:03:13
+ * @Descripttion: 
+ */
+
 #include<sys/types.h>
 #include<sys/socket.h>
 #include<unistd.h>

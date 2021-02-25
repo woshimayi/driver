@@ -1,3 +1,12 @@
+/*
+ * @FilePath: /network/udp-file-trans/udp-file-trans-server.c
+ * @version: 
+ * @Author: sueRimn
+ * @Date: 2020-10-10 17:24:35
+ * @LastEditors: sueRimn
+ * @LastEditTime: 2021-02-25 17:03:17
+ * @Descripttion: 
+ */
 /*************************************************************************
   > File Name: server.c
   > Author: SongLee

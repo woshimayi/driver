@@ -1,3 +1,12 @@
+/*
+ * @FilePath: /network/udp/udp-timeserver/udp_client.c
+ * @version: 
+ * @Author: dof
+ * @Date: 2020-10-10 10:09:58
+ * @LastEditors: dof
+ * @LastEditTime: 2021-02-25 17:04:23
+ * @Descripttion: 
+ */
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -31,12 +40,12 @@ void udp_msg_sender(int fd, struct sockaddr* dst)
     {
         char buf[BUFF_LEN] = "TEST UDP MSG!\n";
         len = sizeof(*dst);
-        printf("client:%s\n",buf);  //´òÓ¡×Ô¼º·¢ËÍµÄÐÅÏ¢
+        printf("client:%s\n",buf);  //ï¿½ï¿½Ó¡ï¿½Ô¼ï¿½ï¿½ï¿½ï¿½Íµï¿½ï¿½ï¿½Ï¢
         sendto(fd, buf, BUFF_LEN, 0, dst, len);
         memset(buf, 0, BUFF_LEN);
-        recvfrom(fd, buf, BUFF_LEN, 0, (struct sockaddr*)&src, &len);  //½ÓÊÕÀ´×ÔserverµÄÐÅÏ¢
+        recvfrom(fd, buf, BUFF_LEN, 0, (struct sockaddr*)&src, &len);  //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½serverï¿½ï¿½ï¿½ï¿½Ï¢
         printf("server:%s\n",buf);
-        sleep(1);  //Ò»Ãë·¢ËÍÒ»´ÎÏûÏ¢
+        sleep(1);  //Ò»ï¿½ë·¢ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½Ï¢
     }
 }
 
@@ -60,8 +69,8 @@ int main(int argc, char* argv[])
     memset(&ser_addr, 0, sizeof(ser_addr));
     ser_addr.sin_family = AF_INET;
     //ser_addr.sin_addr.s_addr = inet_addr(SERVER_IP);
-    ser_addr.sin_addr.s_addr = htonl(INADDR_ANY);  //×¢ÒâÍøÂçÐò×ª»»
-    ser_addr.sin_port = htons(SERVER_PORT);  //×¢ÒâÍøÂçÐò×ª»»
+    ser_addr.sin_addr.s_addr = htonl(INADDR_ANY);  //×¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½
+    ser_addr.sin_port = htons(SERVER_PORT);  //×¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½
 	
 	udp_handler(client_fd, (struct sockaddr*)&ser_addr);
     udp_msg_sender(client_fd, (struct sockaddr*)&ser_addr);

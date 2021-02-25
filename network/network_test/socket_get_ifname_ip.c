@@ -1,4 +1,14 @@
 /*
+ * @FilePath: /network/network_test/socket_get_ifname_ip.c
+ * @version: 
+ * @Author: sueRimn
+ * @Date: 2020-03-29 09:46:25
+ * @LastEditors: sueRimn
+ * @LastEditTime: 2021-02-25 17:01:46
+ * @Descripttion: 
+ */
+
+/*
 * 使用socket 获取网络信息
 * ioctl https://baike.baidu.com/item/ioctl/6392403
 *

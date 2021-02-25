@@ -230,7 +230,7 @@ int tr69_ifname_test(char *hostname, char *portnr, char * ifname)
         return 2;
     }
 
-    printf("zx %s\n", errcode);
+    printf("zx %d\n", errcode);
     if ((errcode = connect_to(resolved, ifname)) != 0)
     {
         if (errcode != -EADDRNOTAVAIL)
