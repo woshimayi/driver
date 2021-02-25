@@ -1,2 +1,0 @@
-/sbin/xtables-multi /usr/bin/iptables-xml
-/usr/sbin/iptables-apply /usr/sbin/ip6tables-apply

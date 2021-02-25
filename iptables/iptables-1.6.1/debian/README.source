@@ -1,3 +1,0 @@
-This is a quilt style (using source format 3.0 (quilt)) package build with
-a quirky build directory hack. Look at /usr/share/doc/quilt/README.source
-for details on using quilt patch management with Debian packages.
