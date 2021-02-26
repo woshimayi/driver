@@ -17,9 +17,10 @@ elif test '-g' = "$1"
 then 
 	qemu-system-arm -M vexpress-a9 -m 256M -nographic -kernel u-boot -gdb tcp::1234  -S
 	exit 0
-elif test '-local' = "$1"
+elif test '-l' = "$1"
 then 
-	arm-linux-gnueabihf-gdb  u-boot
+	arm-linux-gnueabihf-gdb  -tui u-boot
+	exit 0
 fi
 
 

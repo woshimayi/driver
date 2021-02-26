@@ -73,6 +73,9 @@ const uchar default_environment[] = {
 #ifdef	CONFIG_NETMASK
 	"netmask="	__stringify(CONFIG_NETMASK)	"\0"
 #endif
+#ifdef	CONFIG_ETHADDR
+	"ethaddr="	__stringify(CONFIG_ETHADDR)	"\0"
+#endif
 #ifdef	CONFIG_HOSTNAME
 	"hostname="	__stringify(CONFIG_HOSTNAME)	"\0"
 #endif
