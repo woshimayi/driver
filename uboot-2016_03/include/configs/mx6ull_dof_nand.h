@@ -185,7 +185,9 @@
 	"netargs=setenv bootargs console=${console},${baudrate} " \
 		CONFIG_BOOTARGS_CMA_SIZE \
 		"root=/dev/nfs " \
-	"ip=dhcp nfsroot=${serverip}:${nfsroot},v3,tcp\0" \
+		"nfsrootfs=/home/zs/linux/nfs/rootfs" \
+    	"ip=10.8.8.1:10.8.8.4:10.8.8.1:255.255.255.0::eth0:on " \
+    	"nfsroot=${serverip}:${nfsrootfs},v2,tcp\0" \
 		"netboot=echo Booting from net ...; " \
 		"run netargs; " \
 		"if test ${ip_dyn} = yes; then " \
@@ -220,8 +222,11 @@
 
 #define CONFIG_BOOTCOMMAND \
 	   "run findfdt;" \
-	   "mmc dev ${mmcdev};" \
-	   "mmc dev ${mmcdev}; if mmc rescan; then " \
+//	   "mmc dev ${mmcdev};" \
+//	   "mmc dev ${mmcdev}; if mmc rescan; then " \
+        "tftp 0x80800000 zImage;" \
+        "tftp 0x83000000 imx6ull-14x14-evk-dof-nand.dtb;" \
+        "bootz 0x80800000 - 0x83000000;" \
 		   "if run loadbootscript; then " \
 			   "run bootscript; " \
 		   "else " \
