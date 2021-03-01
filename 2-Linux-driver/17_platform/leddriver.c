@@ -244,7 +244,7 @@ static int led_remove(struct platform_device *dev)
 static struct platform_driver led_driver =
 {
     .driver		= {
-        .name	= "imx6ul-led",			/* 驱动名字，用于和设备匹配 */
+        .name	= "imx6ul-led",			/* 驱动名字，用于和设备platform_device 结构体 name 匹配 */
     },
     .probe		= led_probe,
     .remove		= led_remove,

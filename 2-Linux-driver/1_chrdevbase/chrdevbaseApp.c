@@ -39,6 +39,7 @@ int main(int argc, char *argv[])
     }
 
     filename = argv[1];
+	printf("hello dof\n");
 
     /* 打开驱动文件 */
     fd  = open(filename, O_RDWR);

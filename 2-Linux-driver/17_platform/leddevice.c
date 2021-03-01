@@ -58,7 +58,7 @@ static struct resource led_resources[] =
     [0] = {
         .start 	= CCM_CCGR1_BASE,
         .end 	= (CCM_CCGR1_BASE + REGISTER_LENGTH - 1),
-        .flags 	= IORESOURCE_MEM,
+        .flags 	= IORESOURCE_MEM,                           /*  IORESOURCE_MEM   表示资源为内存类型     */
     },
     [1] = {
         .start	= SW_MUX_GPIO1_IO03_BASE,
@@ -93,8 +93,8 @@ static struct platform_device leddevice =
     .dev = {
         .release = &led_release,
     },
-    .num_resources = ARRAY_SIZE(led_resources),
-    .resource = led_resources,
+    .num_resources = ARRAY_SIZE(led_resources),     /* 表示resource 资源的大小  */
+    .resource = led_resources,                      /*  设备信息，寄存器              */
 };
 
 /*
