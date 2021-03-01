@@ -1,3 +1,12 @@
+/*
+ * @FilePath: \algorithm\posture_c.c
+ * @version: 
+ * @Author: dof
+ * @Date: 2020-12-24 20:05:18
+ * @LastEditors: dof
+ * @LastEditTime: 2021-02-26 10:07:40
+ * @Descripttion: 
+ */
 /**
  * 计算两个GPS 坐标点的距离 和方位角
  *

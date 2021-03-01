@@ -1,3 +1,12 @@
+/*
+ * @FilePath: \algorithm\kaermanfilter.c
+ * @version: 
+ * @Author: dof
+ * @Date: 2020-12-24 17:29:00
+ * @LastEditors: dof
+ * @LastEditTime: 2021-02-26 10:07:22
+ * @Descripttion: 
+ */
 /**
  * [KalmanFilter 卡尔曼滤波算法]
  * @param ResrcDataCnt      [description]

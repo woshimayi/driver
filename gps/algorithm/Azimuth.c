@@ -1,3 +1,12 @@
+/*
+ * @FilePath: \algorithm\Azimuth.c
+ * @version: 
+ * @Author: dof
+ * @Date: 2020-12-24 20:04:11
+ * @LastEditors: dof
+ * @LastEditTime: 2021-02-26 10:04:19
+ * @Descripttion: 
+ */
 /**
  * 计算两个GPS 坐标点的距离 和方位角
  *

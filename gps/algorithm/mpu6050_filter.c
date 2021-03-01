@@ -1,3 +1,12 @@
+/*
+ * @FilePath: \algorithm\mpu6050_filter.c
+ * @version: 
+ * @Author: dof
+ * @Date: 2020-12-25 19:40:15
+ * @LastEditors: dof
+ * @LastEditTime: 2021-02-26 10:07:37
+ * @Descripttion: 
+ */
 /**
  * 计算 IMU 数据
  * 要注意的的是，四元数算法输出的是三个量 Pitch、Roll 和 Yaw，运算量很大。而像平衡小车这样的例子只需要一个角（Pitch 或 Roll ）就可以满足工作要求，个人觉得做平衡小车最好不用四元数法

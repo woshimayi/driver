@@ -1,3 +1,12 @@
+/*
+ * @FilePath: \algorithm\kaermanfilter-1.c
+ * @version: 
+ * @Author: dof
+ * @Date: 2020-12-24 17:29:18
+ * @LastEditors: dof
+ * @LastEditTime: 2021-02-26 10:04:43
+ * @Descripttion: 
+ */
 typedef  struct{
 	double filterValue;  //k-1时刻的滤波值，即是k-1时刻的值
 	double kalmanGain;   //   Kalamn增益
