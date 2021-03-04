@@ -1,4 +1,13 @@
 /*
+ * @FilePath: \module_read\char_dev.c
+ * @version: 
+ * @Author: dof
+ * @Date: 2021-03-02 09:57:06
+ * @LastEditors: dof
+ * @LastEditTime: 2021-03-02 09:58:44
+ * @Descripttion: device read write data
+ */
+/*
  * a simple char device driver: globalmem without mutex
  *
  * Copyright (C) 2014 Barry Song  (baohua@kernel.org)
@@ -53,8 +62,8 @@ static long globalmem_ioctl(struct file *filp, unsigned int cmd,
             break;
         case HELLO_TWO:
             memset(dev->mem, 0, GLOBALMEM_SIZE);
-            printk(KERN_INFO "globalmem is set to two\n");
-
+            printk(KERN_INFO "globalmem is set to two %lu\n", arg);
+            break;
         default:
             return -EINVAL;
     }
@@ -69,13 +78,16 @@ static ssize_t globalmem_read(struct file *filp, char __user *buf, size_t size,
     unsigned int count = size;
     int ret = 0;
     struct globalmem_dev *dev = filp->private_data;
+    char tmp[128] = "dof ddddd";
 
     if (p >= GLOBALMEM_SIZE)
         return 0;
     if (count > GLOBALMEM_SIZE - p)
         count = GLOBALMEM_SIZE - p;
 
-    if (copy_to_user(buf, dev->mem, count))
+    count = sizeof(tmp);
+    memcpy(dev->mem, tmp, sizeof(tmp));
+    if (copy_to_user(buf, dev->mem, sizeof(tmp)))
     {
         ret = -EFAULT;
     }

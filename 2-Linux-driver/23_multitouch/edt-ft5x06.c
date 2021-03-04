@@ -1102,7 +1102,7 @@ static int edt_ft5x06_ts_probe(struct i2c_client *client,
     i2c_set_clientdata(client, tsdata);
 
 
-    /* zuozhongkai 2019/1/30 */
+    /* dof 2019/1/30 */
     //printk("tsdata->irq_pin=%d\r\n",tsdata->irq_pin);
     gpio_request(tsdata->irq_pin, "interrupt-gpios");
     gpio_direction_input(tsdata->irq_pin);

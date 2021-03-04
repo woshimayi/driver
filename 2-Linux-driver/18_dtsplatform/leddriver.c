@@ -23,12 +23,12 @@
 /***************************************************************
 Copyright © ALIENTEK Co., Ltd. 1998-2029. All rights reserved.
 文件名		: leddriver.c
-作者	  	: 左忠凯
+作者	  	: dof
 版本	   	: V1.0
 描述	   	: 设备树下的platform驱动
 其他	   	: 无
 论坛 	   	: www.openedv.com
-日志	   	: 初版V1.0 2019/8/13 左忠凯创建
+日志	   	: 初版V1.0 2019/8/13 dof创建
 ***************************************************************/
 
 #define LEDDEV_CNT		1				/* 设备号长度 	*/
@@ -188,7 +188,7 @@ static int led_remove(struct platform_device *dev)
 
     cdev_del(&leddev.cdev);				/*  删除cdev */
     unregister_chrdev_region(leddev.devid, LEDDEV_CNT); /* 注销设备号 */
-    device_destroy(leddev.class, leddev.devid);
+    device_destroy(leddev.class, leddev.devid);         /* 注销设备 */
     class_destroy(leddev.class);
     return 0;
 }
@@ -234,7 +234,7 @@ static void __exit leddriver_exit(void)
 module_init(leddriver_init);
 module_exit(leddriver_exit);
 MODULE_LICENSE("GPL");
-MODULE_AUTHOR("zuozhongkai");
+MODULE_AUTHOR("dof");
 
 
 

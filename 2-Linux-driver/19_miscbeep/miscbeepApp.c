@@ -8,14 +8,14 @@
 /***************************************************************
 Copyright © ALIENTEK Co., Ltd. 1998-2029. All rights reserved.
 文件名		: miscbeepApp.c
-作者	  	: 左忠凯
+作者	  	: dof
 版本	   	: V1.0
 描述	   	: MISC驱动框架下的beep测试APP。
 其他	   	: 无
 使用方法	 ：./miscbeepApp  /dev/miscbeep  0 关闭蜂鸣器
 		     ./misdcbeepApp /dev/miscbeep  1 打开蜂鸣器
 论坛 	   	: www.openedv.com
-日志	   	: 初版V1.0 2019/8/20 左忠凯创建
+日志	   	: 初版V1.0 2019/8/20 dof创建
 ***************************************************************/
 #define BEEPOFF	0
 #define BEEPON 	1

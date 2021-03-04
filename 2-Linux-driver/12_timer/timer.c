@@ -19,12 +19,12 @@
 /***************************************************************
 Copyright © ALIENTEK Co., Ltd. 1998-2029. All rights reserved.
 文件名		: timer.c
-作者	  	: 左忠凯
+作者	  	: dof
 版本	   	: V1.0
 描述	   	: Linux内核定时器实验
 其他	   	: 无
 论坛 	   	: www.openedv.com
-日志	   	: 初版V1.0 2019/7/24 左忠凯创建
+日志	   	: 初版V1.0 2019/7/24 dof创建
 ***************************************************************/
 #define TIMER_CNT		1		/* 设备号个数 	*/
 #define TIMER_NAME		"timer"	/* 名字 		*/
@@ -246,4 +246,4 @@ static void __exit timer_exit(void)
 module_init(timer_init);
 module_exit(timer_exit);
 MODULE_LICENSE("GPL");
-MODULE_AUTHOR("zuozhongkai");
+MODULE_AUTHOR("dof");

@@ -16,12 +16,12 @@
 /***************************************************************
 Copyright © ALIENTEK Co., Ltd. 1998-2029. All rights reserved.
 文件名		: ft5x06.c
-作者	  	: 左忠凯
+作者	  	: dof
 版本	   	: V1.0
 描述	   	: FT5X06，包括FT5206、FT5426等触摸屏驱动程序
 其他	   	: 无
 论坛 	   	: www.openedv.com
-日志	   	: 初版V1.0 2019/12/23 左忠凯创建个
+日志	   	: 初版V1.0 2019/12/23 dof创建个
 ***************************************************************/
 
 #define MAX_SUPPORT_POINTS		5			/* 5点触摸 	*/
@@ -406,5 +406,5 @@ static void __exit ft5x06_exit(void)
 module_init(ft5x06_init);
 module_exit(ft5x06_exit);
 MODULE_LICENSE("GPL");
-MODULE_AUTHOR("zuozhongkai");
+MODULE_AUTHOR("dof");
 

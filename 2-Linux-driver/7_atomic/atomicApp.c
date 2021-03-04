@@ -8,7 +8,7 @@
 /***************************************************************
 Copyright © ALIENTEK Co., Ltd. 1998-2029. All rights reserved.
 文件名		: atomicApp.c
-作者	  	: 左忠凯
+作者	  	: dof
 版本	   	: V1.0
 描述	   	: 原子变量测试APP，测试原子变量能不能实现一次
 			 只允许一个应用程序使用LED。
@@ -16,7 +16,7 @@ Copyright © ALIENTEK Co., Ltd. 1998-2029. All rights reserved.
 使用方法	 ：./atomicApp /dev/gpioled  0 关闭LED灯
 		     ./atomicApp /dev/gpioled  1 打开LED灯
 论坛 	   	: www.openedv.com
-日志	   	: 初版V1.0 2019/1/30 左忠凯创建
+日志	   	: 初版V1.0 2019/1/30 dof创建
 ***************************************************************/
 
 #define LEDOFF 	0

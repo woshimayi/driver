@@ -12,12 +12,12 @@
 /***************************************************************
 Copyright © ALIENTEK Co., Ltd. 1998-2029. All rights reserved.
 文件名		: led.c
-作者	  	: 左忠凯
+作者	  	: dof
 版本	   	: V1.0
 描述	   	: LED驱动文件。
 其他	   	: 无
 论坛 	   	: www.openedv.com
-日志	   	: 初版V1.0 2019/1/30 左忠凯创建
+日志	   	: 初版V1.0 2019/1/30 dof创建
 ***************************************************************/
 #define LED_MAJOR		200		/* 主设备号 */
 #define LED_NAME		"led" 	/* 设备名字 */
@@ -26,11 +26,11 @@ Copyright © ALIENTEK Co., Ltd. 1998-2029. All rights reserved.
 #define LEDON 	1				/* 开灯 */
 
 /* 寄存器物理地址 */
-#define CCM_CCGR1_BASE				(0X020C406C)
-#define SW_MUX_GPIO1_IO03_BASE		(0X020E0068)
-#define SW_PAD_GPIO1_IO03_BASE		(0X020E02F4)
-#define GPIO1_DR_BASE				(0X0209C000)
-#define GPIO1_GDIR_BASE				(0X0209C004)
+#define CCM_CCGR1_BASE				(0X020C406C)            /* 时钟寄存器 */ 
+#define SW_MUX_GPIO1_IO03_BASE		(0X020E0068)            /* 复用寄存器 */ 
+#define SW_PAD_GPIO1_IO03_BASE		(0X020E02F4)            /* 属性寄存器 */ 
+#define GPIO1_DR_BASE				(0X0209C000)            /* 输入输出方向寄存器 */ 
+#define GPIO1_GDIR_BASE				(0X0209C004)            /* 数据寄存器 */ 
 
 /* 映射后的寄存器虚拟地址指针 */
 static void __iomem *IMX6U_CCM_CCGR1;
@@ -152,6 +152,10 @@ static int __init led_init(void)
 
     /* 初始化LED */
     /* 1、寄存器地址映射 */
+    /**
+     * @brief ioremap: 用于获取制定物理空间对应的虚拟地址空间  要映射的物理地址起始地址 要映射的内存空间大小
+     * @return： 指向要映射后的虚拟空间首地址
+     */
     IMX6U_CCM_CCGR1 = ioremap(CCM_CCGR1_BASE, 4);
     SW_MUX_GPIO1_IO03 = ioremap(SW_MUX_GPIO1_IO03_BASE, 4);
     SW_PAD_GPIO1_IO03 = ioremap(SW_PAD_GPIO1_IO03_BASE, 4);
@@ -209,7 +213,7 @@ static int __init led_init(void)
  */
 static void __exit led_exit(void)
 {
-    /* 取消映射 */
+    /* 取消映射    */
     iounmap(IMX6U_CCM_CCGR1);
     iounmap(SW_MUX_GPIO1_IO03);
     iounmap(SW_PAD_GPIO1_IO03);
@@ -223,4 +227,4 @@ static void __exit led_exit(void)
 module_init(led_init);
 module_exit(led_exit);
 MODULE_LICENSE("GPL");
-MODULE_AUTHOR("zuozhongkai");
+MODULE_AUTHOR("dof");

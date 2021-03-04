@@ -8,14 +8,14 @@
 /***************************************************************
 Copyright © ALIENTEK Co., Ltd. 1998-2029. All rights reserved.
 文件名		: ledApp.c
-作者	  	: 左忠凯
+作者	  	: dof
 版本	   	: V1.0
 描述	   	: platform驱动驱测试APP。
 其他	   	: 无
 使用方法	 ：./ledApp /dev/platled  0 关闭LED
 		     ./ledApp /dev/platled  1 打开LED
 论坛 	   	: www.openedv.com
-日志	   	: 初版V1.0 2019/8/16 左忠凯创建
+日志	   	: 初版V1.0 2019/8/16 dof创建
 ***************************************************************/
 #define LEDOFF 	0
 #define LEDON 	1

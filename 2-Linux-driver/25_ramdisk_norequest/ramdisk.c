@@ -22,13 +22,13 @@
 /***************************************************************
 Copyright © ALIENTEK Co., Ltd. 1998-2029. All rights reserved.
 文件名		: ramdisk.c
-作者	  	: 左忠凯
+作者	  	: dof
 版本	   	: V1.0
 描述	   	: 内存模拟硬盘，实现块设备驱动，本驱动使用"制造请求"。
 		   : 参考：drivers/block/zram/zram_drv.c
 其他	   	: 无
 论坛 	   	: www.openedv.com
-日志	   	: 初版V1.0 2020/5/22 左忠凯创建
+日志	   	: 初版V1.0 2020/5/22 dof创建
 ***************************************************************/
 
 #define RAMDISK_SIZE	(2 * 1024 * 1024) 	/* 容量大小为2MB */
@@ -224,5 +224,5 @@ static void __exit ramdisk_exit(void)
 module_init(ramdisk_init);
 module_exit(ramdisk_exit);
 MODULE_LICENSE("GPL");
-MODULE_AUTHOR("zuozhongkai");
+MODULE_AUTHOR("dof");
 

@@ -17,12 +17,12 @@
 /***************************************************************
 Copyright © ALIENTEK Co., Ltd. 1998-2029. All rights reserved.
 文件名		: dtsled.c
-作者	  	: 左忠凯
+作者	  	: dof
 版本	   	: V1.0
 描述	   	: LED驱动文件。
 其他	   	: 无
 论坛 	   	: www.openedv.com
-日志	   	: 初版V1.0 2019/7/9 左忠凯创建
+日志	   	: 初版V1.0 2019/7/9 dof创建
 ***************************************************************/
 #define DTSLED_CNT			1		  	/* 设备号个数 */
 #define DTSLED_NAME			"dtsled"	/* 名字 */
@@ -329,4 +329,4 @@ static void __exit led_exit(void)
 module_init(led_init);
 module_exit(led_exit);
 MODULE_LICENSE("GPL");
-MODULE_AUTHOR("zuozhongkai");
+MODULE_AUTHOR("dof");

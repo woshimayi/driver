@@ -19,12 +19,12 @@
 /***************************************************************
 Copyright © ALIENTEK Co., Ltd. 1998-2029. All rights reserved.
 文件名		: ap3216c.c
-作者	  	: 左忠凯
+作者	  	: dof
 版本	   	: V1.0
 描述	   	: AP3216C驱动程序
 其他	   	: 无
 论坛 	   	: www.openedv.com
-日志	   	: 初版V1.0 2019/9/2 左忠凯创建
+日志	   	: 初版V1.0 2019/9/2 dof创建
 ***************************************************************/
 #define AP3216C_CNT	1
 #define AP3216C_NAME	"ap3216c"
@@ -350,7 +350,7 @@ static void __exit ap3216c_exit(void)
 module_init(ap3216c_init);
 module_exit(ap3216c_exit);
 MODULE_LICENSE("GPL");
-MODULE_AUTHOR("zuozhongkai");
+MODULE_AUTHOR("dof");
 
 
 

@@ -4,15 +4,16 @@
 #include <linux/ide.h>
 #include <linux/init.h>
 #include <linux/module.h>
+#include <strint.h>
 /***************************************************************
 Copyright © ALIENTEK Co., Ltd. 1998-2029. All rights reserved.
 文件名		: chrdevbase.c
-作者	  	: 左忠凯
+作者	  	: dof
 版本	   	: V1.0
 描述	   	: chrdevbase驱动文件。
 其他	   	: 无
 论坛 	   	: www.openedv.com
-日志	   	: 初版V1.0 2019/1/30 左忠凯创建
+日志	   	: 初版V1.0 2019/1/30 dof创建
 ***************************************************************/
 
 #define CHRDEVBASE_MAJOR	200				/* 主设备号 */
@@ -153,6 +154,6 @@ module_exit(chrdevbase_exit);
  * LICENSE和作者信息
  */
 MODULE_LICENSE("GPL");
-MODULE_AUTHOR("zuozhongkai");
+MODULE_AUTHOR("dof");
 
 
