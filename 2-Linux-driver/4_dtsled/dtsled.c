@@ -1,3 +1,14 @@
+/*
+ * @*************************************: 
+ * @FilePath: /2-Linux-driver/4_dtsled/dtsled.c
+ * @version: 
+ * @Author: dof
+ * @Date: 2021-03-02 11:18:26
+ * @LastEditors: dof
+ * @LastEditTime: 2021-03-05 18:09:24
+ * @Descripttion: device tree led 
+ * @**************************************: 
+ */
 #include <linux/types.h>
 #include <linux/kernel.h>
 #include <linux/delay.h>
@@ -14,16 +25,6 @@
 #include <asm/uaccess.h>
 #include <asm/io.h>
 
-/***************************************************************
-Copyright © ALIENTEK Co., Ltd. 1998-2029. All rights reserved.
-文件名		: dtsled.c
-作者	  	: dof
-版本	   	: V1.0
-描述	   	: LED驱动文件。
-其他	   	: 无
-论坛 	   	: www.openedv.com
-日志	   	: 初版V1.0 2019/7/9 dof创建
-***************************************************************/
 #define DTSLED_CNT			1		  	/* 设备号个数 */
 #define DTSLED_NAME			"dtsled"	/* 名字 */
 #define LEDOFF 					0			/* 关灯 */
@@ -167,7 +168,7 @@ static int __init led_init(void)
 
     /* 获取设备树中的属性数据 */
     /* 1、获取设备节点：alphaled */
-    dtsled.nd = of_find_node_by_path("/alphaled");
+    dtsled.nd = of_find_node_by_path("/dof");
     if (dtsled.nd == NULL)
     {
         printk("alphaled node nost find!\r\n");

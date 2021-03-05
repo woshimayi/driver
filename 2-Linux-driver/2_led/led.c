@@ -1,3 +1,14 @@
+/*
+ * @*************************************: 
+ * @FilePath: /2-Linux-driver/2_led/led.c
+ * @version: 
+ * @Author: dof
+ * @Date: 2021-03-02 11:18:26
+ * @LastEditors: dof
+ * @LastEditTime: 2021-03-04 19:48:37
+ * @Descripttion:  manual create device use mknod
+ * @**************************************: 
+ */
 #include <linux/types.h>
 #include <linux/kernel.h>
 #include <linux/delay.h>
@@ -9,16 +20,6 @@
 #include <asm/mach/map.h>
 #include <asm/uaccess.h>
 #include <asm/io.h>
-/***************************************************************
-Copyright © ALIENTEK Co., Ltd. 1998-2029. All rights reserved.
-文件名		: led.c
-作者	  	: dof
-版本	   	: V1.0
-描述	   	: LED驱动文件。
-其他	   	: 无
-论坛 	   	: www.openedv.com
-日志	   	: 初版V1.0 2019/1/30 dof创建
-***************************************************************/
 #define LED_MAJOR		200		/* 主设备号 */
 #define LED_NAME		"led" 	/* 设备名字 */
 

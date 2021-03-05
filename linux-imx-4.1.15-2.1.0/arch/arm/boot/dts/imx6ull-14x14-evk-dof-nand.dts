@@ -16,7 +16,7 @@
 	compatible = "fsl,imx6ull-14x14-evk-dof-nand", "fsl,imx6ull";
 
 	chosen {
-		stdout-path = &uart1;
+		stdout-path = &uart1;        /*  确定终端输出console        chose 节点主要是为了uboot向linux 内核传递参数                       */
 	};
 
 	memory {
@@ -95,7 +95,7 @@
 			label = "sys-led";
 			gpios = <&gpio1 3 GPIO_ACTIVE_LOW>;
 			linux,default-trigger = "heartbeat";
-			default-state = "on";
+			default-state = "off";
 		};
 
 		beep{
@@ -104,6 +104,18 @@
 			default-state = "off";
 		};
 	};
+
+    dof {
+        #address-cells = <1>;
+        #size-cells = <1>;
+        conpatible = "dof-led";
+        status = "okay";
+        reg = < 0X020C406C 0X04 /* CCM_CCGR1_BASE */
+                0X020E0068 0X04 /* SW_MUX_GPIO1_IO03_BASE */
+                0X020E02F4 0X04 /* SW_PAD_GPIO1_IO03_BASE */
+                0X0209C000 0X04 /* GPIO1_DR_BASE */
+                0X0209C004 0X04 >; /* GPIO1_GDIR_BASE */
+    };
 
 	gpio_keys: gpio_keys@0 {
 		compatible = "gpio-keys";
@@ -123,7 +135,7 @@
 
 	sound {
 		compatible = "fsl,imx6ul-evk-wm8960",
-			   "fsl,imx-audio-wm8960";
+			   "fsl,imx-audio-wm8960";      /*  与of_match_table 中的 of_device_id 中的compatible匹配       */
 		model = "wm8960-audio";          /*  描述设备模块信息 */
 		cpu-dai = <&sai2>;
 		audio-codec = <&codec>;

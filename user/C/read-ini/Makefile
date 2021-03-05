@@ -6,9 +6,8 @@ OBJ=test.o ini.o
 
 CFLAGS=-g
 
-(EXE):(OBJ)
-
-(CC)^ -o $@
+$(EXE):$(OBJ)
+	$(CC)  $^ -o $@
 
 clean:
-	rm (EXE)(OBJ) -rf
+	rm $(EXE) $(OBJ) -rf
