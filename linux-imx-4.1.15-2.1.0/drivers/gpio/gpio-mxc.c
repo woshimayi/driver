@@ -419,8 +419,8 @@ static int mxc_gpio_probe(struct platform_device *pdev)
 	if (IS_ERR(port->base))
 		return PTR_ERR(port->base);
 
-	port->irq_high = platform_get_irq(pdev, 1);
-	port->irq = platform_get_irq(pdev, 0);
+	port->irq_high = platform_get_irq(pdev, 1);             /*   获取高 16位gpio中断号        */
+	port->irq = platform_get_irq(pdev, 0);                  /*   获取低 16位gpio中断号        */
 	if (port->irq < 0)
 		return port->irq;
 

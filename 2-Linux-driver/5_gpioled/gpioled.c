@@ -1,3 +1,14 @@
+/*
+ * @*************************************: 
+ * @FilePath: /2-Linux-driver/5_gpioled/gpioled.c
+ * @version: 
+ * @Author: dof
+ * @Date: 2021-03-02 11:18:26
+ * @LastEditors: dof
+ * @LastEditTime: 2021-03-08 14:52:22
+ * @Descripttion: 
+ * @**************************************: 
+ */
 #include <linux/types.h>
 #include <linux/kernel.h>
 #include <linux/delay.h>
@@ -14,16 +25,7 @@
 #include <asm/mach/map.h>
 #include <asm/uaccess.h>
 #include <asm/io.h>
-/***************************************************************
-Copyright © ALIENTEK Co., Ltd. 1998-2029. All rights reserved.
-文件名		: gpioled.c
-作者	  	: dof
-版本	   	: V1.0
-描述	   	: 采用pinctrl和gpio子系统驱动LED灯。
-其他	   	: 无
-论坛 	   	: www.openedv.com
-日志	   	: 初版V1.0 2019/7/13 dof创建
-***************************************************************/
+
 #define GPIOLED_CNT			1		  	/* 设备号个数 */
 #define GPIOLED_NAME		"gpioled"	/* 名字 */
 #define LEDOFF 				0			/* 关灯 */
@@ -136,7 +138,7 @@ static int __init led_init(void)
 
     /* 设置LED所使用的GPIO */
     /* 1、获取设备节点：gpioled */
-    gpioled.nd = of_find_node_by_path("/gpioled");
+    gpioled.nd = of_find_node_by_path("/dofleds");
     if (gpioled.nd == NULL)
     {
         printk("gpioled node not find!\r\n");

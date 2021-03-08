@@ -1,3 +1,14 @@
+/*
+ * @*************************************: 
+ * @FilePath: /2-Linux-driver/6_beep/beep.c
+ * @version: 
+ * @Author: dof
+ * @Date: 2021-03-02 11:18:26
+ * @LastEditors: dof
+ * @LastEditTime: 2021-03-08 14:53:27
+ * @Descripttion: 
+ * @**************************************: 
+ */
 #include <linux/types.h>
 #include <linux/kernel.h>
 #include <linux/delay.h>
@@ -14,16 +25,7 @@
 #include <asm/mach/map.h>
 #include <asm/uaccess.h>
 #include <asm/io.h>
-/***************************************************************
-Copyright © ALIENTEK Co., Ltd. 1998-2029. All rights reserved.
-文件名		: beep.c
-作者	  	: dof
-版本	   	: V1.0
-描述	   	: 蜂鸣器驱动程序。
-其他	   	: 无
-论坛 	   	: www.openedv.com
-日志	   	: 初版V1.0 2019/7/15 dof创建
-***************************************************************/
+
 #define BEEP_CNT			1		/* 设备号个数 */
 #define BEEP_NAME			"beep"	/* 名字 */
 #define BEEPOFF 			0		/* 关蜂鸣器 */
@@ -123,7 +125,7 @@ static int __init beep_init(void)
 
     /* 设置BEEP所使用的GPIO */
     /* 1、获取设备节点：beep */
-    beep.nd = of_find_node_by_path("/beep");
+    beep.nd = of_find_node_by_path("/dofbeep");
     if (beep.nd == NULL)
     {
         printk("beep node not find!\r\n");

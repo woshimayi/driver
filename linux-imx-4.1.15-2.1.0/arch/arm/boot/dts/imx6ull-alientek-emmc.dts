@@ -207,7 +207,7 @@
 		pinctrl-0 = <&pinctrl_key>;
 		key-gpio = <&gpio1 18 GPIO_ACTIVE_LOW>; /* KEY0 */
 		interrupt-parent = <&gpio1>;
-		interrupts = <18 IRQ_TYPE_EDGE_BOTH>; /* FALLING RISING */
+		interrupts = <18 IRQ_TYPE_EDGE_BOTH>; /* FALLING RISING   firt num：gpio number, second num: used to specify trigger type and level flags       */
 		status = "okay";
 	};
 
@@ -1054,7 +1054,7 @@
 	pinctrl-0 = <&pinctrl_usdhc1>;
 	pinctrl-1 = <&pinctrl_usdhc1_100mhz>;
 	pinctrl-2 = <&pinctrl_usdhc1_200mhz>;
-	cd-gpios = <&gpio1 19 GPIO_ACTIVE_LOW>;
+	cd-gpios = <&gpio1 19 GPIO_ACTIVE_LOW>;       /*  描述CD引脚所使用的是         GPIO_IO19这个GPIO, GPIO_ACTIVE_LOW 低电平有效             */
 	keep-power-in-suspend;
 	enable-sdio-wakeup;
 	vmmc-supply = <&reg_sd1_vmmc>;

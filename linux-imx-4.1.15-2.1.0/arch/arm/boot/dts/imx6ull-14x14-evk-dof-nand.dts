@@ -117,6 +117,36 @@
                 0X0209C004 0X04 >; /* GPIO1_GDIR_BASE */
     };
 
+    dofleds {
+        #address-cells = <1>;
+        #size-cells = <1>;
+        compatible = "dof-gpioleds";
+        pinctrl-names = "default";
+        pinctrl-0 = <$pinctrl_leds>;
+        led-gpio = <$gpio1 0 GPIO_ACTIVE_LOW>;
+        status = "okay";
+    };
+
+    dofbeep {
+        #address-cells = <1>;
+        #size-cells = <1>;
+        compatible = "dof-beep";
+        pinctrl-name = "default";
+        pinctrl-0 = <$pinctrl_beep>;
+        beep-gpio = <$gpio1 1 GPIO_ACTIVE_HIGH>;
+        status = "okay";
+    };
+
+    dofkey {
+        #address-cells = <1>;
+        #size-cells = <1>;
+        compatible = "dof-key";
+        pinctrl-name = "default";
+        pinctrl-0 = <$pinctrl_key>;
+        key-gpio = <$gpio1 18 GPIO_ACTIVE_LOW>;
+        status = "okay";
+    };
+
 	gpio_keys: gpio_keys@0 {
 		compatible = "gpio-keys";
 		pinctrl-names = "default";
@@ -426,14 +456,14 @@
 			>;
 		};
 
-                pinctrl_ecspi3: ecspi3grp {
-                        fsl,pins = <
-                                MX6UL_PAD_UART2_RTS_B__ECSPI3_MISO        0x100b1  /* MISO*/
-                                MX6UL_PAD_UART2_CTS_B__ECSPI3_MOSI        0x100b1  /* MOSI*/
-                                MX6UL_PAD_UART2_RX_DATA__ECSPI3_SCLK      0x100b1  /* CLK*/
-                                MX6UL_PAD_UART2_TX_DATA__GPIO1_IO20       0x100b0  /* CS*/
-                        >;
-                };
+        pinctrl_ecspi3: ecspi3grp {
+                fsl,pins = <
+                        MX6UL_PAD_UART2_RTS_B__ECSPI3_MISO        0x100b1  /* MISO*/
+                        MX6UL_PAD_UART2_CTS_B__ECSPI3_MOSI        0x100b1  /* MOSI*/
+                        MX6UL_PAD_UART2_RX_DATA__ECSPI3_SCLK      0x100b1  /* CLK*/
+                        MX6UL_PAD_UART2_TX_DATA__GPIO1_IO20       0x100b0  /* CS*/
+                >;
+        };
 
 		pinctrl_gpio_leds: gpio-leds {
 			fsl,pins = <
@@ -688,6 +718,24 @@
 				MX6UL_PAD_GPIO1_IO04__GPIO1_IO04	0x10b0
 			>;
 		};
+
+        pinctrl_leds: ledgrp {
+            fsl,pins = <
+                MX6UL_PAD_GPIO1_IO00__GPIO1_IO00 0x17059
+            >;
+        };
+
+        pinctrl_beep: beepgrp {
+            fsl,pins = <
+                MX6ULL_PAD_SNVS_TAMPER1__GPIO5_IO01 0x10B0
+            >;
+        };
+
+        pinctrl_key: keygrp {
+        	fsl,pins = <
+        		MX6UL_PAD_UART1_CTS_B__GPIO1_IO18		0xF080	/* KEY0 */
+        	>;
+        };
 	};
 };
 

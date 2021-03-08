@@ -506,9 +506,9 @@
 				reg = <0x0209c000 0x4000>;
 				interrupts = <GIC_SPI 66 IRQ_TYPE_LEVEL_HIGH>,
 					     <GIC_SPI 67 IRQ_TYPE_LEVEL_HIGH>;
-				gpio-controller;        /* gpio control register  */
-				#gpio-cells = <2>;      /* 表示一共有两个 cell，第一个 cell 为 GPIO 编号，比如“&gpio1 3”就表示 GPIO1_IO03。第二个 cell 表示GPIO 极 性*/
-				interrupt-controller;
+				gpio-controller;        /* Marks the device node as a gpio controller. 将设备标记为gpio  */
+				#gpio-cells = <2>;      /* 表示一共有两个 cell，第一个 cell 为 GPIO 编号，比如“&gpio1 3”就表示 GPIO1_IO03。第二个 cell 表示GPIO 极 性 上升沿，下降沿，高电平，低电平   */
+				interrupt-controller;   /* Marks the device node as an interrupt controller.将设备标记为中断          */
 				#interrupt-cells = <2>;
 			};
 

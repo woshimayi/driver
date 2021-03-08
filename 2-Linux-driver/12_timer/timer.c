@@ -1,3 +1,14 @@
+/*
+ * @*************************************: 
+ * @FilePath: /2-Linux-driver/12_timer/timer.c
+ * @version: 
+ * @Author: dof
+ * @Date: 2021-03-02 11:18:26
+ * @LastEditors: dof
+ * @LastEditTime: 2021-03-08 17:30:23
+ * @Descripttion: Linux内核定时器实验
+ * @**************************************: 
+ */
 #include <linux/types.h>
 #include <linux/kernel.h>
 #include <linux/delay.h>
@@ -16,16 +27,7 @@
 #include <asm/mach/map.h>
 #include <asm/uaccess.h>
 #include <asm/io.h>
-/***************************************************************
-Copyright © ALIENTEK Co., Ltd. 1998-2029. All rights reserved.
-文件名		: timer.c
-作者	  	: dof
-版本	   	: V1.0
-描述	   	: Linux内核定时器实验
-其他	   	: 无
-论坛 	   	: www.openedv.com
-日志	   	: 初版V1.0 2019/7/24 dof创建
-***************************************************************/
+
 #define TIMER_CNT		1		/* 设备号个数 	*/
 #define TIMER_NAME		"timer"	/* 名字 		*/
 #define CLOSE_CMD 		(_IO(0XEF, 0x1))	/* 关闭定时器 */
