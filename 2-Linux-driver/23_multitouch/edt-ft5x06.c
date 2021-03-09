@@ -909,7 +909,7 @@ static void edt_ft5x06_ts_get_defaults(struct edt_ft5x06_ts_data *tsdata,
     if (!pdata->use_parameters)
         return;
 
-    /* pick up defaults from the platform data */
+    /* pick up defaults from the platform $(obj)data */
     EDT_ATTR_CHECKSET(threshold, reg_addr->reg_threshold);
     EDT_ATTR_CHECKSET(gain, reg_addr->reg_gain);
     EDT_ATTR_CHECKSET(offset, reg_addr->reg_offset);
@@ -1007,7 +1007,7 @@ static int edt_ft5x06_ts_probe(struct i2c_client *client,
         if (error)
         {
             dev_err(&client->dev,
-                    "DT probe failed and no platform data present\n");
+                    "DT probe failed and no platform $(obj)data present\n");
             return error;
         }
     }
