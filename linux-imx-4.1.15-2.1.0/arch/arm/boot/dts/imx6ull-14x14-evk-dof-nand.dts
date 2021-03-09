@@ -122,8 +122,8 @@
         #size-cells = <1>;
         compatible = "dof-gpioleds";
         pinctrl-names = "default";
-        pinctrl-0 = <$pinctrl_leds>;
-        led-gpio = <$gpio1 0 GPIO_ACTIVE_LOW>;
+        pinctrl-0 = <&pinctrl_gpio_leds>;
+        led-gpio = <&gpio1 0 GPIO_ACTIVE_LOW>;
         status = "okay";
     };
 
@@ -132,8 +132,8 @@
         #size-cells = <1>;
         compatible = "dof-beep";
         pinctrl-name = "default";
-        pinctrl-0 = <$pinctrl_beep>;
-        beep-gpio = <$gpio1 1 GPIO_ACTIVE_HIGH>;
+        pinctrl-0 = <&pinctrl_beep>;
+        beep-gpio = <&gpio1 1 GPIO_ACTIVE_HIGH>;
         status = "okay";
     };
 
@@ -142,8 +142,8 @@
         #size-cells = <1>;
         compatible = "dof-key";
         pinctrl-name = "default";
-        pinctrl-0 = <$pinctrl_key>;
-        key-gpio = <$gpio1 18 GPIO_ACTIVE_LOW>;
+        pinctrl-0 = <&pinctrl_gpio_keys>;
+        key-gpio = <&gpio1 18 GPIO_ACTIVE_LOW>;
         status = "okay";
     };
 
@@ -719,23 +719,6 @@
 			>;
 		};
 
-        pinctrl_leds: ledgrp {
-            fsl,pins = <
-                MX6UL_PAD_GPIO1_IO00__GPIO1_IO00 0x17059
-            >;
-        };
-
-        pinctrl_beep: beepgrp {
-            fsl,pins = <
-                MX6ULL_PAD_SNVS_TAMPER1__GPIO5_IO01 0x10B0
-            >;
-        };
-
-        pinctrl_key: keygrp {
-        	fsl,pins = <
-        		MX6UL_PAD_UART1_CTS_B__GPIO1_IO18		0xF080	/* KEY0 */
-        	>;
-        };
 	};
 };
 
