@@ -5,5 +5,8 @@ a.out
 *.a
 *.bin
 1-stand-alone/imx_test/myshared_driver.si4project/
+*.dis
+*.elf
+*.imx
 
 

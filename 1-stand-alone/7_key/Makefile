@@ -43,6 +43,7 @@ $(TARGET).bin : $(OBJS)
 	$(LD) -Timx6ul.lds -o $(TARGET).elf $^
 	$(OBJCOPY) -O binary -S $(TARGET).elf $@
 	$(OBJDUMP) -D -m arm $(TARGET).elf > $(TARGET).dis
+	imxdown $(TARGET).bin
 
 $(SOBJS) : obj/%.o : %.S
 	$(CC) -Wall -nostdlib -c -O2  $(INCLUDE) -o $@ $<

@@ -58,6 +58,8 @@ CFILES			:= $(foreach dir, $(SRCDIRS), $(wildcard $(dir)/*.c))
 SFILENDIR		:= $(notdir  $(SFILES))
 CFILENDIR		:= $(notdir  $(CFILES))
 
+$(shell test -d obj || mkdir obj)
+
 SOBJS			:= $(patsubst %, obj/%, $(SFILENDIR:.S=.o))
 COBJS			:= $(patsubst %, obj/%, $(CFILENDIR:.c=.o))
 OBJS			:= $(SOBJS) $(COBJS)
@@ -66,10 +68,11 @@ VPATH			:= $(SRCDIRS)
 
 .PHONY: clean
 	
-$(TARGET).bin : $(OBJS)
+$(TARGET).bin: $(OBJS)
 	$(LD) -Timx6ul.lds -o $(TARGET).elf $^ $(LIBPATH) 
 	$(OBJCOPY) -O binary -S $(TARGET).elf $@
 	$(OBJDUMP) -D -m arm $(TARGET).elf > $(TARGET).dis
+	imxdown $(TARGET).bin
 
 $(SOBJS) : obj/%.o : %.S
 	$(CC) -Wall -nostdlib -fno-builtin -c -O2  $(INCLUDE) -o $@ $<
@@ -78,6 +81,6 @@ $(COBJS) : obj/%.o : %.c
 	$(CC) -Wall -march=armv7-a -mfpu=neon-vfpv4 -mfloat-abi=hard -Wa,-mimplicit-it=thumb -nostdlib -fno-builtin -c -O2  $(INCLUDE) -o $@ $<
 	
 clean:
-	rm -rf $(TARGET).elf $(TARGET).dis $(TARGET).bin $(COBJS) $(SOBJS)
+	rm -rf $(TARGET).elf $(TARGET).dis $(TARGET).bin $(COBJS) $(SOBJS) *.imx
 
 	

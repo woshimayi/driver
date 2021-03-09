@@ -55,7 +55,8 @@ $(obj)/zImage:	$(obj)/compressed/vmlinux FORCE
 	$(call if_changed,objcopy)
 	@$(kecho) '  Kernel: $@ is ready'
 	$(warning $(obj))
-	cp -f $(obj)/zImage /home/zs/Doc/driver/buildroot/output/images
+	cp -f $(obj)/zImage /home/zs/linux/nfs
+	cp -f $(obj)/dts/imx6ull-14x14-evk-dof-nand.dtb /home/zs/linux/nfs
 
 
 endif

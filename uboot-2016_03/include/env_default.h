@@ -29,7 +29,7 @@ const uchar default_environment[] = {
 	ENV_FLAGS_VAR "=" CONFIG_ENV_FLAGS_LIST_DEFAULT "\0"
 #endif
 #ifdef	CONFIG_BOOTARGS
-	"bootargs="	CONFIG_BOOTARGS			"\0"
+	"bootargs="	CONFIG_BOOTARGS		__stringify(CONFIG_BOOTCOMMAND)	"\0"
 #endif
 #ifdef	CONFIG_BOOTCOMMAND
 	"bootcmd="	CONFIG_BOOTCOMMAND		"\0"

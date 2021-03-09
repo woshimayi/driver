@@ -108,7 +108,7 @@
     dof {
         #address-cells = <1>;
         #size-cells = <1>;
-        conpatible = "dof-led";
+        compatible = "dof-led";
         status = "okay";
         reg = < 0X020C406C 0X04 /* CCM_CCGR1_BASE */
                 0X020E0068 0X04 /* SW_MUX_GPIO1_IO03_BASE */

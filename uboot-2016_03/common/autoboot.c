@@ -366,7 +366,7 @@ const char *bootdelay_process(void)
 
 #if !defined(CONFIG_FSL_FASTBOOT) && defined(is_boot_from_usb)
 	if (is_boot_from_usb()) {
-		s = getenv("bootcmd_mfg");
+		s = getenv("bootcmd");
 		printf("Run bootcmd_mfg: %s\n", s);
 	}
 #endif

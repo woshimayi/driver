@@ -174,6 +174,7 @@ int main(void)
 //        decimals_display(50 + 70 + 50, 250, 16, icm20608_dev.temp_act);
 
 #if 1
+        printf("\n");
         printf("accel x = %d\r\n", icm20608_dev.accel_x_adc);
         printf("accel y = %d\r\n", icm20608_dev.accel_y_adc);
         printf("accel z = %d\r\n", icm20608_dev.accel_z_adc);
@@ -181,7 +182,7 @@ int main(void)
         printf("gyro  y = %d\r\n", icm20608_dev.gyro_y_adc);
         printf("gyro  z = %d\r\n", icm20608_dev.gyro_z_adc);
         printf("temp    = %d\r\n", icm20608_dev.temp_adc);
-        printf("\033[7A");
+        printf("\033[8A");
         printf("\033[K");
 #endif
         delayms(120);

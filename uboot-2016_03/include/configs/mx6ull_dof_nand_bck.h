@@ -91,7 +91,7 @@
 #define CONFIG_NETMASK 255.255.255.0
 #define CONFIG_SERVERIP 10.8.8.4
 #define CONFIG_GATEWAYIP 10.8.8.1
-#define CONFIG_ETHADDR 5c:54:00:12:3d:56
+#define CONFIG_ETHADDR 52:54:00:12:34:56
 
 
 #define CONFIG_SYS_MMC_IMG_LOAD_PART	1
@@ -101,14 +101,6 @@
 #else
 #define CONFIG_MFG_NAND_PARTITION ""
 #endif
-
-#define CONFIG_BOOTCOMMAND \
-                            "setenv bootargs 'noinitrd console=ttymxc0,115200 root=/dev/nfs nfsroot=10.8.8.4:/home/zs/linux/nfs/rootfs,v3, rw ip=10.8.8.10:10.8.8.4:10.8.8.1:255.255.255.0::eth0:off';" \
-                            "tftp 0x80800000 zImage;" \
-                            "tftp 0x83000000 imx6ull-14x14-evk-dof-nand.dtb;" \
-                            "bootz 0x80800000 - 0x83000000" \
-
-
 
 #define CONFIG_MFG_ENV_SETTINGS \
 	"mfgtool_args=setenv bootargs console=${console},${baudrate} " \
@@ -123,7 +115,7 @@
 		"\0" \
 	"initrd_addr=0x83800000\0" \
 	"initrd_high=0xffffffff\0" \
-	"bootcmd_mfg=run bootcmd;bootz 0x80800000 0x83000000;\0" \
+	"bootcmd_mfg=run mfgtool_args;bootz ${loadaddr} ${initrd_addr} ${fdt_addr};\0" \
 
 #if defined(CONFIG_SYS_USE_NAND) && !defined(CONFIG_SYS_BOOT_SD) && 0
 #define CONFIG_EXTRA_ENV_SETTINGS \
@@ -228,11 +220,10 @@
 			"fi;\0" \
 
 
-#if 0
 #define CONFIG_BOOTCOMMAND \
 	   "run findfdt;" \
-	   "mmc dev ${mmcdev};" \
-	   "mmc dev ${mmcdev}; if mmc rescan; then " \
+//	   "mmc dev ${mmcdev};" \
+//	   "mmc dev ${mmcdev}; if mmc rescan; then " \
         "tftp 0x80800000 zImage;" \
         "tftp 0x83000000 imx6ull-14x14-evk-dof-nand.dtb;" \
         "bootz 0x80800000 - 0x83000000;" \
@@ -246,7 +237,23 @@
 		   "fi; " \
 	   "else run netboot; fi"
 #endif
+
+#if 0
+#define CONFIG_EXTRA_ENV_SETTINGS \
+        findfdt="\
+            setenv bootargs noinitrd 'console=ttymxc0,115200 root=/dev/nfs nfsroot=10.8.8.4:/home/zs/linux/nfs/rootfs,v3 rw ip=10.8.8.1:10.8.8.4:10.8.8.1:255.255.255.0::eth0:on init=/linuxrc'
+        "
+
+
+
+
+#define CONFIG_BOOTCOMMAND \
+                            "run findfdt;"\
+                            "tftp 0x80800000 zImage;" \
+                            "tftp 0x83000000 imx6ull-14x14-evk-dof-nand.dtb;" \
+                            "bootz 0x80800000 - 0x83000000;"
 #endif
+
 
 /* Miscellaneous configurable options */
 #define CONFIG_CMD_MEMTEST
@@ -362,7 +369,7 @@
 #define CONFIG_FEC_MXC
 #define CONFIG_MII
 
-#define CONFIG_FEC_ENET_DEV		1
+#define CONFIG_FEC_ENET_DEV		0
 
 #if (CONFIG_FEC_ENET_DEV == 0)
 #define IMX_FEC_BASE			ENET_BASE_ADDR
