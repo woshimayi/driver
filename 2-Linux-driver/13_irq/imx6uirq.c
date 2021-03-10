@@ -5,7 +5,7 @@
  * @Author: dof
  * @Date: 2021-03-02 11:18:26
  * @LastEditors: dof
- * @LastEditTime: 2021-03-09 14:38:25
+ * @LastEditTime: 2021-03-10 16:57:31
  * @Descripttion: Linux中断驱动实验
  * @**************************************: 
  */
@@ -30,40 +30,40 @@
 #include <asm/uaccess.h>
 #include <asm/io.h>
 
-#define IMX6UIRQ_CNT		1			/* 设备号个数 	*/
-#define IMX6UIRQ_NAME		"imx6uirq"	/* 名字 		*/
-#define KEY0VALUE			0X01		/* KEY0按键值 	*/
-#define INVAKEY				0XFF		/* 无效的按键值 */
-#define KEY_NUM				1			/* 按键数量 	*/
+#define IMX6UIRQ_CNT 1           /* 设备号个数 	*/
+#define IMX6UIRQ_NAME "imx6uirq" /* 名字 		*/
+#define KEY0VALUE 0X01           /* KEY0按键值 	*/
+#define INVAKEY 0XFF             /* 无效的按键值 */
+#define KEY_NUM 1                /* 按键数量 	*/
 
 /* 中断IO描述结构体 */
 struct irq_keydesc
 {
-    int gpio;								/* gpio */
-    int irqnum;								/* 中断号     */
-    unsigned char value;					/* 按键对应的键值 */
-    char name[10];							/* 名字 */
-    irqreturn_t (*handler)(int, void *);	/* 中断服务函数 */
+    int gpio;                            /* gpio */
+    int irqnum;                          /* 中断号     */
+    unsigned char value;                 /* 按键对应的键值 */
+    char name[10];                       /* 名字 */
+    irqreturn_t (*handler)(int, void *); /* 中断服务函数 */
 };
 
 /* imx6uirq设备结构体 */
 struct imx6uirq_dev
 {
-    dev_t devid;			/* 设备号 	 */
-    struct cdev cdev;		/* cdev 	*/
-    struct class *class;	/* 类 		*/
-    struct device *device;	/* 设备 	 */
-    int major;				/* 主设备号	  */
-    int minor;				/* 次设备号   */
-    struct device_node	*nd; /* 设备节点 */
-    atomic_t keyvalue;		/* 有效的按键键值 */
-    atomic_t releasekey;	/* 标记是否完成一次完成的按键，包括按下和释放 */
-    struct timer_list timer;/* 定义一个定时器*/
-    struct irq_keydesc irqkeydesc[KEY_NUM];	/* 按键描述数组 */
-    unsigned char curkeynum;				/* 当前的按键号 */
+    dev_t devid;                            /* 设备号 	 */
+    struct cdev cdev;                       /* cdev 	*/
+    struct class *class;                    /* 类 		*/
+    struct device *device;                  /* 设备 	 */
+    int major;                              /* 主设备号	  */
+    int minor;                              /* 次设备号   */
+    struct device_node *nd;                 /* 设备节点 */
+    atomic_t keyvalue;                      /* 有效的按键键值 */
+    atomic_t releasekey;                    /* 标记是否完成一次完成的按键，包括按下和释放 */
+    struct timer_list timer;                /* 定义一个定时器*/
+    struct irq_keydesc irqkeydesc[KEY_NUM]; /* 按键描述数组 */
+    unsigned char curkeynum;                /* 当前的按键号 */
 };
 
-struct imx6uirq_dev imx6uirq;	/* irq设备 */
+struct imx6uirq_dev imx6uirq; /* irq设备 */
 
 /* @description		: 中断服务函数，开启定时器，延时10ms，
  *				  	  定时器用于按键消抖。
@@ -77,7 +77,7 @@ static irqreturn_t key0_handler(int irq, void *dev_id)
 
     dev->curkeynum = 0;
     dev->timer.data = (volatile long)dev_id;
-    mod_timer(&dev->timer, jiffies + msecs_to_jiffies(10));	/* 10ms定时 */
+    mod_timer(&dev->timer, jiffies + msecs_to_jiffies(10)); /* 10ms定时 */
     return IRQ_RETVAL(IRQ_HANDLED);
 }
 
@@ -96,15 +96,15 @@ void timer_function(unsigned long arg)
     num = dev->curkeynum;
     keydesc = &dev->irqkeydesc[num];
 
-    value = gpio_get_value(keydesc->gpio); 	/* 读取IO值 */
-    if (value == 0)  						/* 按下按键 */
+    value = gpio_get_value(keydesc->gpio); /* 读取IO值 */
+    if (value == 0)                        /* 按下按键 */
     {
         atomic_set(&dev->keyvalue, keydesc->value);
     }
-    else  									/* 按键松开 */
+    else /* 按键松开 */
     {
         atomic_set(&dev->keyvalue, 0x80 | keydesc->value);
-        atomic_set(&dev->releasekey, 1);	/* 标记松开按键，即完成一次完整的按键过程 */
+        atomic_set(&dev->releasekey, 1); /* 标记松开按键，即完成一次完整的按键过程 */
     }
 }
 
@@ -118,7 +118,7 @@ static int keyio_init(void)
     unsigned char i = 0;
     int ret = 0;
 
-    imx6uirq.nd = of_find_node_by_path("/key");
+    imx6uirq.nd = of_find_node_by_path("/dofkey");
     if (imx6uirq.nd == NULL)
     {
         printk("key node not find!\r\n");
@@ -138,11 +138,13 @@ static int keyio_init(void)
     /* 初始化key所使用的IO，并且设置成中断模式 */
     for (i = 0; i < KEY_NUM; i++)
     {
-        memset(imx6uirq.irqkeydesc[i].name, 0, sizeof(imx6uirq.irqkeydesc[i].name));	/* 缓冲区清零 */
-        sprintf(imx6uirq.irqkeydesc[i].name, "KEY%d", i);		/* 组合名字 */
-        gpio_request(imx6uirq.irqkeydesc[i].gpio, imx6uirq.irqkeydesc[i].name);
-        gpio_direction_input(imx6uirq.irqkeydesc[i].gpio);
-        imx6uirq.irqkeydesc[i].irqnum = irq_of_parse_and_map(imx6uirq.nd, i);
+        memset(imx6uirq.irqkeydesc[i].name, 0, sizeof(imx6uirq.irqkeydesc[i].name)); /* 缓冲区清零 */
+        sprintf(imx6uirq.irqkeydesc[i].name, "KEY%d", i);                            /* 组合名字 */
+
+        gpio_request(imx6uirq.irqkeydesc[i].gpio, imx6uirq.irqkeydesc[i].name); /* 申请一个 GPIO 管脚 */
+        gpio_direction_input(imx6uirq.irqkeydesc[i].gpio);                      /*  设置gpio为input 输入  */
+
+        imx6uirq.irqkeydesc[i].irqnum = irq_of_parse_and_map(imx6uirq.nd, i); /* 函数从 dts 中 interupts 属性中提取到对应的设备号 */
 #if 0
         imx6uirq.irqkeydesc[i].irqnum = gpio_to_irq(imx6uirq.irqkeydesc[i].gpio);
 #endif
@@ -150,12 +152,19 @@ static int keyio_init(void)
                imx6uirq.irqkeydesc[i].irqnum);
     }
     /* 申请中断 */
-    imx6uirq.irqkeydesc[0].handler = key0_handler;
+    imx6uirq.irqkeydesc[0].handler = key0_handler; /* key0_handler  按键中断服务函数  */
     imx6uirq.irqkeydesc[0].value = KEY0VALUE;
 
     for (i = 0; i < KEY_NUM; i++)
     {
-        ret = request_irq(imx6uirq.irqkeydesc[i].irqnum, imx6uirq.irqkeydesc[i].handler,
+        /**
+         * @brief request_irq 
+         * 要申请的中断号
+         * 中断处理函数
+         * 中断标志
+         * 中断名字
+         */
+        ret = request_irq(imx6uirq.irqkeydesc[i].irqnum, imx6uirq.irqkeydesc[i].handler, /*  request_irq 函数申请中断的时候需要设置中断处理函数  同155行 */
                           IRQF_TRIGGER_FALLING | IRQF_TRIGGER_RISING, imx6uirq.irqkeydesc[i].name, &imx6uirq);
         if (ret < 0)
         {
@@ -166,7 +175,7 @@ static int keyio_init(void)
 
     /* 创建定时器 */
     init_timer(&imx6uirq.timer);
-    imx6uirq.timer.function = timer_function;
+    imx6uirq.timer.function = timer_function; /*  防抖服务函数    */
     return 0;
 }
 
@@ -179,7 +188,7 @@ static int keyio_init(void)
  */
 static int imx6uirq_open(struct inode *inode, struct file *filp)
 {
-    filp->private_data = &imx6uirq;	/* 设置私有数据 */
+    filp->private_data = &imx6uirq; /* 设置私有数据 */
     return 0;
 }
 
@@ -201,7 +210,7 @@ static ssize_t imx6uirq_read(struct file *filp, char __user *buf, size_t cnt, lo
     keyvalue = atomic_read(&dev->keyvalue);
     releasekey = atomic_read(&dev->releasekey);
 
-    if (releasekey)   /* 有按键按下 */
+    if (releasekey) /* 有按键按下 */
     {
         if (keyvalue & 0x80)
         {
@@ -212,7 +221,7 @@ static ssize_t imx6uirq_read(struct file *filp, char __user *buf, size_t cnt, lo
         {
             goto data_error;
         }
-        atomic_set(&dev->releasekey, 0);/* 按下标志清零 */
+        atomic_set(&dev->releasekey, 0); /* 读取按键值后，清理标志位 */
     }
     else
     {
@@ -226,10 +235,10 @@ data_error:
 
 /* 设备操作函数 */
 static struct file_operations imx6uirq_fops =
-{
-    .owner = THIS_MODULE,
-    .open = imx6uirq_open,
-    .read = imx6uirq_read,
+    {
+        .owner = THIS_MODULE,
+        .open = imx6uirq_open,
+        .read = imx6uirq_read,
 };
 
 /*
@@ -270,7 +279,7 @@ static int __init imx6uirq_init(void)
         return PTR_ERR(imx6uirq.device);
     }
 
-    /* 5、初始化按键 */
+    /* 5、初始化按键 原子操作 */
     atomic_set(&imx6uirq.keyvalue, INVAKEY);
     atomic_set(&imx6uirq.releasekey, 0);
     keyio_init();
@@ -286,7 +295,7 @@ static void __exit imx6uirq_exit(void)
 {
     unsigned int i = 0;
     /* 删除定时器 */
-    del_timer_sync(&imx6uirq.timer);	/* 删除定时器 */
+    del_timer_sync(&imx6uirq.timer); /* 删除定时器 */
 
     /* 释放中断 */
     for (i = 0; i < KEY_NUM; i++)
