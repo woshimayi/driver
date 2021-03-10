@@ -866,7 +866,7 @@
 		     &pinctrl_lcdif_ctrl>;
 
 	display = <&display0>;
-	status = "okay";
+	status = "disabled";
 
 	/* 7寸1024*600 */
 	display0: display {

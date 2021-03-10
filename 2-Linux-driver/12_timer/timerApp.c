@@ -1,3 +1,14 @@
+/*
+ * @*************************************: 
+ * @FilePath: /2-Linux-driver/12_timer/timerApp.c
+ * @version: 
+ * @Author: dof
+ * @Date: 2021-03-02 11:18:26
+ * @LastEditors: dof
+ * @LastEditTime: 2021-03-10 09:34:47
+ * @Descripttion: 
+ * @**************************************: 
+ */
 #include "stdio.h"
 #include "unistd.h"
 #include "sys/types.h"
@@ -58,7 +69,7 @@ int main(int argc, char *argv[])
         ret = scanf("%d", &cmd);
         if (ret != 1)  				/* 参数输入错误 */
         {
-            gets(str);				/* 防止卡死 */
+            scanf("%s", str);				/* 防止卡死 */
         }
 
         if (cmd == 1)				/* 关闭LED灯 */
@@ -72,7 +83,7 @@ int main(int argc, char *argv[])
             ret = scanf("%d", &arg);
             if (ret != 1)  			/* 参数输入错误 */
             {
-                gets(str);			/* 防止卡死 */
+                scanf("%s", str);			/* 防止卡死 */
             }
         }
         ioctl(fd, cmd, arg);		/* 控制定时器的打开和关闭 */
