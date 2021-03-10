@@ -1,3 +1,14 @@
+/*
+ * @*************************************: 
+ * @FilePath: /2-Linux-driver/14_blockio/blockio.c
+ * @version: 
+ * @Author: dof
+ * @Date: 2021-03-02 11:18:26
+ * @LastEditors: dof
+ * @LastEditTime: 2021-03-10 17:16:15
+ * @Descripttion: 阻塞IO访问
+ * @**************************************: 
+ */
 #include <linux/types.h>
 #include <linux/kernel.h>
 #include <linux/delay.h>
@@ -18,52 +29,43 @@
 #include <asm/mach/map.h>
 #include <asm/uaccess.h>
 #include <asm/io.h>
-/***************************************************************
-Copyright © ALIENTEK Co., Ltd. 1998-2029. All rights reserved.
-文件名		: block.c
-作者	  	: dof
-版本	   	: V1.0
-描述	   	: 阻塞IO访问
-其他	   	: 无
-论坛 	   	: www.openedv.com
-日志	   	: 初版V1.0 2019/7/26 dof创建
-***************************************************************/
-#define IMX6UIRQ_CNT		1			/* 设备号个数 	*/
-#define IMX6UIRQ_NAME		"blockio"	/* 名字 		*/
-#define KEY0VALUE			0X01		/* KEY0按键值 	*/
-#define INVAKEY				0XFF		/* 无效的按键值 */
-#define KEY_NUM				1			/* 按键数量 	*/
+
+#define IMX6UIRQ_CNT 1          /* 设备号个数 	*/
+#define IMX6UIRQ_NAME "blockio" /* 名字 		*/
+#define KEY0VALUE 0X01          /* KEY0按键值 	*/
+#define INVAKEY 0XFF            /* 无效的按键值 */
+#define KEY_NUM 1               /* 按键数量 	*/
 
 /* 中断IO描述结构体 */
 struct irq_keydesc
 {
-    int gpio;								/* gpio */
-    int irqnum;								/* 中断号     */
-    unsigned char value;					/* 按键对应的键值 */
-    char name[10];							/* 名字 */
-    irqreturn_t (*handler)(int, void *);	/* 中断服务函数 */
+    int gpio;                            /* gpio */
+    int irqnum;                          /* 中断号     */
+    unsigned char value;                 /* 按键对应的键值 */
+    char name[10];                       /* 名字 */
+    irqreturn_t (*handler)(int, void *); /* 中断服务函数 */
 };
 
 /* imx6uirq设备结构体 */
 struct imx6uirq_dev
 {
-    dev_t devid;			/* 设备号 	 */
-    struct cdev cdev;		/* cdev 	*/
-    struct class *class;	/* 类 		*/
-    struct device *device;	/* 设备 	 */
-    int major;				/* 主设备号	  */
-    int minor;				/* 次设备号   */
-    struct device_node	*nd; /* 设备节点 */
-    atomic_t keyvalue;		/* 有效的按键键值 */
-    atomic_t releasekey;	/* 标记是否完成一次完成的按键，包括按下和释放 */
-    struct timer_list timer;/* 定义一个定时器*/
-    struct irq_keydesc irqkeydesc[KEY_NUM];	/* 按键init述数组 */
-    unsigned char curkeynum;				/* 当前init按键号 */
+    dev_t devid;                            /* 设备号 	 */
+    struct cdev cdev;                       /* cdev 	*/
+    struct class *class;                    /* 类 		*/
+    struct device *device;                  /* 设备 	 */
+    int major;                              /* 主设备号	  */
+    int minor;                              /* 次设备号   */
+    struct device_node *nd;                 /* 设备节点 */
+    atomic_t keyvalue;                      /* 有效的按键键值 */
+    atomic_t releasekey;                    /* 标记是否完成一次完成的按键，包括按下和释放 */
+    struct timer_list timer;                /* 定义一个定时器*/
+    struct irq_keydesc irqkeydesc[KEY_NUM]; /* 按键init述数组 */
+    unsigned char curkeynum;                /* 当前init按键号 */
 
-    wait_queue_head_t r_wait;	/* 读等待队列头 */
+    wait_queue_head_t r_wait; /* 读等待队列头 */
 };
 
-struct imx6uirq_dev imx6uirq;	/* irq设备 */
+struct imx6uirq_dev imx6uirq; /* irq设备 */
 
 /* @description		: 中断服务函数，开启定时器
  *				  	  定时器用于按键消抖。
@@ -77,7 +79,7 @@ static irqreturn_t key0_handler(int irq, void *dev_id)
 
     dev->curkeynum = 0;
     dev->timer.data = (volatile long)dev_id;
-    mod_timer(&dev->timer, jiffies + msecs_to_jiffies(10));	/* 10ms定时 */
+    mod_timer(&dev->timer, jiffies + msecs_to_jiffies(10)); /* 10ms定时 */
     return IRQ_RETVAL(IRQ_HANDLED);
 }
 
@@ -96,19 +98,19 @@ void timer_function(unsigned long arg)
     num = dev->curkeynum;
     keydesc = &dev->irqkeydesc[num];
 
-    value = gpio_get_value(keydesc->gpio); 	/* 读取IO值 */
-    if (value == 0)  						/* 按下按键 */
+    value = gpio_get_value(keydesc->gpio); /* 读取IO值 */
+    if (value == 0)                        /* 按下按键 */
     {
         atomic_set(&dev->keyvalue, keydesc->value);
     }
-    else  									/* 按键松开 */
+    else /* 按键松开 */
     {
         atomic_set(&dev->keyvalue, 0x80 | keydesc->value);
-        atomic_set(&dev->releasekey, 1);	/* 标记松开按键，即完成一次完整的按键过程 */
+        atomic_set(&dev->releasekey, 1); /* 标记松开按键，即完成一次完整的按键过程 */
     }
 
     /* 唤醒进程 */
-    if (atomic_read(&dev->releasekey))  	/* 完成一次按键过程 */
+    if (atomic_read(&dev->releasekey)) /* 完成一次按键过程 */
     {
         /* wake_up(&dev->r_wait); */
         wake_up_interruptible(&dev->r_wait);
@@ -146,8 +148,8 @@ static int keyio_init(void)
     /* 初始化key所使用的IO，并且设置成中断模式 */
     for (i = 0; i < KEY_NUM; i++)
     {
-        memset(imx6uirq.irqkeydesc[i].name, 0, sizeof(name));	/* 缓冲区清零 */
-        sprintf(imx6uirq.irqkeydesc[i].name, "KEY%d", i);		/* 组合名字 */
+        memset(imx6uirq.irqkeydesc[i].name, 0, sizeof(name)); /* 缓冲区清零 */
+        sprintf(imx6uirq.irqkeydesc[i].name, "KEY%d", i);     /* 组合名字 */
         gpio_request(imx6uirq.irqkeydesc[i].gpio, name);
         gpio_direction_input(imx6uirq.irqkeydesc[i].gpio);
         imx6uirq.irqkeydesc[i].irqnum = irq_of_parse_and_map(imx6uirq.nd, i);
@@ -189,7 +191,7 @@ static int keyio_init(void)
  */
 static int imx6uirq_open(struct inode *inode, struct file *filp)
 {
-    filp->private_data = &imx6uirq;	/* 设置私有数据 */
+    filp->private_data = &imx6uirq; /* 设置私有数据 */
     return 0;
 }
 
@@ -217,25 +219,25 @@ static ssize_t imx6uirq_read(struct file *filp, char __user *buf, size_t cnt, lo
     }
 #endif
 
-    DECLARE_WAITQUEUE(wait, current);	/* 定义一个等待队列 */
-    if (atomic_read(&dev->releasekey) == 0)  	/* 没有按键按下 */
+    DECLARE_WAITQUEUE(wait, current);       /* 定义一个等待队列 */
+    if (atomic_read(&dev->releasekey) == 0) /* 没有按键按下 */
     {
-        add_wait_queue(&dev->r_wait, &wait);	/* 将等待队列添加到等待队列头 */
-        __set_current_state(TASK_INTERRUPTIBLE);/* 设置任务状态 */
-        schedule();							/* 进行一次任务切换 */
-        if (signal_pending(current))	 			/* 判断是否为信号引起的唤醒 */
+        add_wait_queue(&dev->r_wait, &wait);     /* 将等待队列添加到等待队列头 */
+        __set_current_state(TASK_INTERRUPTIBLE); /* 设置任务状态 */
+        schedule();                              /* 进行一次任务切换 */
+        if (signal_pending(current))             /* 判断是否为信号引起的唤醒 */
         {
             ret = -ERESTARTSYS;
             goto wait_error;
         }
         __set_current_state(TASK_RUNNING);      /* 将当前任务设置为运行状态 */
-        remove_wait_queue(&dev->r_wait, &wait);    /* 将对应的队列项从等待队列头删除 */
+        remove_wait_queue(&dev->r_wait, &wait); /* 将对应的队列项从等待队列头删除 */
     }
 
     keyvalue = atomic_read(&dev->keyvalue);
     releasekey = atomic_read(&dev->releasekey);
 
-    if (releasekey)   /* 有按键按下 */
+    if (releasekey) /* 有按键按下 */
     {
         if (keyvalue & 0x80)
         {
@@ -246,7 +248,7 @@ static ssize_t imx6uirq_read(struct file *filp, char __user *buf, size_t cnt, lo
         {
             goto data_error;
         }
-        atomic_set(&dev->releasekey, 0);/* 按下标志清零 */
+        atomic_set(&dev->releasekey, 0); /* 按下标志清零 */
     }
     else
     {
@@ -255,8 +257,8 @@ static ssize_t imx6uirq_read(struct file *filp, char __user *buf, size_t cnt, lo
     return 0;
 
 wait_error:
-    set_current_state(TASK_RUNNING);		/* 设置任务为运行态 */
-    remove_wait_queue(&dev->r_wait, &wait);	/* 将等待队列移除 */
+    set_current_state(TASK_RUNNING);        /* 设置任务为运行态 */
+    remove_wait_queue(&dev->r_wait, &wait); /* 将等待队列移除 */
     return ret;
 
 data_error:
@@ -265,10 +267,10 @@ data_error:
 
 /* 设备操作函数 */
 static struct file_operations imx6uirq_fops =
-{
-    .owner = THIS_MODULE,
-    .open = imx6uirq_open,
-    .read = imx6uirq_read,
+    {
+        .owner = THIS_MODULE,
+        .open = imx6uirq_open,
+        .read = imx6uirq_read,
 };
 
 /*
@@ -325,7 +327,7 @@ static void __exit imx6uirq_exit(void)
 {
     unsigned i = 0;
     /* 删除定时器 */
-    del_timer_sync(&imx6uirq.timer);	/* 删除定时器 */
+    del_timer_sync(&imx6uirq.timer); /* 删除定时器 */
 
     /* 释放中断 */
     for (i = 0; i < KEY_NUM; i++)
@@ -341,4 +343,3 @@ static void __exit imx6uirq_exit(void)
 module_init(imx6uirq_init);
 module_exit(imx6uirq_exit);
 MODULE_LICENSE("GPL");
-

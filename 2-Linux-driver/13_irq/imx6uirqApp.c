@@ -5,8 +5,8 @@
  * @Author: dof
  * @Date: 2021-03-02 11:18:26
  * @LastEditors: dof
- * @LastEditTime: 2021-03-10 17:10:25
- * @Descripttion: 
+ * @LastEditTime: 2021-03-10 17:13:43
+ * @Descripttion: 定时器测试应用程序
  * @**************************************: 
  */
 #include "stdio.h"
@@ -17,17 +17,6 @@
 #include "stdlib.h"
 #include "string.h"
 #include "linux/ioctl.h"
-/***************************************************************
-Copyright © ALIENTEK Co., Ltd. 1998-2029. All rights reserved.
-文件名		: imx6uirqApp.c
-作者	  	: dof
-版本	   	: V1.0
-描述	   	: 定时器测试应用程序
-其他	   	: 无
-使用方法	：./imx6uirqApp /dev/imx6uirq 打开测试App
-论坛 	   	: www.openedv.com
-日志	   	: 初版V1.0 2019/7/26 dof创建
-***************************************************************/
 
 /*
  * @description		: main主程序
