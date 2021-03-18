@@ -58,7 +58,7 @@ struct key_dev keydev;		/* key设备 */
  */
 static int keyio_init(void)
 {
-    keydev.nd = of_find_node_by_path("/key");
+    keydev.nd = of_find_node_by_path("/dofkey");
     if (keydev.nd == NULL)
     {
         return -EINVAL;
