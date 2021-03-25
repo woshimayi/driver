@@ -6,7 +6,7 @@
  * @Date: 2021-03-02 11:18:26
  * @LastEditors: dof
  * @LastEditTime: 2021-03-10 09:34:47
- * @Descripttion: 
+ * @Descripttion: ./timertest /dev/timer 打开测试App
  * @**************************************: 
  */
 #include "stdio.h"
@@ -17,17 +17,6 @@
 #include "stdlib.h"
 #include "string.h"
 #include "linux/ioctl.h"
-/***************************************************************
-Copyright © ALIENTEK Co., Ltd. 1998-2029. All rights reserved.
-文件名		: timerApp.c
-作者	  	: dof
-版本	   	: V1.0
-描述	   	: 定时器测试应用程序
-其他	   	: 无
-使用方法	：./timertest /dev/timer 打开测试App
-论坛 	   	: www.openedv.com
-日志	   	: 初版V1.0 2019/7/24 dof创建
-***************************************************************/
 
 /* 命令值 */
 #define CLOSE_CMD 		(_IO(0XEF, 0x1))	/* 关闭定时器 */

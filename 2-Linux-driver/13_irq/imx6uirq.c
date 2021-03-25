@@ -155,23 +155,32 @@ static int keyio_init(void)
     imx6uirq.irqkeydesc[0].handler = key0_handler; /* key0_handler  按键中断服务函数  */
     imx6uirq.irqkeydesc[0].value = KEY0VALUE;
 
-    for (i = 0; i < KEY_NUM; i++)
+
+    ret = request_irq(imx6uirq.irqkeydesc[0].irqnum, imx6uirq.irqkeydesc[0].handler, /*  request_irq 函数申请中断的时候需要设置中断处理函数  同155行 */
+                          IRQF_TRIGGER_FALLING | IRQF_TRIGGER_RISING, imx6uirq.irqkeydesc[0].name, &imx6uirq);
+    if (ret < 0)
     {
-        /**
-         * @brief request_irq 
-         * 要申请的中断号
-         * 中断处理函数
-         * 中断标志
-         * 中断名字
-         */
-        ret = request_irq(imx6uirq.irqkeydesc[i].irqnum, imx6uirq.irqkeydesc[i].handler, /*  request_irq 函数申请中断的时候需要设置中断处理函数  同155行 */
-                          IRQF_TRIGGER_FALLING | IRQF_TRIGGER_RISING, imx6uirq.irqkeydesc[i].name, &imx6uirq);
-        if (ret < 0)
-        {
-            printk("irq %d request failed!\r\n", imx6uirq.irqkeydesc[i].irqnum);
-            return -EFAULT;
-        }
+        printk("irq %d request failed!\r\n", imx6uirq.irqkeydesc[0].irqnum);
+        return -EFAULT;
     }
+
+    // for (i = 0; i < KEY_NUM; i++)
+    // {
+    //     /**
+    //      * @brief request_irq 
+    //      * 要申请的中断号
+    //      * 中断处理函数
+    //      * 中断标志
+    //      * 中断名字
+    //      */
+    //     ret = request_irq(imx6uirq.irqkeydesc[i].irqnum, imx6uirq.irqkeydesc[i].handler, /*  request_irq 函数申请中断的时候需要设置中断处理函数  同155行 */
+    //                       IRQF_TRIGGER_FALLING | IRQF_TRIGGER_RISING, imx6uirq.irqkeydesc[i].name, &imx6uirq);
+    //     if (ret < 0)
+    //     {
+    //         printk("irq %d request failed!\r\n", imx6uirq.irqkeydesc[i].irqnum);
+    //         return -EFAULT;
+    //     }
+    // }
 
     /* 创建定时器 */
     init_timer(&imx6uirq.timer);
