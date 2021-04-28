@@ -1,4 +1,4 @@
-sudo apt install vim nmap axel samba samba-dev opensshr-server lrzsz  git -y
+sudo apt install vim nmap axel samba samba-dev opensshr-server lrzsz  git  net-tools htop -y
 
 cp git_template ../
 #ssh-keygen -t rsa -b 4096 -C "woshidamayi@Gmail.com"
