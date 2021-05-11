@@ -1,0 +1,13 @@
+digraph demo {
+
+    rankdir=LR;
+
+    GET_UP->GO_TO_SCHOOL
+	GO_TO_SCHOOL->HAVE_LUNCH
+	HAVE_LUNCH->DO_HOMEWORK
+	DO_HOMEWORK->SLEEP
+	SLEEP->GET_UP
+
+
+
+}
