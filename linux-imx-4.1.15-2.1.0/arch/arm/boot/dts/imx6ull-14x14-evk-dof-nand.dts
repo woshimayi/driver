@@ -137,32 +137,41 @@
         status = "okay";
     };
 
-    dofkey {
+	dofStepperMotor {
         #address-cells = <1>;
         #size-cells = <1>;
-        compatible = "dof-key";
-        pinctrl-names = "default";
-        pinctrl-0 = <&pinctrl_gpio_keys>;
-        key-gpio = <&gpio1 18 GPIO_ACTIVE_LOW>;
-        interrupt-parent = <&gpio1>;
-        interrupts = <18 IRQ_TYPE_EDGE_BOTH>;
+        compatible = "dof-stepmotor";
+        pinctrl-name = "default";
+        pinctrl-0 = <&pinctrl_stepper>;
+        stepmotor-gpios = <&gpio1 4 GPIO_ACTIVE_LOW>,
+                          <&gpio1 1 GPIO_ACTIVE_LOW>,
+                          <&gpio1 2 GPIO_ACTIVE_LOW>,
+                          <&gpio1 3 GPIO_ACTIVE_LOW>;
         status = "okay";
     };
 
-	gpio_keys: gpio_keys@0 {
+	gpio_keys {
 		compatible = "gpio-keys";
 		pinctrl-names = "default";
 		pinctrl-0 = <&pinctrl_gpio_keys>;
 		#address-cells = <1>;
 		#size-cells = <0>;
-		autorepeat;
+		autorepeat;      //  重复功能
 
-		key1@1 {
+		key1 {
 			label = "USER-KEY1";
 			linux,code = <114>;
 			gpios = <&gpio1 18 GPIO_ACTIVE_LOW>;
-			gpio-key,wakeup;
+			// gpio-key,wakeup;     // 唤醒事件
 		};
+
+		key2 {
+			label = "USER-KEY2";
+			linux,code = <115>;
+			gpios = <&gpio1 9 GPIO_ACTIVE_LOW>;
+			// gpio-key,wakeup;
+		};
+
 	};
 
 	sound {
@@ -475,7 +484,8 @@
 
 		pinctrl_gpio_keys: gpio-keys {
 			fsl,pins = <
-				MX6UL_PAD_UART1_CTS_B__GPIO1_IO18	0x80000000
+				MX6UL_PAD_UART1_CTS_B__GPIO1_IO18	0xF080
+				MX6UL_PAD_GPIO1_IO09__GPIO1_IO09    0xF080
 			>;
 		};
 
@@ -785,7 +795,18 @@
 				MX6ULL_PAD_SNVS_TAMPER1__GPIO5_IO01	0x17059
 			>;
 		};
-        };
+
+		pinctrl_stepper: step_motor {
+			fsl,pins = <
+                MX6UL_PAD_GPIO1_IO04__GPIO1_IO04    0x17059 
+                MX6UL_PAD_GPIO1_IO01__GPIO1_IO01    0x17059
+                MX6UL_PAD_GPIO1_IO02__GPIO1_IO02    0x17059
+                MX6UL_PAD_GPIO1_IO03__GPIO1_IO03    0x17059
+			>;
+		};
+
+
+    };
 };
 
 
