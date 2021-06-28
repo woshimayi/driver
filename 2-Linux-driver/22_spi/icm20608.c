@@ -31,26 +31,29 @@ Copyright © ALIENTEK Co., Ltd. 1998-2029. All rights reserved.
 论坛 	   	: www.openedv.com
 日志	   	: 初版V1.0 2019/9/2 dof创建
 ***************************************************************/
-#define ICM20608_CNT	1
-#define ICM20608_NAME	"icm20608"
+#define ICM20608_CNT 1
+#define ICM20608_NAME "icm20608"
 
 struct icm20608_dev
 {
-    dev_t devid;				/* 设备号 	 */
-    struct cdev cdev;			/* cdev 	*/
-    struct class *class;		/* 类 		*/
-    struct device *device;		/* 设备 	 */
-    struct device_node	*nd; 	/* 设备节点 */
-    int major;					/* 主设备号 */
-    void *private_data;			/* 私有数据 		*/
-    int cs_gpio;				/* 片选所使用的GPIO编号		*/
-    signed int gyro_x_adc;		/* 陀螺仪X轴原始值 	 */
-    signed int gyro_y_adc;		/* 陀螺仪Y轴原始值		*/
-    signed int gyro_z_adc;		/* 陀螺仪Z轴原始值 		*/
-    signed int accel_x_adc;		/* 加速度计X轴原始值 	*/
-    signed int accel_y_adc;		/* 加速度计Y轴原始值	*/
-    signed int accel_z_adc;		/* 加速度计Z轴原始值 	*/
-    signed int temp_adc;		/* 温度原始值 			*/
+    dev_t devid;            /* 设备号 	 */
+    struct cdev cdev;       /* cdev 	*/
+    struct class *class;    /* 类 		*/
+    struct device *device;  /* 设备 	 */
+    struct device_node *nd; /* 设备节点 */
+
+    int major;          /* 主设备号 */
+    void *private_data; /* 私有数据 		*/
+    int cs_gpio;        /* 片选所使用的GPIO编号		*/
+
+    signed int gyro_x_adc; /* 陀螺仪X轴原始值 	 */
+    signed int gyro_y_adc; /* 陀螺仪Y轴原始值		*/
+    signed int gyro_z_adc; /* 陀螺仪Z轴原始值 		*/
+
+    signed int accel_x_adc; /* 加速度计X轴原始值 	*/
+    signed int accel_y_adc; /* 加速度计Y轴原始值	*/
+    signed int accel_z_adc; /* 加速度计Z轴原始值 	*/
+    signed int temp_adc;    /* 温度原始值 			*/
 };
 
 static struct icm20608_dev icm20608dev;
@@ -71,27 +74,27 @@ static int icm20608_read_regs(struct icm20608_dev *dev, u8 reg, void *buf, int l
     struct spi_transfer *t;
     struct spi_device *spi = (struct spi_device *)dev->private_data;
 
-    gpio_set_value(dev->cs_gpio, 0);				/* 片选拉低，选中ICM20608 */
-    t = kzalloc(sizeof(struct spi_transfer), GFP_KERNEL);	/* 申请内存 */
+    gpio_set_value(dev->cs_gpio, 0);                      /* 片选拉低，选中ICM20608 */
+    t = kzalloc(sizeof(struct spi_transfer), GFP_KERNEL); /* 申请内存 */
 
     /* 第1次，发送要读取的寄存地址 */
-    txdata[0] = reg | 0x80;		/* 写数据的时候寄存器地址bit8要置1 */
-    t->tx_buf = txdata;			/* 要发送的数据 */
-    t->len = 1;					/* 1个字节 */
-    spi_message_init(&m);		/* 初始化spi_message */
-    spi_message_add_tail(t, &m);/* 将spi_transfer添加到spi_message队列 */
-    ret = spi_sync(spi, &m);	/* 同步发送 */
+    txdata[0] = reg | 0x80;      /* 写数据的时候寄存器地址bit8要置1 */
+    t->tx_buf = txdata;          /* 要发送的数据 */
+    t->len = 1;                  /* 1个字节 */
+    spi_message_init(&m);        /* 初始化spi_message */
+    spi_message_add_tail(t, &m); /* 将spi_transfer添加到spi_message队列 */
+    ret = spi_sync(spi, &m);     /* 同步发送 */
 
     /* 第2次，读取数据 */
-    txdata[0] = 0xff;			/* 随便一个值，此处无意义 */
-    t->rx_buf = buf;			/* 读取到的数据 */
-    t->len = len;				/* 要读取的数据长度 */
-    spi_message_init(&m);		/* 初始化spi_message */
-    spi_message_add_tail(t, &m);/* 将spi_transfer添加到spi_message队列 */
-    ret = spi_sync(spi, &m);	/* 同步发送 */
+    txdata[0] = 0xff;            /* 随便一个值，此处无意义 */
+    t->rx_buf = buf;             /* 读取到的数据 */
+    t->len = len;                /* 要读取的数据长度 */
+    spi_message_init(&m);        /* 初始化spi_message */
+    spi_message_add_tail(t, &m); /* 将spi_transfer添加到spi_message队列 */
+    ret = spi_sync(spi, &m);     /* 同步发送 */
 
-    kfree(t);									/* 释放内存 */
-    gpio_set_value(dev->cs_gpio, 1);			/* 片选拉高，释放ICM20608 */
+    kfree(t);                        /* 释放内存 */
+    gpio_set_value(dev->cs_gpio, 1); /* 片选拉高，释放ICM20608 */
 
     return ret;
 }
@@ -113,26 +116,26 @@ static s32 icm20608_write_regs(struct icm20608_dev *dev, u8 reg, u8 *buf, u8 len
     struct spi_transfer *t;
     struct spi_device *spi = (struct spi_device *)dev->private_data;
 
-    t = kzalloc(sizeof(struct spi_transfer), GFP_KERNEL);	/* 申请内存 */
-    gpio_set_value(dev->cs_gpio, 0);			/* 片选拉低 */
+    t = kzalloc(sizeof(struct spi_transfer), GFP_KERNEL); /* 申请内存 */
+    gpio_set_value(dev->cs_gpio, 0);                      /* 片选拉低 */
 
     /* 第1次，发送要读取的寄存地址 */
-    txdata[0] = reg & ~0x80;	/* 写数据的时候寄存器地址bit8要清零 */
-    t->tx_buf = txdata;			/* 要发送的数据 */
-    t->len = 1;					/* 1个字节 */
-    spi_message_init(&m);		/* 初始化spi_message */
-    spi_message_add_tail(t, &m);/* 将spi_transfer添加到spi_message队列 */
-    ret = spi_sync(spi, &m);	/* 同步发送 */
+    txdata[0] = reg & ~0x80;     /* 写数据的时候寄存器地址bit8要清零 */
+    t->tx_buf = txdata;          /* 要发送的数据 */
+    t->len = 1;                  /* 1个字节 */
+    spi_message_init(&m);        /* 初始化spi_message */
+    spi_message_add_tail(t, &m); /* 将spi_transfer添加到spi_message队列 */
+    ret = spi_sync(spi, &m);     /* 同步发送 */
 
     /* 第2次，发送要写入的数据 */
-    t->tx_buf = buf;			/* 要写入的数据 */
-    t->len = len;				/* 写入的字节数 */
-    spi_message_init(&m);		/* 初始化spi_message */
-    spi_message_add_tail(t, &m);/* 将spi_transfer添加到spi_message队列 */
-    ret = spi_sync(spi, &m);	/* 同步发送 */
+    t->tx_buf = buf;             /* 要写入的数据 */
+    t->len = len;                /* 写入的字节数 */
+    spi_message_init(&m);        /* 初始化spi_message */
+    spi_message_add_tail(t, &m); /* 将spi_transfer添加到spi_message队列 */
+    ret = spi_sync(spi, &m);     /* 同步发送 */
 
-    kfree(t);					/* 释放内存 */
-    gpio_set_value(dev->cs_gpio, 1);/* 片选拉高，释放ICM20608 */
+    kfree(t);                        /* 释放内存 */
+    gpio_set_value(dev->cs_gpio, 1); /* 片选拉高，释放ICM20608 */
     return ret;
 }
 
@@ -172,15 +175,15 @@ static void icm20608_write_onereg(struct icm20608_dev *dev, u8 reg, u8 value)
 void icm20608_readdata(struct icm20608_dev *dev)
 {
     unsigned char data[14];
-    icm20608_read_regs(dev, ICM20_ACCEL_XOUT_H, data, 14);
+    icm20608_read_regs(dev, ICM20_ACCEL_XOUT_H, data, sizeof(data));
 
     dev->accel_x_adc = (signed short)((data[0] << 8) | data[1]);
     dev->accel_y_adc = (signed short)((data[2] << 8) | data[3]);
     dev->accel_z_adc = (signed short)((data[4] << 8) | data[5]);
-    dev->temp_adc    = (signed short)((data[6] << 8) | data[7]);
-    dev->gyro_x_adc  = (signed short)((data[8] << 8) | data[9]);
-    dev->gyro_y_adc  = (signed short)((data[10] << 8) | data[11]);
-    dev->gyro_z_adc  = (signed short)((data[12] << 8) | data[13]);
+    dev->temp_adc = (signed short)((data[6] << 8) | data[7]);
+    dev->gyro_x_adc = (signed short)((data[8] << 8) | data[9]);
+    dev->gyro_y_adc = (signed short)((data[10] << 8) | data[11]);
+    dev->gyro_z_adc = (signed short)((data[12] << 8) | data[13]);
 }
 
 /*
@@ -234,11 +237,11 @@ static int icm20608_release(struct inode *inode, struct file *filp)
 
 /* icm20608操作函数 */
 static const struct file_operations icm20608_ops =
-{
-    .owner = THIS_MODULE,
-    .open = icm20608_open,
-    .read = icm20608_read,
-    .release = icm20608_release,
+    {
+        .owner = THIS_MODULE,
+        .open = icm20608_open,
+        .read = icm20608_read,
+        .release = icm20608_release,
 };
 
 /*
@@ -259,16 +262,16 @@ void icm20608_reginit(void)
     printk("ICM20608 ID = %#X\r\n", value);
 
     icm20608_write_onereg(&icm20608dev, ICM20_SMPLRT_DIV,
-                          0x00); 	/* 输出速率是内部采样率					*/
-    icm20608_write_onereg(&icm20608dev, ICM20_GYRO_CONFIG, 0x18); 	/* 陀螺仪±2000dps量程 				*/
-    icm20608_write_onereg(&icm20608dev, ICM20_ACCEL_CONFIG, 0x18); 	/* 加速度计±16G量程 					*/
-    icm20608_write_onereg(&icm20608dev, ICM20_CONFIG, 0x04); 		/* 陀螺仪低通滤波BW=20Hz 				*/
+                          0x00);                                   /* 输出速率是内部采样率					*/
+    icm20608_write_onereg(&icm20608dev, ICM20_GYRO_CONFIG, 0x18);  /* 陀螺仪±2000dps量程 				*/
+    icm20608_write_onereg(&icm20608dev, ICM20_ACCEL_CONFIG, 0x18); /* 加速度计±16G量程 					*/
+    icm20608_write_onereg(&icm20608dev, ICM20_CONFIG, 0x04);       /* 陀螺仪低通滤波BW=20Hz 				*/
     icm20608_write_onereg(&icm20608dev, ICM20_ACCEL_CONFIG2,
                           0x04); /* 加速度计低通滤波BW=21.2Hz 			*/
     icm20608_write_onereg(&icm20608dev, ICM20_PWR_MGMT_2,
-                          0x00); 	/* 打开加速度计和陀螺仪所有轴 				*/
-    icm20608_write_onereg(&icm20608dev, ICM20_LP_MODE_CFG, 0x00); 	/* 关闭低功耗 						*/
-    icm20608_write_onereg(&icm20608dev, ICM20_FIFO_EN, 0x00);		/* 关闭FIFO						*/
+                          0x00);                                  /* 打开加速度计和陀螺仪所有轴 				*/
+    icm20608_write_onereg(&icm20608dev, ICM20_LP_MODE_CFG, 0x00); /* 关闭低功耗 						*/
+    icm20608_write_onereg(&icm20608dev, ICM20_FIFO_EN, 0x00);     /* 关闭FIFO						*/
 }
 
 /*
@@ -314,6 +317,7 @@ static int icm20608_probe(struct spi_device *spi)
 
     /* 获取设备树中cs片选信号 */
     icm20608dev.nd = of_find_node_by_path("/soc/aips-bus@02000000/spba-bus@02000000/ecspi@02010000");
+    printk("icm20608dev.nd = %d\n", icm20608dev.nd);
     if (icm20608dev.nd == NULL)
     {
         printk("ecspi3 node not find!\r\n");
@@ -336,7 +340,7 @@ static int icm20608_probe(struct spi_device *spi)
     }
 
     /*初始化spi_device */
-    spi->mode = SPI_MODE_0;	/*MODE0，CPOL=0，CPHA=0*/
+    spi->mode = SPI_MODE_0; /*MODE0，CPOL=0，CPHA=0*/
     spi_setup(spi);
     icm20608dev.private_data = spi; /* 设置私有数据 */
 
@@ -364,29 +368,27 @@ static int icm20608_remove(struct spi_device *spi)
 
 /* 传统匹配方式ID列表 */
 static const struct spi_device_id icm20608_id[] =
-{
-    {"alientek,icm20608", 0},
-    {}
-};
+    {
+        {"alientek,icm20608", 0},
+        {}};
 
 /* 设备树匹配列表 */
 static const struct of_device_id icm20608_of_match[] =
-{
-    { .compatible = "alientek,icm20608" },
-    { /* Sentinel */ }
-};
+    {
+        {.compatible = "dof,icm20608"},
+        {/* Sentinel */}};
 
 /* SPI驱动结构体 */
 static struct spi_driver icm20608_driver =
-{
-    .probe = icm20608_probe,
-    .remove = icm20608_remove,
-    .driver = {
-        .owner = THIS_MODULE,
-        .name = "icm20608",
-        .of_match_table = icm20608_of_match,
-    },
-    .id_table = icm20608_id,
+    {
+        .probe = icm20608_probe,
+        .remove = icm20608_remove,
+        .driver = {
+            .owner = THIS_MODULE,
+            .name = "icm20608",
+            .of_match_table = icm20608_of_match,
+        },
+        .id_table = icm20608_id,
 };
 
 /*
@@ -413,6 +415,3 @@ module_init(icm20608_init);
 module_exit(icm20608_exit);
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("dof");
-
-
-

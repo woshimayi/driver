@@ -216,7 +216,7 @@ static int __init timer_init(void)
         return PTR_ERR(timerdev.device);
     }
 
-    /* 6、初始化timer，设置定时器处理函数,还未设置周期，所有不会激活定时器 */
+    /* 6、初始化timer，设置定时器处理函数,还未设置周期，所以不会激活定时器 */
     init_timer(&timerdev.timer);
     timerdev.timer.function = timer_function;
     timerdev.timer.data = (unsigned long)&timerdev; /*  定时器回调函数参数   */

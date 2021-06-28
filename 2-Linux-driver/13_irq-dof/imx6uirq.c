@@ -33,8 +33,9 @@
 #define IMX6UIRQ_CNT 1           /* 设备号个数 	*/
 #define IMX6UIRQ_NAME "imx6uirq" /* 名字 		*/
 #define KEY0VALUE 0X01           /* KEY0按键值 	*/
+#define KEY1VALUE 0X02           /* KEY1按键值 	*/
 #define INVAKEY 0XFF             /* 无效的按键值 */
-#define KEY_NUM 1                /* 按键数量 	*/
+#define KEY_NUM 2                /* 按键数量 	*/
 
 /* 中断IO描述结构体 */
 struct irq_keydesc
@@ -74,8 +75,17 @@ struct imx6uirq_dev imx6uirq; /* irq设备 */
 static irqreturn_t key0_handler(int irq, void *dev_id)
 {
     struct imx6uirq_dev *dev = (struct imx6uirq_dev *)dev_id;
+    int i = 0;
 
-    dev->curkeynum = 0;
+    for (i = 0; i < KEY_NUM; i++)
+    {
+        if (irq == dev->irqkeydesc[i].irqnum)
+        {
+            dev->curkeynum = i;
+            break;
+        }
+    }
+
     dev->timer.data = (volatile long)dev_id;
     mod_timer(&dev->timer, jiffies + msecs_to_jiffies(10)); /* 10ms定时 */
     return IRQ_RETVAL(IRQ_HANDLED);
@@ -94,6 +104,7 @@ void timer_function(unsigned long arg)
     struct imx6uirq_dev *dev = (struct imx6uirq_dev *)arg;
 
     num = dev->curkeynum;
+    printk("key num = %d\n", num);
     keydesc = &dev->irqkeydesc[num];
 
     value = gpio_get_value(keydesc->gpio); /* 读取IO值 */
@@ -155,32 +166,34 @@ static int keyio_init(void)
     imx6uirq.irqkeydesc[0].handler = key0_handler; /* key0_handler  按键中断服务函数  */
     imx6uirq.irqkeydesc[0].value = KEY0VALUE;
 
+    imx6uirq.irqkeydesc[1].handler = key0_handler; /* key0_handler  按键中断服务函数  */
+    imx6uirq.irqkeydesc[1].value = KEY1VALUE;
 
-    ret = request_irq(imx6uirq.irqkeydesc[0].irqnum, imx6uirq.irqkeydesc[0].handler, /*  request_irq 函数申请中断的时候需要设置中断处理函数  同155行 */
-                          IRQF_TRIGGER_FALLING | IRQF_TRIGGER_RISING, imx6uirq.irqkeydesc[0].name, &imx6uirq);
-    if (ret < 0)
-    {
-        printk("irq %d request failed!\r\n", imx6uirq.irqkeydesc[0].irqnum);
-        return -EFAULT;
-    }
-
-    // for (i = 0; i < KEY_NUM; i++)
+    // ret = request_irq(imx6uirq.irqkeydesc[0].irqnum, imx6uirq.irqkeydesc[0].handler, /*  request_irq 函数申请中断的时候需要设置中断处理函数  同155行 */
+    //                       IRQF_TRIGGER_FALLING | IRQF_TRIGGER_RISING, imx6uirq.irqkeydesc[0].name, &imx6uirq);
+    // if (ret < 0)
     // {
-    //     /**
-    //      * @brief request_irq 
-    //      * 要申请的中断号
-    //      * 中断处理函数
-    //      * 中断标志
-    //      * 中断名字
-    //      */
-    //     ret = request_irq(imx6uirq.irqkeydesc[i].irqnum, imx6uirq.irqkeydesc[i].handler, /*  request_irq 函数申请中断的时候需要设置中断处理函数  同155行 */
-    //                       IRQF_TRIGGER_FALLING | IRQF_TRIGGER_RISING, imx6uirq.irqkeydesc[i].name, &imx6uirq);
-    //     if (ret < 0)
-    //     {
-    //         printk("irq %d request failed!\r\n", imx6uirq.irqkeydesc[i].irqnum);
-    //         return -EFAULT;
-    //     }
+    //     printk("irq %d request failed!\r\n", imx6uirq.irqkeydesc[0].irqnum);
+    //     return -EFAULT;
     // }
+
+    for (i = 0; i < KEY_NUM; i++)
+    {
+        /**
+         * @brief request_irq 
+         * 要申请的中断号
+         * 中断处理函数
+         * 中断标志
+         * 中断名字
+         */
+        ret = request_irq(imx6uirq.irqkeydesc[i].irqnum, imx6uirq.irqkeydesc[i].handler, /*  request_irq 函数申请中断的时候需要设置中断处理函数  同155行 */
+                          IRQF_TRIGGER_FALLING | IRQF_TRIGGER_RISING, imx6uirq.irqkeydesc[i].name, &imx6uirq);
+        if (ret < 0)
+        {
+            printk("irq %d request failed!\r\n", imx6uirq.irqkeydesc[i].irqnum);
+            return -EFAULT;
+        }
+    }
 
     /* 创建定时器 */
     init_timer(&imx6uirq.timer);

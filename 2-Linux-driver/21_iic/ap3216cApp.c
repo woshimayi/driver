@@ -54,16 +54,17 @@ int main(int argc, char *argv[])
     while (1)
     {
         ret = read(fd, databuf, sizeof(databuf));
-        if (ret == 0)   			/* 数据读取成功 */
+        if (ret == 0) /* 数据读取成功 */
         {
-            ir =  databuf[0]; 	/* ir传感器数据 */
-            als = databuf[1]; 	/* als传感器数据 */
-            ps =  databuf[2]; 	/* ps传感器数据 */
+            ir = databuf[0];  /* ir传感器数据 */
+            als = databuf[1]; /* als传感器数据 */
+            ps = databuf[2];  /* ps传感器数据 */
             printf("ir = %d, als = %d, ps = %d\r\n", ir, als, ps);
+            printf("\033[1A");
+            printf("\033[K");
         }
         usleep(200000); /*100ms */
     }
-    close(fd);	/* 关闭文件 */
+    close(fd); /* 关闭文件 */
     return 0;
 }
-

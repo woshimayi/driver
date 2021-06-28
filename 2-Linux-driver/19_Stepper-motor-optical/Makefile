@@ -1,12 +1,12 @@
 KERNELDIR := ../../linux-imx-4.1.15-2.1.0
 CURRENT_PATH := $(shell pwd)
-INSTALL_DIR := /home/zs/linux/nfs/rootfs/lib/modules/4.1.15
+INSTALL_DIR := /home/zs/linux/nfs/rootfs/lib/modules/4.1.15/
 CC := arm-linux-gnueabihf-gcc
 sub := $(shell find -name *App.c)
 # get file name
 obj := $(basename $(notdir $(sub)))
 
-obj-m := imx6uirq.o
+obj-m := miscbeep.o
 
 build: kernel_modules  $(obj)
 

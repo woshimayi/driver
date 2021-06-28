@@ -64,7 +64,7 @@ static int keyio_init(void)
         return -EINVAL;
     }
 
-    keydev.key_gpio = of_get_named_gpio(keydev.nd, "key-gpio", 0);
+    keydev.key_gpio = of_get_named_gpio(keydev.nd, "key-gpios", 0);
     if (keydev.key_gpio < 0)
     {
         printk("can't get key0\r\n");

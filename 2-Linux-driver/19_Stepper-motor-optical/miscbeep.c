@@ -34,8 +34,14 @@ Copyright © ALIENTEK Co., Ltd. 1998-2029. All rights reserved.
 #define BEEP_3 3                  /* Counterclockwise  */
 #define BEEP_4 4                  /* Continuous operation   */
 
-uint16_t CCW[8] = {0x08, 0x0c, 0x04, 0x06, 0x02, 0x03, 0x01, 0x09};
-uint16_t CW[8] = {0x09, 0x01, 0x03, 0x02, 0x06, 0x04, 0x0c, 0x08};
+// uint16_t CCW[8] = {0x08, 0x0c, 0x04, 0x06, 0x02, 0x03, 0x01, 0x09};
+// uint16_t CW[8] = {0x09, 0x01, 0x03, 0x02, 0x06, 0x04, 0x0c, 0x08};
+
+// uint16_t CCW[8] = {0x08, 0x02, 0x04, 0x01};
+// uint16_t  CW[8] = {0x01, 0x04, 0x02, 0x08};
+
+uint16_t CCW[4] = {0x0a, 0x06, 0x05, 0x09};
+uint16_t CW[4] = {0x09, 0x05, 0x06, 0x0a};
 
 /* miscbeep设备结构体 */
 struct miscbeep_dev
@@ -60,23 +66,25 @@ struct miscbeep_dev miscbeep; /* beep设备 */
 static int miscbeep_open(struct inode *inode, struct file *filp)
 {
     filp->private_data = &miscbeep; /* 设置私有数据 */
+
     return 0;
 }
 
+#if 0
 /**
  * [motor_ccw 电机顺时针一周]
  */
 static void motor_ccw(int time)
 {
     uint8_t i, j;
-    for (j = 0; j < 8; j++) // 电机内部运转一周
+    for (j = 0; j < 4; j++) // 电机内部运转一周
     {
-        for (i = 0; i < 8; i++)
+        for (i = 0; i < 4; i++)
         {
-            gpio_set_value(miscbeep.beep_gpio[0], ~(CCW[i] >> 0) & 0x01);
-            gpio_set_value(miscbeep.beep_gpio[1], ~(CCW[i] >> 1) & 0x01);
-            gpio_set_value(miscbeep.beep_gpio[2], ~(CCW[i] >> 2) & 0x01);
-            gpio_set_value(miscbeep.beep_gpio[3], ~(CCW[i] >> 3) & 0x01);
+            gpio_set_value(miscbeep.beep_gpio[0], ~(CCW[i] >> 3) & 0x01);
+            gpio_set_value(miscbeep.beep_gpio[1], ~(CCW[i] >> 2) & 0x01);
+            gpio_set_value(miscbeep.beep_gpio[2], ~(CCW[i] >> 1) & 0x01);
+            gpio_set_value(miscbeep.beep_gpio[3], ~(CCW[i] >> 0) & 0x01);
             mdelay(time);
             gpio_set_value(miscbeep.beep_gpio[0], 0);
             gpio_set_value(miscbeep.beep_gpio[1], 0);
@@ -93,14 +101,14 @@ static void motor_ccw(int time)
 static void motor_cw(int time)
 {
     uint8_t i, j;
-    for (j = 0; j < 8; j++) // 电机内部运转一周
+    for (j = 0; j < 4; j++) // 电机内部运转一周
     {
-        for (i = 0; i < 8; i++)
+        for (i = 0; i < 4; i++)
         {
-            gpio_set_value(miscbeep.beep_gpio[0], ~(CW[i] >> 0) & 0x01);
-            gpio_set_value(miscbeep.beep_gpio[1], ~(CW[i] >> 1) & 0x01);
-            gpio_set_value(miscbeep.beep_gpio[2], ~(CW[i] >> 2) & 0x01);
-            gpio_set_value(miscbeep.beep_gpio[3], ~(CW[i] >> 3) & 0x01);
+            gpio_set_value(miscbeep.beep_gpio[0], ~(CW[i] >> 3) & 0x01);
+            gpio_set_value(miscbeep.beep_gpio[1], ~(CW[i] >> 2) & 0x01);
+            gpio_set_value(miscbeep.beep_gpio[2], ~(CW[i] >> 1) & 0x01);
+            gpio_set_value(miscbeep.beep_gpio[3], ~(CW[i] >> 0) & 0x01);
             mdelay(time);
             gpio_set_value(miscbeep.beep_gpio[0], 0);
             gpio_set_value(miscbeep.beep_gpio[1], 0);
@@ -146,6 +154,35 @@ static void motor_speed(uint8_t direction)
         }
     } while (1);
 }
+#endif
+
+uint8_t direction = -1;
+
+void step_motor(void)
+{
+    uint8_t time = 3;
+    uint8_t i = 0;
+    if (0 == direction)
+    {
+        gpio_set_value(miscbeep.beep_gpio[0], 0);
+    }
+    else if (1 == direction)
+    {
+        gpio_set_value(miscbeep.beep_gpio[0], 1);
+    }
+    else
+    {
+        // To do
+    }
+    //  16 * 20
+    for (i = 0; i < 20; i++)
+    {
+        mdelay(time);
+        gpio_set_value(miscbeep.beep_gpio[1], 1);
+        mdelay(time);
+        gpio_set_value(miscbeep.beep_gpio[1], 0);
+    }
+}
 
 /*
  * @description		: 向设备写数据
@@ -186,11 +223,13 @@ static ssize_t miscbeep_write(struct file *filp, const char __user *buf, size_t 
     }
     else if (beepstat == BEEP_2)
     {
-        motor_angle_speed(360 / 60, 0);
+        direction = 0;
+        step_motor();
     }
     else if (beepstat == BEEP_3)
     {
-        motor_angle_speed(360 / 60, 1);
+        direction = 1;
+        step_motor();
     }
     else if (beepstat == BEEP_4)
     {

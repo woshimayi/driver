@@ -26,23 +26,23 @@ Copyright © ALIENTEK Co., Ltd. 1998-2029. All rights reserved.
 论坛 	   	: www.openedv.com
 日志	   	: 初版V1.0 2019/8/20 dof创建
 ***************************************************************/
-#define MISCBEEP_NAME		"miscbeep"	/* 名字 	*/
-#define MISCBEEP_MINOR		144			/* 子设备号 */
-#define BEEPOFF 			0			/* 关蜂鸣器 */
-#define BEEPON 				1			/* 开蜂鸣器 */
+#define MISCBEEP_NAME "miscbeep" /* 设备名字 */
+#define MISCBEEP_MINOR 144       /* 子设备号 */
+#define BEEPOFF 0                /* 关蜂鸣器 */
+#define BEEPON 1                 /* 开蜂鸣器 */
 
 /* miscbeep设备结构体 */
 struct miscbeep_dev
 {
-    dev_t devid;			/* 设备号 	 */
-    struct cdev cdev;		/* cdev 	*/
-    struct class *class;	/* 类 		*/
-    struct device *device;	/* 设备 	 */
-    struct device_node	*nd; /* 设备节点 */
-    int beep_gpio;			/* beep所使用的GPIO编号		*/
+    dev_t devid;            /* 设备号 	 */
+    struct cdev cdev;       /* cdev 	*/
+    struct class *class;    /* 类 		*/
+    struct device *device;  /* 设备 	 */
+    struct device_node *nd; /* 设备节点 */
+    int beep_gpio;          /* beep所使用的GPIO编号		*/
 };
 
-struct miscbeep_dev miscbeep;		/* beep设备 */
+struct miscbeep_dev miscbeep; /* beep设备 */
 
 /*
  * @description		: 打开设备
@@ -79,32 +79,32 @@ static ssize_t miscbeep_write(struct file *filp, const char __user *buf, size_t 
         return -EFAULT;
     }
 
-    beepstat = databuf[0];		/* 获取状态值 */
+    beepstat = databuf[0]; /* 获取状态值 */
     if (beepstat == BEEPON)
     {
-        gpio_set_value(dev->beep_gpio, 0);	/* 打开蜂鸣器 */
+        gpio_set_value(dev->beep_gpio, 0); /* 打开蜂鸣器 */
     }
     else if (beepstat == BEEPOFF)
     {
-        gpio_set_value(dev->beep_gpio, 1);	/* 关闭蜂鸣器 */
+        gpio_set_value(dev->beep_gpio, 1); /* 关闭蜂鸣器 */
     }
     return 0;
 }
 
 /* 设备操作函数 */
 static struct file_operations miscbeep_fops =
-{
-    .owner = THIS_MODULE,
-    .open = miscbeep_open,
-    .write = miscbeep_write,
+    {
+        .owner = THIS_MODULE,
+        .open = miscbeep_open,
+        .write = miscbeep_write,
 };
 
 /* MISC设备结构体 */
 static struct miscdevice beep_miscdev =
-{
-    .minor = MISCBEEP_MINOR,
-    .name = MISCBEEP_NAME,
-    .fops = &miscbeep_fops,
+    {
+        .minor = MISCBEEP_MINOR,
+        .name = MISCBEEP_NAME,
+        .fops = &miscbeep_fops,
 };
 
 /*
@@ -119,8 +119,8 @@ static int miscbeep_probe(struct platform_device *dev)
 
     printk("beep driver and device was matched!\r\n");
     /* 设置BEEP所使用的GPIO */
-    /* 1、获取设备节点：beep */
-    miscbeep.nd = of_find_node_by_path("/beep");
+    /* 1、获取设备节点：dofbeep */
+    miscbeep.nd = of_find_node_by_path("/dofbeep");
     if (miscbeep.nd == NULL)
     {
         printk("beep node not find!\r\n");
@@ -172,20 +172,19 @@ static int miscbeep_remove(struct platform_device *dev)
 
 /* 匹配列表 */
 static const struct of_device_id beep_of_match[] =
-{
-    { .compatible = "atkalpha-beep" },
-    { /* Sentinel */ }
-};
+    {
+        {.compatible = "dof-beep"},
+        {/* Sentinel */}};
 
 /* platform驱动结构体 */
 static struct platform_driver beep_driver =
-{
-    .driver     = {
-        .name   = "imx6ul-beep",         /* 驱动名字，用于和设备匹配 */
-        .of_match_table = beep_of_match, /* 设备树匹配表          */
-    },
-    .probe      = miscbeep_probe,
-    .remove     = miscbeep_remove,
+    {
+        .driver = {
+            .name = "imx6ul-beep",           /* 驱动名字，用于和设备匹配 */
+            .of_match_table = beep_of_match, /* 设备树匹配表          */
+        },
+        .probe = miscbeep_probe,
+        .remove = miscbeep_remove,
 };
 
 /*

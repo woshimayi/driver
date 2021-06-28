@@ -16,7 +16,7 @@ kernel_modules:
 
 install: 
 	cp -a $(CURRENT_PATH)/*.ko  $(INSTALL_DIR)
-	cp -a $(CURRENT_PATH)/*.App  $(INSTALL_DIR)
+	cp -a $(CURRENT_PATH)/*App  $(INSTALL_DIR)
 
 clean:
 	$(MAKE) -C $(KERNELDIR) M=$(CURRENT_PATH) clean	
