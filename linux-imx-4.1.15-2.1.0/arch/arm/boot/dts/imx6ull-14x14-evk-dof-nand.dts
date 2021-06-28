@@ -156,7 +156,7 @@
 		pinctrl-0 = <&pinctrl_gpio_keys>;
 		#address-cells = <1>;
 		#size-cells = <0>;
-		autorepeat;      //  重复功能
+		// autorepeat;      //  重复功能
 
 		key1 {
 			label = "USER-KEY1";
@@ -258,16 +258,16 @@
 };
 
 &ecspi3 {
-        fsl,spi-num-chipselects = <1>;
-        cs-gpio = <&gpio1 20 GPIO_ACTIVE_LOW>;
+        fsl,spi-num-chipselects = <1>;				// 设置当前片选数量为 1
+        cs-gpio = <&gpio1 20 GPIO_ACTIVE_LOW>;      // 自定义 cs 引脚 
         pinctrl-names = "default";
-        pinctrl-0 = <&pinctrl_ecspi3>;
+        pinctrl-0 = <&pinctrl_ecspi3>; 
         status = "okay";
 
 	spidev: icm20608@0 {
-	compatible = "alientek,icm20608";
-        spi-max-frequency = <8000000>;
-        reg = <0>;
+	compatible = "dof,icm20608";
+        spi-max-frequency = <8000000>; // spi 最大始终频率为 8M 
+        reg = <0>;     // icm2060 连接在 0 通道上
     };
 };
 
@@ -338,13 +338,13 @@
 
 	mag3110@0e {
 		compatible = "fsl,mag3110";
-		reg = <0x0e>;
+		reg = <0x0e>;		// mag3110 器件地址
 		position = <2>;
 	};
 
 	ap3216c@1e {
-		compatible = "ap3216c";
-		reg = <0x1e>;
+		compatible = "dof,ap3216c";
+		reg = <0x1e>;			// ap3216c 器件地址
 	};
 };
 
