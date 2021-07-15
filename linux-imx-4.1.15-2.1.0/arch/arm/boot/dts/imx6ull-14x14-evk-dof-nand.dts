@@ -336,15 +336,15 @@
 	pinctrl-0 = <&pinctrl_i2c1>;
 	status = "okay";
 
-	mag3110@0e {
-		compatible = "fsl,mag3110";
-		reg = <0x0e>;		// mag3110 器件地址
-		position = <2>;
-	};
+	// mag3110@0e {
+	// 	compatible = "fsl,mag3110";
+	// 	reg = <0x0e>;		// mag3110 器件地址
+	// 	position = <2>;
+	// };
 
-	ap3216c@1e {
-		compatible = "dof,ap3216c";
-		reg = <0x1e>;			// ap3216c 器件地址
+	atm24c02@50 {
+		compatible = "dof,atm24c02";
+		reg = <0x50>;			// ap3216c 器件地址  注意 : 7位 IIC 地址
 	};
 };
 

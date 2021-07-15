@@ -22,7 +22,8 @@
 #include <linux/spinlock.h>
 #include <linux/sysfs.h>
 
-struct eeprom_data {
+struct eeprom_data
+{
 	struct bin_attribute bin;
 	bool first_write;
 	spinlock_t buffer_lock;
@@ -31,16 +32,20 @@ struct eeprom_data {
 };
 
 static int i2c_slave_eeprom_slave_cb(struct i2c_client *client,
-				     enum i2c_slave_event event, u8 *val)
+									 enum i2c_slave_event event, u8 *val)
 {
 	struct eeprom_data *eeprom = i2c_get_clientdata(client);
 
-	switch (event) {
+	switch (event)
+	{
 	case I2C_SLAVE_WRITE_RECEIVED:
-		if (eeprom->first_write) {
+		if (eeprom->first_write)
+		{
 			eeprom->buffer_idx = *val;
 			eeprom->first_write = false;
-		} else {
+		}
+		else
+		{
 			spin_lock(&eeprom->buffer_lock);
 			eeprom->buffer[eeprom->buffer_idx++] = *val;
 			spin_unlock(&eeprom->buffer_lock);
@@ -75,7 +80,7 @@ static int i2c_slave_eeprom_slave_cb(struct i2c_client *client,
 }
 
 static ssize_t i2c_slave_eeprom_bin_read(struct file *filp, struct kobject *kobj,
-		struct bin_attribute *attr, char *buf, loff_t off, size_t count)
+										 struct bin_attribute *attr, char *buf, loff_t off, size_t count)
 {
 	struct eeprom_data *eeprom;
 	unsigned long flags;
@@ -93,7 +98,7 @@ static ssize_t i2c_slave_eeprom_bin_read(struct file *filp, struct kobject *kobj
 }
 
 static ssize_t i2c_slave_eeprom_bin_write(struct file *filp, struct kobject *kobj,
-		struct bin_attribute *attr, char *buf, loff_t off, size_t count)
+										  struct bin_attribute *attr, char *buf, loff_t off, size_t count)
 {
 	struct eeprom_data *eeprom;
 	unsigned long flags;
@@ -136,7 +141,8 @@ static int i2c_slave_eeprom_probe(struct i2c_client *client, const struct i2c_de
 		return ret;
 
 	ret = i2c_slave_register(client, i2c_slave_eeprom_slave_cb);
-	if (ret) {
+	if (ret)
+	{
 		sysfs_remove_bin_file(&client->dev.kobj, &eeprom->bin);
 		return ret;
 	}
@@ -155,9 +161,8 @@ static int i2c_slave_eeprom_remove(struct i2c_client *client)
 }
 
 static const struct i2c_device_id i2c_slave_eeprom_id[] = {
-	{ "slave-24c02", 2048 / 8 },
-	{ }
-};
+	{"slave-24c02", 2048 / 8},
+	{}};
 MODULE_DEVICE_TABLE(i2c, i2c_slave_eeprom_id);
 
 static struct i2c_driver i2c_slave_eeprom_driver = {
