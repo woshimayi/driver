@@ -1,0 +1,36 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "C/C++ gdb",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${fileDirname}/i2cdump",
+            "args": [
+                "-y",
+                "0",
+                "0x52"
+            ],
+            "stopAtEntry": true,
+            "cwd": "${workspaceFolder}",
+            "environment": [                                       // 添加环境变量 使用  "name": "变量名称"， "value":"变量值"
+                {
+                    "name": "LD_LIBRARY_PATH",
+                    "value": "/home/zs/Documents/driver/2-Linux-driver/i2c-tools-4.2/lib"
+                }
+            ],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            // "preLaunchTask": "linux compile",
+            "miDebuggerPath": "/usr/bin/gdb",
+            "miDebuggerServerAddress": "192.168.137.101:1234"
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+        },
+    ]
+}
