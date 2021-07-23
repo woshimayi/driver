@@ -1,8 +1,14 @@
-/*******************************************************
- * $File:   ethstt.c
- * $Author: Hua Shao
- *******************************************************/
-
+/*
+ * @*************************************: 
+ * @FilePath: /network/ethstt/ethstt.c
+ * @version: 
+ * @Author: dof
+ * @Date: 2021-07-13 11:00:30
+ * @LastEditors: dof
+ * @LastEditTime: 2021-07-23 11:20:36
+ * @Descripttion: ifname status
+ * @**************************************: 
+ */
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -11,8 +17,7 @@
 #include <sys/socket.h>
 #include <signal.h>
 #include <linux/if.h>
-#include <ra_ioctl.h>
-
+#include "ra_ioctl.h"
 
 int port_status(int port, int reg)
 {
@@ -21,7 +26,7 @@ int port_status(int port, int reg)
     struct ifreq ifr;
     int method;
 
-    struct ra_mii_ioctl_data mii;
+    ra_mii_ioctl_data mii;
     sk = socket(AF_INET, SOCK_DGRAM, 0);
     if (sk < 0)
     {
@@ -31,8 +36,8 @@ int port_status(int port, int reg)
     strncpy(ifr.ifr_name, "eth0", 5);
     ifr.ifr_data = &mii;
 
-    mii.phy_id=port; //port
-    mii.reg_num=reg; //reg
+    mii.phy_id = port; //port
+    mii.reg_num = reg; //reg
     method = RAETH_MII_READ;
     /* NOTE: Here we read it twice on purpose.
      * According to IEEE-802.3-2005, section 22.2.4.2.13:
@@ -49,20 +54,18 @@ int port_status(int port, int reg)
         printf("mii_mgr: ioctl error\n");
     }
     result = mii.val_out;
-    result = ((result&0x04) >>2);
+    result = ((result & 0x04) >> 2);
     return result;
-
 }
-
 
 int main(int argc, char *argv[])
 {
     int i;
 
     /* p0-p4 are lan/wan ports. */
-    for (i=0; i<5; i++)
+    for (i = 0; i < 5; i++)
     {
-        printf("port %d %s\n", i, port_status(i, 1)>0?"up":"down");
+        printf("port %d %s\n", i, port_status(i, 1) > 0 ? "up" : "down");
     }
 
     return 0;

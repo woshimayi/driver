@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 0.1)
+cmake_minimum_required (VERSION 3.21)
 
 set (project_name net_test)
 

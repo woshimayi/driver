@@ -3,67 +3,67 @@
 #include   <windows.h>  
   
 typedef enum {false = 0, true = !false}bool;  
-typedef struct _DNSHEAD{        //dns Í·²¿  
+typedef struct _DNSHEAD{        //dns Í·ï¿½ï¿½  
     USHORT ID;  
-    USHORT tag; // dns ±êÖ¾(²ÎÊý)  
-    USHORT numQ;        // ÎÊÌâÊý  
-    USHORT numA;        // ´ð°¸Êý  
-    USHORT numA1;       // È¨Íþ´ð°¸Êý  
-    USHORT numA2;       // ¸½¼Ó´ð°¸Êý  
+    USHORT tag; // dns ï¿½ï¿½Ö¾(ï¿½ï¿½ï¿½ï¿½)  
+    USHORT numQ;        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½  
+    USHORT numA;        // ï¿½ï¿½ï¿½ï¿½  
+    USHORT numA1;       // È¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½  
+    USHORT numA2;       // ï¿½ï¿½ï¿½Ó´ï¿½ï¿½ï¿½  
 }DnsHead;  
-typedef struct _DNSQUERY    //dns ²éÑ¯½á¹¹  
+typedef struct _DNSQUERY    //dns ï¿½ï¿½Ñ¯ï¿½á¹¹  
 {  
     //    char   name[64];  
-    //      //²éÑ¯µÄÓòÃû,ÕâÊÇÒ»¸ö´óÐ¡ÔÚ0µ½63Ö®¼äµÄ×Ö·û´®£»  
+    //      //ï¿½ï¿½Ñ¯ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½Ð¡ï¿½ï¿½0ï¿½ï¿½63Ö®ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½  
     USHORT type;  
-    //²éÑ¯ÀàÐÍ£¬´óÔ¼ÓÐ20¸ö²»Í¬µÄÀàÐÍ  
+    //ï¿½ï¿½Ñ¯ï¿½ï¿½ï¿½Í£ï¿½ï¿½ï¿½Ô¼ï¿½ï¿½20ï¿½ï¿½ï¿½ï¿½Í¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½  
     USHORT classes;  
-    //²éÑ¯Àà,Í¨³£ÊÇAÀà¼È²éÑ¯IPµØÖ·¡£  
+    //ï¿½ï¿½Ñ¯ï¿½ï¿½,Í¨ï¿½ï¿½ï¿½ï¿½Aï¿½ï¿½È²ï¿½Ñ¯IPï¿½ï¿½Ö·ï¿½ï¿½  
       
 }DnsQuery;  
   
 #pragma comment(lib,"ws2_32.lib")  
   
-// ³õÊ¼»¯²Ù×÷  
+// ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½  
 bool initWSA();  
   
-//ÏÔÊ¾´íÎó  
+//ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½  
 void displayErrWSA(char *str);  
   
-//´´½¨Ì×½Ó×Ö  
+//ï¿½ï¿½ï¿½ï¿½ï¿½×½ï¿½ï¿½ï¿½  
 SOCKET CreateSocket(int type);  
   
 //UDP sendto  
 int MySendto(SOCKET sockTo, const char FAR * buf,int len,char *addr,USHORT port);  
   
-//TCP Á¬½Ó  
+//TCP ï¿½ï¿½ï¿½ï¿½  
 bool MyConnect(SOCKET s, char *addr,USHORT );  
   
 // UDP recvfrom  
 int MyRecvFrom(SOCKET s, char FAR * buf,int len,char *addr,USHORT port);  
   
-//ÉèÖÃDNS Í·²¿  
+//ï¿½ï¿½ï¿½ï¿½DNS Í·ï¿½ï¿½  
 bool SetDNSHead(char *name,char *buf);  
   
 int main(int arg,char *are[])  
 {  
     int Result=0;  
     char buf[1024]={0};  
-    char addr[16] = "192.168.1.1";// dns ·þÎñÆ÷µØÖ·  
-    char *name = 0; //Òª²éÑ¯µÄÓòÃû  
+    char addr[16] = "192.168.1.1";// dns ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·  
+    char *name = 0; //Òªï¿½ï¿½Ñ¯ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½  
     SOCKET sockTo;  
     int len;  
     DnsHead *DnsH;  
     char *getIP;  
     //int i;  
       
-    if ( !initWSA() )//³õÊ¼»¯  
+    if ( !initWSA() )//ï¿½ï¿½Ê¼ï¿½ï¿½  
     {  
         displayErrWSA("initWSA err!");  
         return 1;  
     }  
       
-    //´´½¨Ì×½Ó×Ö  
+    //ï¿½ï¿½ï¿½ï¿½ï¿½×½ï¿½ï¿½ï¿½  
     if ( (sockTo = CreateSocket(SOCK_DGRAM)) == 0)  
     {  
         displayErrWSA("CreatSocket err!");  
@@ -74,7 +74,7 @@ int main(int arg,char *are[])
         if (arg < 2)  
         {  
             char temp[1024]={0};  
-            printf("\nÇëÊäÈëÒª²éÑ¯µÄÓòÃû:");  
+            printf("\nï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½Ñ¯ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:");  
             scanf("%s",temp);  
             if (temp[0] == 'q' ||temp[0] == 'Q')  
             {  
@@ -88,10 +88,10 @@ int main(int arg,char *are[])
             name =  are[1];  
         }  
           
-        //ÉèÖÃdns Í·²¿  
+        //ï¿½ï¿½ï¿½ï¿½dns Í·ï¿½ï¿½  
         SetDNSHead(name,buf);  
           
-        //·¢ËÍ³öÈ¥µÄÇëÇóÊý¾Ý³¤¶È  
+        //ï¿½ï¿½ï¿½Í³ï¿½È¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý³ï¿½ï¿½ï¿½  
         len = sizeof(DnsHead)+sizeof(DnsQuery)+strlen(name)+2;  
           
         //      for (int  i =0;i<50;i+=2)  
@@ -99,29 +99,29 @@ int main(int arg,char *are[])
         //          printf("x",(UCHAR)buf[i]);  
         //          printf("x ",(UCHAR)buf[i+1]);  
         //      }  
-        //·¢ËÍDNS ÇëÇó  
+        //ï¿½ï¿½ï¿½ï¿½DNS ï¿½ï¿½ï¿½ï¿½  
         if ( ( Result =MySendto(sockTo,buf,len,addr,53) ) <= 0)  
         {  
             displayErrWSA("sendto err!");  
             continue;  
         }  
           
-        //½ÓÊÕÓ¦´ð  
+        //ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½  
         if ( (Result =MyRecvFrom(sockTo,buf,1024,addr,53) ) <=  0)  
         {  
             displayErrWSA("recvfrom err!");  
             continue;  
         }  
           
-        //¼òµ¥µÄÈ¡µÃ·µ»ØµÄ IP µØÖ·( ÊÕµ½µÄ×îºó4×Ö½Ú )  
+        //ï¿½òµ¥µï¿½È¡ï¿½Ã·ï¿½ï¿½Øµï¿½ IP ï¿½ï¿½Ö·( ï¿½Õµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½4ï¿½Ö½ï¿½ )  
         DnsH = (DnsHead *)buf;  
         if (DnsH->numA == 0)  
         {  
-            printf("ÎÞ·¨½âÎö %s µÄIP µØÖ·¡£\n",name);  
+            printf("ï¿½Þ·ï¿½ï¿½ï¿½ï¿½ï¿½ %s ï¿½ï¿½IP ï¿½ï¿½Ö·ï¿½ï¿½\n",name);  
             continue;  
         }  
         getIP =(char *)buf +Result - 4;  
-        printf("%s µÄIPµØÖ·Îª: ",name);  
+        printf("%s ï¿½ï¿½IPï¿½ï¿½Ö·Îª: ",name);  
         for (Result= 0 ;Result<4 ;Result++)  
         {  
             printf("%u.",(UCHAR )getIP[Result]);  
@@ -131,7 +131,7 @@ int main(int arg,char *are[])
     return 0;  
 }  
   
-// ³õÊ¼»¯²Ù×÷  
+// ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½  
 bool initWSA()  
 {  
     WORD   wVersionRequested;  
@@ -165,7 +165,7 @@ SOCKET CreateSocket(int type)
   
 int MySendto(SOCKET sockTo, const char FAR * buf,int len,char *addr,USHORT port)  
 {  
-    //ÉèÖÃ·¢ËÍÊý¾Ýµ½µÄ Ì×½Ó×Ö¼°µØÖ·½á¹¹  
+    //ï¿½ï¿½ï¿½Ã·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ýµï¿½ï¿½ï¿½ ï¿½×½ï¿½ï¿½Ö¼ï¿½ï¿½ï¿½Ö·ï¿½á¹¹  
     SOCKADDR_IN   addrTo;  
     addrTo.sin_addr.S_un.S_addr=inet_addr(addr);  
     addrTo.sin_family=AF_INET;  
@@ -180,13 +180,13 @@ bool MyConnect(SOCKET sockTo, char *addr,USHORT port)
       
     int   Result;  
       
-    //ÉèÖÃÁ¬½Óµ½µÄ Ì×½Ó×Ö¼°µØÖ·½á¹¹  
+    //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Óµï¿½ï¿½ï¿½ ï¿½×½ï¿½ï¿½Ö¼ï¿½ï¿½ï¿½Ö·ï¿½á¹¹  
     SOCKADDR_IN   addrTo;  
     addrTo.sin_addr.S_un.S_addr=(inet_addr(addr));  
     addrTo.sin_family=AF_INET;  
     addrTo.sin_port=htons(port);  
       
-    //Á¬½Ó  
+    //ï¿½ï¿½ï¿½ï¿½  
     Result = connect(sockTo,(struct sockaddr *)&addrTo,sizeof(SOCKADDR_IN));  
     if(SOCKET_ERROR == Result)  
     {  
@@ -198,7 +198,7 @@ bool MyConnect(SOCKET sockTo, char *addr,USHORT port)
 int MyRecvFrom(SOCKET s, char FAR * buf,int len,char *addr,USHORT port)  
 {  
       
-    //ÉèÖÃ·¢ËÍÊý¾Ýµ½µÄ Ì×½Ó×Ö¼°µØÖ·½á¹¹  
+    //ï¿½ï¿½ï¿½Ã·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ýµï¿½ï¿½ï¿½ ï¿½×½ï¿½ï¿½Ö¼ï¿½ï¿½ï¿½Ö·ï¿½á¹¹  
     int addrlen;  
     SOCKADDR_IN   addrFrom;  
     addrFrom.sin_addr.S_un.S_addr=inet_addr(addr);  
@@ -208,7 +208,7 @@ int MyRecvFrom(SOCKET s, char FAR * buf,int len,char *addr,USHORT port)
     return recvfrom( s, buf, len, 0, (SOCKADDR *)&addrFrom, &addrlen);  
 }  
   
-int  ChName(char *fname,char *tname);//ÓòÃû×ª»¯  
+int  ChName(char *fname,char *tname);//ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½  
 bool SetDNSHead(char *name,char *buf)  
 {  
     DnsHead *DnsH;  
@@ -216,7 +216,7 @@ bool SetDNSHead(char *name,char *buf)
     int NameLen;  
     memset(buf,0,sizeof(DnsHead));  
       
-    //ÉèÖÃÍ·²¿  
+    //ï¿½ï¿½ï¿½ï¿½Í·ï¿½ï¿½  
     DnsH = (DnsHead *)buf;  
     DnsH->ID = (USHORT)1;  
     DnsH->tag = htons(0x0100);  
@@ -226,21 +226,21 @@ bool SetDNSHead(char *name,char *buf)
     DnsQ =(DnsQuery *) ( buf+ sizeof(DnsHead) );  
     NameLen = ChName(name,(char *)DnsQ);  
       
-    //ÉèÖÃ²éÑ¯ÐÅÏ¢  
+    //ï¿½ï¿½ï¿½Ã²ï¿½Ñ¯ï¿½ï¿½Ï¢  
     DnsQ = (DnsQuery *)( (char *)DnsQ + NameLen );  
     DnsQ->classes = htons(1);  
     DnsQ->type = htons(1);  
     return true;  
 }  
   
-//ÏÔÊ¾´íÎóÐÅÏ¢  
+//ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢  
 void displayErrWSA(char *str)  
 {  
     printf("\n%s,err = %d\n",str,WSAGetLastError());  
     getchar();  
 }  
   
-//ÓòÃû×ª»¯  
+//ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½  
 int  ChName(char *fname,char *tname)  
 {  
       

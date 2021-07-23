@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
 
     fromIfnameGetIp(&gwip, &ifname);
     printf("ipaddr = %s ifname = %s\n", gwip, ifname);
-    // ret = ifname_test(host, buf, ifname);
+    ret = ifname_test(host, buf, ifname);
     printf("ret = %d\n", ret);
 
     return 0;

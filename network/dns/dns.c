@@ -1,11 +1,11 @@
 /*
- * @FilePath: /network/dns.c
+ * @FilePath: /network/dns/dns.c
  * @version: 
  * @Author: sueRimn
  * @Date: 2020-10-10 13:53:43
- * @LastEditors: sueRimn
- * @LastEditTime: 2021-02-25 17:02:53
- * @Descripttion: 
+ * @LastEditors: dof
+ * @LastEditTime: 2021-07-23 10:31:17
+ * @Descripttion: dns 解析
  */
 #include <sys/types.h>
 #include <sys/socket.h>
