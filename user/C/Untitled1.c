@@ -7,6 +7,24 @@ typedef int        uint32_t;
 typedef uint32_t   UINT32;
 static UINT32 logHeaderMask;
 
+
+typedef enum
+{
+    VOS_LOG_DEST_STDERR  = 1,  /**< Message output to stderr. */
+    VOS_LOG_DEST_SYSLOG  = 2,  /**< Message output to syslog. */
+    VOS_LOG_DEST_TELNET  = 3,   /**< Message output to telnet clients. */
+    VOS_LOG_DEST_LOGCAT  = 4
+} VosLogDestination;
+
+
+typedef enum
+{
+    VOS_LOG_LEVEL_PRINT  = 2,
+    VOS_LOG_LEVEL_ERR    = 3, /**< Message at error level. */
+    VOS_LOG_LEVEL_NOTICE = 5, /**< Message at notice level. */
+    VOS_LOG_LEVEL_DEBUG  = 7  /**< Message at debug level. */
+} VosLogLevel;
+
 typedef struct
 {
     VosLogLevel logLevel;
@@ -16,38 +34,6 @@ typedef struct
 } VOS_LOG_SHARED_MEM_T;
 static VOS_LOG_SHARED_MEM_T *logShareMem = NULL;
 
-typedef enum
-{
-    VOS_LOG_DEST_STDERR  = 1,  /**< Message output to stderr. */
-    VOS_LOG_DEST_SYSLOG  = 2,  /**< Message output to syslog. */
-    VOS_LOG_DEST_TELNET  = 3,   /**< Message output to telnet clients. */
-    VOS_LOG_DEST_LOGCAT  = 4
-} VosLogDestination;
-
-
-typedef enum
-{
-    VOS_LOG_LEVEL_PRINT  = 2,
-    VOS_LOG_LEVEL_ERR    = 3, /**< Message at error level. */
-    VOS_LOG_LEVEL_NOTICE = 5, /**< Message at notice level. */
-    VOS_LOG_LEVEL_DEBUG  = 7  /**< Message at debug level. */
-} VosLogLevel;
-
-typedef enum
-{
-    VOS_LOG_DEST_STDERR  = 1,  /**< Message output to stderr. */
-    VOS_LOG_DEST_SYSLOG  = 2,  /**< Message output to syslog. */
-    VOS_LOG_DEST_TELNET  = 3,   /**< Message output to telnet clients. */
-    VOS_LOG_DEST_LOGCAT  = 4
-} VosLogDestination;
-
-typedef enum
-{
-    VOS_LOG_LEVEL_PRINT  = 2,
-    VOS_LOG_LEVEL_ERR    = 3, /**< Message at error level. */
-    VOS_LOG_LEVEL_NOTICE = 5, /**< Message at notice level. */
-    VOS_LOG_LEVEL_DEBUG  = 7  /**< Message at debug level. */
-} VosLogLevel;
 
 
 

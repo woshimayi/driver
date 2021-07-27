@@ -21,7 +21,7 @@ int main()
 {
     char *str = NULL;
     // getTheCurrentTime(str);
-    // 
+    //
     time_t t;
     char buf[1024];
     time(&t);

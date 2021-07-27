@@ -21,19 +21,19 @@ static unsigned int ShapeStr2uInt(char *const);
 
 /*******************************************************************************
 * Function Name  : InitProcParameters
-* Description    : ÔÚÕıÊ½¿ªÊ¼ÔËĞĞÓÎÏ·Ç°£¬³õÊ¼»¯Ò»Ğ©²ÎÊı£ºg_gameBoard
-                   ´ÓÅäÖÃÎÄ¼şÖĞ¶ÁÈ¡ÏµÍ³ÖĞ¶íÂŞË¹·½¿éµÄĞÎ×´
+* Description    : åœ¨æ­£å¼å¼€å§‹è¿è¡Œæ¸¸æˆå‰ï¼Œåˆå§‹åŒ–ä¸€äº›å‚æ•°ï¼šg_gameBoard
+                   ä»é…ç½®æ–‡ä»¶ä¸­è¯»å–ç³»ç»Ÿä¸­ä¿„ç½—æ–¯æ–¹å—çš„å½¢çŠ¶
 * Be called      : main
 * Input          : None
 * Output         : g_gameBoard rockArray
 * Return         : None
 *******************************************************************************/
-//³õÊ¼»¯³ÌĞò²ÎÊı
+//åˆå§‹åŒ–ç¨‹åºå‚æ•°
 int InitProcParameters(void)
 {
     int  i ;
 
-    //³õÊ¼»¯ÓÎÏ·°å(°ÑÕâ¸ö¶şÎ¬Êı×éµÄËÄÖÜÖÃ1,µ±×÷Î§Ç½,ÓÃÓÚÅĞ¶Ï±ß½ç)
+    //åˆå§‹åŒ–æ¸¸æˆæ¿(æŠŠè¿™ä¸ªäºŒç»´æ•°ç»„çš„å››å‘¨ç½®1,å½“ä½œå›´å¢™,ç”¨äºåˆ¤æ–­è¾¹ç•Œ)
     for (i = 0; i < X_ROCK_SQUARE_NUM + 2; i++)
     {
         g_gameBoard[0][i] = 1 ;
@@ -45,7 +45,7 @@ int InitProcParameters(void)
         g_gameBoard[i][X_ROCK_SQUARE_NUM + 1] = 1 ;
     }
 
-    //´ÓÅäÖÃÎÄ¼şÖĞ¶ÁÈ¡ÓÎÏ·ÖĞËùÓĞ·½¿éµÄĞÎ×´µãÕó
+    //ä»é…ç½®æ–‡ä»¶ä¸­è¯»å–æ¸¸æˆä¸­æ‰€æœ‰æ–¹å—çš„å½¢çŠ¶ç‚¹é˜µ
     ReadRockShape() ;
 
     return 0 ;
@@ -53,11 +53,11 @@ int InitProcParameters(void)
 
 /*******************************************************************************
 * Function Name  : ReadRockShape
-* Description    : ´ÓÅäÖÃÎÄ¼şÖĞ¶ÁÈ¡ÏµÍ³ÖĞ¶íÂŞË¹·½¿éµÄĞÎ×´ °ÑËü¼ÇÂ¼ÔÚrockArrayÖĞ
+* Description    : ä»é…ç½®æ–‡ä»¶ä¸­è¯»å–ç³»ç»Ÿä¸­ä¿„ç½—æ–¯æ–¹å—çš„å½¢çŠ¶ æŠŠå®ƒè®°å½•åœ¨rockArrayä¸­
 * Be called      : InitProcParameters
 * Input          : rockshape.ini
 * Output         : rockArray
-* Return         : ³É¹¦·µ»Ø0 Ê§°Ü·µ»Ø1
+* Return         : æˆåŠŸè¿”å›0 å¤±è´¥è¿”å›1
 *******************************************************************************/
 int ReadRockShape(void)
 {
@@ -65,7 +65,7 @@ int ReadRockShape(void)
     int  i = 0 ;
     int  len = 0 ;
     int  rockArrayIdx = 0 ;
-    int  shapeNumPerRock = 0 ; //Ò»ÖÖ·½¿éµÄĞÎÌ¬ÊıÄ¿(ÓÃÓÚ¼ÆËã·½¿éµÄnextRockIndex)
+    int  shapeNumPerRock = 0 ; //ä¸€ç§æ–¹å—çš„å½¢æ€æ•°ç›®(ç”¨äºè®¡ç®—æ–¹å—çš„nextRockIndex)
 
     char rdBuf[128] ;
     char rockShapeBitsStr[128] = {0};
@@ -74,7 +74,7 @@ int ReadRockShape(void)
 
     g_rockTypeNum  = 0 ;
 
-    //´ò¿ªÅäÖÃÎÄ¼ş ´ÓÖĞ¶ÁÈ¡·½¿éµÄĞÎ×´
+    //æ‰“å¼€é…ç½®æ–‡ä»¶ ä»ä¸­è¯»å–æ–¹å—çš„å½¢çŠ¶
     fp = fopen(".\\rockshape.ini", "r") ;
     if (fp == NULL)
     {
@@ -94,17 +94,17 @@ int ReadRockShape(void)
                 strcat(rockShapeBitsStr, rdBuf) ;
                 break ;
 
-            case 0 : //Ò»¸ö·½¿é¶ÁÈ¡½áÊø
+            case 0 : //ä¸€ä¸ªæ–¹å—è¯»å–ç»“æŸ
                 shapeBits = ShapeStr2uInt(rockShapeBitsStr) ;
                 rockShapeBitsStr[0] = 0 ;
                 shapeNumPerRock++ ;
                 rockArray[rockArrayIdx].rockShapeBits = shapeBits ;
                 rockArray[rockArrayIdx].nextRockIndex = rockArrayIdx + 1 ;
                 rockArrayIdx++ ;
-                g_rockTypeNum++ ; //¼ÇÂ¼·½¿éÊıÁ¿µÄÈ«¾Ö±äÁ¿+1
+                g_rockTypeNum++ ; //è®°å½•æ–¹å—æ•°é‡çš„å…¨å±€å˜é‡+1
                 break ;
 
-            case '-'://Ò»ÖÖ·½¿é¶ÁÈ¡½áÊø(¸üĞÂÆänextRockIndexÖµ)
+            case '-'://ä¸€ç§æ–¹å—è¯»å–ç»“æŸ(æ›´æ–°å…¶nextRockIndexå€¼)
                 rockArray[rockArrayIdx - 1].nextRockIndex = rockArrayIdx - shapeNumPerRock ;
                 shapeNumPerRock = 0 ;
                 break ;
@@ -119,11 +119,11 @@ int ReadRockShape(void)
 
 /*******************************************************************************
 * Function Name  : ShapeStr2uInt
-* Description    : °ÑÅäÖÃÎÄ¼şÖĞµÄÃèÊö·½¿éĞÎ×´µÄ×Ö·û´® ×ª»¯Îª unsigned intĞÍ
+* Description    : æŠŠé…ç½®æ–‡ä»¶ä¸­çš„æè¿°æ–¹å—å½¢çŠ¶çš„å­—ç¬¦ä¸² è½¬åŒ–ä¸º unsigned intå‹
 * Be called      :
-* Input          : shapeStr ÃèÊö·½¿éĞÎ×´µÄ×Ö·û´®(´ÓÎÄ¼şÖĞ¶ÁÈ¡µÄ)
+* Input          : shapeStr æè¿°æ–¹å—å½¢çŠ¶çš„å­—ç¬¦ä¸²(ä»æ–‡ä»¶ä¸­è¯»å–çš„)
 * Output         : None
-* Return         : unsigned intĞÍµÄ·½¿éĞÎ×´µãÕó(ÓÃÆäµÍ16Î»±íÊ¾)
+* Return         : unsigned intå‹çš„æ–¹å—å½¢çŠ¶ç‚¹é˜µ(ç”¨å…¶ä½16ä½è¡¨ç¤º)
 *******************************************************************************/
 unsigned int ShapeStr2uInt(char *const shapeStr)
 {

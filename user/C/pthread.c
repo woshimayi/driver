@@ -1,5 +1,5 @@
 #include <pthread.h>
-#include <unistd.h> 
+#include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -9,7 +9,7 @@
 /**
  * 用户自定义signal
  */
-#define   SIG_MY_MSG   SIGUSR1+100  
+#define   SIG_MY_MSG   SIGUSR1+100
 
 void userFun(int a)
 {
@@ -68,11 +68,11 @@ int main()
     printf("uhttp pid%s\n", str);
     setenv("UHTTPD_PID", str, 1);
 
-    if (0 != pthread_create(&t1, NULL, (void*)tprocess1, (void *)&a))
+    if (0 != pthread_create(&t1, NULL, (void *)tprocess1, (void *)&a))
     {
         perror("fail error 1");
     }
-    if (0 != pthread_create(&t2, NULL, (void*)tprocess2, (void *)&b))
+    if (0 != pthread_create(&t2, NULL, (void *)tprocess2, (void *)&b))
     {
         perror("fail error 1");
     }

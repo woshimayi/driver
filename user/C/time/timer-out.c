@@ -1,9 +1,9 @@
 /*
-	Name: 
-	Copyright: 
-	Author: 
+	Name:
+	Copyright:
+	Author:
 	Date: 15/09/20 17:52
-	Description:  定时器 
+	Description:  定时器
 */
 
 
@@ -31,7 +31,7 @@ void set_timer()
 {
     struct itimerval itv;
     itv.it_interval.tv_sec = 5;
-    itv.it_interval.tv_usec = 0; 
+    itv.it_interval.tv_usec = 0;
     itv.it_value.tv_sec = 1;
     itv.it_value.tv_usec = 0;
     setitimer(ITIMER_REAL, &itv, &oldtv);  //此函数为linux的api,不是c的标准库函数

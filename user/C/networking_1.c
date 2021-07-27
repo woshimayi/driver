@@ -77,7 +77,7 @@ int lookup(char *host, int *d)
     freeaddrinfo(res);
     printf("ret = %d ipbuf = %s\n", ret, ipbuf);
     *d = inet_addr(ipbuf);
-    
+
     return ret;
 }
 
@@ -114,7 +114,7 @@ bool NetIsOk()
     if ((sockfd = socket(AF_INET, SOCK_RAW, IPPROTO_ICMP)) < 0)
     {
         /* 创建原始ICMP套接字 */
-    PP
+        PP
         printf("[NetStatus] 2error : socket\n");
         PP
         return false;

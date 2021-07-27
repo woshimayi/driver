@@ -31,7 +31,7 @@ int lookup(char *host, int *d)
     for (cur = res; cur != NULL; cur = cur->ai_next)
     {
         addr = (struct sockaddr_in *)cur->ai_addr;
-        //printf("%s\n", 
+        //printf("%s\n",
         inet_ntop(AF_INET, &addr->sin_addr, ipbuf, 16);
     }
     freeaddrinfo(res);

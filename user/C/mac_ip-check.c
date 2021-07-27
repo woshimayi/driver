@@ -4,7 +4,7 @@
 
 
 /*
-    mac ip 合法性检测 
+    mac ip 合法性检测
  */
 
 int isValidMac(char *value)

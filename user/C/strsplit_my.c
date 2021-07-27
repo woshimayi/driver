@@ -2,14 +2,14 @@
 #include <string.h>
 #include <stdlib.h>
 
-static char* strsplit(char** stringp, const char* delim)
+static char *strsplit(char **stringp, const char *delim)
 {
-    char* start = *stringp;
-    char* p;
+    char *start = *stringp;
+    char *p;
 
     p = (start != NULL) ? strpbrk(start, delim) : NULL;
-	
-	printf("1 p = %s\n", p);
+
+    printf("1 p = %s\n", p);
     if (p == NULL)
     {
         *stringp = NULL;
@@ -82,46 +82,46 @@ void rmc_data_parse(char *rmc_data)
 
 int main(int argc, const char *argv[])
 {
-	char gps_data[] = "$GNRMC,013300.00,A,2240.84105,N,11402.70763,E,0.007,,220319,,,D*69\r\n";
-	char *p;
-//	rmc_data_parse(gps_data);
-		
-	printf("gps = %s\n", gps_data);
-//	p = strpbrk(gps_data, ",");
-//	char **start = &gps_data;
-//	while ((p+1) != '\0')
-//	{
-//		*p = '\0';
-//		printf("p = %s start = %s\n", p, *start);
-//		p = p+1;
-//		*start++ = p;
-//		p = strpbrk(p, ",");
-//	}
-	
-	
-//	char *tok;
-//	tok = strtok(gps_data, ",");
-//	while(tok)
-//	{
-//		printf("tok = %s\n", tok);
-//		tok = strtok(NULL, ",");
-//	}
-	
-	
-	char *tok;
-	char *ptr;
-	tok = strtok_r(gps_data, ",", &ptr);
-	while(tok)
-	{
-		printf("tok = %s ptr = %s\n", tok, ptr);
-		tok = strtok_r(NULL, ",", &ptr);
-	}
-	
-	
-	
-	
-	
+    char gps_data[] = "$GNRMC,013300.00,A,2240.84105,N,11402.70763,E,0.007,,220319,,,D*69\r\n";
+    char *p;
+    //	rmc_data_parse(gps_data);
 
-	return 0;
+    printf("gps = %s\n", gps_data);
+    //	p = strpbrk(gps_data, ",");
+    //	char **start = &gps_data;
+    //	while ((p+1) != '\0')
+    //	{
+    //		*p = '\0';
+    //		printf("p = %s start = %s\n", p, *start);
+    //		p = p+1;
+    //		*start++ = p;
+    //		p = strpbrk(p, ",");
+    //	}
+
+
+    //	char *tok;
+    //	tok = strtok(gps_data, ",");
+    //	while(tok)
+    //	{
+    //		printf("tok = %s\n", tok);
+    //		tok = strtok(NULL, ",");
+    //	}
+
+
+    char *tok;
+    char *ptr;
+    tok = strtok_r(gps_data, ",", &ptr);
+    while (tok)
+    {
+        printf("tok = %s ptr = %s\n", tok, ptr);
+        tok = strtok_r(NULL, ",", &ptr);
+    }
+
+
+
+
+
+
+    return 0;
 }
 
