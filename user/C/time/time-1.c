@@ -1,16 +1,17 @@
 /*
-	Name:
-	Copyright:
-	Author:
-	Date: 15/09/20 17:37
-	Description: 定时器 延时 循环
-*/
-
-
+ * @*************************************: 
+ * @FilePath: /driver/user/C/time-1.c
+ * @version: 
+ * @Author: dof
+ * @Date: 2021-07-13 11:00:32
+ * @LastEditors: dof
+ * @LastEditTime: 2021-07-27 15:45:22
+ * @Descripttion: 定时器 延时 循环
+ * @**************************************: 
+ */
 
 #include <stdio.h>
 #include <string.h>
-
 #include <sys/time.h>
 #include <unistd.h>
 #include <signal.h>
@@ -46,10 +47,19 @@ void *init_sigaction(void *args)
 
 int main()
 {
+    struct itimerval curr_value;
+    int ret;
     init_sigaction(NULL);
 
-    while (1);
+    while (1)
+    {
+        ret = getitimer(ITIMER_REAL, &curr_value); // 获取当前定时器状态
+        if (0 == ret)
+        {
+            printf("%d %d\n", curr_value.it_value.tv_sec, curr_value.it_interval);
+        }
+        sleep(1);
+    }
 
     return 0;
-
 }

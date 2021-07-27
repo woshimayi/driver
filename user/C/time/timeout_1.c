@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <windows.h>
-//×ÓÏß³Ìº¯Êý
+//å­çº¿ç¨‹å‡½æ•°
 
 char flag = 0;
 char result = 0;
@@ -16,7 +16,7 @@ DWORD WINAPI longTimeFunction(LPVOID pM)
     flag = 1;
 }
 
-//Ö÷º¯Êý£¬ËùÎ½Ö÷º¯ÊýÆäÊµ¾ÍÊÇÖ÷Ïß³ÌÖ´ÐÐµÄº¯Êý¡£
+//ä¸»å‡½æ•°ï¼Œæ‰€è°“ä¸»å‡½æ•°å…¶å®žå°±æ˜¯ä¸»çº¿ç¨‹æ‰§è¡Œçš„å‡½æ•°ã€‚
 int main()
 {
     flag = 0;

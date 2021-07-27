@@ -1,3 +1,14 @@
+/*
+ * @*************************************: 
+ * @FilePath: /driver/user/C/tiemout.c
+ * @version: 
+ * @Author: dof
+ * @Date: 2021-07-13 11:00:32
+ * @LastEditors: dof
+ * @LastEditTime: 2021-07-27 15:19:01
+ * @Descripttion:  windows call time function
+ * @**************************************: 
+ */
 #include <stdio.h>
 #include <stdlib.h>
 #include <windows.h>
@@ -25,22 +36,21 @@ int longTimeFunction()
     return 0;
 }
 
-
 int main()
 {
     HANDLE hHandle;
 
-    UINT wTimerRes_1ms;//定义时间间隔
-    UINT wAccuracy; //定义分辨率
-    UINT TimerID_1ms; //定义定时器句柄
+    UINT wTimerRes_1ms; //定义时间间隔
+    UINT wAccuracy;     //定义分辨率
+    UINT TimerID_1ms;   //定义定时器句柄
     wTimerRes_1ms = 5000;
     if ((TimerID_1ms = timeSetEvent(
-                           wTimerRes_1ms,
-                           wAccuracy,
-                           (LPTIMECALLBACK)OneMilliSecondProc, // 回调函数
-                           (DWORD)(1), // 用户传送到回调函数的数据；
-                           TIME_PERIODIC//周期调用定时处理函数
-                       )) == 0)
+             wTimerRes_1ms,
+             wAccuracy,
+             (LPTIMECALLBACK)OneMilliSecondProc, // 回调函数
+             (DWORD)(1),                         // 用户传送到回调函数的数据；
+             TIME_PERIODIC                       //周期调用定时处理函数
+             )) == 0)
     {
         printf("start!!!!!!!!!!!\n");
     }
