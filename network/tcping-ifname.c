@@ -1,10 +1,10 @@
 /*
- * @FilePath: /network/tcping.c
+ * @FilePath: /driver/network/tcping.c
  * @version: 
  * @Author: sueRimn
  * @Date: 2020-03-29 09:46:25
- * @LastEditors: sueRimn
- * @LastEditTime: 2021-02-25 17:02:15
+ * @LastEditors: dof
+ * @LastEditTime: 2021-07-28 10:48:11
  * @Descripttion: 
  */
 
@@ -239,7 +239,7 @@ int main(int argc, char * argv[])
         perror("param < 2");
         return 0;
     }
-    char *url = "http://80.80.80.40:9090/ACS-server/ACS";
+    char *url = "http://www.baidu.com/ACS-server/ACS";
     char host[128] = {0};
     int port = 0;
     char buf[32] = {0};

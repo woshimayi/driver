@@ -1,11 +1,11 @@
 /*
  * @*************************************: 
- * @FilePath: /driver/network/ifname_status/autoSetRout.c
+ * @FilePath: /driver/network/ifname_status/autoSetRout_noifname.c
  * @version: 
  * @Author: dof
  * @Date: 2021-07-21 10:49:35
  * @LastEditors: dof
- * @LastEditTime: 2021-07-28 11:54:44
+ * @LastEditTime: 2021-07-28 15:16:54
  * @Descripttion: 自动添加主机默认路由
  * @**************************************: 
  */
@@ -192,12 +192,21 @@ int connect_to(struct addrinfo *addr, const char *ifname)
         if ((fd = socket(addr->ai_family, addr->ai_socktype, addr->ai_protocol)) == -1)
             goto next_addr0;
 
-        strncpy(ifr.ifr_name, ifname, strlen(ifname) + 1);
-        if (setsockopt(fd, SOL_SOCKET, SO_BINDTODEVICE, &ifr, sizeof(ifr)) < 0) //setsockopt:用来设置fd 的socket状态， SOL_SOCKET:套接字级别， SO_BINDTODEVICE:将套接字绑定到一个特定的设备上
+        if (strlen(ifname))
         {
-            perror("SO_BINDTODEVICE failed");
-            goto next_addr1;
+            strncpy(ifr.ifr_name, ifname, strlen(ifname) + 1);
+            if (setsockopt(fd, SOL_SOCKET, SO_BINDTODEVICE, &ifr, sizeof(ifr)) < 0) //setsockopt:用来设置fd 的socket状态， SOL_SOCKET:套接字级别， SO_BINDTODEVICE:将套接字绑定到一个特定的设备上
+            {
+                perror("SO_BINDTODEVICE failed");
+                goto next_addr1;
+            }
         }
+        else
+        {
+            if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on)) < 0) // SO_REUSEADDR: 是让端口释放后立即就可以被再次使用
+                goto next_addr1;
+        }
+
 #if 1
         flags = fcntl(fd, F_GETFL, 0);
         fcntl(fd, F_SETFL, flags | O_NONBLOCK);
@@ -260,6 +269,56 @@ int connect_to(struct addrinfo *addr, const char *ifname)
     return -1;
 }
 
+
+
+int tcping_connect(struct addrinfo *addr, struct timeval *rtt)
+{
+    int fd;
+    struct timeval start;
+    int connect_result;
+    const int on = 1;
+    /* int flags; */
+    int rv = 0;
+
+    /* try to connect for each of the entries: */
+    while (addr != NULL)
+    {
+        /* create socket */
+        if ((fd = socket(addr->ai_family, addr->ai_socktype, addr->ai_protocol)) == -1)
+            goto next_addr0;
+        if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on)) < 0)   // SO_REUSEADDR: 是让端口释放后立即就可以被再次使用
+            goto next_addr1;
+#if 0
+        if ((flags = fcntl(fd, F_GETFL, 0)) == -1)
+            goto next_addr1;
+        if (fcntl(fd, F_SETFL, flags | O_NONBLOCK) == -1)
+            goto next_addr1;
+#endif
+        if (gettimeofday(&start, NULL) == -1)
+            goto next_addr1;
+
+        /* connect to peer */
+        if ((connect_result = connect(fd, addr->ai_addr, addr->ai_addrlen)) == 0)
+        {
+            if (gettimeofday(rtt, NULL) == -1)
+                goto next_addr1;
+            rtt->tv_sec = rtt->tv_sec - start.tv_sec;
+            rtt->tv_usec = rtt->tv_usec - start.tv_usec;
+            close(fd);
+            return 0;
+        }
+
+next_addr1:
+        close(fd);
+next_addr0:
+        addr = addr->ai_next;
+    }
+
+    rv = rv ? rv : -errno;
+    return rv;
+}
+
+
 /**
  * [ifname_test 接口ping测试]
  *
@@ -279,7 +338,7 @@ int ifname_test(const char *ifname)
     if ((errcode = lookup(hostname_acs, port_acs, &resolved)) != 0)
     {
         fprintf(stderr, "%s\n", gai_strerror(errcode));
-        return 2;
+        return errcode;
     }
 
     if ((errcode = connect_to(resolved, ifname)) != 0)
@@ -467,10 +526,81 @@ int setRoute(void)
     return 0;
 }
 
+int tcping_test(char *hostname)
+{
+    char *portnr = "80";
+    int c;
+    int curncount = 0;
+    int wait = 1, quiet = 0;
+    int ok = 0, err = 0;
+    double min = 9999.0, avg = 0.0, max = 0.0;
+    struct addrinfo *resolved;
+    int errcode;
+    int seen_addrnotavail;
 
+    if ((errcode = lookup(hostname, portnr, &resolved)) != 0)
+    {
+        fprintf(stderr, "loopup err (%d): %s\n", errcode, gai_strerror(errcode));
+        return errcode;
+    }
 
+    printf("PING %s:%s\n", hostname, portnr);
 
+    while (1)
+    {
+        double ms;
+        struct timeval rtt;
 
+        if ((errcode = tcping_connect(resolved, &rtt)) != 0)
+        {
+            if (errcode != -EADDRNOTAVAIL)
+            {
+                printf("error connecting to host (%d): %s\n", -errcode, strerror(-errcode));
+                err++;
+            }
+            else
+            {
+                if (seen_addrnotavail)
+                {
+                    printf(".");
+                    fflush(stdout);
+                }
+                else
+                {
+                    printf("error connecting to host (%d): %s\n", -errcode, strerror(-errcode));
+                }
+                seen_addrnotavail = 1;
+            }
+        }
+        else
+        {
+            seen_addrnotavail = 0;
+            err = 0;
+            ok++;
+
+            ms = ((double)rtt.tv_sec * 1000.0) + ((double)rtt.tv_usec / 1000.0);
+            avg += ms;
+            min = min > ms ? ms : min;
+            max = max < ms ? ms : max;
+
+            printf("response from %s:%s, seq=%d time=%.2f ms\n", hostname, portnr, curncount, ms);
+            if (ms > 300)
+                break; /* Stop the test on the first long connect() */
+        }
+
+        // 超过三次重新设置route
+        if (3 <= err)
+        {
+            setRoute();
+            break;
+        }
+        sleep(wait);
+    }
+
+    freeaddrinfo(resolved);
+}
+
+#if 0
 // 向标准错误输出信息，告诉用户时间到了
 void prompt_info(int signo)
 {
@@ -516,5 +646,17 @@ int main()
         sleep(1);
     }
 
+    return 0;
+}
+#endif
+
+int main(int argc, char *argv[])
+{
+    int ret = -1;
+    char hostname[64] = "www.baidu.com";
+    while (1)
+    {
+        ret = tcping_test(&hostname);
+    }
     return 0;
 }

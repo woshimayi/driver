@@ -39,7 +39,7 @@ int connect_to(struct addrinfo *addr, struct timeval *rtt)
         /* create socket */
         if ((fd = socket(addr->ai_family, addr->ai_socktype, addr->ai_protocol)) == -1)
             goto next_addr0;
-        if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on)) < 0)
+        if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on)) < 0)   // SO_REUSEADDR: 是让端口释放后立即就可以被再次使用
             goto next_addr1;
 #if 0
         if ((flags = fcntl(fd, F_GETFL, 0)) == -1)

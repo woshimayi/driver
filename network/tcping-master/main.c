@@ -85,7 +85,7 @@ int main(int argc, char *argv[])
 
     if ((errcode = lookup(hostname, portnr, &resolved)) != 0)
     {
-        fprintf(stderr, "%s\n", gai_strerror(errcode));
+        fprintf(stderr, "loopup err (%d): %s\n", errcode, gai_strerror(errcode));
         return 2;
     }
 
@@ -99,7 +99,7 @@ int main(int argc, char *argv[])
 
         if ((errcode = connect_to(resolved, &rtt)) != 0)
         {
-            if (errcode != -EADDRNOTAVAIL)
+            if (errcode != -EADDRNOTAVAIL)   // EADDRNOTAVAIL: Cannot assign requested address  linux 本地端口用尽, 无法建立socket连接
             {
                 printf("error connecting to host (%d): %s\n", -errcode, strerror(-errcode));
                 err++;
@@ -129,7 +129,7 @@ int main(int argc, char *argv[])
             max = max < ms ? ms : max;
 
             printf("response from %s:%s, seq=%d time=%.2f ms\n", hostname, portnr, curncount, ms);
-            if (ms > 500) break; /* Stop the test on the first long connect() */
+            if (ms > 300) break; /* Stop the test on the first long connect() */
         }
 
         curncount++;
