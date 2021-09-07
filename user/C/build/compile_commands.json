@@ -1,0 +1,7 @@
+[
+{
+  "directory": "/home/zs/Documents/driver/user/C/build",
+  "command": "/usr/bin/x86_64-linux-gnu-g++-7    -O3 -DNDEBUG   -o CMakeFiles/cmake_test1.dir/main.cpp.o -c /home/zs/Documents/driver/user/C/main.cpp",
+  "file": "/home/zs/Documents/driver/user/C/main.cpp"
+}
+]

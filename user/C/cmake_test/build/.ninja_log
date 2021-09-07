@@ -1,0 +1,8 @@
+# ninja log v5
+0	29	1630488867	CMakeFiles/cmake_test.dir/main.c.o	a6262f8e576d639f
+30	55	1630488867	cmake_test	66857c9e52404e22
+0	19	1630489972	CMakeFiles/cmake_test.dir/src/head.c.o	f940929dd73e578a
+0	25	1630489972	CMakeFiles/cmake_test.dir/main.c.o	1b45b64f1d9317f7
+25	46	1630489972	cmake_test	a95a3a07e9d3af8b
+0	28	1630489996	CMakeFiles/cmake_test.dir/src/head.c.o	f940929dd73e578a
+28	51	1630489996	cmake_test	a95a3a07e9d3af8b

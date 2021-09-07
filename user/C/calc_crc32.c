@@ -77,7 +77,7 @@ unsigned int get_crc32(unsigned char *pdata, unsigned int size)
     return crc;
 }
 
-int image_calc_crc32()
+int image_calc_crc32(const char * file)
 {
     int writeCrc = 0;
     int ret     = 0;
@@ -87,7 +87,7 @@ int image_calc_crc32()
     int filesize, readlen;
     unsigned char *buff = NULL;
 
-    pfin = fopen(IMAGE_LOCALPATH, "rb");
+    pfin = fopen(file, "rb");
     if (NULL == pfin)
     {
         return -1;
@@ -109,14 +109,14 @@ int image_calc_crc32()
     return writeCrc;
 }
 
-void calc_len()
+void calc_len(const char * file)
 {
     char value[64] = {0};
     char data[1024] = {0};
     FILE *fid = NULL;
     int realFilesize = 0;
     int writeCrc = 0;
-    fid = fopen(IMAGE_LOCALPATH, "rb");
+    fid = fopen(file, "rb");
     if (NULL == fid)
     {
         printf("fail open file");
@@ -147,8 +147,11 @@ int main(int argc, const char *argv[])
 {
     int writeCrc = 0;
     char checkSum[32] = {0};
-    calc_len();
-    writeCrc = image_calc_crc32();
+    if (argc < 2) {
+        perror("no file input");
+    }
+    calc_len(argv[1]);
+    writeCrc = image_calc_crc32(argv[1]);
     snprintf(checkSum, sizeof(checkSum), "%02X%02X%02X%02X", (writeCrc >> 24) & 0xFF, (writeCrc >> 16) & 0xFF,
              (writeCrc >> 8)  & 0xFF, (writeCrc >> 0)  & 0xFF);
     //    DBG_MSG("checkSum = %s", checkSum);

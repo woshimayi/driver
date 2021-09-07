@@ -12,8 +12,12 @@ int main(int argc, char const *argv[])
     ret = GetIniKeyString("study", "highschool", "./test.ini", buff);
     printf("ret:%d,%s\n", ret, buff);
 
-    ret = PutIniKeyString("study", "highschool", "zzzz", "./test.ini");
+    ret = GetIniKeyString("global", "asdasd", "./test.ini", buff);
+    printf("ret:%d,%s\n", ret, buff);
+
+    ret = PutIniKeyString("study", "highschool", "cccccc", "./test.ini");
     printf("put ret:%d\n", ret);
+
     ret = GetIniKeyString("study", "highschool", "./test.ini", buff);
     printf("ret:%d,%s\n", ret, buff);
     return 0;

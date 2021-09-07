@@ -2,18 +2,19 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "C/C++",
+            "name": "C/C++ gdb",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${fileDirname}/${fileBasenameNoExtension}.exe",
+            "program": "${fileDirname}/${fileBasenameNoExtension}",
             "args": [],
-            "stopAtEntry": false,
+            "stopAtEntry": true,
             "cwd": "${workspaceFolder}",
             "environment": [],
-            "externalConsole": true,
+            "externalConsole": false,
             "MIMode": "gdb",
-            "miDebuggerPath": "D:\\soft1\\mingw-w64\\x86_64-8.1.0-posix-seh-rt_v6-rev0\\mingw64\\bin\\gdb.exe",
-            "preLaunchTask": "compile",
+            "preLaunchTask": "linux compile",
+            "miDebuggerPath": "/usr/bin/gdb",
+            // "miDebuggerServerAddress": "192.168.137.101:234"     // 如果需要进行gdbserver 也远程调试，则开发次选项
             "setupCommands": [
                 {
                     "description": "Enable pretty-printing for gdb",
