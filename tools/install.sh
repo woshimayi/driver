@@ -6,7 +6,8 @@ git config --global user.email "woshidamayi@Gmail.com"
 git config --global user.name "woshidamayi"
 git config --global core.editor vim
 git config --global merge.tool vimdiff
-git config --global commit.template ../git_template
+cp git_template ~/.git_template
+git config --global commit.template ~/.git_template
 
 
 sudo apt install meld -y
