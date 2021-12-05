@@ -94,7 +94,7 @@ int main(int argc, char *argv[ ])
     int portno = 123; // NTP UDP port number.
 
     // char *host_name = "time-h.netgear.com"; // NTP server host-name.
-   char *host_name = "edu.ntp.org.cn";
+   char *host_name = "pool.ntp.org";
 
 
     // Structure that defines the 48 byte NTP packet protocol.
@@ -147,6 +147,12 @@ int main(int argc, char *argv[ ])
 
     sockfd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);   // Create a UDP socket.
 
+    // struct sockaddr_in my_addr;
+    // my_addr.sin_family = AF_INET;
+    // my_addr.sin_addr.s_addr = inet_addr("172.16.28.84");
+
+    // bind(sockfd, (struct sockaddr *)&my_addr, sizeof(my_addr));
+
     if (sockfd < 0)
         error("ERROR opening socket");
 
@@ -183,7 +189,9 @@ int main(int argc, char *argv[ ])
 
     // Wait and receive the packet back from the server. If n == -1, it failed.
 
-    n = read(sockfd, (char *) &packet, sizeof(ntp_packet));
+    // n = read(sockfd, (char *) &packet, sizeof(ntp_packet));
+
+    n = recvfrom(sockfd,  (char *) &packet, sizeof(ntp_packet), MSG_DONTWAIT, (struct sockaddr *) &serv_addr, sizeof(serv_addr));
 
     if (n < 0)
         error("ERROR reading from socket");
