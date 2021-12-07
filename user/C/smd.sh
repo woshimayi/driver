@@ -1,3 +1,0 @@
-smd="asdas"
-
-echo $smd

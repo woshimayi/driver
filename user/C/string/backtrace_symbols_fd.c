@@ -1,3 +1,14 @@
+/*
+ * @*************************************: 
+ * @FilePath: /user/C/string/backtrace_symbols_fd.c
+ * @version: 
+ * @Author: dof
+ * @Date: 2021-10-21 09:02:37
+ * @LastEditors: dof
+ * @LastEditTime: 2021-12-07 14:07:54
+ * @Descripttion: 打印堆栈信息
+ * @**************************************: 
+ */
 #include <execinfo.h>
 #include <stdio.h>
 #include <stdlib.h>
