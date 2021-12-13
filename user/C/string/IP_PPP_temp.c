@@ -15,23 +15,23 @@
 
 typedef struct abc
 {
-    char str[20];
+	char str[20];
 } abc;
 
 typedef struct cde
 {
-    char *str1;
+	char *str1;
 } cde;
 
 int main()
 {
-    abc abc = {"abc"};
-    cde cde = {"cde"};
-    void *dest = &abc;
-    void *dest1 = &cde;
+	abc abc = {"abc"};
+	cde cde = {"cde"};
+	void *dest = &abc;
+	void *dest1 = &cde;
 
-    printf(" %p %p\n", &abc, &cde);
-    printf("dest->str = %s\n", dest);
-    printf("dest->str1 = %p, %s\n", dest1, (char *)dest1);
-    return 0;
+	printf(" %p %p\n", &abc, &cde);
+	printf("dest->str = %s\n", dest);
+	printf("dest->str1 = %p, %s\n", dest1, (char *)dest1);
+	return 0;
 }

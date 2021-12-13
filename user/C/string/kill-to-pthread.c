@@ -20,24 +20,24 @@
  */
 int main(int argc, char *argv[])
 {
-    char buf[128] = {0};
-    int pid;
-    PP
-    setenv("POT_NTP", "2020", 1);
-    PP
-    snprintf(buf, sizeof(buf), "%s", getenv("UHTTPD_PID"));
-    printf("buf = %s\n", buf);
-    if ('\0' == buf[0])
-    {
-        printf("buf = %s\n", buf);
-        return -1;
-    }
-    pid = atoi(buf);
-    PP
-    printf("main buf %s %d\n", buf, pid);
+	char buf[128] = {0};
+	int pid;
+	PP
+	setenv("POT_NTP", "2020", 1);
+	PP
+	snprintf(buf, sizeof(buf), "%s", getenv("UHTTPD_PID"));
+	printf("buf = %s\n", buf);
+	if ('\0' == buf[0])
+	{
+		printf("buf = %s\n", buf);
+		return -1;
+	}
+	pid = atoi(buf);
+	PP
+	printf("main buf %s %d\n", buf, pid);
 
-    kill(pid, SIGALRM);
-    PP
-    printf("end \n");
-    return 0;
+	kill(pid, SIGALRM);
+	PP
+	printf("end \n");
+	return 0;
 }

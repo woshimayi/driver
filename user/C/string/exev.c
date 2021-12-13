@@ -9,6 +9,6 @@
 #include <unistd.h>
 main()
 {
-    char *argv[] = {"ls", "-al", "/etc/passwd"};
-    execv("/bin/ls", argv);
+	char *argv[] = {"ls", "-al", "/etc/passwd"};
+	execv("/bin/ls", argv);
 }

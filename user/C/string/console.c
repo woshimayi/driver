@@ -25,13 +25,13 @@
 
 void *setTimer(int usec)
 {
-    struct timeval temp;
+	struct timeval temp;
 
-    temp.tv_sec = 0;
-    temp.tv_usec = usec;
-    //	printf("ssssssssss\n");
-    select(0, NULL, NULL, NULL, &temp);
-    //    printf("timer\n");
+	temp.tv_sec = 0;
+	temp.tv_usec = usec;
+	//	printf("ssssssssss\n");
+	select(0, NULL, NULL, NULL, &temp);
+	//    printf("timer\n");
 }
 
 int j = 0;
@@ -39,92 +39,92 @@ int j = 0;
 
 int log_log(const char *fmt, ...)
 {
-    int ret = 0;
-    int len = 0;
-    char buf[256] = {0};
-    char *cmd = NULL;
-    char *allocBuf = NULL;
-    va_list paraList;
+	int ret = 0;
+	int len = 0;
+	char buf[256] = {0};
+	char *cmd = NULL;
+	char *allocBuf = NULL;
+	va_list paraList;
 
-    va_start(paraList, fmt);
-    len = vsnprintf(buf, sizeof(buf), fmt, paraList);
-    va_end(paraList);
+	va_start(paraList, fmt);
+	len = vsnprintf(buf, sizeof(buf), fmt, paraList);
+	va_end(paraList);
 
-    if (len < sizeof(buf))
-    {
-        cmd = buf;
-    }
-    else
-    {
-        len++;
-        allocBuf = (char *)malloc(len);
-        va_start(paraList, fmt);
-        vsnprintf(allocBuf, len, fmt, paraList);
-        va_end(paraList);
+	if (len < sizeof(buf))
+	{
+		cmd = buf;
+	}
+	else
+	{
+		len++;
+		allocBuf = (char *)malloc(len);
+		va_start(paraList, fmt);
+		vsnprintf(allocBuf, len, fmt, paraList);
+		va_end(paraList);
 
-        cmd = allocBuf;
-    }
-    j++;
-    printf("%s", cmd);
-    //    fflush(stdout);
-    setTimer(10);
+		cmd = allocBuf;
+	}
+	j++;
+	printf("%s", cmd);
+	//    fflush(stdout);
+	setTimer(10);
 
-    free(allocBuf);
-    return ret;
+	free(allocBuf);
+	return ret;
 }
 
 
 int main(void)
 {
-    int i, l = 0;
-    int k = 115;
-    while (1)
-    {
-        j = 0;
-        for (i = 1; i <= k / 2; i++)
-        {
-            for (l = (k + 1) / 2 - i; l > 0; l--)
-            {
-                log(" ");
-                j--;
-            }
-            for (l = 1; l <= 2 * i - 1; l++)
-            {
-                log("*");
-                j--;
-            }
-            for (l = (k + 1) / 2 - i; l > 0; l--)
-            {
-                log(" ");
-                j--;
-            }
-            log("\n");
-        }
+	int i, l = 0;
+	int k = 115;
+	while (1)
+	{
+		j = 0;
+		for (i = 1; i <= k / 2; i++)
+		{
+			for (l = (k + 1) / 2 - i; l > 0; l--)
+			{
+				log(" ");
+				j--;
+			}
+			for (l = 1; l <= 2 * i - 1; l++)
+			{
+				log("*");
+				j--;
+			}
+			for (l = (k + 1) / 2 - i; l > 0; l--)
+			{
+				log(" ");
+				j--;
+			}
+			log("\n");
+		}
 
-        printf("\033[%dA", j); //先回到上一行
-        printf("\033[K");  //清除该行
-        j = 0;
-        for (i = k / 2; i > 0; i--)
-        {
-            for (l = (k + 1) / 2 - i; l > 0; l--)
-            {
-                log(" ");
-                j--;
-            }
-            for (l = 1; l <= 2 * i - 1; l++)
-            {
-                log("*");
-                j--;
-            }
-            for (l = (k + 1) / 2 - i; l > 0; l--)
-            {
-                log(" ");
-                j--;
-            }
-            log("\n");
-        }
-        printf("\033[%dA", j); //先回到上一行
-        printf("\033[K");  //清除该行
-    }
-    return 0;
+		printf("\033[%dA", j); //先回到上一行
+		printf("\033[K");  //清除该行
+		j = 0;
+		for (i = k / 2; i > 0; i--)
+		{
+			for (l = (k + 1) / 2 - i; l > 0; l--)
+			{
+				log(" ");
+				j--;
+			}
+			for (l = 1; l <= 2 * i - 1; l++)
+			{
+				log("*");
+				j--;
+			}
+			for (l = (k + 1) / 2 - i; l > 0; l--)
+			{
+				log(" ");
+				j--;
+			}
+			log("\n");
+		}
+		printf("\033[%dA", j); //先回到上一行
+		printf("\033[K");  //清除该行
+	}
+	return 0;
 }

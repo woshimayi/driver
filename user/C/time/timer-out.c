@@ -29,27 +29,27 @@ static struct itimerval oldtv;
 
 void set_timer()
 {
-    struct itimerval itv;
-    itv.it_interval.tv_sec = 5;
-    itv.it_interval.tv_usec = 0;
-    itv.it_value.tv_sec = 1;
-    itv.it_value.tv_usec = 0;
-    setitimer(ITIMER_REAL, &itv, &oldtv);  //此函数为linux的api,不是c的标准库函数
+	struct itimerval itv;
+	itv.it_interval.tv_sec = 5;
+	itv.it_interval.tv_usec = 0;
+	itv.it_value.tv_sec = 1;
+	itv.it_value.tv_usec = 0;
+	setitimer(ITIMER_REAL, &itv, &oldtv);  //此函数为linux的api,不是c的标准库函数
 }
 
 void signal_handler(int m)
 {
-    count ++;
-    printf("%d\n", count);
+	count ++;
+	printf("%d\n", count);
 }
 
 void func()
 {
-    signal(SIGALRM, signal_handler);  //注册当接收到SIGALRM时会发生是么函数；
-    set_timer();  //启动定时器，
+	signal(SIGALRM, signal_handler);  //注册当接收到SIGALRM时会发生是么函数；
+	set_timer();  //启动定时器，
 }
 
 int main()
 {
-    return 1;
+	return 1;
 }

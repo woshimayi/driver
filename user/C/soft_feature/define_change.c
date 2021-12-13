@@ -4,13 +4,13 @@
 
 int fun(void)
 {
-    return 0;
+	return 0;
 }
 
 int fun1(char *conse)
 {
-    printf("2222222222222  %s\n", conse);
-    return 0;
+	printf("2222222222222  %s\n", conse);
+	return 0;
 }
 
 
@@ -18,8 +18,8 @@ int fun1(char *conse)
 
 int main()
 {
-    fun();
-    return 0;
+	fun();
+	return 0;
 }
 
 

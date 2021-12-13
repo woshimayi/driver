@@ -6,10 +6,10 @@
 
 int main()
 {
-    char num[] = "asdas";
-    int i = 89;
-    int k = 87;
-    printf("====== prio  %d\n", NIHAO + i);
-    return 0;
+	char num[] = "asdas";
+	int i = 89;
+	int k = 87;
+	printf("====== prio  %d\n", NIHAO + i);
+	return 0;
 }
 

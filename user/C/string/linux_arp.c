@@ -27,41 +27,41 @@
 *******************************************************************************/
 int arpDel(char *ifname, char *ipStr)
 {
-    if (ifname == NULL || ipStr == NULL)
-    {
-        printf("para is null.\n");
-        return -1;
-    }
+	if (ifname == NULL || ipStr == NULL)
+	{
+		printf("para is null.\n");
+		return -1;
+	}
 
-    struct arpreq req;
-    struct sockaddr_in *sin;
-    int ret = 0;
-    int sock_fd = 0;
+	struct arpreq req;
+	struct sockaddr_in *sin;
+	int ret = 0;
+	int sock_fd = 0;
 
-    memset(&req, 0, sizeof(struct arpreq));
-    sin = (struct sockaddr_in *)&req.arp_pa;
-    sin->sin_family = AF_INET;
-    sin->sin_addr.s_addr = inet_addr(ipStr);
-    //arp_dev长度为[16]，注意越界
-    strncpy(req.arp_dev, ifname, 15);
+	memset(&req, 0, sizeof(struct arpreq));
+	sin = (struct sockaddr_in *)&req.arp_pa;
+	sin->sin_family = AF_INET;
+	sin->sin_addr.s_addr = inet_addr(ipStr);
+	//arp_dev长度为[16]，注意越界
+	strncpy(req.arp_dev, ifname, 15);
 
-    sock_fd = socket(AF_INET, SOCK_DGRAM, 0);
-    if (sock_fd < 0)
-    {
-        printf("get socket error.\n");
-        return -1;
-    }
+	sock_fd = socket(AF_INET, SOCK_DGRAM, 0);
+	if (sock_fd < 0)
+	{
+		printf("get socket error.\n");
+		return -1;
+	}
 
-    ret = ioctl(sock_fd, SIOCDARP, &req);
-    if (ret < 0)
-    {
-        printf("ioctl error.\n");
-        close(sock_fd);
-        return -1;
-    }
+	ret = ioctl(sock_fd, SIOCDARP, &req);
+	if (ret < 0)
+	{
+		printf("ioctl error.\n");
+		close(sock_fd);
+		return -1;
+	}
 
-    close(sock_fd);
-    return 0;
+	close(sock_fd);
+	return 0;
 }
 
 
@@ -85,46 +85,46 @@ int arpDel(char *ifname, char *ipStr)
 *******************************************************************************/
 int arpGet(char *ifname, char *ipStr)
 {
-    if (ifname == NULL || ipStr == NULL)
-    {
-        printf("para is null.\n");
-        return -1;
-    }
+	if (ifname == NULL || ipStr == NULL)
+	{
+		printf("para is null.\n");
+		return -1;
+	}
 
-    struct arpreq req;
-    struct sockaddr_in *sin;
-    int ret = 0;
-    int sock_fd = 0;
+	struct arpreq req;
+	struct sockaddr_in *sin;
+	int ret = 0;
+	int sock_fd = 0;
 
-    memset(&req, 0, sizeof(struct arpreq));
+	memset(&req, 0, sizeof(struct arpreq));
 
-    sin = (struct sockaddr_in *)&req.arp_pa;
-    sin->sin_family = AF_INET;
-    sin->sin_addr.s_addr = inet_addr(ipStr);
+	sin = (struct sockaddr_in *)&req.arp_pa;
+	sin->sin_family = AF_INET;
+	sin->sin_addr.s_addr = inet_addr(ipStr);
 
-    //arp_dev长度为[16]，注意越界
-    strncpy(req.arp_dev, ifname, 15);
+	//arp_dev长度为[16]，注意越界
+	strncpy(req.arp_dev, ifname, 15);
 
-    sock_fd = socket(AF_INET, SOCK_DGRAM, 0);
-    if (sock_fd < 0)
-    {
-        printf("get socket error.\n");
-        return -1;
-    }
+	sock_fd = socket(AF_INET, SOCK_DGRAM, 0);
+	if (sock_fd < 0)
+	{
+		printf("get socket error.\n");
+		return -1;
+	}
 
-    ret = ioctl(sock_fd, SIOCGARP, &req);
-    if (ret < 0)
-    {
-        printf("ioctl error.\n");
-        close(sock_fd);
-        return -1;
-    }
+	ret = ioctl(sock_fd, SIOCGARP, &req);
+	if (ret < 0)
+	{
+		printf("ioctl error.\n");
+		close(sock_fd);
+		return -1;
+	}
 
-    unsigned char *hw = (unsigned char *)req.arp_ha.sa_data;
-    printf("%#x-%#x-%#x-%#x-%#x-%#x\n", hw[0], hw[1], hw[2], hw[3], hw[4], hw[5]);
-    printf("%#x\n", req.arp_flags);
-    close(sock_fd);
-    return 0;
+	unsigned char *hw = (unsigned char *)req.arp_ha.sa_data;
+	printf("%#x-%#x-%#x-%#x-%#x-%#x\n", hw[0], hw[1], hw[2], hw[3], hw[4], hw[5]);
+	printf("%#x\n", req.arp_flags);
+	close(sock_fd);
+	return 0;
 }
 
 
@@ -133,25 +133,25 @@ int arpGet(char *ifname, char *ipStr)
 
 int getHwAddr(char *buff, char *mac)
 {
-    if (buff == NULL || mac == NULL)
-    {
-        return -1;
-    }
+	if (buff == NULL || mac == NULL)
+	{
+		return -1;
+	}
 
-    int i = 0;
-    unsigned int p[6];
+	int i = 0;
+	unsigned int p[6];
 
-    if (sscanf(mac, "%x:%x:%x:%x:%x:%x", &p[0], &p[1], &p[2], &p[3], &p[4], &p[5]) < 6)
-    {
-        return -1;
-    }
+	if (sscanf(mac, "%x:%x:%x:%x:%x:%x", &p[0], &p[1], &p[2], &p[3], &p[4], &p[5]) < 6)
+	{
+		return -1;
+	}
 
-    for (i = 0; i < 6; i ++)
-    {
-        buff[i] = p[i];
-    }
+	for (i = 0; i < 6; i ++)
+	{
+		buff[i] = p[i];
+	}
 
-    return 0;
+	return 0;
 }
 
 
@@ -175,62 +175,62 @@ int getHwAddr(char *buff, char *mac)
 *******************************************************************************/
 int arpSet(char *ifname, char *ipStr, char *mac)
 {
-    if (ifname == NULL || ipStr == NULL || mac == NULL)
-    {
-        printf("para is null.\n");
-        return -1;
-    }
+	if (ifname == NULL || ipStr == NULL || mac == NULL)
+	{
+		printf("para is null.\n");
+		return -1;
+	}
 
-    struct arpreq req;
-    struct sockaddr_in *sin;
-    int ret = 0;
-    int sock_fd = 0;
+	struct arpreq req;
+	struct sockaddr_in *sin;
+	int ret = 0;
+	int sock_fd = 0;
 
-    memset(&req, 0, sizeof(struct arpreq));
-    sin = (struct sockaddr_in *)&req.arp_pa;
-    sin->sin_family = AF_INET;
-    sin->sin_addr.s_addr = inet_addr(ipStr);
-    //arp_dev长度为[16]，注意越界
-    strncpy(req.arp_dev, ifname, 15);
-    req.arp_flags = ATF_PERM | ATF_COM;
+	memset(&req, 0, sizeof(struct arpreq));
+	sin = (struct sockaddr_in *)&req.arp_pa;
+	sin->sin_family = AF_INET;
+	sin->sin_addr.s_addr = inet_addr(ipStr);
+	//arp_dev长度为[16]，注意越界
+	strncpy(req.arp_dev, ifname, 15);
+	req.arp_flags = ATF_PERM | ATF_COM;
 
-    if (getHwAddr((char *)req.arp_ha.sa_data, mac) < 0)
-    {
-        printf("get mac error.\n");
-        return -1;
-    }
+	if (getHwAddr((char *)req.arp_ha.sa_data, mac) < 0)
+	{
+		printf("get mac error.\n");
+		return -1;
+	}
 
-    sock_fd = socket(AF_INET, SOCK_DGRAM, 0);
-    if (sock_fd < 0)
-    {
-        printf("get socket error.\n");
-        return -1;
-    }
+	sock_fd = socket(AF_INET, SOCK_DGRAM, 0);
+	if (sock_fd < 0)
+	{
+		printf("get socket error.\n");
+		return -1;
+	}
 
-    ret = ioctl(sock_fd, SIOCSARP, &req);
-    if (ret < 0)
-    {
-        printf("ioctl error.\n");
-        close(sock_fd);
-        return -1;
-    }
+	ret = ioctl(sock_fd, SIOCSARP, &req);
+	if (ret < 0)
+	{
+		printf("ioctl error.\n");
+		close(sock_fd);
+		return -1;
+	}
 
-    close(sock_fd);
-    return 0;
+	close(sock_fd);
+	return 0;
 }
 
 
 
 int main(int argc, char *argv[])
 {
-    printf("---------------------------------------\n");
-    arpSet("eth0", "5.5.5.5", "00:a3:b4:c5:d6:e7");
-    printf("---------------------------------------\n");
-    arpGet("eth0", "5.5.5.5");
-    printf("---------------------------------------\n");
-    printf("retvalue=%d\n", arpDel("eth0", "5.5.5.5"));
-    printf("---------------------------------------\n");
-    arpGet("eth0", "5.5.5.5");
+	printf("---------------------------------------\n");
+	arpSet("eth0", "5.5.5.5", "00:a3:b4:c5:d6:e7");
+	printf("---------------------------------------\n");
+	arpGet("eth0", "5.5.5.5");
+	printf("---------------------------------------\n");
+	printf("retvalue=%d\n", arpDel("eth0", "5.5.5.5"));
+	printf("---------------------------------------\n");
+	arpGet("eth0", "5.5.5.5");
 
-    return 0;
+	return 0;
 }

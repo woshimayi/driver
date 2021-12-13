@@ -2,6 +2,6 @@
 
 int main()
 {
-    printf("sdfsd");
-    return 0;
+	printf("sdfsd");
+	return 0;
 }

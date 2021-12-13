@@ -34,85 +34,85 @@ static void DelFullRow(int f_row) ;
 *******************************************************************************/
 void PlayGame(void)
 {
-    int   userHitChar ;      //用户敲击键盘的字符
-    int   currentRockIndex ; //当前方块在rockArray数组中下标
-    int   nextRockIndex ;    //准备的下个方块的下标
-    BOOL  moveAbled = FALSE ;//记录方块能否落下
-    DWORD oldtime = 0;
-    extern int g_grade ;
+	int   userHitChar ;      //用户敲击键盘的字符
+	int   currentRockIndex ; //当前方块在rockArray数组中下标
+	int   nextRockIndex ;    //准备的下个方块的下标
+	BOOL  moveAbled = FALSE ;//记录方块能否落下
+	DWORD oldtime = 0;
+	extern int g_grade ;
 
-    //当前方块位置
-    RockLocation_t currentRockLocation ;
-    //初始方块位置(由当中开始下落)
-    RockLocation_t initRockLocation = {(GUI_xWALL_SQUARE_NUM / 2 - 4) *GUI_WALL_SQUARE_WIDTH,
-                                       GUI_WALL_SQUARE_WIDTH
-                                      };
-    //预览区位置
-    extern RockLocation_t previewLocation ;
+	//当前方块位置
+	RockLocation_t currentRockLocation ;
+	//初始方块位置(由当中开始下落)
+	RockLocation_t initRockLocation = {(GUI_xWALL_SQUARE_NUM / 2 - 4) *GUI_WALL_SQUARE_WIDTH,
+	                                   GUI_WALL_SQUARE_WIDTH
+	                                  };
+	//预览区位置
+	extern RockLocation_t previewLocation ;
 
-    //为第一次下落，初始化参数
-    //随机选择当前的俄罗斯方块形状 和下一个俄罗斯方块形状
-    srand(time(NULL)) ;
-    currentRockIndex = rand() % g_rockTypeNum ;
-    nextRockIndex = rand() % g_rockTypeNum ;
-    currentRockLocation.left = initRockLocation.left ;
-    currentRockLocation.top = initRockLocation.top ;
+	//为第一次下落，初始化参数
+	//随机选择当前的俄罗斯方块形状 和下一个俄罗斯方块形状
+	srand(time(NULL)) ;
+	currentRockIndex = rand() % g_rockTypeNum ;
+	nextRockIndex = rand() % g_rockTypeNum ;
+	currentRockLocation.left = initRockLocation.left ;
+	currentRockLocation.top = initRockLocation.top ;
 
-    while (1)
-    {
-        DrawRock(currentRockIndex, ¤tRockLocation, TRUE) ;
-        FlushBatchDraw();    //用批绘图功能，可以消除闪烁
+	while (1)
+	{
+		DrawRock(currentRockIndex, ¤tRockLocation, TRUE) ;
+		FlushBatchDraw();    //用批绘图功能，可以消除闪烁
 
-        //判断能否下落
-        moveAbled = MoveAble(currentRockIndex, ¤tRockLocation, DIRECT_DOWN) ;
+		//判断能否下落
+		moveAbled = MoveAble(currentRockIndex, ¤tRockLocation, DIRECT_DOWN) ;
 
-        //如果不能下落则生成新的方块
-        if (!moveAbled)
-        {
-            //设置占位符(此时方块已落定)
-            SetOccupyFlag(currentRockIndex, ¤tRockLocation) ;
-            //擦除预览
-            DrawRock(nextRockIndex, &previewLocation, FALSE) ;
-            //生成新的方块
-            currentRockIndex = nextRockIndex ;
-            nextRockIndex = rand() % g_rockTypeNum ;
-            currentRockLocation.left = initRockLocation.left ;
-            currentRockLocation.top = initRockLocation.top ;
-        }
+		//如果不能下落则生成新的方块
+		if (!moveAbled)
+		{
+			//设置占位符(此时方块已落定)
+			SetOccupyFlag(currentRockIndex, ¤tRockLocation) ;
+			//擦除预览
+			DrawRock(nextRockIndex, &previewLocation, FALSE) ;
+			//生成新的方块
+			currentRockIndex = nextRockIndex ;
+			nextRockIndex = rand() % g_rockTypeNum ;
+			currentRockLocation.left = initRockLocation.left ;
+			currentRockLocation.top = initRockLocation.top ;
+		}
 
-        //显示预览
-        DrawRock(nextRockIndex, &previewLocation, TRUE) ;
+		//显示预览
+		DrawRock(nextRockIndex, &previewLocation, TRUE) ;
 
-        //如果超时(且能下落)，自动下落一格
-        //  这个超时时间400-80*g_grade 是本人根据实验自己得出的
-        //  一个速度比较适中的一个公式(g_grade不会大于等于5)
-        DWORD newtime = GetTickCount();
-        if (newtime - oldtime >= (unsigned int)(400 - 80 * g_grade) && moveAbled == TRUE)
-        {
-            oldtime = newtime ;
-            DrawRock(currentRockIndex, ¤tRockLocation, FALSE) ; //擦除原先位置
-            currentRockLocation.top += ROCK_SQUARE_WIDTH ; //下落一格
-        }
+		//如果超时(且能下落)，自动下落一格
+		//  这个超时时间400-80*g_grade 是本人根据实验自己得出的
+		//  一个速度比较适中的一个公式(g_grade不会大于等于5)
+		DWORD newtime = GetTickCount();
+		if (newtime - oldtime >= (unsigned int)(400 - 80 * g_grade) && moveAbled == TRUE)
+		{
+			oldtime = newtime ;
+			DrawRock(currentRockIndex, ¤tRockLocation, FALSE) ; //擦除原先位置
+			currentRockLocation.top += ROCK_SQUARE_WIDTH ; //下落一格
+		}
 
-        //根据当前游戏板的状况判断是否满行，并进行满行处理
-        ProcessFullRow() ;
+		//根据当前游戏板的状况判断是否满行，并进行满行处理
+		ProcessFullRow() ;
 
-        //判断是否游戏结束
-        if (isGameOver())
-        {
-            MessageBox(NULL, "游戏结束", "GAME OVER", MB_OK) ;
-            exit(0) ;
-        }
+		//判断是否游戏结束
+		if (isGameOver())
+		{
+			MessageBox(NULL, "游戏结束", "GAME OVER", MB_OK) ;
+			exit(0) ;
+		}
 
-        //测试键盘是否被敲击
-        if (kbhit())
-        {
-            userHitChar = getch() ;
-            ProccessUserHit(userHitChar, ¤tRockIndex, ¤tRockLocation) ;
-        }
+		//测试键盘是否被敲击
+		if (kbhit())
+		{
+			userHitChar = getch() ;
+			ProccessUserHit(userHitChar, ¤tRockIndex, ¤tRockLocation) ;
+		}
 
-        Sleep(20) ; //降低CPU使用率
-    }//结束外层while(1)
+		Sleep(20) ; //降低CPU使用率
+	}//结束外层while(1)
 
 }
 
@@ -130,59 +130,59 @@ void PlayGame(void)
 *******************************************************************************/
 void ProccessUserHit(int userHitChar, int *rockIndexPtr, struct LOCATE *rockLocationPtr)
 {
-    switch (userHitChar)
-    {
-        case 'w' :
-        case 'W' :  //“上”键
-            //检查是否能改变方块形状
-            if (MoveAble(rockArray[*rockIndexPtr].nextRockIndex, rockLocationPtr, DIRECT_UP))
-            {
-                DrawRock(*rockIndexPtr, rockLocationPtr, FALSE) ;
-                *rockIndexPtr = rockArray[*rockIndexPtr].nextRockIndex ;
-            }
-            break ;
+	switch (userHitChar)
+	{
+		case 'w' :
+		case 'W' :  //“上”键
+			//检查是否能改变方块形状
+			if (MoveAble(rockArray[*rockIndexPtr].nextRockIndex, rockLocationPtr, DIRECT_UP))
+			{
+				DrawRock(*rockIndexPtr, rockLocationPtr, FALSE) ;
+				*rockIndexPtr = rockArray[*rockIndexPtr].nextRockIndex ;
+			}
+			break ;
 
-        case 's' :
-        case 'S' : //“下”键
-            DrawRock(*rockIndexPtr, rockLocationPtr, FALSE) ; //擦除原先位置
-            rockLocationPtr->top += ROCK_SQUARE_WIDTH    ;
-            break ;
+		case 's' :
+		case 'S' : //“下”键
+			DrawRock(*rockIndexPtr, rockLocationPtr, FALSE) ; //擦除原先位置
+			rockLocationPtr->top += ROCK_SQUARE_WIDTH    ;
+			break ;
 
-        case 'a' :
-        case 'A' :  //“左”键
-            if (MoveAble(*rockIndexPtr, rockLocationPtr, DIRECT_LEFT))
-            {
-                DrawRock(*rockIndexPtr, rockLocationPtr, FALSE) ;
-                rockLocationPtr->left -= ROCK_SQUARE_WIDTH    ;
-            }
-            break ;
+		case 'a' :
+		case 'A' :  //“左”键
+			if (MoveAble(*rockIndexPtr, rockLocationPtr, DIRECT_LEFT))
+			{
+				DrawRock(*rockIndexPtr, rockLocationPtr, FALSE) ;
+				rockLocationPtr->left -= ROCK_SQUARE_WIDTH    ;
+			}
+			break ;
 
-        case 'd' :
-        case 'D' :  //“右”键
-            if (MoveAble(*rockIndexPtr, rockLocationPtr, DIRECT_RIGHT))
-            {
-                DrawRock(*rockIndexPtr, rockLocationPtr, FALSE) ;
-                rockLocationPtr->left += ROCK_SQUARE_WIDTH    ;
-            }
-            break ;
+		case 'd' :
+		case 'D' :  //“右”键
+			if (MoveAble(*rockIndexPtr, rockLocationPtr, DIRECT_RIGHT))
+			{
+				DrawRock(*rockIndexPtr, rockLocationPtr, FALSE) ;
+				rockLocationPtr->left += ROCK_SQUARE_WIDTH    ;
+			}
+			break ;
 
-        case ' ' : //空格(快速下落)
-            DrawRock(*rockIndexPtr, rockLocationPtr, FALSE) ;
-            FastFall(*rockIndexPtr, rockLocationPtr, rockLocationPtr) ;
-            break ;
+		case ' ' : //空格(快速下落)
+			DrawRock(*rockIndexPtr, rockLocationPtr, FALSE) ;
+			FastFall(*rockIndexPtr, rockLocationPtr, rockLocationPtr) ;
+			break ;
 
-        case 13 : //回车键(暂停)
-            while (1)
-            {
-                userHitChar = getch() ;
-                if (userHitChar == 13)
-                    break ;
-            }
-            break ;
+		case 13 : //回车键(暂停)
+			while (1)
+			{
+				userHitChar = getch() ;
+				if (userHitChar == 13)
+					break ;
+			}
+			break ;
 
-        default :
-            break ;
-    }
+		default :
+			break ;
+	}
 
 }
 
@@ -198,53 +198,53 @@ void ProccessUserHit(int userHitChar, int *rockIndexPtr, struct LOCATE *rockLoca
 *******************************************************************************/
 BOOL MoveAble(int rockIndex, const struct LOCATE *currentLocatePtr, int f_direction)
 {
-    int i ;
-    int mask  ;
-    int rockX ;
-    int rockY ;
+	int i ;
+	int mask  ;
+	int rockX ;
+	int rockY ;
 
-    rockX = currentLocatePtr->left ;
-    rockY = currentLocatePtr->top ;
+	rockX = currentLocatePtr->left ;
+	rockY = currentLocatePtr->top ;
 
-    mask = (unsigned int)1 << 15 ;
-    for (i = 1; i <= 16; i++)
-    {
-        //与掩码相与为1的 即为方块上的点
-        if ((rockArray[rockIndex].rockShapeBits & mask) != 0)
-        {
-            //判断能否移动(即扫描即将移动的位置 是否与设置的围墙有重叠)
-            //若是向上(即翻滚变形)
-            if (f_direction == DIRECT_UP)
-            {
-                //因为此情况下传入的是下一个方块的形状，故我们直接判断此方块的位置是否已经被占
-                if (g_gameBoard[(rockY - GUI_WALL_SQUARE_WIDTH) / ROCK_SQUARE_WIDTH + 1]
-                        [(rockX - GUI_WALL_SQUARE_WIDTH) / ROCK_SQUARE_WIDTH + 1] == 1)
-                    return FALSE ;
-            }
-            //如果是向下方向移动
-            else if (f_direction == DIRECT_DOWN)
-            {
-                if (g_gameBoard[(rockY - GUI_WALL_SQUARE_WIDTH) / ROCK_SQUARE_WIDTH + 2]
-                        [(rockX - GUI_WALL_SQUARE_WIDTH) / ROCK_SQUARE_WIDTH + 1] == 1)
-                    return FALSE ;
-            }
-            else //如果是左右方向移动
-            {
-                //f_direction的DIRECT_LEFT为-1，DIRECT_RIGHT为1，故直接加f_direction即可判断。
-                if (g_gameBoard[(rockY - GUI_WALL_SQUARE_WIDTH) / ROCK_SQUARE_WIDTH + 1]
-                        [(rockX - GUI_WALL_SQUARE_WIDTH) / ROCK_SQUARE_WIDTH + 1 + f_direction] == 1)
-                    return FALSE ;
-            }
-        }
+	mask = (unsigned int)1 << 15 ;
+	for (i = 1; i <= 16; i++)
+	{
+		//与掩码相与为1的 即为方块上的点
+		if ((rockArray[rockIndex].rockShapeBits & mask) != 0)
+		{
+			//判断能否移动(即扫描即将移动的位置 是否与设置的围墙有重叠)
+			//若是向上(即翻滚变形)
+			if (f_direction == DIRECT_UP)
+			{
+				//因为此情况下传入的是下一个方块的形状，故我们直接判断此方块的位置是否已经被占
+				if (g_gameBoard[(rockY - GUI_WALL_SQUARE_WIDTH) / ROCK_SQUARE_WIDTH + 1]
+				        [(rockX - GUI_WALL_SQUARE_WIDTH) / ROCK_SQUARE_WIDTH + 1] == 1)
+					return FALSE ;
+			}
+			//如果是向下方向移动
+			else if (f_direction == DIRECT_DOWN)
+			{
+				if (g_gameBoard[(rockY - GUI_WALL_SQUARE_WIDTH) / ROCK_SQUARE_WIDTH + 2]
+				        [(rockX - GUI_WALL_SQUARE_WIDTH) / ROCK_SQUARE_WIDTH + 1] == 1)
+					return FALSE ;
+			}
+			else //如果是左右方向移动
+			{
+				//f_direction的DIRECT_LEFT为-1，DIRECT_RIGHT为1，故直接加f_direction即可判断。
+				if (g_gameBoard[(rockY - GUI_WALL_SQUARE_WIDTH) / ROCK_SQUARE_WIDTH + 1]
+				        [(rockX - GUI_WALL_SQUARE_WIDTH) / ROCK_SQUARE_WIDTH + 1 + f_direction] == 1)
+					return FALSE ;
+			}
+		}
 
-        //每4次 换行 转到下一行继续
-        i % 4 == 0 ? (rockY += ROCK_SQUARE_WIDTH, rockX = currentLocatePtr->left)
-        :  rockX += ROCK_SQUARE_WIDTH ;
+		//每4次 换行 转到下一行继续
+		i % 4 == 0 ? (rockY += ROCK_SQUARE_WIDTH, rockX = currentLocatePtr->left)
+		:  rockX += ROCK_SQUARE_WIDTH ;
 
-        mask >>= 1 ;
-    }
+		mask >>= 1 ;
+	}
 
-    return TRUE ;
+	return TRUE ;
 }
 
 /*******************************************************************************
@@ -258,30 +258,30 @@ BOOL MoveAble(int rockIndex, const struct LOCATE *currentLocatePtr, int f_direct
 *******************************************************************************/
 void SetOccupyFlag(int rockIndex, const struct LOCATE *currentLocatePtr)
 {
-    int i ;
-    int mask  ;
-    int rockX ;
-    int rockY ;
+	int i ;
+	int mask  ;
+	int rockX ;
+	int rockY ;
 
-    rockX = currentLocatePtr->left ;
-    rockY = currentLocatePtr->top  ;
+	rockX = currentLocatePtr->left ;
+	rockY = currentLocatePtr->top  ;
 
-    mask = (unsigned int)1 << 15 ;
-    for (i = 1; i <= 16; i++)
-    {
-        //与掩码相与为1的 即为方块上的点
-        if ((rockArray[rockIndex].rockShapeBits & mask) != 0)
-        {
-            g_gameBoard[(rockY - GUI_WALL_SQUARE_WIDTH) / ROCK_SQUARE_WIDTH + 1]
-            [(rockX - GUI_WALL_SQUARE_WIDTH) / ROCK_SQUARE_WIDTH + 1] = 1 ;
-        }
+	mask = (unsigned int)1 << 15 ;
+	for (i = 1; i <= 16; i++)
+	{
+		//与掩码相与为1的 即为方块上的点
+		if ((rockArray[rockIndex].rockShapeBits & mask) != 0)
+		{
+			g_gameBoard[(rockY - GUI_WALL_SQUARE_WIDTH) / ROCK_SQUARE_WIDTH + 1]
+			[(rockX - GUI_WALL_SQUARE_WIDTH) / ROCK_SQUARE_WIDTH + 1] = 1 ;
+		}
 
-        //每4次 换行 转到下一行继续画
-        i % 4 == 0 ? (rockY += ROCK_SQUARE_WIDTH, rockX = currentLocatePtr->left)
-        :  rockX += ROCK_SQUARE_WIDTH ;
+		//每4次 换行 转到下一行继续画
+		i % 4 == 0 ? (rockY += ROCK_SQUARE_WIDTH, rockX = currentLocatePtr->left)
+		:  rockX += ROCK_SQUARE_WIDTH ;
 
-        mask >>= 1 ;
-    }
+		mask >>= 1 ;
+	}
 }
 
 /*******************************************************************************
@@ -294,35 +294,35 @@ void SetOccupyFlag(int rockIndex, const struct LOCATE *currentLocatePtr)
 *******************************************************************************/
 void ProcessFullRow(void)
 {
-    int  i = 1 ;
-    int  cnt = 0 ;
+	int  i = 1 ;
+	int  cnt = 0 ;
 
-    BOOL rowFulled = TRUE ;
-    int  rowIdx = Y_ROCK_SQUARE_NUM ; //从最后一行开始往上检查
+	BOOL rowFulled = TRUE ;
+	int  rowIdx = Y_ROCK_SQUARE_NUM ; //从最后一行开始往上检查
 
-    while (cnt != X_ROCK_SQUARE_NUM) //直到遇到是空行的为止
-    {
-        rowFulled = TRUE ;
-        cnt = 0 ;
+	while (cnt != X_ROCK_SQUARE_NUM) //直到遇到是空行的为止
+	{
+		rowFulled = TRUE ;
+		cnt = 0 ;
 
-        //判断是否有满行 并消除满行
-        for (i = 1; i <= X_ROCK_SQUARE_NUM; i++)
-        {
-            if (g_gameBoard[rowIdx][i] == 0)
-            {
-                rowFulled = FALSE ;
-                cnt++ ;
-            }
-        }
-        if (rowFulled) //有满行 (并更新得分信息)
-        {
-            DelFullRow(rowIdx)    ;
-            //更新得分信息
-            UpdataScore() ;
-            rowIdx++ ;
-        }
-        rowIdx--    ;
-    }
+		//判断是否有满行 并消除满行
+		for (i = 1; i <= X_ROCK_SQUARE_NUM; i++)
+		{
+			if (g_gameBoard[rowIdx][i] == 0)
+			{
+				rowFulled = FALSE ;
+				cnt++ ;
+			}
+		}
+		if (rowFulled) //有满行 (并更新得分信息)
+		{
+			DelFullRow(rowIdx)    ;
+			//更新得分信息
+			UpdataScore() ;
+			rowIdx++ ;
+		}
+		rowIdx--    ;
+	}
 }
 
 /*******************************************************************************
@@ -336,50 +336,50 @@ void ProcessFullRow(void)
 *******************************************************************************/
 void DelFullRow(int rowIdx)
 {
-    int cnt = 0 ;
-    int i ;
+	int cnt = 0 ;
+	int i ;
 
-    //把此行擦除
-    setcolor(BLACK) ;
-    for (i = 1; i <= X_ROCK_SQUARE_NUM; i++)
-    {
-        rectangle(GUI_WALL_SQUARE_WIDTH + ROCK_SQUARE_WIDTH * i - ROCK_SQUARE_WIDTH + 2,
-                  GUI_WALL_SQUARE_WIDTH + ROCK_SQUARE_WIDTH * rowIdx - ROCK_SQUARE_WIDTH + 2,
-                  GUI_WALL_SQUARE_WIDTH + ROCK_SQUARE_WIDTH * i - 2,
-                  GUI_WALL_SQUARE_WIDTH + ROCK_SQUARE_WIDTH * rowIdx - 2) ;
-    }
+	//把此行擦除
+	setcolor(BLACK) ;
+	for (i = 1; i <= X_ROCK_SQUARE_NUM; i++)
+	{
+		rectangle(GUI_WALL_SQUARE_WIDTH + ROCK_SQUARE_WIDTH * i - ROCK_SQUARE_WIDTH + 2,
+		          GUI_WALL_SQUARE_WIDTH + ROCK_SQUARE_WIDTH * rowIdx - ROCK_SQUARE_WIDTH + 2,
+		          GUI_WALL_SQUARE_WIDTH + ROCK_SQUARE_WIDTH * i - 2,
+		          GUI_WALL_SQUARE_WIDTH + ROCK_SQUARE_WIDTH * rowIdx - 2) ;
+	}
 
-    //把此行之上的游戏板方块全向下移动一个单位
-    while (cnt != X_ROCK_SQUARE_NUM) //直到遇到是空行的为止
-    {
-        cnt = 0 ;
-        for (i = 1; i <= X_ROCK_SQUARE_NUM; i++)
-        {
-            g_gameBoard[rowIdx][i] = g_gameBoard[rowIdx - 1][i] ;
+	//把此行之上的游戏板方块全向下移动一个单位
+	while (cnt != X_ROCK_SQUARE_NUM) //直到遇到是空行的为止
+	{
+		cnt = 0 ;
+		for (i = 1; i <= X_ROCK_SQUARE_NUM; i++)
+		{
+			g_gameBoard[rowIdx][i] = g_gameBoard[rowIdx - 1][i] ;
 
-            //擦除上面的一行
-            setcolor(BLACK) ;
-            rectangle(GUI_WALL_SQUARE_WIDTH + ROCK_SQUARE_WIDTH * i - ROCK_SQUARE_WIDTH + 2,
-                      GUI_WALL_SQUARE_WIDTH + ROCK_SQUARE_WIDTH * (rowIdx - 1) - ROCK_SQUARE_WIDTH + 2,
-                      GUI_WALL_SQUARE_WIDTH + ROCK_SQUARE_WIDTH * i - 2,
-                      GUI_WALL_SQUARE_WIDTH + ROCK_SQUARE_WIDTH * (rowIdx - 1) - 2) ;
+			//擦除上面的一行
+			setcolor(BLACK) ;
+			rectangle(GUI_WALL_SQUARE_WIDTH + ROCK_SQUARE_WIDTH * i - ROCK_SQUARE_WIDTH + 2,
+			          GUI_WALL_SQUARE_WIDTH + ROCK_SQUARE_WIDTH * (rowIdx - 1) - ROCK_SQUARE_WIDTH + 2,
+			          GUI_WALL_SQUARE_WIDTH + ROCK_SQUARE_WIDTH * i - 2,
+			          GUI_WALL_SQUARE_WIDTH + ROCK_SQUARE_WIDTH * (rowIdx - 1) - 2) ;
 
-            //显示下面的一行
-            if (g_gameBoard[rowIdx][i] == 1)
-            {
-                setcolor(WHITE) ;
-                rectangle(GUI_WALL_SQUARE_WIDTH + ROCK_SQUARE_WIDTH * i - ROCK_SQUARE_WIDTH + 2,
-                          GUI_WALL_SQUARE_WIDTH + ROCK_SQUARE_WIDTH * rowIdx - ROCK_SQUARE_WIDTH + 2,
-                          GUI_WALL_SQUARE_WIDTH + ROCK_SQUARE_WIDTH * i - 2,
-                          GUI_WALL_SQUARE_WIDTH + ROCK_SQUARE_WIDTH * rowIdx - 2) ;
-            }
+			//显示下面的一行
+			if (g_gameBoard[rowIdx][i] == 1)
+			{
+				setcolor(WHITE) ;
+				rectangle(GUI_WALL_SQUARE_WIDTH + ROCK_SQUARE_WIDTH * i - ROCK_SQUARE_WIDTH + 2,
+				          GUI_WALL_SQUARE_WIDTH + ROCK_SQUARE_WIDTH * rowIdx - ROCK_SQUARE_WIDTH + 2,
+				          GUI_WALL_SQUARE_WIDTH + ROCK_SQUARE_WIDTH * i - 2,
+				          GUI_WALL_SQUARE_WIDTH + ROCK_SQUARE_WIDTH * rowIdx - 2) ;
+			}
 
-            if (g_gameBoard[rowIdx][i] == 0)
-                cnt++ ;            //统计一行是不是 都是空格
-        }//for
+			if (g_gameBoard[rowIdx][i] == 0)
+				cnt++ ;            //统计一行是不是 都是空格
+		}//for
 
-        rowIdx-- ;
-    }
+		rowIdx-- ;
+	}
 }
 
 /*******************************************************************************
@@ -397,39 +397,39 @@ FastFall
  struct LOCATE *currentLocatePtr,
  struct LOCATE *endLocatePtr)
 {
-    int i ;
-    int mask ;  //掩码，用于判断方块的形状
-    int rockX ; //方块的坐标(4*4方格的左上角点的x轴坐标)
-    int rockY ; //方块的坐标(4*4方格的左上角点的y轴坐标)
+	int i ;
+	int mask ;  //掩码，用于判断方块的形状
+	int rockX ; //方块的坐标(4*4方格的左上角点的x轴坐标)
+	int rockY ; //方块的坐标(4*4方格的左上角点的y轴坐标)
 
-    while (currentLocatePtr->top <= GUI_WALL_SQUARE_WIDTH + Y_ROCK_SQUARE_NUM * ROCK_SQUARE_WIDTH)
-    {
-        rockX = currentLocatePtr->left ;
-        rockY = currentLocatePtr->top  ;
+	while (currentLocatePtr->top <= GUI_WALL_SQUARE_WIDTH + Y_ROCK_SQUARE_NUM * ROCK_SQUARE_WIDTH)
+	{
+		rockX = currentLocatePtr->left ;
+		rockY = currentLocatePtr->top  ;
 
-        mask = (unsigned int)1 << 15 ;
-        for (i = 1; i <= 16; i++)
-        {
-            //与掩码相与为1的 即为方块上的点
-            if ((rockArray[rockIndex].rockShapeBits & mask) != 0)
-            {
-                if (g_gameBoard[(rockY - GUI_WALL_SQUARE_WIDTH) / ROCK_SQUARE_WIDTH + 1]
-                        [(rockX - GUI_WALL_SQUARE_WIDTH) / ROCK_SQUARE_WIDTH + 1] == 1) //遇到底部
-                {
-                    endLocatePtr->top = currentLocatePtr->top - ROCK_SQUARE_WIDTH    ;
-                    return ;
-                }
-            }
+		mask = (unsigned int)1 << 15 ;
+		for (i = 1; i <= 16; i++)
+		{
+			//与掩码相与为1的 即为方块上的点
+			if ((rockArray[rockIndex].rockShapeBits & mask) != 0)
+			{
+				if (g_gameBoard[(rockY - GUI_WALL_SQUARE_WIDTH) / ROCK_SQUARE_WIDTH + 1]
+				        [(rockX - GUI_WALL_SQUARE_WIDTH) / ROCK_SQUARE_WIDTH + 1] == 1) //遇到底部
+				{
+					endLocatePtr->top = currentLocatePtr->top - ROCK_SQUARE_WIDTH    ;
+					return ;
+				}
+			}
 
-            //每4次 换行 转到下一行继续画
-            i % 4 == 0 ? (rockY += ROCK_SQUARE_WIDTH, rockX = currentLocatePtr->left)
-            :  rockX += ROCK_SQUARE_WIDTH ;
+			//每4次 换行 转到下一行继续画
+			i % 4 == 0 ? (rockY += ROCK_SQUARE_WIDTH, rockX = currentLocatePtr->left)
+			:  rockX += ROCK_SQUARE_WIDTH ;
 
-            mask >>= 1 ;
-        }
+			mask >>= 1 ;
+		}
 
-        currentLocatePtr->top += ROCK_SQUARE_WIDTH    ;
-    }//while()
+		currentLocatePtr->top += ROCK_SQUARE_WIDTH    ;
+	}//while()
 }
 
 /*******************************************************************************
@@ -443,23 +443,23 @@ FastFall
 *******************************************************************************/
 BOOL isGameOver()
 {
-    int i ;
-    BOOL topLineHaveRock = FALSE ;    //在界面的最高行有方块的标记
-    BOOL bottomLineHaveRock = FALSE ; //在界面的最低行有方块的标记
+	int i ;
+	BOOL topLineHaveRock = FALSE ;    //在界面的最高行有方块的标记
+	BOOL bottomLineHaveRock = FALSE ; //在界面的最低行有方块的标记
 
-    for (i = 1; i <= X_ROCK_SQUARE_NUM; i++)
-    {
-        if (g_gameBoard[1][i] == 1)
-            topLineHaveRock = TRUE ;
-        if (g_gameBoard[Y_ROCK_SQUARE_NUM][i] == 1)
-            bottomLineHaveRock = TRUE ;
-    }
+	for (i = 1; i <= X_ROCK_SQUARE_NUM; i++)
+	{
+		if (g_gameBoard[1][i] == 1)
+			topLineHaveRock = TRUE ;
+		if (g_gameBoard[Y_ROCK_SQUARE_NUM][i] == 1)
+			bottomLineHaveRock = TRUE ;
+	}
 
-    //若底层行和顶层行都有方块 则说明在所有行都有方块，游戏结束
-    if (topLineHaveRock && bottomLineHaveRock)
-        return TRUE ;
-    else
-        return FALSE ;
+	//若底层行和顶层行都有方块 则说明在所有行都有方块，游戏结束
+	if (topLineHaveRock && bottomLineHaveRock)
+		return TRUE ;
+	else
+		return FALSE ;
 }
 
 

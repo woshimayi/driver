@@ -13,21 +13,21 @@
 
 void userFun(int a)
 {
-    printf("signal user = %d\n", a);
-    return ;
+	printf("signal user = %d\n", a);
+	return ;
 }
 
 void *tprocess1(void *a)
 {
-    int i = 0;
-    pthread_detach(pthread_self());
-    while (1)
-    {
-        printf("%d 11111111 %d\n", i++, *(int *)a);
-        sleep(1);
-    }
-    pthread_exit(0);
-    return NULL;
+	int i = 0;
+	pthread_detach(pthread_self());
+	while (1)
+	{
+		printf("%d 11111111 %d\n", i++, *(int *)a);
+		sleep(1);
+	}
+	pthread_exit(0);
+	return NULL;
 }
 
 /**
@@ -37,51 +37,51 @@ void *tprocess1(void *a)
  */
 void *tprocess2(void *a)
 {
-    int i = 0;
-    char *buf = NULL;
-    pthread_detach(pthread_self());
-    while (1)
-    {
-        buf = getenv("POT_NTP");
-        signal(SIG_MY_MSG, userFun);
-        if (NULL != buf)
-        {
-            printf("buf = %s\n", buf);
-            printf("%d 222222222 %d %s\n", i++, *(int *)a, buf);
-        }
-        sleep(1);
-    }
-    pthread_exit(0);
-    return NULL;
+	int i = 0;
+	char *buf = NULL;
+	pthread_detach(pthread_self());
+	while (1)
+	{
+		buf = getenv("POT_NTP");
+		signal(SIG_MY_MSG, userFun);
+		if (NULL != buf)
+		{
+			printf("buf = %s\n", buf);
+			printf("%d 222222222 %d %s\n", i++, *(int *)a, buf);
+		}
+		sleep(1);
+	}
+	pthread_exit(0);
+	return NULL;
 }
 
 int main()
 {
-    pthread_t t1;
-    pthread_t t2;
+	pthread_t t1;
+	pthread_t t2;
 
-    int a = 3;
-    int b = 5;
+	int a = 3;
+	int b = 5;
 
-    char str[64] = {0};
-    snprintf(str, sizeof(str), "%d", getpid());
-    printf("uhttp pid%s\n", str);
-    setenv("UHTTPD_PID", str, 1);
+	char str[64] = {0};
+	snprintf(str, sizeof(str), "%d", getpid());
+	printf("uhttp pid%s\n", str);
+	setenv("UHTTPD_PID", str, 1);
 
-    if (0 != pthread_create(&t1, NULL, (void *)tprocess1, (void *)&a))
-    {
-        perror("fail error 1");
-    }
-    if (0 != pthread_create(&t2, NULL, (void *)tprocess2, (void *)&b))
-    {
-        perror("fail error 1");
-    }
-    while (1)
-    {
-        // sleep(1);
-        // printf("asdasd %d\n", a++);
-        a = a ;
-    }
+	if (0 != pthread_create(&t1, NULL, (void *)tprocess1, (void *)&a))
+	{
+		perror("fail error 1");
+	}
+	if (0 != pthread_create(&t2, NULL, (void *)tprocess2, (void *)&b))
+	{
+		perror("fail error 1");
+	}
+	while (1)
+	{
+		// sleep(1);
+		// printf("asdasd %d\n", a++);
+		a = a ;
+	}
 
-    return 0;
+	return 0;
 }

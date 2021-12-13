@@ -4,13 +4,13 @@
 
 int main(int argc, char **argv)
 {
-    initscr();
+	initscr();
 
-    move(5, 15);
-    printw("%s", "Hello World");
-    refresh();
-    sleep(10);
+	move(5, 15);
+	printw("%s", "Hello World");
+	refresh();
+	sleep(10);
 
-    endwin();
-    exit(EXIT_SUCCESS);
+	endwin();
+	exit(EXIT_SUCCESS);
 }

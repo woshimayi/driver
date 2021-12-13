@@ -1,17 +1,17 @@
 /*
- * @*************************************: 
+ * @*************************************:
  * @FilePath: \undefinedc:\Users\ZS-offic\Documents\C\showStack.c
- * @version: 
+ * @version:
  * @Author: dof
  * @Date: 2021-10-18 18:06:12
  * @LastEditors: dof
  * @LastEditTime: 2021-10-18 18:12:09
- * @Descripttion: 
- * @**************************************: 
+ * @Descripttion:
+ * @**************************************:
  */
 
 /*
- * gcc -g -rdynamic showStack.c 
+ * gcc -g -rdynamic showStack.c
  * addr2line 0x4009b7 -e a.out -f -C -s
  *
  *
@@ -21,7 +21,7 @@
 #include <ucontext.h>
 #include <stdlib.h>
 #ifdef DESKTOP_LINUX
-#include <execinfo.h>
+	#include <execinfo.h>
 #endif
 
 
@@ -51,47 +51,50 @@ int FWK_btBacktrace(void **buffer, int size, ucontext_t *uc)
 	sp = (unsigned long *)(unsigned long)uc->uc_mcontext.gregs[29];
 
 	/* Repeat backward scanning */
-	for (depth = 0; depth < size && ra; ++depth) {
+	for (depth = 0; depth < size && ra; ++depth)
+	{
 		buffer[depth] = ra;
 		ra_offset = 0;
 		stack_size = 0;
 
-		for (addr = ra; !ra_offset || !stack_size; --addr) {
-			switch (*addr & 0xffff0000) {
-			case 0x27bd0000: /* addiu sp, sp, -stack_size */
-				if (ra_offset == 0)
-				{
-					/*
-					* Try to deal with possible multiple expansion of stack
-					* in a single function.  If this doesn't work, just do
-					* return depth+1;
-					*/
-					short stack_size_x;
-					stack_size_x = (short)(*addr & 0xffff);
-					if (stack_size_x < 0)
-						sp = (unsigned long *)((unsigned long)sp - stack_size_x);
-				}
-				else
-				{
-					stack_size = ABS((short)(*addr & 0xffff));
-				}
-				break;
-			case 0xafbf0000: /* sw ra, offset */
-				ra_offset = (short)(*addr & 0xffff);
-				break;
+		for (addr = ra; !ra_offset || !stack_size; --addr)
+		{
+			switch (*addr & 0xffff0000)
+			{
+				case 0x27bd0000: /* addiu sp, sp, -stack_size */
+					if (ra_offset == 0)
+					{
+						/*
+						* Try to deal with possible multiple expansion of stack
+						* in a single function.  If this doesn't work, just do
+						* return depth+1;
+						*/
+						short stack_size_x;
+						stack_size_x = (short)(*addr & 0xffff);
+						if (stack_size_x < 0)
+							sp = (unsigned long *)((unsigned long)sp - stack_size_x);
+					}
+					else
+					{
+						stack_size = ABS((short)(*addr & 0xffff));
+					}
+					break;
+				case 0xafbf0000: /* sw ra, offset */
+					ra_offset = (short)(*addr & 0xffff);
+					break;
 #if 0
-			case 0x3c1c0000: /* lui gp, constant */
-				return depth + 1;
-#endif
-			case 0x03e00000:
-				if (*addr == 0x03e00008)  /* jr ra */
-				{
+				case 0x3c1c0000: /* lui gp, constant */
 					return depth + 1;
-				}
-				break;
+#endif
+				case 0x03e00000:
+					if (*addr == 0x03e00008)  /* jr ra */
+					{
+						return depth + 1;
+					}
+					break;
 
-			default:
-				break;
+				default:
+					break;
 			}
 		}
 		ra = *(unsigned long **)((unsigned long)sp + ra_offset);
@@ -111,21 +114,24 @@ void FWK_btPrintBacktrace(void **buffer, int size)
 	FILE *fp;
 	int i;
 
-	fp = fopen("/proc/self/maps","r");
+	fp = fopen("/proc/self/maps", "r");
 
-	for (i = 0; i < size && 0 < (unsigned long) buffer[i]; i++) {
+	for (i = 0; i < size && 0 < (unsigned long) buffer[i]; i++)
+	{
 		char line[1024];
 		int found = 0;
 
 		rewind(fp);
-		while (fgets(line, sizeof(line), fp)) {
+		while (fgets(line, sizeof(line), fp))
+		{
 			char lib[1024];
 			void *start, *end;
 			unsigned int offset;
 			int n = sscanf(line, "%p-%p %*s %x %*s %*d %s",
-					   &start, &end, &offset, lib);
-			if (n == 4 && buffer[i] >= start && buffer[i] < end) {
-				if (buffer[i] < (void*)0x10000000)
+			               &start, &end, &offset, lib);
+			if (n == 4 && buffer[i] >= start && buffer[i] < end)
+			{
+				if (buffer[i] < (void *)0x10000000)
 					offset = (unsigned int)buffer[i];
 				else
 					offset += buffer[i] - start;
@@ -166,7 +172,7 @@ void FWK_btSigHandler(int sig, siginfo_t *info, void *secret)
 		exit(0);
 	}
 }
- 
+
 
 static void fwk_btRegSigAction(int sig, int resetHand)
 {

@@ -75,286 +75,286 @@ static const char unit[] = " KMGT";
 
 time_t monotime(void)
 {
-    struct timespec ts;
+	struct timespec ts;
 
-    if (clock_gettime(CLOCK_MONOTONIC, &ts) != 0)
-        err(1, "monotime");
+	if (clock_gettime(CLOCK_MONOTONIC, &ts) != 0)
+		err(1, "monotime");
 
-    return ts.tv_sec;
+	return ts.tv_sec;
 }
 
 static void format_rate(char *buf, int size, off_t bytes)
 {
-    int i;
+	int i;
 
-    bytes *= 100;
-    for (i = 0; bytes >= 100 * 1000 && unit[i] != 'T'; i++)
-        bytes = (bytes + 512) / 1024;
-    if (i == 0)
-    {
-        i++;
-        bytes = (bytes + 512) / 1024;
-    }
-    snprintf(buf, size, "%3lld.%1lld%c%s",
-             (long long)(bytes + 5) / 100,
-             (long long)(bytes + 5) / 10 % 10,
-             unit[i],
-             "B");
+	bytes *= 100;
+	for (i = 0; bytes >= 100 * 1000 && unit[i] != 'T'; i++)
+		bytes = (bytes + 512) / 1024;
+	if (i == 0)
+	{
+		i++;
+		bytes = (bytes + 512) / 1024;
+	}
+	snprintf(buf, size, "%3lld.%1lld%c%s",
+	         (long long)(bytes + 5) / 100,
+	         (long long)(bytes + 5) / 10 % 10,
+	         unit[i],
+	         "B");
 }
 
 static void format_size(char *buf, int size, off_t bytes)
 {
-    int i;
+	int i;
 
-    for (i = 0; bytes >= 10000 && unit[i] != 'T'; i++)
-        bytes = (bytes + 512) / 1024;
-    snprintf(buf, size, "%4lld%c%s",
-             (long long) bytes,
-             unit[i],
-             i ? "B" : " ");
+	for (i = 0; bytes >= 10000 && unit[i] != 'T'; i++)
+		bytes = (bytes + 512) / 1024;
+	snprintf(buf, size, "%4lld%c%s",
+	         (long long) bytes,
+	         unit[i],
+	         i ? "B" : " ");
 }
 
 void refresh_progress_meter(void)
 {
-    char buf[MAX_WINSIZE + 1];
-    const char *dot = "";
-    time_t now;
-    off_t transferred, bytes_left;
-    double elapsed;
-    int len, cur_speed, hours, minutes, seconds, barlength, i;
-    int percent, overhead = 30;
+	char buf[MAX_WINSIZE + 1];
+	const char *dot = "";
+	time_t now;
+	off_t transferred, bytes_left;
+	double elapsed;
+	int len, cur_speed, hours, minutes, seconds, barlength, i;
+	int percent, overhead = 30;
 
-    transferred = *counter - (cur_pos ? cur_pos : start_pos);
-    cur_pos = *counter;
-    now = monotime();
-    bytes_left = end_pos - cur_pos;
+	transferred = *counter - (cur_pos ? cur_pos : start_pos);
+	cur_pos = *counter;
+	now = monotime();
+	bytes_left = end_pos - cur_pos;
 
-    if (bytes_left > 0)
-        elapsed = now - last_update;
-    else
-    {
-        elapsed = now - start;
-        /* Calculate true total speed when done */
-        transferred = end_pos - start_pos;
-        bytes_per_second = 0;
-    }
+	if (bytes_left > 0)
+		elapsed = now - last_update;
+	else
+	{
+		elapsed = now - start;
+		/* Calculate true total speed when done */
+		transferred = end_pos - start_pos;
+		bytes_per_second = 0;
+	}
 
-    /* calculate speed */
-    if (elapsed != 0)
-        cur_speed = (transferred / elapsed);
-    else
-        cur_speed = transferred;
+	/* calculate speed */
+	if (elapsed != 0)
+		cur_speed = (transferred / elapsed);
+	else
+		cur_speed = transferred;
 
 #define AGE_FACTOR 0.9
-    if (bytes_per_second != 0)
-    {
-        bytes_per_second = (bytes_per_second * AGE_FACTOR) +
-                           (cur_speed * (1.0 - AGE_FACTOR));
-    }
-    else
-        bytes_per_second = cur_speed;
+	if (bytes_per_second != 0)
+	{
+		bytes_per_second = (bytes_per_second * AGE_FACTOR) +
+		                   (cur_speed * (1.0 - AGE_FACTOR));
+	}
+	else
+		bytes_per_second = cur_speed;
 
-    buf[0] = '\0';
-    /* title */
-    if (!verbose && title != NULL)
-    {
-        len = strlen(title);
-        if (len < 7)
-            len = 7;
-        else if (len > 12)
-        {
-            len = 12;
-            dot = "...";
-            overhead += 3;
-        }
-        snprintf(buf, sizeof buf, "\r%-*.*s%s ", len, len, title, dot);
-        overhead += len + 1;
-    }
-    else
-        snprintf(buf, sizeof buf, "\r");
+	buf[0] = '\0';
+	/* title */
+	if (!verbose && title != NULL)
+	{
+		len = strlen(title);
+		if (len < 7)
+			len = 7;
+		else if (len > 12)
+		{
+			len = 12;
+			dot = "...";
+			overhead += 3;
+		}
+		snprintf(buf, sizeof buf, "\r%-*.*s%s ", len, len, title, dot);
+		overhead += len + 1;
+	}
+	else
+		snprintf(buf, sizeof buf, "\r");
 
-    if (end_pos == 0 || cur_pos == end_pos)
-        percent = 100;
-    else
-        percent = ((float)cur_pos / end_pos) * 100;
+	if (end_pos == 0 || cur_pos == end_pos)
+		percent = 100;
+	else
+		percent = ((float)cur_pos / end_pos) * 100;
 
-    /* filename and percent */
-    if (!verbose && filename != NULL)
-    {
-        len = strlen(filename);
-        if (len < 12)
-            len = 12;
-        else if (len > 25)
-        {
-            len = 22;
-            dot = "...";
-            overhead += 3;
-        }
-        snprintf(buf + strlen(buf), sizeof buf - strlen(buf),
-                 "%-*.*s%s %3d%% ", len, len, filename, dot, percent);
-        overhead += len + 1;
-    }
-    else
-        snprintf(buf, sizeof buf, "\r%3d%% ", percent);
+	/* filename and percent */
+	if (!verbose && filename != NULL)
+	{
+		len = strlen(filename);
+		if (len < 12)
+			len = 12;
+		else if (len > 25)
+		{
+			len = 22;
+			dot = "...";
+			overhead += 3;
+		}
+		snprintf(buf + strlen(buf), sizeof buf - strlen(buf),
+		         "%-*.*s%s %3d%% ", len, len, filename, dot, percent);
+		overhead += len + 1;
+	}
+	else
+		snprintf(buf, sizeof buf, "\r%3d%% ", percent);
 
-    /* bar */
-    barlength = win_size - overhead;
-    if (barlength > 0)
-    {
-        i = barlength * percent / 100;
-        snprintf(buf + strlen(buf), sizeof buf - strlen(buf),
-                 "|%.*s%*s| ", i,
-                 "*******************************************************"
-                 "*******************************************************"
-                 "*******************************************************"
-                 "*******************************************************"
-                 "*******************************************************"
-                 "*******************************************************"
-                 "*******************************************************",
-                 barlength - i, "");
+	/* bar */
+	barlength = win_size - overhead;
+	if (barlength > 0)
+	{
+		i = barlength * percent / 100;
+		snprintf(buf + strlen(buf), sizeof buf - strlen(buf),
+		         "|%.*s%*s| ", i,
+		         "*******************************************************"
+		         "*******************************************************"
+		         "*******************************************************"
+		         "*******************************************************"
+		         "*******************************************************"
+		         "*******************************************************"
+		         "*******************************************************",
+		         barlength - i, "");
 
-    }
+	}
 
-    /* amount transferred */
-    format_size(buf + strlen(buf), win_size - strlen(buf), cur_pos);
-    strlcat(buf, " ", win_size);
+	/* amount transferred */
+	format_size(buf + strlen(buf), win_size - strlen(buf), cur_pos);
+	strlcat(buf, " ", win_size);
 
-    /* ETA */
-    if (!transferred)
-        stalled += elapsed;
-    else
-        stalled = 0;
+	/* ETA */
+	if (!transferred)
+		stalled += elapsed;
+	else
+		stalled = 0;
 
-    if (stalled >= STALL_TIME)
-        strlcat(buf, "- stalled -", win_size);
-    else if (bytes_per_second == 0 && bytes_left)
-        strlcat(buf, "  --:-- ETA", win_size);
-    else
-    {
-        if (bytes_left > 0)
-            seconds = bytes_left / bytes_per_second;
-        else
-            seconds = elapsed;
+	if (stalled >= STALL_TIME)
+		strlcat(buf, "- stalled -", win_size);
+	else if (bytes_per_second == 0 && bytes_left)
+		strlcat(buf, "  --:-- ETA", win_size);
+	else
+	{
+		if (bytes_left > 0)
+			seconds = bytes_left / bytes_per_second;
+		else
+			seconds = elapsed;
 
-        hours = seconds / 3600;
-        seconds -= hours * 3600;
-        minutes = seconds / 60;
-        seconds -= minutes * 60;
+		hours = seconds / 3600;
+		seconds -= hours * 3600;
+		minutes = seconds / 60;
+		seconds -= minutes * 60;
 
-        if (hours != 0)
-            snprintf(buf + strlen(buf), win_size - strlen(buf),
-                     "%d:%02d:%02d", hours, minutes, seconds);
-        else
-            snprintf(buf + strlen(buf), win_size - strlen(buf),
-                     "  %02d:%02d", minutes, seconds);
+		if (hours != 0)
+			snprintf(buf + strlen(buf), win_size - strlen(buf),
+			         "%d:%02d:%02d", hours, minutes, seconds);
+		else
+			snprintf(buf + strlen(buf), win_size - strlen(buf),
+			         "  %02d:%02d", minutes, seconds);
 
-        if (bytes_left > 0)
-            strlcat(buf, " ETA", win_size);
-        else
-            strlcat(buf, "    ", win_size);
-    }
+		if (bytes_left > 0)
+			strlcat(buf, " ETA", win_size);
+		else
+			strlcat(buf, "    ", win_size);
+	}
 
-    write(STDERR_FILENO, buf, strlen(buf));
-    last_update = now;
+	write(STDERR_FILENO, buf, strlen(buf));
+	last_update = now;
 }
 
 static void update_progress_meter(int ignore)
 {
-    int save_errno;
+	int save_errno;
 
-    save_errno = errno;
+	save_errno = errno;
 
-    if (win_resized)
-    {
-        setscreensize();
-        win_resized = 0;
-    }
+	if (win_resized)
+	{
+		setscreensize();
+		win_resized = 0;
+	}
 
-    refresh_progress_meter();
+	refresh_progress_meter();
 
-    signal(SIGALRM, update_progress_meter);
-    alarm(UPDATE_INTERVAL);
-    errno = save_errno;
+	signal(SIGALRM, update_progress_meter);
+	alarm(UPDATE_INTERVAL);
+	errno = save_errno;
 }
 
 void start_progress_meter(const char *fn, const char *t, off_t filesize, off_t *ctr)
 {
-    start = last_update = monotime();
-    start_pos = *ctr;
-    offset = *ctr;
-    cur_pos = 0;
-    end_pos = 0;
-    counter = ctr;
-    stalled = 0;
-    bytes_per_second = 0;
-    filename = fn;
-    title = t;
+	start = last_update = monotime();
+	start_pos = *ctr;
+	offset = *ctr;
+	cur_pos = 0;
+	end_pos = 0;
+	counter = ctr;
+	stalled = 0;
+	bytes_per_second = 0;
+	filename = fn;
+	title = t;
 
-    /*
-     * Suppress progressmeter if filesize isn't known when
-     * Content-Length header has bogus values.
-     */
-    if (filesize <= 0)
-        return;
+	/*
+	 * Suppress progressmeter if filesize isn't known when
+	 * Content-Length header has bogus values.
+	 */
+	if (filesize <= 0)
+		return;
 
-    end_pos = filesize;
-    setscreensize();
-    refresh_progress_meter();
+	end_pos = filesize;
+	setscreensize();
+	refresh_progress_meter();
 
-    signal(SIGALRM, update_progress_meter);
-    signal(SIGWINCH, sig_winch);
-    alarm(UPDATE_INTERVAL);
+	signal(SIGALRM, update_progress_meter);
+	signal(SIGWINCH, sig_winch);
+	alarm(UPDATE_INTERVAL);
 }
 
 void stop_progress_meter(void)
 {
-    char	rate_str[32];
-    double	elapsed;
+	char	rate_str[32];
+	double	elapsed;
 
-    alarm(0);
+	alarm(0);
 
-    /* Ensure we complete the progress */
-    if (end_pos && cur_pos != end_pos)
-        refresh_progress_meter();
+	/* Ensure we complete the progress */
+	if (end_pos && cur_pos != end_pos)
+		refresh_progress_meter();
 
-    if (end_pos)
-        write(STDERR_FILENO, "\n", 1);
+	if (end_pos)
+		write(STDERR_FILENO, "\n", 1);
 
-    if (!verbose)
-        return;
+	if (!verbose)
+		return;
 
-    elapsed = monotime() - start;
-    if (end_pos == 0)
-    {
-        if (elapsed != 0)
-            bytes_per_second = *counter / elapsed;
-        else
-            bytes_per_second = *counter;
-    }
+	elapsed = monotime() - start;
+	if (end_pos == 0)
+	{
+		if (elapsed != 0)
+			bytes_per_second = *counter / elapsed;
+		else
+			bytes_per_second = *counter;
+	}
 
-    format_rate(rate_str, sizeof rate_str, bytes_per_second);
-    fprintf(stderr, "%lld bytes received in %.2f seconds (%s/s)\n",
-            (end_pos) ? cur_pos - offset : *counter, elapsed, rate_str);
+	format_rate(rate_str, sizeof rate_str, bytes_per_second);
+	fprintf(stderr, "%lld bytes received in %.2f seconds (%s/s)\n",
+	        (end_pos) ? cur_pos - offset : *counter, elapsed, rate_str);
 }
 
 static void sig_winch(int sig)
 {
-    win_resized = 1;
+	win_resized = 1;
 }
 
 static void setscreensize(void)
 {
-    struct winsize winsize;
+	struct winsize winsize;
 
-    if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &winsize) != -1 &&
-            winsize.ws_col != 0)
-    {
-        if (winsize.ws_col > MAX_WINSIZE)
-            win_size = MAX_WINSIZE;
-        else
-            win_size = winsize.ws_col;
-    }
-    else
-        win_size = DEFAULT_WINSIZE;
-    win_size += 1;					/* trailing \0 */
+	if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &winsize) != -1 &&
+	        winsize.ws_col != 0)
+	{
+		if (winsize.ws_col > MAX_WINSIZE)
+			win_size = MAX_WINSIZE;
+		else
+			win_size = winsize.ws_col;
+	}
+	else
+		win_size = DEFAULT_WINSIZE;
+	win_size += 1;					/* trailing \0 */
 }

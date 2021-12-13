@@ -13,11 +13,11 @@
 
 int main(int argc, char *argv[])
 {
-    int i;
+	int i;
 
-    //    for(i = 0 ; i < 100; i++)
-    //            setTimer(1, 0);
+	//    for(i = 0 ; i < 100; i++)
+	//            setTimer(1, 0);
 
-    printf("asdas");
-    return 0;
+	printf("asdas");
+	return 0;
 }

@@ -15,27 +15,27 @@ double xu_wallclock(void);
 double xu_wallclock1(void)
 {
 #ifdef __GNUC__
-    struct timeval ctime;
+	struct timeval ctime;
 
-    gettimeofday(&ctime, NULL);
+	gettimeofday(&ctime, NULL);
 
-    return (1.0e+6 * (double)ctime.tv_sec + (double)ctime.tv_usec);
+	return (1.0e+6 * (double)ctime.tv_sec + (double)ctime.tv_usec);
 #else
-    return (double)time(NULL);
+	return (double)time(NULL);
 #endif
 }
 
 double xu_wallclock(void)
 {
 #ifdef __GNUC__
-    struct timespec ctime;
-    int error;
+	struct timespec ctime;
+	int error;
 
-    error = clock_gettime(CLOCK_MONOTONIC_RAW, &ctime);
+	error = clock_gettime(CLOCK_MONOTONIC_RAW, &ctime);
 
-    return (1.0e+9 * (double)ctime.tv_sec + (double)ctime.tv_nsec);
+	return (1.0e+9 * (double)ctime.tv_sec + (double)ctime.tv_nsec);
 #else
-    return (double)time(NULL);
+	return (double)time(NULL);
 #endif
 }
 
@@ -43,16 +43,16 @@ double xu_wallclock(void)
 
 int main()
 {
-    double timer;
-    int t;
+	double timer;
+	int t;
 
-    t = 0;
-    timer = 0.0;
-    timer_start(timer);
-    while (t < 1000)
-    {
-        t++;
-    }
-    timer_stop(timer);
-    printf("timeflash:%.2lfns\n", timer);
+	t = 0;
+	timer = 0.0;
+	timer_start(timer);
+	while (t < 1000)
+	{
+		t++;
+	}
+	timer_stop(timer);
+	printf("timeflash:%.2lfns\n", timer);
 }

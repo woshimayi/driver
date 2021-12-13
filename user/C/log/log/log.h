@@ -6,9 +6,9 @@
 #define VOS_LOG_MAX_CACHE_NUM  (32)
 
 #ifndef PFM_SIM
-    #define VOS_LOG_KEY_FILE_PREFIX  "/tmp/logKey"
+	#define VOS_LOG_KEY_FILE_PREFIX  "/tmp/logKey"
 #else
-    #define VOS_LOG_KEY_FILE_PREFIX  "./logKey"
+	#define VOS_LOG_KEY_FILE_PREFIX  "./logKey"
 #endif
 
 #define VOS_LAST_PTY_NAME_FILE "/tmp/last_pty"
@@ -35,10 +35,10 @@ typedef unsigned long  UINT64;
  */
 typedef enum
 {
-    VOS_LOG_LEVEL_PRINT  = 2,
-    VOS_LOG_LEVEL_ERR    = 3, /**< Message at error level. */
-    VOS_LOG_LEVEL_NOTICE = 5, /**< Message at notice level. */
-    VOS_LOG_LEVEL_DEBUG  = 7  /**< Message at debug level. */
+	VOS_LOG_LEVEL_PRINT  = 2,
+	VOS_LOG_LEVEL_ERR    = 3, /**< Message at error level. */
+	VOS_LOG_LEVEL_NOTICE = 5, /**< Message at notice level. */
+	VOS_LOG_LEVEL_DEBUG  = 7  /**< Message at debug level. */
 } VosLogLevel;
 
 
@@ -47,19 +47,19 @@ typedef enum
  */
 typedef enum
 {
-    VOS_LOG_DEST_STDERR  = 1,  /**< Message output to stderr. */
-    VOS_LOG_DEST_SYSLOG  = 2,  /**< Message output to syslog. */
-    VOS_LOG_DEST_TELNET  = 3,   /**< Message output to telnet clients. */
-    VOS_LOG_DEST_LOGCAT  = 4
+	VOS_LOG_DEST_STDERR  = 1,  /**< Message output to stderr. */
+	VOS_LOG_DEST_SYSLOG  = 2,  /**< Message output to syslog. */
+	VOS_LOG_DEST_TELNET  = 3,   /**< Message output to telnet clients. */
+	VOS_LOG_DEST_LOGCAT  = 4
 } VosLogDestination;
 
 
 typedef struct
 {
-    VosLogLevel logLevel;
-    VosLogDestination logDestination;
-    char cache[32][80];
-    int location;
+	VosLogLevel logLevel;
+	VosLogDestination logDestination;
+	char cache[32][80];
+	int location;
 } VOS_LOG_SHARED_MEM_T;
 
 
@@ -95,22 +95,22 @@ typedef struct
  * calling the log_log function directly.
  */
 #if defined(VOS_LOG0)
-    #define vosLog_print(args...)  log_log(VOS_LOG_LEVEL_PRINT, __FUNCTION__, __LINE__, args)
-    #define vosLog_error(args...)
-    #define vosLog_notice(args...)
-    #define vosLog_debug(args...)
+	#define vosLog_print(args...)  log_log(VOS_LOG_LEVEL_PRINT, __FUNCTION__, __LINE__, args)
+	#define vosLog_error(args...)
+	#define vosLog_notice(args...)
+	#define vosLog_debug(args...)
 
 #elif defined(VOS_LOG2)
-    #define vosLog_print(args...)  log_log(VOS_LOG_LEVEL_PRINT, __FUNCTION__, __LINE__, args)
-    #define vosLog_error(args...)  log_log(VOS_LOG_LEVEL_ERR, __FUNCTION__, __LINE__, args)
-    #define vosLog_notice(args...) log_log(VOS_LOG_LEVEL_NOTICE, __FUNCTION__, __LINE__, args)
-    #define vosLog_debug(args...)
+	#define vosLog_print(args...)  log_log(VOS_LOG_LEVEL_PRINT, __FUNCTION__, __LINE__, args)
+	#define vosLog_error(args...)  log_log(VOS_LOG_LEVEL_ERR, __FUNCTION__, __LINE__, args)
+	#define vosLog_notice(args...) log_log(VOS_LOG_LEVEL_NOTICE, __FUNCTION__, __LINE__, args)
+	#define vosLog_debug(args...)
 
 #else
-    #define vosLog_print(args...)  log_log(VOS_LOG_LEVEL_PRINT, __FUNCTION__, __LINE__, args)
-    #define vosLog_error(args...)  log_log(VOS_LOG_LEVEL_ERR, __FUNCTION__, __LINE__, args)
-    #define vosLog_notice(args...) log_log(VOS_LOG_LEVEL_NOTICE, __FUNCTION__, __LINE__, args)
-    #define vosLog_debug(args...)  log_log(VOS_LOG_LEVEL_DEBUG, __FUNCTION__, __LINE__, args)
+	#define vosLog_print(args...)  log_log(VOS_LOG_LEVEL_PRINT, __FUNCTION__, __LINE__, args)
+	#define vosLog_error(args...)  log_log(VOS_LOG_LEVEL_ERR, __FUNCTION__, __LINE__, args)
+	#define vosLog_notice(args...) log_log(VOS_LOG_LEVEL_NOTICE, __FUNCTION__, __LINE__, args)
+	#define vosLog_debug(args...)  log_log(VOS_LOG_LEVEL_DEBUG, __FUNCTION__, __LINE__, args)
 #endif
 
 

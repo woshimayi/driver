@@ -10,9 +10,9 @@
 #define VOS_LOG_MAX_CACHE_NUM  (32)
 
 #ifndef PFM_SIM
-    #define VOS_LOG_KEY_FILE_PREFIX  "/tmp/logKey"
+	#define VOS_LOG_KEY_FILE_PREFIX  "/tmp/logKey"
 #else
-    #define VOS_LOG_KEY_FILE_PREFIX  "./logKey"
+	#define VOS_LOG_KEY_FILE_PREFIX  "./logKey"
 #endif
 
 #define VOS_LAST_PTY_NAME_FILE "/tmp/last_pty"
@@ -39,10 +39,10 @@ typedef unsigned long  UINT64;
  */
 typedef enum
 {
-    VOS_LOG_LEVEL_PRINT  = 2,
-    VOS_LOG_LEVEL_ERR    = 3, /**< Message at error level. */
-    VOS_LOG_LEVEL_NOTICE = 5, /**< Message at notice level. */
-    VOS_LOG_LEVEL_DEBUG  = 7  /**< Message at debug level. */
+	VOS_LOG_LEVEL_PRINT  = 2,
+	VOS_LOG_LEVEL_ERR    = 3, /**< Message at error level. */
+	VOS_LOG_LEVEL_NOTICE = 5, /**< Message at notice level. */
+	VOS_LOG_LEVEL_DEBUG  = 7  /**< Message at debug level. */
 } VosLogLevel;
 
 
@@ -51,19 +51,19 @@ typedef enum
  */
 typedef enum
 {
-    VOS_LOG_DEST_STDERR  = 1,  /**< Message output to stderr. */
-    VOS_LOG_DEST_SYSLOG  = 2,  /**< Message output to syslog. */
-    VOS_LOG_DEST_TELNET  = 3,   /**< Message output to telnet clients. */
-    VOS_LOG_DEST_LOGCAT  = 4
+	VOS_LOG_DEST_STDERR  = 1,  /**< Message output to stderr. */
+	VOS_LOG_DEST_SYSLOG  = 2,  /**< Message output to syslog. */
+	VOS_LOG_DEST_TELNET  = 3,   /**< Message output to telnet clients. */
+	VOS_LOG_DEST_LOGCAT  = 4
 } VosLogDestination;
 
 
 typedef struct
 {
-    VosLogLevel logLevel;
-    VosLogDestination logDestination;
-    char cache[32][80];
-    int location;
+	VosLogLevel logLevel;
+	VosLogDestination logDestination;
+	char cache[32][80];
+	int location;
 } VOS_LOG_SHARED_MEM_T;
 
 
@@ -99,22 +99,22 @@ typedef struct
  * calling the log_log function directly.
  */
 #if defined(VOS_LOG0)
-    #define vosLog_print(args...)  log_log(VOS_LOG_LEVEL_PRINT, __FUNCTION__, __LINE__, args)
-    #define vosLog_error(args...)
-    #define vosLog_notice(args...)
-    #define vosLog_debug(args...)
+	#define vosLog_print(args...)  log_log(VOS_LOG_LEVEL_PRINT, __FUNCTION__, __LINE__, args)
+	#define vosLog_error(args...)
+	#define vosLog_notice(args...)
+	#define vosLog_debug(args...)
 
 #elif defined(VOS_LOG2)
-    #define vosLog_print(args...)  log_log(VOS_LOG_LEVEL_PRINT, __FUNCTION__, __LINE__, args)
-    #define vosLog_error(args...)  log_log(VOS_LOG_LEVEL_ERR, __FUNCTION__, __LINE__, args)
-    #define vosLog_notice(args...) log_log(VOS_LOG_LEVEL_NOTICE, __FUNCTION__, __LINE__, args)
-    #define vosLog_debug(args...)
+	#define vosLog_print(args...)  log_log(VOS_LOG_LEVEL_PRINT, __FUNCTION__, __LINE__, args)
+	#define vosLog_error(args...)  log_log(VOS_LOG_LEVEL_ERR, __FUNCTION__, __LINE__, args)
+	#define vosLog_notice(args...) log_log(VOS_LOG_LEVEL_NOTICE, __FUNCTION__, __LINE__, args)
+	#define vosLog_debug(args...)
 
 #else
-    #define vosLog_print(args...)  log_log(VOS_LOG_LEVEL_PRINT, __FUNCTION__, __LINE__, args)
-    #define vosLog_error(args...)  log_log(VOS_LOG_LEVEL_ERR, __FUNCTION__, __LINE__, args)
-    #define vosLog_notice(args...) log_log(VOS_LOG_LEVEL_NOTICE, __FUNCTION__, __LINE__, args)
-    #define vosLog_debug(args...)  log_log(VOS_LOG_LEVEL_DEBUG, __FUNCTION__, __LINE__, args)
+	#define vosLog_print(args...)  log_log(VOS_LOG_LEVEL_PRINT, __FUNCTION__, __LINE__, args)
+	#define vosLog_error(args...)  log_log(VOS_LOG_LEVEL_ERR, __FUNCTION__, __LINE__, args)
+	#define vosLog_notice(args...) log_log(VOS_LOG_LEVEL_NOTICE, __FUNCTION__, __LINE__, args)
+	#define vosLog_debug(args...)  log_log(VOS_LOG_LEVEL_DEBUG, __FUNCTION__, __LINE__, args)
 #endif
 
 
@@ -270,387 +270,387 @@ int g_vosStderr = -1;
 
 void vosLog_printf(VosLogLevel logLevel, VosLogDestination logDestination, bool newLine, const char *buf)
 {
-    int logTelnetFd = -1;
+	int logTelnetFd = -1;
 
-    if (NULL == buf)
-    {
-        return;
-    }
-    if (logDestination == VOS_LOG_DEST_STDERR)
-    {
-        if (newLine)
-        {
-            fprintf(stderr, "%s\n", buf);
-        }
-        else
-        {
-            fprintf(stderr, "%s", buf);
-        }
-        fflush(stderr);
-    }
-    else
-    {
-    }
+	if (NULL == buf)
+	{
+		return;
+	}
+	if (logDestination == VOS_LOG_DEST_STDERR)
+	{
+		if (newLine)
+		{
+			fprintf(stderr, "%s\n", buf);
+		}
+		else
+		{
+			fprintf(stderr, "%s", buf);
+		}
+		fflush(stderr);
+	}
+	else
+	{
+	}
 }
 
 
 void vosLog_cache(const char *func, UINT32 lineNum)
 {
-    UINT32 location = 0;
+	UINT32 location = 0;
 
-    if (NULL == logShareMem)
-    {
-        return;
-    }
+	if (NULL == logShareMem)
+	{
+		return;
+	}
 
-    location = logShareMem->location;
+	location = logShareMem->location;
 
-    if (location < VOS_LOG_MAX_CACHE_NUM)
-    {
-        /* If use logShareMem->location++ directly,
-         * oal_spawnProcess may cause memory write-overflow,
-         * because child and parent process use the same logShareMem,
-         * and logShareMem->location == VOS_LOG_MAX_CACHE_NUM at a time */
+	if (location < VOS_LOG_MAX_CACHE_NUM)
+	{
+		/* If use logShareMem->location++ directly,
+		 * oal_spawnProcess may cause memory write-overflow,
+		 * because child and parent process use the same logShareMem,
+		 * and logShareMem->location == VOS_LOG_MAX_CACHE_NUM at a time */
 
-        UTIL_SNPRINTF(logShareMem->cache[location++],
-                      VOS_LOG_MAX_CACHE_LEN, "<%s:%d>", func, lineNum);
-    }
+		UTIL_SNPRINTF(logShareMem->cache[location++],
+		              VOS_LOG_MAX_CACHE_LEN, "<%s:%d>", func, lineNum);
+	}
 
-    logShareMem->location = (location % VOS_LOG_MAX_CACHE_NUM);
+	logShareMem->location = (location % VOS_LOG_MAX_CACHE_NUM);
 }
 
 
 void log_log(VosLogLevel level, const char *func, UINT32 lineNum, const char *fmt, ...)
 {
-    va_list ap;
-    char buf[MAX_LOG_LINE_LENGTH] = {0};
-    int len = 0, maxLen;
-    char *logLevelStr = NULL;
-    UINT32 headerMask = logHeaderMask;
+	va_list ap;
+	char buf[MAX_LOG_LINE_LENGTH] = {0};
+	int len = 0, maxLen;
+	char *logLevelStr = NULL;
+	UINT32 headerMask = logHeaderMask;
 
-    if (NULL == logShareMem)
-    {
-        //printf("%s:%d:[%s]logShareMem is null\n", __FUNCTION__, __LINE__, func);
-        return;
-    }
+	if (NULL == logShareMem)
+	{
+		//printf("%s:%d:[%s]logShareMem is null\n", __FUNCTION__, __LINE__, func);
+		return;
+	}
 
-    vosLog_cache(func, lineNum);
+	vosLog_cache(func, lineNum);
 
-    maxLen = sizeof(buf);
+	maxLen = sizeof(buf);
 
-    if (level <= logShareMem->logLevel)
-    {
-        va_start(ap, fmt);
+	if (level <= logShareMem->logLevel)
+	{
+		va_start(ap, fmt);
 
-        switch (level)
-        {
-            case VOS_LOG_LEVEL_ERR:
-                len = snprintf(buf, maxLen, LIGHT_RED_COLOR);
-                break;
-            case VOS_LOG_LEVEL_NOTICE:
-                len = snprintf(buf, maxLen, LIGHT_GREEN_COLOR);
-                break;
-            case VOS_LOG_LEVEL_DEBUG:
-                len = snprintf(buf, maxLen, BLUE_COLOR);
-                break;
-            case VOS_LOG_LEVEL_PRINT:
-                headerMask = 0;
-                break;
-            default:
-                break;
-        }
+		switch (level)
+		{
+			case VOS_LOG_LEVEL_ERR:
+				len = snprintf(buf, maxLen, LIGHT_RED_COLOR);
+				break;
+			case VOS_LOG_LEVEL_NOTICE:
+				len = snprintf(buf, maxLen, LIGHT_GREEN_COLOR);
+				break;
+			case VOS_LOG_LEVEL_DEBUG:
+				len = snprintf(buf, maxLen, BLUE_COLOR);
+				break;
+			case VOS_LOG_LEVEL_PRINT:
+				headerMask = 0;
+				break;
+			default:
+				break;
+		}
 
-        if (headerMask & VOS_LOG_HDRMASK_APPNAME)
-        {
-            if (NULL != sg_appName)
-            {
-                len += snprintf(&(buf[len]), maxLen - len, "%s:", sg_appName);
-            }
-            else
-            {
-                len += snprintf(&(buf[len]), maxLen - len, "unknown:");
-            }
-        }
+		if (headerMask & VOS_LOG_HDRMASK_APPNAME)
+		{
+			if (NULL != sg_appName)
+			{
+				len += snprintf(&(buf[len]), maxLen - len, "%s:", sg_appName);
+			}
+			else
+			{
+				len += snprintf(&(buf[len]), maxLen - len, "unknown:");
+			}
+		}
 
-        if ((headerMask & VOS_LOG_HDRMASK_LEVEL) && (len < maxLen))
-        {
-            /*
-                   * Only log the severity level when going to stderr
-                   * because syslog already logs the severity level for us.
-                   */
-            if (logShareMem->logDestination == VOS_LOG_DEST_STDERR)
-            {
-                switch (level)
-                {
-                    case VOS_LOG_LEVEL_ERR:
-                        logLevelStr = "error";
-                        break;
-                    case VOS_LOG_LEVEL_NOTICE:
-                        logLevelStr = "notice";
-                        break;
-                    case VOS_LOG_LEVEL_DEBUG:
-                        logLevelStr = "debug";
-                        break;
-                    default:
-                        logLevelStr = "invalid";
-                        break;
-                }
-                len += snprintf(&(buf[len]), maxLen - len, "%s:", logLevelStr);
-            }
-        }
+		if ((headerMask & VOS_LOG_HDRMASK_LEVEL) && (len < maxLen))
+		{
+			/*
+			       * Only log the severity level when going to stderr
+			       * because syslog already logs the severity level for us.
+			       */
+			if (logShareMem->logDestination == VOS_LOG_DEST_STDERR)
+			{
+				switch (level)
+				{
+					case VOS_LOG_LEVEL_ERR:
+						logLevelStr = "error";
+						break;
+					case VOS_LOG_LEVEL_NOTICE:
+						logLevelStr = "notice";
+						break;
+					case VOS_LOG_LEVEL_DEBUG:
+						logLevelStr = "debug";
+						break;
+					default:
+						logLevelStr = "invalid";
+						break;
+				}
+				len += snprintf(&(buf[len]), maxLen - len, "%s:", logLevelStr);
+			}
+		}
 
-        /*
-            * VosLog timestamp for both stderr and syslog because syslog's
-            * timestamp is when the syslogd gets the log, not when it was
-            * generated.
-            */
-        if ((headerMask & VOS_LOG_HDRMASK_TIMESTAMP) && (len < maxLen))
-        {
-            UtilTimestamp ts;
+		/*
+		    * VosLog timestamp for both stderr and syslog because syslog's
+		    * timestamp is when the syslogd gets the log, not when it was
+		    * generated.
+		    */
+		if ((headerMask & VOS_LOG_HDRMASK_TIMESTAMP) && (len < maxLen))
+		{
+			UtilTimestamp ts;
 
-            utilTms_get(&ts);
-            len += snprintf(&(buf[len]), maxLen - len, "%u.%03u:",
-                            ts.sec % 1000, ts.nsec / NSECS_IN_MSEC);
-        }
+			utilTms_get(&ts);
+			len += snprintf(&(buf[len]), maxLen - len, "%u.%03u:",
+			                ts.sec % 1000, ts.nsec / NSECS_IN_MSEC);
+		}
 
-        if ((headerMask & VOS_LOG_HDRMASK_LOCATION) && (len < maxLen))
-        {
-            len += snprintf(&(buf[len]), maxLen - len, "%s:%u:", func, lineNum);
-        }
+		if ((headerMask & VOS_LOG_HDRMASK_LOCATION) && (len < maxLen))
+		{
+			len += snprintf(&(buf[len]), maxLen - len, "%s:%u:", func, lineNum);
+		}
 
-        if (len < maxLen)
-        {
-            len += vsnprintf(&buf[len], maxLen - len, fmt, ap);
-        }
+		if (len < maxLen)
+		{
+			len += vsnprintf(&buf[len], maxLen - len, fmt, ap);
+		}
 
-        if (VOS_LOG_LEVEL_PRINT == level)
-        {
-            vosLog_printf(logShareMem->logLevel, logShareMem->logDestination, FALSE, buf);
-        }
-        else
-        {
-            len += snprintf(&(buf[len]), maxLen - len, DEFAULT_COLOR);
-            vosLog_printf(logShareMem->logLevel, logShareMem->logDestination, TRUE, buf);
-        }
+		if (VOS_LOG_LEVEL_PRINT == level)
+		{
+			vosLog_printf(logShareMem->logLevel, logShareMem->logDestination, FALSE, buf);
+		}
+		else
+		{
+			len += snprintf(&(buf[len]), maxLen - len, DEFAULT_COLOR);
+			vosLog_printf(logShareMem->logLevel, logShareMem->logDestination, TRUE, buf);
+		}
 
-        va_end(ap);
-    }
+		va_end(ap);
+	}
 }  /* End of log_log() */
 
 
 void vosLog_init(VosEntityId eid)
 {
-    SINT32 shmId = 0;
-    int shmFlg = 0;
-    char keyfile[BUFLEN_256] = {0};
-    key_t key;
-    FILE *fp = NULL;
-    char appName[BUFLEN_64] = {0};
+	SINT32 shmId = 0;
+	int shmFlg = 0;
+	char keyfile[BUFLEN_256] = {0};
+	key_t key;
+	FILE *fp = NULL;
+	char appName[BUFLEN_64] = {0};
 
-    sg_appName = VOS_STRDUP(appName[0] == '\0' ? "unknown" : appName);
+	sg_appName = VOS_STRDUP(appName[0] == '\0' ? "unknown" : appName);
 
-    UTIL_SNPRINTF(keyfile, sizeof(keyfile), VOS_LOG_KEY_FILE_PREFIX"%s", appName);
-    fp = fopen(keyfile, "a");
-    if (fp != NULL)
-    {
-        fclose(fp);
-    }
-    else
-    {
-        printf("%s:%d:fopen %s error, %s\n", __FUNCTION__, __LINE__, keyfile, strerror(errno));
-        return;
-    }
+	UTIL_SNPRINTF(keyfile, sizeof(keyfile), VOS_LOG_KEY_FILE_PREFIX"%s", appName);
+	fp = fopen(keyfile, "a");
+	if (fp != NULL)
+	{
+		fclose(fp);
+	}
+	else
+	{
+		printf("%s:%d:fopen %s error, %s\n", __FUNCTION__, __LINE__, keyfile, strerror(errno));
+		return;
+	}
 
-    key = ftok(keyfile, 'a');
+	key = ftok(keyfile, 'a');
 
-    shmId = shmget(key, 0, 0);
-    if (-1 == shmId)
-    {
-        shmFlg = 0666;
-        shmFlg |= (IPC_CREAT | IPC_EXCL);
+	shmId = shmget(key, 0, 0);
+	if (-1 == shmId)
+	{
+		shmFlg = 0666;
+		shmFlg |= (IPC_CREAT | IPC_EXCL);
 
-        shmId = shmget(key, sizeof(VOS_LOG_SHARED_MEM_T), shmFlg);
-        if (-1 == shmId)
-        {
-            printf("%s:%d:eid=%s, shmget fail\n", __FUNCTION__, __LINE__, appName);
-            return;
-        }
-    }
+		shmId = shmget(key, sizeof(VOS_LOG_SHARED_MEM_T), shmFlg);
+		if (-1 == shmId)
+		{
+			printf("%s:%d:eid=%s, shmget fail\n", __FUNCTION__, __LINE__, appName);
+			return;
+		}
+	}
 
-    logShareMem = (VOS_LOG_SHARED_MEM_T *)shmat(shmId, NULL, 0);
-    if ((VOS_LOG_SHARED_MEM_T *)(-1) == logShareMem)
-    {
-        printf("%s:%d:eid=%s, shmat fail\n", __FUNCTION__, __LINE__, appName);
-        logShareMem = NULL;
-        return;
-    }
+	logShareMem = (VOS_LOG_SHARED_MEM_T *)shmat(shmId, NULL, 0);
+	if ((VOS_LOG_SHARED_MEM_T *)(-1) == logShareMem)
+	{
+		printf("%s:%d:eid=%s, shmat fail\n", __FUNCTION__, __LINE__, appName);
+		logShareMem = NULL;
+		return;
+	}
 
-    logShareMem->logLevel = DEFAULT_LOG_LEVEL;
-    logShareMem->logDestination = DEFAULT_LOG_DESTINATION;
+	logShareMem->logLevel = DEFAULT_LOG_LEVEL;
+	logShareMem->logDestination = DEFAULT_LOG_DESTINATION;
 
-    logHeaderMask  = DEFAULT_LOG_HEADER_MASK;
-    gEid = (VosEntityId)eid;
+	logHeaderMask  = DEFAULT_LOG_HEADER_MASK;
+	gEid = (VosEntityId)eid;
 
-    oalLog_init();
+	oalLog_init();
 
-    return;
+	return;
 }  /* End of vosLog_init() */
 
 
 void vosLog_cleanup(void)
 {
-    oalLog_cleanup();
-    VOS_FREE(sg_appName);
-    return;
+	oalLog_cleanup();
+	VOS_FREE(sg_appName);
+	return;
 
 }  /* End of vosLog_cleanup() */
 
 
 void vosLog_setLevel(VosLogLevel level)
 {
-    if (logShareMem != NULL)
-    {
-        logShareMem->logLevel = level;
-    }
+	if (logShareMem != NULL)
+	{
+		logShareMem->logLevel = level;
+	}
 }
 
 
 VosLogLevel vosLog_getLevel(void)
 {
-    if (logShareMem != NULL)
-    {
-        return logShareMem->logLevel;
-    }
+	if (logShareMem != NULL)
+	{
+		return logShareMem->logLevel;
+	}
 
-    return DEFAULT_LOG_LEVEL;
+	return DEFAULT_LOG_LEVEL;
 }
 
 
 void vosLog_setDestination(VosLogDestination dest)
 {
-    if (logShareMem != NULL)
-    {
-        logShareMem->logDestination = dest;
-    }
+	if (logShareMem != NULL)
+	{
+		logShareMem->logDestination = dest;
+	}
 }
 
 
 VosLogDestination vosLog_getDestination(void)
 {
-    if (logShareMem != NULL)
-    {
-        return logShareMem->logDestination;
-    }
+	if (logShareMem != NULL)
+	{
+		return logShareMem->logDestination;
+	}
 
-    return DEFAULT_LOG_DESTINATION;
+	return DEFAULT_LOG_DESTINATION;
 }
 
 
 void vosLog_setHeaderMask(UINT32 headerMask)
 {
-    logHeaderMask = headerMask;
-    return;
+	logHeaderMask = headerMask;
+	return;
 }
 
 
 UINT32 vosLog_getHeaderMask(void)
 {
-    return logHeaderMask;
+	return logHeaderMask;
 }
 
 
 VOS_RET_E vosLog_security(VosLogSecurityLogIDs id, VosLogSecurityLogData *pdata, const char *fmt, ...)
 {
-    return (VOS_RET_SUCCESS);
+	return (VOS_RET_SUCCESS);
 }
 
 
 VOS_RET_E vosSyslog_info(const char *fmt, ...)
 {
-    int len = 0;
-    va_list ap;
-    char buf[MAX_LOG_LINE_LENGTH] = {0};
+	int len = 0;
+	va_list ap;
+	char buf[MAX_LOG_LINE_LENGTH] = {0};
 
-    va_start(ap, fmt);
+	va_start(ap, fmt);
 
-    len = snprintf(buf, MAX_LOG_LINE_LENGTH, "000000 ");
-    len += vsnprintf(&buf[len], MAX_LOG_LINE_LENGTH - len, fmt, ap);
-    va_end(ap);
+	len = snprintf(buf, MAX_LOG_LINE_LENGTH, "000000 ");
+	len += vsnprintf(&buf[len], MAX_LOG_LINE_LENGTH - len, fmt, ap);
+	va_end(ap);
 
-    syslog(LOG_INFO, buf);
-    return (VOS_RET_SUCCESS);
+	syslog(LOG_INFO, buf);
+	return (VOS_RET_SUCCESS);
 }
 
 VOS_RET_E vosLog_stdRedirect(const char *tty)
 {
-    int fd = -1;
+	int fd = -1;
 
-    if (NULL == tty || '\0' == tty[0])
-    {
-        return VOS_RET_INVALID_ARGUMENTS;
-    }
-    fd = open(tty, O_RDWR);
-    if (fd < 0)
-    {
-        return VOS_RET_RESOURCE_EXCEEDED;
-    }
-    if (g_vosStdin < 0)
-    {
-        g_vosStdin = dup(STDIN_FILENO);
-        dup2(fd, STDIN_FILENO);
-    }
-    if (g_vosStdout < 0)
-    {
-        g_vosStdout = dup(STDOUT_FILENO);
-        dup2(fd, STDOUT_FILENO);
-    }
-    if (g_vosStderr < 0)
-    {
-        g_vosStderr = dup(STDERR_FILENO);
-        dup2(fd, STDERR_FILENO);
-    }
+	if (NULL == tty || '\0' == tty[0])
+	{
+		return VOS_RET_INVALID_ARGUMENTS;
+	}
+	fd = open(tty, O_RDWR);
+	if (fd < 0)
+	{
+		return VOS_RET_RESOURCE_EXCEEDED;
+	}
+	if (g_vosStdin < 0)
+	{
+		g_vosStdin = dup(STDIN_FILENO);
+		dup2(fd, STDIN_FILENO);
+	}
+	if (g_vosStdout < 0)
+	{
+		g_vosStdout = dup(STDOUT_FILENO);
+		dup2(fd, STDOUT_FILENO);
+	}
+	if (g_vosStderr < 0)
+	{
+		g_vosStderr = dup(STDERR_FILENO);
+		dup2(fd, STDERR_FILENO);
+	}
 
-    close(fd);
+	close(fd);
 
-    return VOS_RET_SUCCESS;
+	return VOS_RET_SUCCESS;
 }
 
 VOS_RET_E vosLog_stdRevert(void)
 {
-    if (g_vosStdin >= 0)
-    {
-        dup2(g_vosStdin, STDIN_FILENO);
-        g_vosStdin = -1;
-    }
-    if (g_vosStdout >= 0)
-    {
-        dup2(g_vosStdout, STDOUT_FILENO);
-        g_vosStdout = -1;
-    }
-    if (g_vosStderr >= 0)
-    {
-        dup2(g_vosStderr, STDERR_FILENO);
-        g_vosStderr = -1;
-    }
+	if (g_vosStdin >= 0)
+	{
+		dup2(g_vosStdin, STDIN_FILENO);
+		g_vosStdin = -1;
+	}
+	if (g_vosStdout >= 0)
+	{
+		dup2(g_vosStdout, STDOUT_FILENO);
+		g_vosStdout = -1;
+	}
+	if (g_vosStderr >= 0)
+	{
+		dup2(g_vosStderr, STDERR_FILENO);
+		g_vosStderr = -1;
+	}
 
-    return VOS_RET_SUCCESS;
+	return VOS_RET_SUCCESS;
 }
 
 VOS_RET_E vosLog_saveLastPty(const char *pty_name)
 {
-    if (NULL == pty_name || '\0' == pty_name[0])
-    {
-        return VOS_RET_INVALID_ARGUMENTS;
-    }
-    remove(VOS_LAST_PTY_NAME_FILE);
-    symlink(pty_name, VOS_LAST_PTY_NAME_FILE);
+	if (NULL == pty_name || '\0' == pty_name[0])
+	{
+		return VOS_RET_INVALID_ARGUMENTS;
+	}
+	remove(VOS_LAST_PTY_NAME_FILE);
+	symlink(pty_name, VOS_LAST_PTY_NAME_FILE);
 
-    return VOS_RET_SUCCESS;
+	return VOS_RET_SUCCESS;
 }
 
 VOS_RET_E vosLog_stdToLastPty(void)
 {
-    return vosLog_stdRedirect(VOS_LAST_PTY_NAME_FILE);
+	return vosLog_stdRedirect(VOS_LAST_PTY_NAME_FILE);
 }
 
 

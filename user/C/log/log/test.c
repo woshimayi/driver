@@ -4,8 +4,8 @@
 
 int main()
 {
-    printf("sdfsdf");
-    vosLog_debug("sdfsdf");
-    return 0;
+	printf("sdfsdf");
+	vosLog_debug("sdfsdf");
+	return 0;
 }
 

@@ -1,13 +1,13 @@
 /*
- * @*************************************: 
+ * @*************************************:
  * @FilePath: /user/C/string/##id##_VALUE.c
- * @version: 
+ * @version:
  * @Author: dof
  * @Date: 2021-10-20 19:33:39
  * @LastEditors: dof
  * @LastEditTime: 2021-12-07 13:56:03
  * @Descripttion: ## 连接符
- * @**************************************: 
+ * @**************************************:
  */
 #include <stdio.h>
 #include <stdlib.h>
@@ -19,9 +19,9 @@
 
 int main()
 {
-    printf("SF_GetFeature(3)\n");
+	printf("SF_GetFeature(3)\n");
 
-    return 0;
+	return 0;
 }
 
 

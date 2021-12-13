@@ -1,13 +1,13 @@
 /*
- * @*************************************: 
+ * @*************************************:
  * @FilePath: \C\call_fun_print_funname.c
- * @version: 
+ * @version:
  * @Author: dof
  * @Date: 2021-10-13 10:15:18
  * @LastEditors: dof
  * @LastEditTime: 2021-10-13 10:15:37
  * @Descripttion:  打印回调函数名    编译是如下  gcc func.c  -rdynamic
- * @**************************************: 
+ * @**************************************:
  */
 
 #include <stdio.h>

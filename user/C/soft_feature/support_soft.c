@@ -11,9 +11,9 @@
 
 int main()
 {
-    printf(STR(sdfsd));
-    printf("\n%d", CONS(2, 3));
-    return 0;
+	printf(STR(sdfsd));
+	printf("\n%d", CONS(2, 3));
+	return 0;
 }
 
 

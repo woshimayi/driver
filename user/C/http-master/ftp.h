@@ -37,7 +37,7 @@
 #define	N_PERM	500
 
 #ifndef nitems
-    #define nitems(_a)	(sizeof((_a)) / sizeof((_a)[0]))
+	#define nitems(_a)	(sizeof((_a)) / sizeof((_a)[0]))
 #endif
 
 struct imsg;
@@ -45,15 +45,15 @@ struct imsgbuf;
 
 struct url
 {
-    int	 scheme;
-    int	 ipliteral;
-    char	*host;
-    char	*port;
-    char	*path;
-    char	*basic_auth;
+	int	 scheme;
+	int	 ipliteral;
+	char	*host;
+	char	*port;
+	char	*path;
+	char	*basic_auth;
 
-    char	*fname;
-    int	 chunked;
+	char	*fname;
+	int	 chunked;
 };
 
 /* cmd.c */

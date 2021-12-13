@@ -72,248 +72,248 @@ const char	*port_str[] = { "80", "21", NULL };
 
 int scheme_lookup(const char *str)
 {
-    size_t	i;
+	size_t	i;
 
-    for (i = 0; i < nitems(scheme_str); i++)
-        if (strncasecmp(str, scheme_str[i], strlen(scheme_str[i])) == 0)
-            return i;
+	for (i = 0; i < nitems(scheme_str); i++)
+		if (strncasecmp(str, scheme_str[i], strlen(scheme_str[i])) == 0)
+			return i;
 
-    return -1;
+	return -1;
 }
 
 static int ipv6_parse(const char *str, char **host, char **port)
 {
-    char	*p;
+	char	*p;
 
-    if ((p = strchr(str, ']')) == NULL)
-    {
-        warnx("%s: invalid IPv6 address: %s", __func__, str);
-        return 1;
-    }
+	if ((p = strchr(str, ']')) == NULL)
+	{
+		warnx("%s: invalid IPv6 address: %s", __func__, str);
+		return 1;
+	}
 
-    *p++ = '\0';
-    if (strlen(str + 1) > 0)
-        *host = xstrdup(str + 1);
+	*p++ = '\0';
+	if (strlen(str + 1) > 0)
+		*host = xstrdup(str + 1);
 
-    if (*p == '\0')
-        return 0;
+	if (*p == '\0')
+		return 0;
 
-    if (*p++ != ':')
-    {
-        warnx("%s: invalid port: %s", __func__, p);
-        free(*host);
-        return 1;
-    }
+	if (*p++ != ':')
+	{
+		warnx("%s: invalid port: %s", __func__, p);
+		free(*host);
+		return 1;
+	}
 
-    if (strlen(p) > 0)
-        *port = xstrdup(p);
+	if (strlen(p) > 0)
+		*port = xstrdup(p);
 
-    return 0;
+	return 0;
 }
 
 static void authority_parse(const char *str, char **host, char **port, char **basic_auth)
 {
-    char	*p;
+	char	*p;
 
-    if ((p = strchr(str, '@')) != NULL)
-    {
-        *basic_auth = xcalloc(1, BASICAUTH_LEN);
-        if (b64_ntop((unsigned char *)str, p - str,
-                     *basic_auth, BASICAUTH_LEN) == -1)
-            errx(1, "base64 encode failed");
+	if ((p = strchr(str, '@')) != NULL)
+	{
+		*basic_auth = xcalloc(1, BASICAUTH_LEN);
+		if (b64_ntop((unsigned char *)str, p - str,
+		             *basic_auth, BASICAUTH_LEN) == -1)
+			errx(1, "base64 encode failed");
 
-        str = ++p;
-    }
+		str = ++p;
+	}
 
-    if ((p = strchr(str, ':')) != NULL)
-    {
-        *p++ = '\0';
-        if (strlen(p) > 0)
-            *port = xstrdup(p);
-    }
+	if ((p = strchr(str, ':')) != NULL)
+	{
+		*p++ = '\0';
+		if (strlen(p) > 0)
+			*port = xstrdup(p);
+	}
 
-    if (strlen(str) > 0)
-        *host = xstrdup(str);
+	if (strlen(str) > 0)
+		*host = xstrdup(str);
 }
 
 struct url *
 url_parse(const char *str)
 {
-    struct url	*url;
-    const char	*p, *q;
-    char		*basic_auth, *host, *port, *path, *s;
-    size_t		 len;
-    int		 ipliteral, scheme;
+	struct url	*url;
+	const char	*p, *q;
+	char		*basic_auth, *host, *port, *path, *s;
+	size_t		 len;
+	int		 ipliteral, scheme;
 
-    p = str;
-    ipliteral = 0;
-    host = port = path = basic_auth = NULL;
-    while (isblank((unsigned char)*p))
-        p++;
+	p = str;
+	ipliteral = 0;
+	host = port = path = basic_auth = NULL;
+	while (isblank((unsigned char)*p))
+		p++;
 
-    if ((q = strchr(p, ':')) == NULL)
-    {
-        warnx("%s: scheme missing: %s", __func__, str);
-        return NULL;
-    }
+	if ((q = strchr(p, ':')) == NULL)
+	{
+		warnx("%s: scheme missing: %s", __func__, str);
+		return NULL;
+	}
 
-    if ((scheme = scheme_lookup(p)) == -1)
-    {
-        warnx("%s: invalid scheme: %s", __func__, p);
-        return NULL;
-    }
+	if ((scheme = scheme_lookup(p)) == -1)
+	{
+		warnx("%s: invalid scheme: %s", __func__, p);
+		return NULL;
+	}
 
-    p = ++q;
-    if (strncmp(p, "//", 2) != 0)
-    {
-        if (scheme == S_FILE)
-            goto done;
-        else
-        {
-            warnx("%s: invalid url: %s", __func__, str);
-            return NULL;
-        }
-    }
+	p = ++q;
+	if (strncmp(p, "//", 2) != 0)
+	{
+		if (scheme == S_FILE)
+			goto done;
+		else
+		{
+			warnx("%s: invalid url: %s", __func__, str);
+			return NULL;
+		}
+	}
 
-    p += 2;
-    len = strlen(p);
-    /* Authority terminated by a '/' if present */
-    if ((q = strchr(p, '/')) != NULL)
-        len = q - p;
+	p += 2;
+	len = strlen(p);
+	/* Authority terminated by a '/' if present */
+	if ((q = strchr(p, '/')) != NULL)
+		len = q - p;
 
-    s = xstrndup(p, len);
-    if (*p == '[')
-    {
-        if (ipv6_parse(s, &host, &port) != 0)
-        {
-            free(s);
-            return NULL;
-        }
-        ipliteral = 1;
-    }
-    else
-        authority_parse(s, &host, &port, &basic_auth);
+	s = xstrndup(p, len);
+	if (*p == '[')
+	{
+		if (ipv6_parse(s, &host, &port) != 0)
+		{
+			free(s);
+			return NULL;
+		}
+		ipliteral = 1;
+	}
+	else
+		authority_parse(s, &host, &port, &basic_auth);
 
-    free(s);
-    if (port == NULL && scheme != S_FILE)
-        port = xstrdup(port_str[scheme]);
+	free(s);
+	if (port == NULL && scheme != S_FILE)
+		port = xstrdup(port_str[scheme]);
 
 done:
-    if (q != NULL)
-        path = xstrdup(q);
+	if (q != NULL)
+		path = xstrdup(q);
 
-    if (io_debug)
-    {
-        fprintf(stderr,
-                "scheme: %s\nhost: %s\nport: %s\npath: %s\n",
-                scheme_str[scheme], host, port, path);
-    }
+	if (io_debug)
+	{
+		fprintf(stderr,
+		        "scheme: %s\nhost: %s\nport: %s\npath: %s\n",
+		        scheme_str[scheme], host, port, path);
+	}
 
-    url = xcalloc(1, sizeof * url);
-    url->scheme = scheme;
-    url->host = host;
-    url->port = port;
-    url->path = path;
-    url->basic_auth = basic_auth;
-    url->ipliteral = ipliteral;
-    return url;
+	url = xcalloc(1, sizeof * url);
+	url->scheme = scheme;
+	url->host = host;
+	url->port = port;
+	url->path = path;
+	url->basic_auth = basic_auth;
+	url->ipliteral = ipliteral;
+	return url;
 }
 
 void url_free(struct url *url)
 {
-    if (url == NULL)
-        return;
+	if (url == NULL)
+		return;
 
-    free(url->host);
-    free(url->port);
-    free(url->path);
-    freezero(url->basic_auth, BASICAUTH_LEN);
-    free(url->fname);
-    free(url);
+	free(url->host);
+	free(url->port);
+	free(url->path);
+	freezero(url->basic_auth, BASICAUTH_LEN);
+	free(url->fname);
+	free(url);
 }
 
 void url_connect(struct url *url, struct url *proxy, int timeout)
 {
-    switch (url->scheme)
-    {
-        case S_HTTP:
-        case S_HTTPS:
-            http_connect(url, proxy, timeout);
-            break;
-        case S_FTP:
-            ftp_connect(url, proxy, timeout);
-            break;
-    }
+	switch (url->scheme)
+	{
+		case S_HTTP:
+		case S_HTTPS:
+			http_connect(url, proxy, timeout);
+			break;
+		case S_FTP:
+			ftp_connect(url, proxy, timeout);
+			break;
+	}
 }
 
 struct url *
 url_request(struct url *url, struct url *proxy, off_t *offset, off_t *sz)
 {
-    switch (url->scheme)
-    {
-        case S_HTTP:
-        case S_HTTPS:
-            return http_get(url, proxy, offset, sz);
-        case S_FTP:
-            return ftp_get(url, proxy, offset, sz);
-        case S_FILE:
-            return file_request(&child_ibuf, url, offset, sz);
-    }
+	switch (url->scheme)
+	{
+		case S_HTTP:
+		case S_HTTPS:
+			return http_get(url, proxy, offset, sz);
+		case S_FTP:
+			return ftp_get(url, proxy, offset, sz);
+		case S_FILE:
+			return file_request(&child_ibuf, url, offset, sz);
+	}
 
-    return NULL;
+	return NULL;
 }
 
 void url_save(struct url *url, FILE *dst_fp, off_t *offset)
 {
-    switch (url->scheme)
-    {
-        case S_HTTP:
-        case S_HTTPS:
-            http_save(url, dst_fp, offset);
-            break;
-        case S_FTP:
-            ftp_save(url, dst_fp, offset);
-            break;
-        case S_FILE:
-            file_save(url, dst_fp, offset);
-            break;
-    }
+	switch (url->scheme)
+	{
+		case S_HTTP:
+		case S_HTTPS:
+			http_save(url, dst_fp, offset);
+			break;
+		case S_FTP:
+			ftp_save(url, dst_fp, offset);
+			break;
+		case S_FILE:
+			file_save(url, dst_fp, offset);
+			break;
+	}
 }
 
 void url_close(struct url *url)
 {
-    switch (url->scheme)
-    {
-        case S_HTTP:
-        case S_HTTPS:
-            http_close(url);
-            break;
-        case S_FTP:
-            ftp_quit(url);
-            break;
-    }
+	switch (url->scheme)
+	{
+		case S_HTTP:
+		case S_HTTPS:
+			http_close(url);
+			break;
+		case S_FTP:
+			ftp_quit(url);
+			break;
+	}
 }
 
 char *url_str(struct url *url)
 {
-    char	*host, *str;
-    int	 custom_port;
+	char	*host, *str;
+	int	 custom_port;
 
-    custom_port = strcmp(url->port, port_str[url->scheme]) ? 1 : 0;
-    if (url->ipliteral)
-        xasprintf(&host, "[%s]", url->host);
-    else
-        host = xstrdup(url->host);
+	custom_port = strcmp(url->port, port_str[url->scheme]) ? 1 : 0;
+	if (url->ipliteral)
+		xasprintf(&host, "[%s]", url->host);
+	else
+		host = xstrdup(url->host);
 
-    xasprintf(&str, "%s//%s%s%s%s",
-              scheme_str[url->scheme],
-              host,
-              custom_port ? ":" : "",
-              custom_port ? url->port : "",
-              url->path ? url->path : "/");
+	xasprintf(&str, "%s//%s%s%s%s",
+	          scheme_str[url->scheme],
+	          host,
+	          custom_port ? ":" : "",
+	          custom_port ? url->port : "",
+	          url->path ? url->path : "/");
 
-    free(host);
-    return str;
+	free(host);
+	return str;
 }
 
 /*
@@ -322,38 +322,38 @@ char *url_str(struct url *url)
  */
 char *url_encode(const char *path)
 {
-    size_t i, length, new_length;
-    char *epath, *epathp;
+	size_t i, length, new_length;
+	char *epath, *epathp;
 
-    length = new_length = strlen(path);
+	length = new_length = strlen(path);
 
-    /*
-     * First pass:
-     * Count unsafe characters, and determine length of the
-     * final URL.
-     */
-    for (i = 0; i < length; i++)
-        if (unsafe_char(path + i))
-            new_length += 2;
+	/*
+	 * First pass:
+	 * Count unsafe characters, and determine length of the
+	 * final URL.
+	 */
+	for (i = 0; i < length; i++)
+		if (unsafe_char(path + i))
+			new_length += 2;
 
-    epath = epathp = xmalloc(new_length + 1);	/* One more for '\0'. */
+	epath = epathp = xmalloc(new_length + 1);	/* One more for '\0'. */
 
-    /*
-     * Second pass:
-     * Encode, and copy final URL.
-     */
-    for (i = 0; i < length; i++)
-        if (unsafe_char(path + i))
-        {
-            snprintf(epathp, 4, "%%" "%02x",
-                     (unsigned char)path[i]);
-            epathp += 3;
-        }
-        else
-            *(epathp++) = path[i];
+	/*
+	 * Second pass:
+	 * Encode, and copy final URL.
+	 */
+	for (i = 0; i < length; i++)
+		if (unsafe_char(path + i))
+		{
+			snprintf(epathp, 4, "%%" "%02x",
+			         (unsigned char)path[i]);
+			epathp += 3;
+		}
+		else
+			*(epathp++) = path[i];
 
-    *epathp = '\0';
-    return epath;
+	*epathp = '\0';
+	return epath;
 }
 
 /*
@@ -363,61 +363,61 @@ char *url_encode(const char *path)
  */
 static int unsafe_char(const char *c0)
 {
-    const char *unsafe_chars = " <>\"#{}|\\^~[]`";
-    const unsigned char *c = (const unsigned char *)c0;
+	const char *unsafe_chars = " <>\"#{}|\\^~[]`";
+	const unsigned char *c = (const unsigned char *)c0;
 
-    /*
-     * No corresponding graphic US-ASCII.
-     * Control characters and octets not used in US-ASCII.
-     */
-    return (iscntrl(*c) || !isascii(*c) ||
+	/*
+	 * No corresponding graphic US-ASCII.
+	 * Control characters and octets not used in US-ASCII.
+	 */
+	return (iscntrl(*c) || !isascii(*c) ||
 
-            /*
-             * Unsafe characters.
-             * '%' is also unsafe, if is not followed by two
-             * hexadecimal digits.
-             */
-            strchr(unsafe_chars, *c) != NULL ||
-            (*c == '%' && (!isxdigit(*++c) || !isxdigit(*++c))));
+	        /*
+	         * Unsafe characters.
+	         * '%' is also unsafe, if is not followed by two
+	         * hexadecimal digits.
+	         */
+	        strchr(unsafe_chars, *c) != NULL ||
+	        (*c == '%' && (!isxdigit(*++c) || !isxdigit(*++c))));
 }
 
 void log_request(const char *prefix, struct url *url, struct url *proxy)
 {
-    char	*host;
-    int	 custom_port;
+	char	*host;
+	int	 custom_port;
 
-    if (url->scheme == S_FILE)
-        return;
+	if (url->scheme == S_FILE)
+		return;
 
-    custom_port = strcmp(url->port, port_str[url->scheme]) ? 1 : 0;
-    if (url->ipliteral)
-        xasprintf(&host, "[%s]", url->host);
-    else
-        host = xstrdup(url->host);
+	custom_port = strcmp(url->port, port_str[url->scheme]) ? 1 : 0;
+	if (url->ipliteral)
+		xasprintf(&host, "[%s]", url->host);
+	else
+		host = xstrdup(url->host);
 
-    if (proxy)
-        log_info("%s %s//%s%s%s%s"
-                 " (via %s//%s%s%s)\n",
-                 prefix,
-                 scheme_str[url->scheme],
-                 host,
-                 custom_port ? ":" : "",
-                 custom_port ? url->port : "",
-                 url->path ? url->path : "",
+	if (proxy)
+		log_info("%s %s//%s%s%s%s"
+		         " (via %s//%s%s%s)\n",
+		         prefix,
+		         scheme_str[url->scheme],
+		         host,
+		         custom_port ? ":" : "",
+		         custom_port ? url->port : "",
+		         url->path ? url->path : "",
 
-                 /* via proxy part */
-                 (proxy->scheme == S_HTTP) ? "http" : "https",
-                 proxy->host,
-                 proxy->port ? ":" : "",
-                 proxy->port ? proxy->port : "");
-    else
-        log_info("%s %s//%s%s%s%s\n",
-                 prefix,
-                 scheme_str[url->scheme],
-                 host,
-                 custom_port ? ":" : "",
-                 custom_port ? url->port : "",
-                 url->path ? url->path : "");
+		         /* via proxy part */
+		         (proxy->scheme == S_HTTP) ? "http" : "https",
+		         proxy->host,
+		         proxy->port ? ":" : "",
+		         proxy->port ? proxy->port : "");
+	else
+		log_info("%s %s//%s%s%s%s\n",
+		         prefix,
+		         scheme_str[url->scheme],
+		         host,
+		         custom_port ? ":" : "",
+		         custom_port ? url->port : "",
+		         url->path ? url->path : "");
 
-    free(host);
+	free(host);
 }

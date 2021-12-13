@@ -6,37 +6,37 @@
 /*seconds: the seconds; mseconds: the micro seconds*/
 void setTimer(int seconds, int mseconds)
 {
-    struct timeval temp_u;
-    temp_u.tv_sec = seconds;
-    temp_u.tv_usec = mseconds * 1000;
+	struct timeval temp_u;
+	temp_u.tv_sec = seconds;
+	temp_u.tv_usec = mseconds * 1000;
 
-    select(0, NULL, NULL, NULL, &temp_u);
-    printf("timer\n");
+	select(0, NULL, NULL, NULL, &temp_u);
+	printf("timer\n");
 
-    return ;
+	return ;
 }
 
 #if 0
 void setTimer(int seconds, int nseconds)
 {
-    struct timespec temp_n;
-    temp_n.tv_sec
-    temp_n.tv_nsec
+	struct timespec temp_n;
+	temp_n.tv_sec
+	temp_n.tv_nsec
 
-    select(0, NULL, NULL, NULL, &temp_n);
-    printf("timer\n");
+	select(0, NULL, NULL, NULL, &temp_n);
+	printf("timer\n");
 
-    return ;
+	return ;
 }
 #endif
 
 
 int main()
 {
-    int i;
+	int i;
 
-    for (i = 0 ; i < 100; i++)
-        setTimer(1, 500);
+	for (i = 0 ; i < 100; i++)
+		setTimer(1, 500);
 
-    return 0;
+	return 0;
 }

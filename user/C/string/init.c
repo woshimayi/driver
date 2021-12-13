@@ -31,24 +31,24 @@ static unsigned int ShapeStr2uInt(char *const);
 //初始化程序参数
 int InitProcParameters(void)
 {
-    int  i ;
+	int  i ;
 
-    //初始化游戏板(把这个二维数组的四周置1,当作围墙,用于判断边界)
-    for (i = 0; i < X_ROCK_SQUARE_NUM + 2; i++)
-    {
-        g_gameBoard[0][i] = 1 ;
-        g_gameBoard[Y_ROCK_SQUARE_NUM + 1][i] = 1 ;
-    }
-    for (i = 0; i < Y_ROCK_SQUARE_NUM + 2; i++)
-    {
-        g_gameBoard[i][0] = 1 ;
-        g_gameBoard[i][X_ROCK_SQUARE_NUM + 1] = 1 ;
-    }
+	//初始化游戏板(把这个二维数组的四周置1,当作围墙,用于判断边界)
+	for (i = 0; i < X_ROCK_SQUARE_NUM + 2; i++)
+	{
+		g_gameBoard[0][i] = 1 ;
+		g_gameBoard[Y_ROCK_SQUARE_NUM + 1][i] = 1 ;
+	}
+	for (i = 0; i < Y_ROCK_SQUARE_NUM + 2; i++)
+	{
+		g_gameBoard[i][0] = 1 ;
+		g_gameBoard[i][X_ROCK_SQUARE_NUM + 1] = 1 ;
+	}
 
-    //从配置文件中读取游戏中所有方块的形状点阵
-    ReadRockShape() ;
+	//从配置文件中读取游戏中所有方块的形状点阵
+	ReadRockShape() ;
 
-    return 0 ;
+	return 0 ;
 }
 
 /*******************************************************************************
@@ -61,60 +61,60 @@ int InitProcParameters(void)
 *******************************************************************************/
 int ReadRockShape(void)
 {
-    FILE *fp ;
-    int  i = 0 ;
-    int  len = 0 ;
-    int  rockArrayIdx = 0 ;
-    int  shapeNumPerRock = 0 ; //一种方块的形态数目(用于计算方块的nextRockIndex)
+	FILE *fp ;
+	int  i = 0 ;
+	int  len = 0 ;
+	int  rockArrayIdx = 0 ;
+	int  shapeNumPerRock = 0 ; //一种方块的形态数目(用于计算方块的nextRockIndex)
 
-    char rdBuf[128] ;
-    char rockShapeBitsStr[128] = {0};
+	char rdBuf[128] ;
+	char rockShapeBitsStr[128] = {0};
 
-    unsigned int  shapeBits = 0 ;
+	unsigned int  shapeBits = 0 ;
 
-    g_rockTypeNum  = 0 ;
+	g_rockTypeNum  = 0 ;
 
-    //打开配置文件 从中读取方块的形状
-    fp = fopen(".\\rockshape.ini", "r") ;
-    if (fp == NULL)
-    {
-        perror("open file error!\n") ;
-        return 1 ;
-    }
+	//打开配置文件 从中读取方块的形状
+	fp = fopen(".\\rockshape.ini", "r") ;
+	if (fp == NULL)
+	{
+		perror("open file error!\n") ;
+		return 1 ;
+	}
 
-    while (fgets(rdBuf, 128, fp) != NULL)
-    {
-        len = strlen(rdBuf) ;
-        rdBuf[len - 1] = '\0' ;
+	while (fgets(rdBuf, 128, fp) != NULL)
+	{
+		len = strlen(rdBuf) ;
+		rdBuf[len - 1] = '\0' ;
 
-        switch (rdBuf[0])
-        {
-            case '@':
-            case '#':
-                strcat(rockShapeBitsStr, rdBuf) ;
-                break ;
+		switch (rdBuf[0])
+		{
+			case '@':
+			case '#':
+				strcat(rockShapeBitsStr, rdBuf) ;
+				break ;
 
-            case 0 : //一个方块读取结束
-                shapeBits = ShapeStr2uInt(rockShapeBitsStr) ;
-                rockShapeBitsStr[0] = 0 ;
-                shapeNumPerRock++ ;
-                rockArray[rockArrayIdx].rockShapeBits = shapeBits ;
-                rockArray[rockArrayIdx].nextRockIndex = rockArrayIdx + 1 ;
-                rockArrayIdx++ ;
-                g_rockTypeNum++ ; //记录方块数量的全局变量+1
-                break ;
+			case 0 : //一个方块读取结束
+				shapeBits = ShapeStr2uInt(rockShapeBitsStr) ;
+				rockShapeBitsStr[0] = 0 ;
+				shapeNumPerRock++ ;
+				rockArray[rockArrayIdx].rockShapeBits = shapeBits ;
+				rockArray[rockArrayIdx].nextRockIndex = rockArrayIdx + 1 ;
+				rockArrayIdx++ ;
+				g_rockTypeNum++ ; //记录方块数量的全局变量+1
+				break ;
 
-            case '-'://一种方块读取结束(更新其nextRockIndex值)
-                rockArray[rockArrayIdx - 1].nextRockIndex = rockArrayIdx - shapeNumPerRock ;
-                shapeNumPerRock = 0 ;
-                break ;
+			case '-'://一种方块读取结束(更新其nextRockIndex值)
+				rockArray[rockArrayIdx - 1].nextRockIndex = rockArrayIdx - shapeNumPerRock ;
+				shapeNumPerRock = 0 ;
+				break ;
 
-            default :
-                break ;
-        }
-    }//while()
+			default :
+				break ;
+		}
+	}//while()
 
-    return 0 ;
+	return 0 ;
 }
 
 /*******************************************************************************
@@ -127,17 +127,17 @@ int ReadRockShape(void)
 *******************************************************************************/
 unsigned int ShapeStr2uInt(char *const shapeStr)
 {
-    unsigned int  shapeBitsRet = 0 ;
-    char *p = shapeStr ;
+	unsigned int  shapeBitsRet = 0 ;
+	char *p = shapeStr ;
 
-    for (p += 15; p >= shapeStr; p--)
-    {
-        if (*p == '@')
-        {
-            shapeBitsRet |= ((unsigned int)1 << (&shapeStr[15] - p)) ;
-        }
-    }
+	for (p += 15; p >= shapeStr; p--)
+	{
+		if (*p == '@')
+		{
+			shapeBitsRet |= ((unsigned int)1 << (&shapeStr[15] - p)) ;
+		}
+	}
 
-    return shapeBitsRet ;
+	return shapeBitsRet ;
 }
 

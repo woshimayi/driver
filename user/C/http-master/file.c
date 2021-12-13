@@ -29,26 +29,26 @@ static FILE	*src_fp;
 struct url *
 file_request(struct imsgbuf *ibuf, struct url *url, off_t *offset, off_t *sz)
 {
-    struct stat	sb;
-    int		src_fd;
+	struct stat	sb;
+	int		src_fd;
 
-    if ((src_fd = fd_request(url->path, O_RDONLY, NULL)) == -1)
-        err(1, "Can't open file %s", url->path);
+	if ((src_fd = fd_request(url->path, O_RDONLY, NULL)) == -1)
+		err(1, "Can't open file %s", url->path);
 
-    if (fstat(src_fd, &sb) == 0)
-        *sz = sb.st_size;
+	if (fstat(src_fd, &sb) == 0)
+		*sz = sb.st_size;
 
-    if ((src_fp = fdopen(src_fd, "r")) == NULL)
-        err(1, "%s: fdopen", __func__);
+	if ((src_fp = fdopen(src_fd, "r")) == NULL)
+		err(1, "%s: fdopen", __func__);
 
-    if (*offset && fseeko(src_fp, *offset, SEEK_SET) == -1)
-        err(1, "%s: fseeko", __func__);
+	if (*offset && fseeko(src_fp, *offset, SEEK_SET) == -1)
+		err(1, "%s: fseeko", __func__);
 
-    return url;
+	return url;
 }
 
 void file_save(struct url *url, FILE *dst_fp, off_t *offset)
 {
-    copy_file(dst_fp, src_fp, offset);
-    fclose(src_fp);
+	copy_file(dst_fp, src_fp, offset);
+	fclose(src_fp);
 }
