@@ -1,13 +1,13 @@
 /*
- * @*************************************: 
- * @FilePath: /user/C/reload_func.c
- * @version: 
+ * @*************************************:
+ * @FilePath: /user/C/string/reload_func.c
+ * @version:
  * @Author: dof
  * @Date: 2021-12-02 17:38:44
  * @LastEditors: dof
- * @LastEditTime: 2021-12-02 17:49:36
+ * @LastEditTime: 2021-12-16 19:04:35
  * @Descripttion:  c 语言实现函数重载
- * @**************************************: 
+ * @**************************************:
  */
 
 #include <stdio.h>

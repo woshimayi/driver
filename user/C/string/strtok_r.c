@@ -1,4 +1,18 @@
+/*
+ * @*************************************: 
+ * @FilePath: /user/C/string/strtok_r.c
+ * @version: 
+ * @Author: dof
+ * @Date: 2021-10-20 19:33:39
+ * @LastEditors: dof
+ * @LastEditTime: 2021-12-15 19:14:07
+ * @Descripttion:  字符串 多 字符切割
+ * @**************************************: 
+ */
+
 #include <stdio.h>
+#include <string.h>
+
 int main(void)
 {
 	int j, in = 0;

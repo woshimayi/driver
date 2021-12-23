@@ -1,11 +1,11 @@
 /*
  * @*************************************:
- * @FilePath: /user/C/split.c
+ * @FilePath: /user/C/string/split.c
  * @version:
  * @Author: dof
  * @Date: 2021-10-20 19:33:39
  * @LastEditors: dof
- * @LastEditTime: 2021-12-06 17:18:06
+ * @LastEditTime: 2021-12-15 16:38:16
  * @Descripttion: Ö¸¶¨·Ö¸ô·û·Ö¸î×Ö·û´®
  * @**************************************:
  */
@@ -45,7 +45,7 @@ int main()
 }
 
 /**
- * @name:
+ * @name: ×Ö·û´®·Ö¸îº¯Êý
  * @test: test font
  * @msg:
  * @param {char} *source   Ö¸¶¨·Ö¸ô·û·Ö¸î×Ö·û´®
