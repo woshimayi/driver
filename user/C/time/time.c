@@ -1,3 +1,14 @@
+/*
+ * @*************************************: 
+ * @FilePath: /user/C/time/time.c
+ * @version: 
+ * @Author: dof
+ * @Date: 2021-10-20 19:33:39
+ * @LastEditors: dof
+ * @LastEditTime: 2022-01-20 19:29:55
+ * @Descripttion: 
+ * @**************************************: 
+ */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -16,6 +27,32 @@ static void getTheCurrentTime(char *time_now)
 }
 
 
+int getDateTime(unsigned int t)
+{
+	int rc = 0;
+	time_t now;
+	struct tm   *tmp;
+	if(t == 0)
+	{
+		now = time(NULL);
+	}
+	else
+	{
+		now = t;
+	}
+	
+	tmp = localtime(&now);
+
+	rc = mktime(tmp);
+	if(rc == 0)
+	{
+		printf("get localtime failed\n");
+		return -1;
+	}
+	return rc;
+}
+
+
 
 int main()
 {
@@ -25,14 +62,15 @@ int main()
 	time_t t;
 	char buf[1024];
 	time(&t);
-	printf("%d\n", t.tm_sec);
+	// printf("%d\n", t.tm_sec);
 
 	ctime_r(&t, buf);
 	printf("%s\n", buf);
 
+	unsigned int nt;
+	int i = getDateTime(nt);
+	printf("zzzzz nt = %ld i = %ld\n", nt, i);
 
-
-
-	printf("%s\n", str);
+	// printf("%s\n", str);
 	return 0;
 }

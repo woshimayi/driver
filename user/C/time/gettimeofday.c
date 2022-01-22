@@ -1,3 +1,15 @@
+/*
+ * @*************************************: 
+ * @FilePath: /user/C/time/gettimeofday.c
+ * @version: 
+ * @Author: dof
+ * @Date: 2021-10-20 19:33:39
+ * @LastEditors: dof
+ * @LastEditTime: 2022-01-06 17:38:12
+ * @Descripttion: 获取程序运行时间
+ * @**************************************: 
+ */
+
 #include <sys/time.h>
 #include <stdio.h>
 #include <unistd.h>

@@ -1,3 +1,14 @@
+/*
+ * @*************************************: 
+ * @FilePath: /user/C/string/_stat.c
+ * @version: 
+ * @Author: dof
+ * @Date: 2021-10-20 19:33:39
+ * @LastEditors: dof
+ * @LastEditTime: 2022-01-20 17:54:54
+ * @Descripttion: 
+ * @**************************************: 
+ */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -12,11 +23,18 @@ int main()
 	int count = 0;
 
 	struct stat buf;
+	int ret = 0;
+	if (0 != (ret = stat("./123", &buf)))
+	{
+		strerror(ret);
+	}
 
 	while (buf.st_size < 1000000)
 	{
-		stat("./123", &buf);
-
+		if (0 != stat("./123", &buf))
+		{
+			strerror(ret);
+		}
 	}
 	printf("/etc/passwd file size = %d\n", buf.st_size);
 

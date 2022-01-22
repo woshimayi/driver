@@ -5,7 +5,7 @@
  * @Author: dof
  * @Date: 2021-11-23 11:34:40
  * @LastEditors: dof
- * @LastEditTime: 2021-12-23 13:22:43
+ * @LastEditTime: 2021-12-29 15:21:27
  * @Descripttion:
  * @**************************************:
  */
@@ -339,13 +339,15 @@ int main()
 	// 	free(ch);
 	// }
 
-	char str3[] = "192.168.1.1/24,192.168.5.1/24,192.168.4.1/24,192.168.3.1/24,192.168.2.1/24";
-	char **p3;
+	// char str3[] = "192.168.1.1/24,192.168.5.1/24,192.168.4.1/24,192.168.3.1/24,192.168.2.1/24";
+	// char **p3;
 
-	p3 = split(str3, ',');
-	for (int i = 0; p3[i] != NULL; i++)
-		printf("p3[%d] = %s\n", i, p3[i]);
+	// p3 = split(str3, ',');
+	// for (int i = 0; p3[i] != NULL; i++)
+	// 	printf("p3[%d] = %s\n", i, p3[i]);
 
-	if (p3)
-		free(p3);
+	// if (p3)
+	// 	free(p3);
+
+	printf("%d\n", atoi(""));
 }

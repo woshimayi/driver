@@ -1,12 +1,12 @@
 /*
  * @*************************************:
- * @FilePath: /user/C/time/timer-setitimer.c
+ * @FilePath: /user/C/time/timer-setitimer-call.c
  * @version:
  * @Author: dof
  * @Date: 2021-07-27 15:10:13
  * @LastEditors: dof
- * @LastEditTime: 2021-12-13 19:26:54
- * @Descripttion: 定时器
+ * @LastEditTime: 2021-12-13 19:38:06
+ * @Descripttion: 定时器函数封装
  * @**************************************:
  */
 
@@ -18,6 +18,23 @@ void sig_alm_handler(int sig_num);
 
 static int counter;
 
+void fun(int i)
+{
+	printf("sssssssssssssss i = %d\n", i);
+}
+
+void time(void (*fun)(int), int sec)
+{
+	struct itimerval olditv;
+	struct itimerval itv;
+	itv.it_interval.tv_sec = 1; //定时周期为1秒钟。
+	itv.it_interval.tv_usec = 0;
+	itv.it_value.tv_sec = 3; //定时器启动以后将在3秒又500微秒以后正式开始计时。
+	itv.it_value.tv_usec = 500;
+	setitimer(ITIMER_REAL, &itv, &olditv);
+
+}
+
 int main()
 {
 	printf("hello world.\n");
@@ -26,14 +43,6 @@ int main()
 	// sighandler_t *pre = signal(SIGALRM, sig_alm_handler);
 	signal(SIGALRM, sig_alm_handler);
 	// printf("pre-sighandler address:%p\n", pre); //pre应该是NULL.
-
-	struct itimerval olditv;
-	struct itimerval itv;
-	itv.it_interval.tv_sec = 1; //定时周期为1秒钟。
-	itv.it_interval.tv_usec = 0;
-	itv.it_value.tv_sec = 3; //定时器启动以后将在3秒又500微秒以后正式开始计时。
-	itv.it_value.tv_usec = 500;
-	setitimer(ITIMER_REAL, &itv, &olditv);
 
 	while (counter < 7)
 	{
@@ -69,6 +78,7 @@ void sig_alm_handler(int sig_num)
 	printf("%s, signal number:%d, counter:%d\n", __FUNCTION__, sig_num, counter);
 	if (sig_num == SIGALRM)
 	{
+		time(fun, 3);
 		counter++;
 	}
 }
