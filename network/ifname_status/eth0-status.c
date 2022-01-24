@@ -1,11 +1,11 @@
 /*
- * @FilePath: /network/eth0-status.c
+ * @FilePath: /network/ifname_status/eth0-status.c
  * @version: 
  * @Author: sueRimn
  * @Date: 2020-09-30 16:51:19
- * @LastEditors: sueRimn
- * @LastEditTime: 2021-02-25 17:02:50
- * @Descripttion: 
+ * @LastEditors: dof
+ * @LastEditTime: 2021-12-22 11:35:35
+ * @Descripttion: 指定ifname设备  状态
  */
 #include <sys/types.h>
 #include <string.h>
