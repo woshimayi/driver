@@ -5,7 +5,7 @@
  * @Author: dof
  * @Date: 2021-10-20 19:33:39
  * @LastEditors: dof
- * @LastEditTime: 2022-01-20 19:29:55
+ * @LastEditTime: 2022-02-09 17:53:03
  * @Descripttion: 
  * @**************************************: 
  */
@@ -24,6 +24,16 @@ static void getTheCurrentTime(char *time_now)
 	timenow = localtime(&now);
 	snprintf(time_now, 32, "%d%02d%02d%02d%02d%02d", timenow->tm_year + 1900, timenow->tm_mon + 1, timenow->tm_mday,
 	         timenow->tm_hour, timenow->tm_min, timenow->tm_sec);
+}
+
+char* strftime_HHMMSS(char *buf, unsigned len, time_t *tp)
+{
+	return strftime_fmt(buf, len, tp, "%H:%M:%S");
+}
+
+char* strftime_YYYYMMDDHHMMSS(char *buf, unsigned len, time_t *tp)
+{
+	return strftime_fmt(buf, len, tp, "%Y-%m-%d %H:%M:%S");
 }
 
 
@@ -49,6 +59,9 @@ int getDateTime(unsigned int t)
 		printf("get localtime failed\n");
 		return -1;
 	}
+	char s[100] = {0};
+	strftime(s, sizeof(s), "%Y-%m-%d %H:%M:%S", tmp);
+	printf("rc = %d s = %s %s\n", rc, s, asctime(tmp));
 	return rc;
 }
 
@@ -56,6 +69,7 @@ int getDateTime(unsigned int t)
 
 int main()
 {
+	#if 1
 	char *str = NULL;
 	// getTheCurrentTime(str);
 	//
@@ -65,12 +79,41 @@ int main()
 	// printf("%d\n", t.tm_sec);
 
 	ctime_r(&t, buf);
-	printf("%s\n", buf);
+	printf("111111111 %s\n", buf);
 
 	unsigned int nt;
-	int i = getDateTime(nt);
-	printf("zzzzz nt = %ld i = %ld\n", nt, i);
+	struct tm *p;
+	time_t t2;
+	char s[100] = {0};
+	nt = getDateTime(t);
+	// p = localtime(&t2);
+	
+	printf("zzzzz nt = %d %s\n", nt, s);
+#endif
 
+	if (0)
+	{
+		// char time[100] = "2020/03/25 11:09:42 .761197";
+		char time_format[100] = "%Y/%m/%d %H:%M:%S";
+		// printf("origin  is %s\n", time);
+
+		/* to tm */
+		struct tm tm;
+		strptime(time, time_format, &tm);
+		printf("tm      is %04d-%02d-%02d %02d:%02d:%02d\n", 1900 + tm.tm_year, 1 + tm.tm_mon, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec);
+
+		/* to time_t */
+		time_t tt;
+		tt = mktime(&tm);
+		printf("time_t  is %lu\n", tt);
+
+		/* to timeval */
+		struct timeval tv;
+		tv.tv_sec = tt;
+		// tv.tv_usec = atoi(time + 21);		// 21 = strlen("2020/03/25 11:09:42 .")
+		printf("timeval is %ld.%06ld\n", tv.tv_sec, tv.tv_usec);
+
+	}
 	// printf("%s\n", str);
 	return 0;
 }

@@ -23,7 +23,8 @@ typedef struct
 void f0();
 void f1();
 
-callback_t callbacks[] = {
+callback_t callbacks[] =
+{
 	{"cmd0", f0},
 	{"cmd1", f1},
 };

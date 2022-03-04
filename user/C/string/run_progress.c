@@ -56,7 +56,7 @@ int main(int argc, char const *argv[])
 
 	double f = 0.534;
 	int d = 2;
-	printf("%d\n", (int)((f/d<1)?1:(f/d)));
+	printf("%d\n", (int)((f / d < 1) ? 1 : (f / d)));
 
 	return 0;
 }

@@ -33,21 +33,21 @@ int main(int argc, char *agrv[])
 
 	printf("Uptime = %ds\nLoad: 1 min%d / 5 min %d / 15 min %d\n"
 
-		   "RAM: total %d / free %d /shared%d\n"
+	       "RAM: total %d / free %d /shared%d\n"
 
-		   "Memory in buffers = %d\nSwap:total%d/free%d\n"
+	       "Memory in buffers = %d\nSwap:total%d/free%d\n"
 
-		   "Number of processes = %d\n",
+	       "Number of processes = %d\n",
 
-		   s_info.uptime, s_info.loads[0],
+	       s_info.uptime, s_info.loads[0],
 
-		   s_info.loads[1], s_info.loads[2],
+	       s_info.loads[1], s_info.loads[2],
 
-		   s_info.totalram, s_info.freeram,
+	       s_info.totalram, s_info.freeram,
 
-		   s_info.totalswap, s_info.freeswap,
+	       s_info.totalswap, s_info.freeswap,
 
-		   s_info.procs);
+	       s_info.procs);
 
 	return 0;
 }

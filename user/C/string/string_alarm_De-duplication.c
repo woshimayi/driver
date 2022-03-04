@@ -1,13 +1,13 @@
 /*
- * @*************************************: 
+ * @*************************************:
  * @FilePath: /user/C/string/string_alarm_De-duplication.c
- * @version: 
+ * @version:
  * @Author: dof
  * @Date: 2022-01-06 17:11:07
  * @LastEditors: dof
  * @LastEditTime: 2022-01-06 17:21:12
  * @Descripttion: De-duplication   字符串 数字去重
- * @**************************************: 
+ * @**************************************:
  */
 
 #include <stdio.h>
@@ -17,47 +17,47 @@
 
 void cmc_getDiffAlarmNumber(const char *newAlarmNumber, const char *oldAlarmNumber, char *alarmNumber, int len)
 {
-    char newAlarmNumberTmp[128] = {0};
-    char oldAlarmNumberTmp[128] = {0};
-    char *token = NULL;
+	char newAlarmNumberTmp[128] = {0};
+	char oldAlarmNumberTmp[128] = {0};
+	char *token = NULL;
 
-    if ((NULL == newAlarmNumber && NULL == oldAlarmNumber) || NULL == alarmNumber)
-    {
-        printf("Paraments is illegal: <%s|%s|%s>\n", newAlarmNumber, oldAlarmNumber, alarmNumber);
-        return;
-    }
+	if ((NULL == newAlarmNumber && NULL == oldAlarmNumber) || NULL == alarmNumber)
+	{
+		printf("Paraments is illegal: <%s|%s|%s>\n", newAlarmNumber, oldAlarmNumber, alarmNumber);
+		return;
+	}
 
-    strncpy(newAlarmNumberTmp, newAlarmNumber, sizeof(newAlarmNumberTmp));
-    strncpy(oldAlarmNumberTmp, oldAlarmNumber, sizeof(oldAlarmNumberTmp));
+	strncpy(newAlarmNumberTmp, newAlarmNumber, sizeof(newAlarmNumberTmp));
+	strncpy(oldAlarmNumberTmp, oldAlarmNumber, sizeof(oldAlarmNumberTmp));
 
-    token = strtok(newAlarmNumberTmp, ",");
-    while(NULL != token)
-    {
-        if (!strstr(oldAlarmNumberTmp, token))
-        {
-            strncpy(alarmNumber, token, len);
-            return;
-        }
+	token = strtok(newAlarmNumberTmp, ",");
+	while (NULL != token)
+	{
+		if (!strstr(oldAlarmNumberTmp, token))
+		{
+			strncpy(alarmNumber, token, len);
+			return;
+		}
 
-        token = strtok(NULL, ",");
-    }
+		token = strtok(NULL, ",");
+	}
 
-    token = NULL;
-    strncpy(newAlarmNumberTmp, newAlarmNumber, sizeof(newAlarmNumberTmp));
-    strncpy(oldAlarmNumberTmp, oldAlarmNumber, sizeof(oldAlarmNumberTmp));
-    token = strtok(oldAlarmNumberTmp, ",");
-    while(NULL != token)
-    {
-        if (!strstr(newAlarmNumberTmp, token))
-        {
-            strncpy(alarmNumber, token, len);
-            return;
-        }
+	token = NULL;
+	strncpy(newAlarmNumberTmp, newAlarmNumber, sizeof(newAlarmNumberTmp));
+	strncpy(oldAlarmNumberTmp, oldAlarmNumber, sizeof(oldAlarmNumberTmp));
+	token = strtok(oldAlarmNumberTmp, ",");
+	while (NULL != token)
+	{
+		if (!strstr(newAlarmNumberTmp, token))
+		{
+			strncpy(alarmNumber, token, len);
+			return;
+		}
 
-        token = strtok(NULL, ",");
-    }
+		token = strtok(NULL, ",");
+	}
 
-    memset(alarmNumber, 0, len);
+	memset(alarmNumber, 0, len);
 }
 
 

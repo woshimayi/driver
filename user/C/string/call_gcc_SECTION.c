@@ -32,11 +32,13 @@ typedef struct
 } node_t;
 
 // 结构体变量a位于自定义段ss
-SEC node_t a = {
+SEC node_t a =
+{
 	.p = func_1,
 };
 
-SEC node_t b = {
+SEC node_t b =
+{
 	.p = func_2,
 };
 

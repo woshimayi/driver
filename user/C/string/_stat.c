@@ -1,13 +1,13 @@
 /*
- * @*************************************: 
+ * @*************************************:
  * @FilePath: /user/C/string/_stat.c
- * @version: 
+ * @version:
  * @Author: dof
  * @Date: 2021-10-20 19:33:39
  * @LastEditors: dof
  * @LastEditTime: 2022-01-20 17:54:54
- * @Descripttion: 
- * @**************************************: 
+ * @Descripttion:
+ * @**************************************:
  */
 #include <stdio.h>
 #include <stdlib.h>

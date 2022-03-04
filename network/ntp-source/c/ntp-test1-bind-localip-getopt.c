@@ -373,7 +373,7 @@ int main(int argc, char const *argv[])
             default:
                 for (i = 0; i < argc; i++)
                 {
-                    printf("zzzzzzzzzzzzz %s ", argv[i]);
+                    printf("%s ", argv[i]);
                 }
                 printf("\n");
                 break;

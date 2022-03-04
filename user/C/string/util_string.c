@@ -5,7 +5,7 @@
  * @Author: dof
  * @Date: 2021-11-23 11:34:40
  * @LastEditors: dof
- * @LastEditTime: 2021-12-29 15:21:27
+ * @LastEditTime: 2022-02-17 14:52:08
  * @Descripttion:
  * @**************************************:
  */
@@ -216,7 +216,7 @@ char **split(const char *input, char flag)
 	return pt;
 }
 
-char str_msplit(char input, char * splitChar)
+char str_msplit(char input, char *splitChar)
 {
 	int j, in = 0;
 	// char buffer[100] = "Fred male 25,John male 62,Anna female 16";
@@ -252,6 +252,72 @@ char str_msplit(char input, char * splitChar)
 	}
 }
 
+void utils_string2jsonlist(const char *source)
+{
+	char **pt = NULL;
+	int j, n = 0;
+	int count = 1;
+	int len = strlen(source);
+	char tmp[len + 1];
+	tmp[0] = '\0';
+	char flag = ',';
+	int i = 0;
+
+	for (i = 0; i < len; ++i)
+	{
+		if (source[i] == flag && source[i + 1] == '\0')
+			continue;
+		else if (source[i] == flag && source[i + 1] != flag)
+			count++;
+	}
+
+	pt = (char **)malloc((count + 1) * sizeof(char *));
+
+	count = 0;
+	for (i = 0; i < len; ++i)
+	{
+		if (i == len - 1 && source[i] != flag)
+		{
+			tmp[n++] = source[i];
+			tmp[n] = '\0';
+			j = strlen(tmp) + 1;
+			pt[count] = (char *)malloc(j * sizeof(char));
+			strcpy(pt[count++], tmp);
+		}
+		else if (source[i] == flag)
+		{
+			j = strlen(tmp);
+			if (j != 0)
+			{
+				tmp[n] = '\0';
+				pt[count] = (char *)malloc((j + 1) * sizeof(char));
+				strcpy(pt[count++], tmp);
+				n = 0;
+				tmp[0] = '\0';
+			}
+		}
+		else
+		{
+			tmp[n++] = source[i];
+		}
+	}
+	pt[count] = NULL;
+
+	for (i = 0; i < count; i++)
+	{
+		printf("pt = %s\n", pt[i]);
+		// jsonOut.Add(pt[i]);
+		free(pt[i]);
+		pt[i] = NULL;
+	}
+
+	if (pt)
+	{
+		free(pt);
+		pt = NULL;
+	}
+
+}
 
 int main()
 {
@@ -349,5 +415,9 @@ int main()
 	// if (p3)
 	// 	free(p3);
 
+	char emptyStr[1] = {0};
+	printf("%lu\n", strlen(emptyStr));
 	printf("%d\n", atoi(""));
+	char str_1[1024] = "asd,qwe,ert,tyu,iop";
+	natived_utils_string2jsonlist(str_1);
 }

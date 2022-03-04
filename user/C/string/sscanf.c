@@ -1,13 +1,13 @@
 /*
- * @*************************************: 
+ * @*************************************:
  * @FilePath: /user/C/string/sscanf.c
- * @version: 
+ * @version:
  * @Author: dof
  * @Date: 2021-10-20 19:33:39
  * @LastEditors: dof
  * @LastEditTime: 2021-12-10 17:07:54
- * @Descripttion: 
- * @**************************************: 
+ * @Descripttion:
+ * @**************************************:
  */
 #include <stdio.h>
 #include <string.h>
@@ -28,17 +28,17 @@ int main(int argc, char *argv[])
 	sscanf(str, "sdfsd_yes_no=%d&asda_flag=%d", &yes, &flag);
 	printf("yes=%d falg=%d\n", yes, flag);
 
-	//  过滤数字 
-	int sport=0;
+	//  过滤数字
+	int sport = 0;
 	int eport = 0;
-	
+
 	sscanf("1001-8080", "%d-%d", &sport, &eport);
 	printf("%d\n%d\n", sport, eport);
-	
-	// 过滤字符串 
+
+	// 过滤字符串
 	char startport[16] = {0};
 	char endport[16] = {0};
-	
+
 	sscanf("asd-sdf", "%[a-z]-%[a-z]", startport, endport);
 	printf("%s\n%s\n", startport, endport);
 
@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
 	printf("str = %s\n", str1);
 
 	// 正则表达式的百分号后面多了一个3，这告诉sscanf只拷贝3个字符给str，然后把第4个字符设为null字符
-	sscanf( "123456" , "%3s" , str1);
+	sscanf("123456", "%3s", str1);
 	printf("str = %s\n", str1);
 
 	// 括号里面的a-z就是一个正则表达式，它可以表示从a到z的任意字符，
@@ -72,7 +72,7 @@ int main(int argc, char *argv[])
 	// 注意1：%只能使用一次，但%*可以使用多次，比如在这个实验里面，先用%*[A-Z]过滤大写字母，然后用%*[a-z]过滤小写字母。
 	// 注意2：^后面可以带多个条件，且这些条件都受^的作用，比如^a-z=表示^a-z且^=(既不是小写字母，也不是等于号)
 	memset(str1, '!', sizeof(str1));
-	sscanf( "AAAaaaBC=" , "%*[A-Z]%*[a-z]%[^a-z=]" , str1) ;
+	sscanf("AAAaaaBC=", "%*[A-Z]%*[a-z]%[^a-z=]", str1) ;
 	printf("str z = %s\n", str1);
 
 	int k = 0;

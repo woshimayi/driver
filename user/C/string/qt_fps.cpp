@@ -3,7 +3,8 @@
 class Widget : public QWidget
 {
 	Q_OBJECT
-  public: Widget(QWidget *parent = 0);
+  public:
+	Widget(QWidget *parent = 0);
   protected:
 	void paintEvent(QPaintEvent *event);
   private:
