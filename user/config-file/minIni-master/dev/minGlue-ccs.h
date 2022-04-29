@@ -12,7 +12,7 @@
 #define INI_BUFFERSIZE  256       /* maximum line length, maximum path length */
 
 #ifndef FAT_PIC_C
-  #error FAT library must be included before this module
+    #error FAT library must be included before this module
 #endif
 #define const                     /* keyword not supported by CCS */
 
@@ -34,31 +34,31 @@
  */
 static int ini_rename(char *source, char *dest)
 {
-  FILE fr, fw;
-  int n;
+    FILE fr, fw;
+    int n;
 
-  if (fatopen(source, "r", &fr) != GOODEC)
-    return 0;
-  if (rm_file(dest) != 0)
-    return 0;
-  if (fatopen(dest, "w", &fw) != GOODEC)
-    return 0;
+    if (fatopen(source, "r", &fr) != GOODEC)
+        return 0;
+    if (rm_file(dest) != 0)
+        return 0;
+    if (fatopen(dest, "w", &fw) != GOODEC)
+        return 0;
 
-  /* With some "insider knowledge", we can save some memory: the "source"
-   * parameter holds a filename that was built from the "dest" parameter. It
-   * was built in a local buffer with the size INI_BUFFERSIZE. We can reuse
-   * this buffer for copying the file.
-   */
-  while (n=fatread(source, 1, INI_BUFFERSIZE, &fr))
-    fatwrite(source, 1, n, &fw);
+    /* With some "insider knowledge", we can save some memory: the "source"
+     * parameter holds a filename that was built from the "dest" parameter. It
+     * was built in a local buffer with the size INI_BUFFERSIZE. We can reuse
+     * this buffer for copying the file.
+     */
+    while (n = fatread(source, 1, INI_BUFFERSIZE, &fr))
+        fatwrite(source, 1, n, &fw);
 
-  fatclose(&fr);
-  fatclose(&fw);
+    fatclose(&fr);
+    fatclose(&fw);
 
-  /* Now we need to delete the source file. However, we have garbled the buffer
-   * that held the filename of the source. So we need to build it again.
-   */
-  ini_tempname(source, dest, INI_BUFFERSIZE);
-  return rm_file(source) == 0;
+    /* Now we need to delete the source file. However, we have garbled the buffer
+     * that held the filename of the source. So we need to build it again.
+     */
+    ini_tempname(source, dest, INI_BUFFERSIZE);
+    return rm_file(source) == 0;
 }
 #endif

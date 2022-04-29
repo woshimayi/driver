@@ -32,27 +32,28 @@
  */
 static int ini_read(char *buffer, int size, INI_FILETYPE *file)
 {
-  size_t numread = size;
-  char *eol;
+    size_t numread = size;
+    char *eol;
 
-  if ((numread = FSfread(buffer, 1, size, *file)) == 0)
-    return 0;                   /* at EOF */
-  if ((eol = strchr(buffer, '\n')) == NULL)
-    eol = strchr(buffer, '\r');
-  if (eol != NULL) {
-    /* terminate the buffer */
-    *++eol = '\0';
-    /* "unread" the data that was read too much */
-    FSfseek(*file, - (int)(numread - (size_t)(eol - buffer)), SEEK_CUR);
-  } /* if */
-  return 1;
+    if ((numread = FSfread(buffer, 1, size, *file)) == 0)
+        return 0;                   /* at EOF */
+    if ((eol = strchr(buffer, '\n')) == NULL)
+        eol = strchr(buffer, '\r');
+    if (eol != NULL)
+    {
+        /* terminate the buffer */
+        *++eol = '\0';
+        /* "unread" the data that was read too much */
+        FSfseek(*file, - (int)(numread - (size_t)(eol - buffer)), SEEK_CUR);
+    } /* if */
+    return 1;
 }
 
 #ifndef INI_READONLY
 static int ini_rename(const char *source, const char *dest)
 {
-  FSFILE* ftmp = FSfopen((source), FS_READ);
-  FSrename((dest), ftmp);
-  return FSfclose(ftmp) == 0;
+    FSFILE *ftmp = FSfopen((source), FS_READ);
+    FSrename((dest), ftmp);
+    return FSfclose(ftmp) == 0;
 }
 #endif

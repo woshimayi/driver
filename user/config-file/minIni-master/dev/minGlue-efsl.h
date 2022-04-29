@@ -33,31 +33,31 @@ extern EmbeddedFileSystem g_efs;
  */
 static int ini_rename(char *source, const char *dest)
 {
-  EmbeddedFile fr, fw;
-  int n;
+    EmbeddedFile fr, fw;
+    int n;
 
-  if (file_fopen(&fr, &g_efs.myFs, source, 'r') != 0)
-    return 0;
-  if (rmfile(&g_efs.myFs, (char*)dest) != 0)
-    return 0;
-  if (file_fopen(&fw, &g_efs.myFs, (char*)dest, 'w') != 0)
-    return 0;
+    if (file_fopen(&fr, &g_efs.myFs, source, 'r') != 0)
+        return 0;
+    if (rmfile(&g_efs.myFs, (char *)dest) != 0)
+        return 0;
+    if (file_fopen(&fw, &g_efs.myFs, (char *)dest, 'w') != 0)
+        return 0;
 
-  /* With some "insider knowledge", we can save some memory: the "source"
-   * parameter holds a filename that was built from the "dest" parameter. It
-   * was built in buffer and this buffer has the size INI_BUFFERSIZE. We can
-   * reuse this buffer for copying the file.
-   */
-  while (n=file_read(&fr, INI_BUFFERSIZE, source))
-    file_write(&fw, n, source);
+    /* With some "insider knowledge", we can save some memory: the "source"
+     * parameter holds a filename that was built from the "dest" parameter. It
+     * was built in buffer and this buffer has the size INI_BUFFERSIZE. We can
+     * reuse this buffer for copying the file.
+     */
+    while (n = file_read(&fr, INI_BUFFERSIZE, source))
+        file_write(&fw, n, source);
 
-  file_fclose(&fr);
-  file_fclose(&fw);
+    file_fclose(&fr);
+    file_fclose(&fw);
 
-  /* Now we need to delete the source file. However, we have garbled the buffer
-   * that held the filename of the source. So we need to build it again.
-   */
-  ini_tempname(source, dest, INI_BUFFERSIZE);
-  return rmfile(&g_efs.myFs, source) == 0;
+    /* Now we need to delete the source file. However, we have garbled the buffer
+     * that held the filename of the source. So we need to build it again.
+     */
+    ini_tempname(source, dest, INI_BUFFERSIZE);
+    return rmfile(&g_efs.myFs, source) == 0;
 }
 #endif

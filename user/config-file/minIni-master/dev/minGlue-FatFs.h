@@ -21,7 +21,7 @@
  * "\r\r\n").
 */
 #if defined FF_USE_STRFUNC && FF_USE_STRFUNC == 2 && !defined INI_LINETERM
-  #define INI_LINETERM  "\n"
+    #define INI_LINETERM  "\n"
 #endif
 
 #define INI_FILETYPE    FIL
@@ -38,8 +38,8 @@
 
 static int ini_rename(TCHAR *source, const TCHAR *dest)
 {
-  /* Function f_rename() does not allow drive letters in the destination file */
-  char *drive = strchr(dest, ':');
-  drive = (drive == NULL) ? dest : drive + 1;
-  return (f_rename(source, drive) == FR_OK);
+    /* Function f_rename() does not allow drive letters in the destination file */
+    char *drive = strchr(dest, ':');
+    drive = (drive == NULL) ? dest : drive + 1;
+    return (f_rename(source, drive) == FR_OK);
 }
