@@ -1,3 +1,14 @@
+/*
+ * @*************************************: 
+ * @FilePath: /user/C/string/regex_my.c
+ * @version: 
+ * @Author: dof
+ * @Date: 2021-11-30 11:39:26
+ * @LastEditors: dof
+ * @LastEditTime: 2022-03-10 19:25:59
+ * @Descripttion: 
+ * @**************************************: 
+ */
 #if 0
 #include <sys/types.h>
 #include <regex.h>
@@ -57,7 +68,7 @@ int main(void)
 	// char *reg_str = "[-](.*)[-]";
 
 	char *test_str = "asdas=4";
-	char *reg_str = "(\w)=(\1)";
+	char *reg_str = "(\w)=(\d)";
 
 
 

@@ -5,7 +5,7 @@
  * @Author: dof
  * @Date: 2021-10-20 19:33:39
  * @LastEditors: dof
- * @LastEditTime: 2021-12-10 17:07:54
+ * @LastEditTime: 2022-06-23 11:59:18
  * @Descripttion:
  * @**************************************:
  */
@@ -83,5 +83,14 @@ int main(int argc, char *argv[])
 	memset(str1, '!', sizeof(str1));
 	sscanf("123334abcd123", "%[0-9]*", str1);
 	printf("str d = %s\n", str1);
+
+
+	memset(str1, '!', sizeof(str1));
+	char resp_ms[3][32] = {0};
+	char ip[32] = {0};
+	// sscanf("192.168.1.1| 123.4 345.6 157.5", "%s%[|] %s %s %s", ip, resp_ms[0], resp_ms[1], resp_ms[2]);
+	sscanf(" |,*,*,*", "%s%[|,]%s%[^,]%s%[^,]%s", ip, resp_ms[0], resp_ms[1], resp_ms[2]);
+	printf("str d = %s %s %s %s\n", ip, resp_ms[0], resp_ms[1], resp_ms[2]);
+
 	return 0;
 }

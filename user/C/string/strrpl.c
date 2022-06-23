@@ -52,7 +52,7 @@ char *strrpl(char *s, const char *s1, const char *s2)
 
 int main(int argc, const char *argv[])
 {
-#if 0
+#if 1
 	char date[128] = "04/29/2020";
 	int M = 0;
 	int D = 0;
@@ -96,30 +96,6 @@ int main(int argc, const char *argv[])
 	//		printf("%s\n", zoneTime[3].zoneName);
 	//		printf("%s\n", zoneTime[4].zoneName);
 	//	}
-
-
-#define _LINE_LENGTH 128
-
-	FILE *file;
-	char line[_LINE_LENGTH];
-	file = popen("date +%", "r");
-	if (NULL != file)
-	{
-		while (fgets(line, _LINE_LENGTH, file) != NULL)
-		{
-			printf("line=%s\n", line);
-		}
-	}
-	else
-	{
-		return 1;
-	}
-	pclose(file);
-
-
-
-
-
 
 	return 0;
 }

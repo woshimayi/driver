@@ -5,7 +5,7 @@
  * @Author: dof
  * @Date: 2021-11-23 11:34:40
  * @LastEditors: dof
- * @LastEditTime: 2022-02-17 14:52:08
+ * @LastEditTime: 2022-06-23 16:17:43
  * @Descripttion:
  * @**************************************:
  */
@@ -319,6 +319,22 @@ void utils_string2jsonlist(const char *source)
 
 }
 
+
+unsigned int cmsUtl_strlen(const char *src)
+{
+   char emptyStr[1] = {0};
+   char *str = (char *)src;
+   
+   if(src == NULL)
+   {
+      str = emptyStr;
+   }
+   printf("%d\n", strlen(str));
+
+   return strlen(str);
+} 
+
+
 int main()
 {
 	//	char cmd[256] = "bs /b/e egress_tm/dir=us,index=1 | grep queue_stat | awk -F '[{}]' '{print $4 $7}'";
@@ -383,11 +399,11 @@ int main()
 	//
 
 	// char str[] = "00112233eeDD";
-	char *str = "00112233eeDD";
+	// char *str = "00112233eeDD";
 	// char tmp[128] = {0};
 	// stringtoupper(str, &tmp);
-	printf("main tmp = %s\n", strupr(str));
-	printf("main tmp = %s\n", strlwr(str));
+	// printf("main tmp = %s\n", strupr(str));
+	// printf("main tmp = %s\n", strlwr(str));
 
 	// char *tmp = strupr(str);
 	// printf("main tmp = %s\n", tmp);
@@ -415,9 +431,12 @@ int main()
 	// if (p3)
 	// 	free(p3);
 
-	char emptyStr[1] = {0};
-	printf("%lu\n", strlen(emptyStr));
-	printf("%d\n", atoi(""));
-	char str_1[1024] = "asd,qwe,ert,tyu,iop";
-	natived_utils_string2jsonlist(str_1);
+	// char emptyStr[1] = {0};
+	// printf("%lu\n", strlen(emptyStr));
+	// printf("%d\n", atoi(""));
+	// char str_1[1024] = "asd,qwe,ert,tyu,iop";
+	// natived_utils_string2jsonlist(str_1);
+
+	char *str = NULL;
+	cmsUtl_strlen(str);
 }
