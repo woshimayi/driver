@@ -5,7 +5,7 @@
  * @Author: dof
  * @Date: 2021-11-23 11:34:40
  * @LastEditors: dof
- * @LastEditTime: 2022-06-23 16:17:43
+ * @LastEditTime: 2022-06-23 17:24:34
  * @Descripttion:
  * @**************************************:
  */
@@ -319,7 +319,20 @@ void utils_string2jsonlist(const char *source)
 
 }
 
-
+#if 0
+unsigned int cmsUtl_strlen(const char *src)
+{
+   char emptyStr = '\0';
+   char *str = (char *)src;
+   
+   if(src == NULL)
+   {
+      str = &emptyStr;
+   }
+   
+   return strlen(str);
+}
+#else
 unsigned int cmsUtl_strlen(const char *src)
 {
    char emptyStr[1] = {0};
@@ -329,10 +342,10 @@ unsigned int cmsUtl_strlen(const char *src)
    {
       str = emptyStr;
    }
-   printf("%d\n", strlen(str));
-
+   
    return strlen(str);
-} 
+}
+#endif
 
 
 int main()
@@ -438,5 +451,5 @@ int main()
 	// natived_utils_string2jsonlist(str_1);
 
 	char *str = NULL;
-	cmsUtl_strlen(str);
+	printf("%d\n", cmsUtl_strlen(str));
 }
