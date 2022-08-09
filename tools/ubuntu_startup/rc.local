@@ -1,0 +1,5 @@
+#!/bin/sh
+echo "rc,local start success" > /usr/local/test.log
+ifconfig enp0s3 up
+dhclient -v
+exit 0
