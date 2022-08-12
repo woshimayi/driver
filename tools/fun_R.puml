@@ -1,0 +1,17 @@
+@startuml
+' 函数链式调用, 实现递归
+
+fun  -> fun1
+fun1 -> fun2
+fun2 -> fun3
+fun3 -> fun4
+fun4 -> fun5
+fun5 -> fun6
+fun6 -> fun
+
+fun4 -> fun
+fun5 -> fun1
+
+
+
+@enduml

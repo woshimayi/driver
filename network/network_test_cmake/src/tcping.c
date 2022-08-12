@@ -4,7 +4,7 @@
  * @Author: dof
  * @Date: 2020-03-29 09:46:25
  * @LastEditors: dof
- * @LastEditTime: 2021-02-25 17:06:28
+ * @LastEditTime: 2022-07-21 14:10:31
  * @Descripttion: 
  */
 #include <stdio.h>
@@ -147,6 +147,11 @@ int connect_to(struct addrinfo *addr, const char *ifname)
     int flags;
     struct ifreq ifr;
 
+    struct timeval timeout;
+	timeout.tv_sec = 2;
+	timeout.tv_usec = 0;
+
+
     /* try to connect for each of the entries: */
     while (addr != NULL)
     {
@@ -160,6 +165,20 @@ int connect_to(struct addrinfo *addr, const char *ifname)
             perror("SO_BINDTODEVICE failed");
             goto next_addr1;
         }
+
+		if (setsockopt(fd, SOL_SOCKET, SO_SNDTIMEO, &timeout, sizeof(timeout)) < 0)
+        {
+            perror("SO_SNDTIMEO failed");
+			goto next_addr1;
+        }
+
+		if (setsockopt(fd, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout)) < 0)
+        {
+            perror("SO_RCVTIMEO failed");
+			goto next_addr1;
+        }
+
+
 #if 1
         //  设置非阻塞模式
         flags = fcntl(fd, F_GETFL, 0);

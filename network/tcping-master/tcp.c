@@ -9,8 +9,43 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <arpa/inet.h>
 
 #include "tcp.h"
+
+int lookup_6(char *host, char *portnr, struct addrinfo *res)
+{
+    struct addrinfo hints;
+    // struct addrinfo *cur;
+    int ret;
+    
+    // struct sockaddr_in6 *addr;
+    
+    // char ipbuf[128];
+
+    memset(&hints, 0, sizeof(struct addrinfo));
+    hints.ai_family = AF_INET6; /* Allow IPv4 */
+    hints.ai_flags = AI_ALL; /* For wildcard IP address */
+    hints.ai_protocol = 0; /* Any protocol */
+    hints.ai_socktype = SOCK_DGRAM;
+
+    ret = getaddrinfo(host, portnr, &hints, &res);
+
+    if (ret == -1)
+    {
+        perror("getaddrinfo");
+    }
+
+    // for (cur = res; cur != NULL; cur = cur->ai_next)
+    // {
+        // addr = (struct sockaddr_in *)cur->ai_addr;
+        // printf("addr 1 = %s\n", inet_ntop(AF_INET6, &addr->sin6_addr, ipbuf, sizeof(ipbuf)));
+        // printf("addr 2 = %s ret = %d\n", ipbuf, inet_pton(AF_INET6, ipbuf, &addr->sin6_addr));
+    // }
+    // freeaddrinfo(res);
+
+    return ret;
+}
 
 int lookup(char *host, char *portnr, struct addrinfo **res)
 {
@@ -60,11 +95,17 @@ int connect_to(struct addrinfo *addr, struct timeval *rtt)
             close(fd);
             return 0;
         }
+        else
+        {
+            perror("connect fail");
+        }
 
 next_addr1:
-        close(fd);
+    perror("setsocketopt fail");
+    close(fd);
 next_addr0:
-        addr = addr->ai_next;
+    perror("socket fail");
+    addr = addr->ai_next;
     }
 
     rv = rv ? rv : -errno;

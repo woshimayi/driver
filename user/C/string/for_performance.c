@@ -5,7 +5,7 @@
  * @Author: dof
  * @Date: 2022-07-05 15:47:13
  * @LastEditors: dof
- * @LastEditTime: 2022-07-05 15:55:13
+ * @LastEditTime: 2022-07-05 19:24:02
  * @Descripttion: 优化循环时间性能
  * @**************************************: 
  */
@@ -65,6 +65,7 @@ int main(int argc, char *argv[])
 	}
 
 	data[LOOP_NUM] = rand_num;  // add a sentinel
+	printf("%d\n", data[LOOP_NUM]);
 
 	gettimeofday(&tv1, 0);
 	i = 0;

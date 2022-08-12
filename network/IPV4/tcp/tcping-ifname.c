@@ -1,10 +1,10 @@
 /*
- * @FilePath: /driver/network/tcping.c
+ * @FilePath: /driver/network/tcping-ifname.c
  * @version: 
  * @Author: sueRimn
  * @Date: 2020-03-29 09:46:25
  * @LastEditors: dof
- * @LastEditTime: 2021-07-28 10:48:11
+ * @LastEditTime: 2022-08-05 09:29:25
  * @Descripttion: 
  */
 
@@ -177,6 +177,7 @@ int connect_to(struct addrinfo *addr, const char *ifname)
         }
         else 
         {
+            perror("connect fail");
             struct timeval temp;
             temp.tv_sec = 2;
             select(0, NULL, NULL, NULL, &temp);
@@ -185,6 +186,7 @@ int connect_to(struct addrinfo *addr, const char *ifname)
 next_addr1:
         close(fd);
 next_addr0:
+        perror("goto next_addr0");
         addr = addr->ai_next;
     }
 
@@ -239,7 +241,8 @@ int main(int argc, char * argv[])
         perror("param < 2");
         return 0;
     }
-    char *url = "http://www.baidu.com/ACS-server/ACS";
+    
+    char *url = "http://172.16.30.128:9090";
     char host[128] = {0};
     int port = 0;
     char buf[32] = {0};

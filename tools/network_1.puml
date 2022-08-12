@@ -1,0 +1,32 @@
+@startuml
+
+nwdiag {
+	internet [shape = cloud]
+
+	network switch {
+		address = "192.168.1.1"
+		internet
+		router [description = "<&cog*4>\nrouter"]
+		wifi [description = "<&wifi*4>\nwifi"]
+		zs-work;
+	}
+
+	network wifi {
+		address = "192.168.88.1"
+		wifi
+		iphone [description = "<&person*4>\niphone"]
+		zs-lenovo
+	}
+	
+	
+
+	network router {
+		address = "192.168.99.1"
+		router [description = "<&cog*4>\nrouter"]
+		zs-work
+		zs-lenovo 
+		zs-ubuntu  [description = "<&server>\nserver"]
+	}
+	
+}
+@enduml

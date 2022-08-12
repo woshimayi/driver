@@ -286,6 +286,83 @@ void sleep_ms(UINT32 ms)
 	return ;
 }
 
+
+
+int oalTms_getXSIDateTimeByFormat(UINT32 t, char *buf, UINT32 bufLen, char *format)
+{
+	int          c;
+   time_t       now;
+	struct tm   *tmp;
+
+   if (t == 0)
+   {
+      now = time(NULL);
+   }
+   else
+   {
+      now = t;
+   }
+
+	tmp = localtime(&now);
+   memset(buf, 0, bufLen);
+	if(format == NULL)
+		c = strftime(buf, bufLen, "%Y-%m-%dT%H:%M:%S", tmp);
+	else
+		c = strftime(buf, bufLen, format, tmp);
+   if ((c == 0) || (c+1 > (int) bufLen))
+   {
+      /* buf was not long enough */
+      return -1;
+   }
+
+	/* fix missing : in time-zone offset-- change -500 to -5:00 */
+   buf[c+1] = '\0';
+   if(format == NULL)
+   {
+       buf[c] = buf[c-1];
+       buf[c-1] = buf[c-2];
+       buf[c-2]=':';
+   }
+
+   return 0;
+}
+int oalTms_getXSIDateTimeMicroseconds(UINT32 t, UINT32 t_ms, char *buf, UINT32 bufLen)
+{
+   int          c;
+   struct tm   *tmp;
+   struct timeval tv;
+   char *format;
+
+   if (t == 0 && t_ms == 0)
+   {
+      gettimeofday(&tv, NULL);
+   }
+   else
+   {
+      tv.tv_sec = t;
+      tv.tv_usec = t_ms;
+   }
+
+   tmp = localtime(&tv.tv_sec);
+   format = (char *) malloc(bufLen);
+   if (!format) 
+      return -1;
+
+   memset(buf, 0, bufLen);
+   memset(format, 0, bufLen);
+	c = strftime(format, bufLen, "%Y-%m-%dT%H:%M:%S.%%06u", tmp);
+   snprintf(buf, bufLen, format, tv.tv_usec);
+   free(format);
+   if ((c == 0) || (c+1 > (int) bufLen))
+   {
+      /* buf was not long enough */
+      return -1;
+   }
+
+   return 0;
+}
+
+
 int main()
 {
 	//	UtilTimestamp *oldtime = (UtilTimestamp*)malloc(sizeof(UtilTimestamp));

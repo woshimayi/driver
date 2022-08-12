@@ -18,6 +18,19 @@
                 "kind": "build",
                 "isDefault": true
             }
+        },
+        {
+            "label": "tcping compile",
+            "type": "shell",
+            "command": "make -C tcping-master",
+            "args": [],
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
         }
     ]
 }

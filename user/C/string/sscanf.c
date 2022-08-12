@@ -5,7 +5,7 @@
  * @Author: dof
  * @Date: 2021-10-20 19:33:39
  * @LastEditors: dof
- * @LastEditTime: 2022-06-23 11:59:18
+ * @LastEditTime: 2022-07-28 18:16:40
  * @Descripttion:
  * @**************************************:
  */
@@ -20,6 +20,7 @@
 */
 int main(int argc, char *argv[])
 {
+#if 0
 	char str[128] = "sdfsd_yes_no=2&asda_flag=3";
 	int yes = 0;
 	int flag = 0;
@@ -91,6 +92,37 @@ int main(int argc, char *argv[])
 	// sscanf("192.168.1.1| 123.4 345.6 157.5", "%s%[|] %s %s %s", ip, resp_ms[0], resp_ms[1], resp_ms[2]);
 	sscanf(" |,*,*,*", "%s%[|,]%s%[^,]%s%[^,]%s", ip, resp_ms[0], resp_ms[1], resp_ms[2]);
 	printf("str d = %s %s %s %s\n", ip, resp_ms[0], resp_ms[1], resp_ms[2]);
+
+#endif
+
+#define BUF_SIZE_MAX 4096
+
+    char buf[BUF_SIZE_MAX] = "GET  HTTP/1.1";
+	// char buf[BUF_SIZE_MAX] = "GET / HTTP/1.1";
+	// char buf[BUF_SIZE_MAX] = "GET";
+    char method[BUF_SIZE_MAX];
+    char path[BUF_SIZE_MAX];
+    char protocol[BUF_SIZE_MAX];
+
+	int ret = sscanf(buf, "%[^ ] %[^ ] %[^ ]", method, path, protocol);
+
+	if (3 != ret)
+	{
+		if (ret == 2)
+		{
+			memset(path, '\0', sizeof(path));
+			sscanf(buf, "%[^ ] %[^ ]", method, protocol);
+			printf("22222 method = %s, path = %s, protocol = %s\n", method, path, protocol);
+			printf("22222 sscanf error on >>%s<<\n",buf);
+		}
+		else
+		{
+			printf("33333 method = %s, path = %s, protocol = %s\n", method, path, protocol);
+			return -1;
+		}
+	}
+
+	printf("method = %s, path = %s, protocol = %s\n", method, path, protocol);
 
 	return 0;
 }

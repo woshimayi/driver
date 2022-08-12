@@ -1,0 +1,8 @@
+digraph Fun {
+	splines="FALSE";
+
+	fun -> fun1 -> fun2 -> fun3 -> fun4 -> fun5 -> fun
+
+	fun4 -> fun1 
+	fun5 -> fun2
+}

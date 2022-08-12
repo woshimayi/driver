@@ -4,7 +4,7 @@
  * @Author: sueRimn
  * @Date: 2021-01-22 10:35:10
  * @LastEditors: dof
- * @LastEditTime: 2021-12-22 11:35:44
+ * @LastEditTime: 2022-08-02 19:07:02
  * @Descripttion: 获取 指定接口地址
  */
 
@@ -46,7 +46,7 @@ int get_ip_by_ifname(char *ifname, char *pszIPaddr)
 int main(int argc, char const *argv[])
 {
     char ipaddr[20] = {0};
-    get_ip_by_ifname("enp1s0", ipaddr);
+    get_ip_by_ifname("enp0s3", ipaddr);
     printf("ipaddr = %s\n", ipaddr);
     /* code */
     return 0;

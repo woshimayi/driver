@@ -5,7 +5,7 @@
  * @Author: dof
  * @Date: 2021-11-23 11:34:40
  * @LastEditors: dof
- * @LastEditTime: 2022-06-23 17:24:34
+ * @LastEditTime: 2022-07-19 19:21:21
  * @Descripttion:
  * @**************************************:
  */
@@ -346,6 +346,48 @@ unsigned int cmsUtl_strlen(const char *src)
    return strlen(str);
 }
 #endif
+
+
+int cmsUtl_isValidMacAddress(const char* input)
+{
+   int ret = 1;
+   char *pToken = NULL;
+   char *pLast = NULL;
+   char buf[32];
+   unsigned int i, num;
+
+   if (input == NULL || strlen(input) != 17)
+   {
+	   return 0;
+   }
+
+   /* need to copy since strtok_r updates string */
+   strcpy(buf, input);
+
+   /* Mac address has the following format
+       xx:xx:xx:xx:xx:xx where x is hex number */
+   pToken = strtok_r(buf, ":", &pLast);
+   if ((strlen(pToken) != 2) ||
+       (cmsUtl_strtoul(pToken, NULL, 16, &num) != 0))
+   {
+      ret = 0;
+   }
+   else
+   {
+      for ( i = 0; i < 5; i++ )
+      {
+         pToken = strtok_r(NULL, ":", &pLast);
+         if ((strlen(pToken) != 2) ||
+             (cmsUtl_strtoul(pToken, NULL, 16, &num) != 0))
+         {
+            ret = 0;
+            break;
+         }
+      }
+   }
+
+   return ret;
+}
 
 
 int main()

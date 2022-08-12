@@ -14,13 +14,15 @@ static volatile int stop = 0;
 
 void usage(void)
 {
-    fprintf(stderr, "tcping, (C) 2003 folkert@vanheusden.com\n\n");
+    fprintf(stderr, "tcping, (C) 2003 dof@gmail.com\n\n");
     fprintf(stderr, "hostname	hostname (e.g. localhost)\n");
     fprintf(stderr, "-p portnr	portnumber (e.g. 80)\n");
     fprintf(stderr, "-c count	how many times to connect\n");
     fprintf(stderr, "-i interval	delay between each connect\n");
     fprintf(stderr, "-f		flood connect (no delays)\n");
     fprintf(stderr, "-q		quiet, only returncode\n\n");
+    fprintf(stderr, "-4		prefer ipv4\n\n");
+    fprintf(stderr, "-6		prefer ipv6\n\n");
 }
 
 void handler(int sig)
@@ -40,9 +42,10 @@ int main(int argc, char *argv[])
     double min = 9999.0, avg = 0.0, max = 0.0;
     struct addrinfo *resolved;
     int errcode;
-    int seen_addrnotavail;
+    int seen_addrnotavail = 1;
+    int ipv_mode = 4;
 
-    while((c = getopt(argc, argv, "h:p:c:i:fq?")) != -1)
+    while((c = getopt(argc, argv, "h:p:c:i:fq46?")) != -1)
     {
         switch(c)
         {
@@ -65,6 +68,14 @@ int main(int argc, char *argv[])
             case 'q':
                 quiet = 1;
                 break;
+            
+            case '4':
+                ipv_mode = 4;
+                break;
+            
+            case '6':
+                ipv_mode = 6;
+                break;
 
             case '?':
             default:
@@ -83,14 +94,25 @@ int main(int argc, char *argv[])
 
     signal(SIGTERM, handler);
 
-    if ((errcode = lookup(hostname, portnr, &resolved)) != 0)
+    if (6 == ipv_mode)
     {
-        fprintf(stderr, "loopup err (%d): %s\n", errcode, gai_strerror(errcode));
-        return 2;
+        if ((errcode = lookup_6(hostname, portnr, &resolved)) != 0)
+        {
+            fprintf(stderr, "loopup err (%d): %s\n", errcode, gai_strerror(errcode));
+            return 2;
+        }
+    }
+    else
+    {
+        if ((errcode = lookup(hostname, portnr, &resolved)) != 0)
+        {
+            fprintf(stderr, "loopup err (%d): %s\n", errcode, gai_strerror(errcode));
+            return 2;
+        }
     }
 
     if (!quiet)
-        printf("PING %s:%s\n", hostname, portnr);
+        printf("PING [%s]:%s\n", hostname, portnr);
 
     while((curncount < count || count == -1) && stop == 0)
     {
@@ -99,7 +121,8 @@ int main(int argc, char *argv[])
 
         if ((errcode = connect_to(resolved, &rtt)) != 0)
         {
-            if (errcode != -EADDRNOTAVAIL)   // EADDRNOTAVAIL: Cannot assign requested address  linux 本地端口用尽, 无法建立socket连接
+            perror("connect fail");
+            if (errcode != -EADDRNOTAVAIL) // EADDRNOTAVAIL: Cannot assign requested address  linux 本地端口用尽, 无法建立socket连接
             {
                 printf("error connecting to host (%d): %s\n", -errcode, strerror(-errcode));
                 err++;

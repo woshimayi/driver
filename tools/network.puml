@@ -1,0 +1,59 @@
+@startuml
+nwdiag {
+
+	' group {
+	' 	color = "#00FF00"
+	' 	wifi;
+	' 	router;
+	' 	zs-work;
+	' }
+
+	' group {
+	' 	color = "#FF0000"
+	' 	zs-lenovo;
+	' 	iphone;
+	' }
+
+	group {
+		color = "#00FF00"
+		zs-ubunut 
+		zs-lenovo;
+		zs-work;
+		iphone;
+	}
+
+	group {
+		color = "#0000FF"
+		wifi 
+		router 
+		switch
+	}
+
+	network switch {
+		address = "192.168.1.11"
+		' wifi   [address = "192.168.1.6"]
+		' router [address = "192.168.1.8"]
+		zs-work
+		
+		wifi;
+		router;
+	}
+
+	network wifi {
+		address = "192.168.88.1/24"
+
+		iphone [description = "<&person*4.5>\n user1"];
+		zs-lenovo [description = "<&person*4.5>\n user2"];
+		wifi [shape = cloud]
+		zs-work [description = "<&person*4.5>\n user3"];
+	}
+
+	network router {
+		address = "192.168.99.1/24"
+		router [description = "<&card>\n router"]
+		zs-lenovo [address = "192.168.99.101"]
+		zs-work [address = "192.168.99.102"]
+		zs-ubunut [address = "192.168.99.100", shape = node]
+	}
+}
+@enduml
