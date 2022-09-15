@@ -1,0 +1,82 @@
+@startuml
+
+
+
+pppoe_client -[#red]> pppoe_server : PADI
+
+note left: 发现阶段(PPPoED：PPPoE Discovery)
+
+pppoe_server -> pppoe_client: PADO
+
+pppoe_client -> pppoe_server : PADR
+
+pppoe_server -[#blue]> pppoe_client: PADS
+
+
+pppoe_client -[#red]> pppoe_server : Configure-Request
+
+note left: 会话阶段(PPPoES：PPPoE Session)
+
+pppoe_server --> pppoe_client: Config-Reject
+
+pppoe_client --> pppoe_server : Configure-Request
+
+pppoe_server --> pppoe_client: Configure-Nak
+
+pppoe_client --> pppoe_server : Configure-Request
+
+pppoe_server -[#blue]> pppoe_client: Configure-Ack
+
+
+
+pppoe_client --[#red]> pppoe_server : (Challenge)CHAP
+
+note left: 认证阶段(PPP Authentication：PAP/CHAP)
+
+pppoe_client -> pppoe_server :  Authenticate-request(PAP)
+
+pppoe_server -> Radius : Authenticate-request
+
+Radius -> pppoe_server : Authenticate-Ack
+
+pppoe_server -[#blue]> pppoe_client : Authenticate-Ack
+
+
+pppoe_server -[#red]> pppoe_client: Parmeter-request
+
+note left: NCP协商阶段(NCP: Network Control Protocol)
+
+pppoe_client -> pppoe_server : Parmeter->Ack
+
+pppoe_client -> pppoe_server : Parmeter-request
+
+pppoe_server -[#blue]> pppoe_client : Parmeter->Ack
+
+note right
+主要通过IPCP 
+获取 IP Address, 
+网关、掩码等
+end note
+
+
+
+pppoe_client -[#red]> pppoe_server : Echo request
+
+note left: 会话维持(Session Keep-alive)
+
+pppoe_server -[#blue]> pppoe_client : Echo Reply
+
+
+pppoe_client -[#blue]> pppoe_server : PADT
+
+note left:  会话结束(Session Termination)
+
+
+' PADI -> PADO
+' PADO -> PADS
+' PADS -> PADR
+
+
+
+
+@enduml

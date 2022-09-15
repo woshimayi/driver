@@ -5,7 +5,7 @@
  * @Author: dof
  * @Date: 2021-10-20 19:33:39
  * @LastEditors: dof
- * @LastEditTime: 2022-07-28 18:16:40
+ * @LastEditTime: 2022-08-17 10:13:31
  * @Descripttion:
  * @**************************************:
  */
@@ -20,7 +20,7 @@
 */
 int main(int argc, char *argv[])
 {
-#if 0
+#if 1
 	char str[128] = "sdfsd_yes_no=2&asda_flag=3";
 	int yes = 0;
 	int flag = 0;
@@ -93,7 +93,11 @@ int main(int argc, char *argv[])
 	sscanf(" |,*,*,*", "%s%[|,]%s%[^,]%s%[^,]%s", ip, resp_ms[0], resp_ms[1], resp_ms[2]);
 	printf("str d = %s %s %s %s\n", ip, resp_ms[0], resp_ms[1], resp_ms[2]);
 
-#endif
+	long long num = 0;
+	sscanf("", "%lld", &num);
+	printf("num = %lld\n", num);
+
+#else
 
 #define BUF_SIZE_MAX 4096
 
@@ -123,6 +127,6 @@ int main(int argc, char *argv[])
 	}
 
 	printf("method = %s, path = %s, protocol = %s\n", method, path, protocol);
-
+#endif
 	return 0;
 }
