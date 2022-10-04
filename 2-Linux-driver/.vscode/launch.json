@@ -1,7 +1,36 @@
 {
-    // 使用 IntelliSense 了解相关属性。 
-    // 悬停以查看现有属性的描述。
-    // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
-    "configurations": []
+    "configurations": [
+        {
+            "name": "C/C++ gdb",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${fileDirname}/i2cdump",
+            "args": [
+                "-y",
+                "0",
+                "0x50"
+            ],
+            "stopAtEntry": true,
+            "cwd": "${workspaceFolder}",
+            // "environment": [ // 添加环境变量 使用  "name": "变量名称"， "value":"变量值"
+            //     {
+            //         "name": "LD_LIBRARY_PATH",
+            //         "value": "/home/zs/Documents/driver/2-Linux-driver/i2c-tools-4.2/lib"
+            //     }
+            // ],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            // "preLaunchTask": "linux compile",
+            "miDebuggerPath": "/usr/local/arm/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabihf/bin/arm-linux-gnueabihf-gdb",
+            "miDebuggerServerAddress": "10.8.8.10:1234",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+        },
+    ]
 }

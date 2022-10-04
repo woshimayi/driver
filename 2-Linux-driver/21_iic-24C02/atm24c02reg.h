@@ -1,0 +1,28 @@
+#ifndef ATM24C02_H
+#define ATM24C02_H
+/***************************************************************
+Copyright © ALIENTEK Co., Ltd. 1998-2029. All rights reserved.
+文件名		: atm24c02reg.h
+作者	  	: dof
+版本	   	: V1.0
+描述	   	: ATM24C02寄存器地址描述头文件
+其他	   	: 无
+论坛 	   	: www.openedv.com
+日志	   	: 初版V1.0 2019/9/2 dof创建
+***************************************************************/
+
+#define ATM24C02_ADDR    	0X1E	/* ATM24C02器件地址  */
+
+/* AP3316C寄存器 */
+#define ATM24C02_SYSTEMCONG	0x00	/* 配置寄存器       */
+#define ATM24C02_INTSTATUS	0X01	/* 中断状态寄存器   */
+#define ATM24C02_INTCLEAR	0X02	/* 中断清除寄存器   */
+#define ATM24C02_IRDATALOW	0x0A	/* IR数据低字节     */
+#define ATM24C02_IRDATAHIGH	0x0B	/* IR数据高字节     */
+#define ATM24C02_ALSDATALOW	0x0C	/* ALS数据低字节    */
+#define ATM24C02_ALSDATAHIGH	0X0D	/* ALS数据高字节    */
+#define ATM24C02_PSDATALOW	0X0E	/* PS数据低字节     */
+#define ATM24C02_PSDATAHIGH	0X0F	/* PS数据高字节     */
+
+#endif
+

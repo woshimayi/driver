@@ -83,92 +83,102 @@ int main(int argc, char *argv[])
             else if (strcmp(param, "-512m") == 0)	/* 512MB */
                 ddrsize = 0;
         }
+
+        cmdbuf = malloc(SHELLCMD_LEN);
+        sprintf(cmdbuf, "sudo dd iflag=dsync oflag=dsync if=load.imx of=%s bs=512 seek=2", argv[2]);
+        printf("Download load.imx to %s  ......\r\n", argv[2]);
+
+        /* 执行上面的shell命令 */
+        system(cmdbuf);
+        free(cmdbuf);
     }
-
-
-    /* 打开bin文件 */
-    fp = fopen(argv[1], "rb"); /* 以二进制只读方式打开bin文件 */
-    if (fp == NULL)
+    else
     {
-        printf("Can't Open file %s\r\n", argv[1]);
-        return -1;
-    }
-
-    /* 获取bin文件长度 */
-    fseek(fp, 0L, SEEK_END);
-    filelen = ftell(fp);
-    fseek(fp, 0L, SEEK_SET);
-    printf("file %s size = %dBytes\r\n", argv[1], filelen);
-
-    /* 读取bin文件到缓冲区buf中 */
-    buf = malloc(filelen + BIN_OFFSET);
-    if (buf == NULL)
-    {
-        printf("Mem Malloc Failed!\r\n");
-        fclose(fp);
-        return -1;
-    }
-    memset(buf, 0, filelen + BIN_OFFSET); /* 清零 */
-    /* 读取bin源码文件 */
-    fread(buf + BIN_OFFSET, 1, filelen, fp);
-
-    /* 关闭文件 */
-    fclose(fp);
-
-
-
-#if PRINT_TAB
-    printf("IVT DCD Table:\r\n");
-    for (i = 0; i < 1024 / 32; i++)
-    {
-        for (j = 0; j < 8; j++)
+        /* 打开bin文件 */
+        fp = fopen(argv[1], "rb"); /* 以二进制只读方式打开bin文件 */
+        if (fp == NULL)
         {
-            printf("0X%08X,", *(int *)(buf + BIN_OFFSET + (((i * 8) + j) * 4)));
+            printf("Can't Open file %s\r\n", argv[1]);
+            return -1;
         }
-        printf("\r\n");
-    }
-    free(buf);
-    return 0;
-#endif
 
-    /* 添加IVT DCD等表信息到bin文件里面 */
-    if (ddrsize == 0)  		/* 512MB */
-    {
-        printf("Board DDR SIZE: 512MB\r\n");
-        memcpy(buf, imx6_512mb_ivtdcd_table, sizeof(imx6_512mb_ivtdcd_table));
-    }
-    else if (ddrsize == 1)  	/* 256MB */
-    {
-        printf("Board DDR SIZE: 256MB\r\n");
-        memcpy(buf, imx6_256mb_ivtdcd_table, sizeof(imx6_256mb_ivtdcd_table));
-    }
+        /* 获取bin文件长度 */
+        fseek(fp, 0L, SEEK_END);
+        filelen = ftell(fp);
+        fseek(fp, 0L, SEEK_SET);
+        printf("file %s size = %dBytes\r\n", argv[1], filelen);
 
-    /* 现在我们已经在buf中构建好了可以用于下载的bin文件，将buf中的数据保存到
-     * 到一个文件中，文件命名为load.imx
-     */
-    printf("Delete Old load.imx\r\n");
-    system("rm -rf load.imx");		/* 先删除旧的load.imx文件	*/
+        /* 读取bin文件到缓冲区buf中 */
+        buf = malloc(filelen + BIN_OFFSET);
+        if (buf == NULL)
+        {
+            printf("Mem Malloc Failed!\r\n");
+            fclose(fp);
+            return -1;
+        }
+        memset(buf, 0, filelen + BIN_OFFSET); /* 清零 */
+        /* 读取bin源码文件 */
+        fread(buf + BIN_OFFSET, 1, filelen, fp);
+
+        /* 关闭文件 */
+        fclose(fp);
 
 
-    RED printf("Create New load.imx\r\n"); WHITE
-    system("touch load.imx");		/* 创建新的load.imx文件		*/
-    fp = fopen("load.imx", "wb");	/* 打开laod.imx				*/
-    if (fp == NULL)
-    {
-        printf("Cant't Open load.imx!!!\r\n");
+
+    #if PRINT_TAB
+        printf("IVT DCD Table:\r\n");
+        for (i = 0; i < 1024 / 32; i++)
+        {
+            for (j = 0; j < 8; j++)
+            {
+                printf("0X%08X,", *(int *)(buf + BIN_OFFSET + (((i * 8) + j) * 4)));
+            }
+            printf("\r\n");
+        }
         free(buf);
-        return -1;
-    }
-    nbytes = fwrite(buf, 1, filelen + BIN_OFFSET, fp);
-    if (nbytes != (filelen + BIN_OFFSET))
-    {
-        printf("File Write Error!\r\n");
+        return 0;
+    #endif
+
+        /* 添加IVT DCD等表信息到bin文件里面 */
+        if (ddrsize == 0)  		/* 512MB */
+        {
+            printf("Board DDR SIZE: 512MB\r\n");
+            memcpy(buf, imx6_512mb_ivtdcd_table, sizeof(imx6_512mb_ivtdcd_table));
+        }
+        else if (ddrsize == 1)  	/* 256MB */
+        {
+            printf("Board DDR SIZE: 256MB\r\n");
+            memcpy(buf, imx6_256mb_ivtdcd_table, sizeof(imx6_256mb_ivtdcd_table));
+        }
+
+        /* 现在我们已经在buf中构建好了可以用于下载的bin文件，将buf中的数据保存到
+        * 到一个文件中，文件命名为load.imx
+        */
+        printf("Delete Old load.imx\r\n");
+        system("rm -rf load.imx");		/* 先删除旧的load.imx文件	*/
+
+        RED printf("Create New load.imx\r\n"); WHITE
+        system("touch load.imx");		/* 创建新的load.imx文件		*/
+        fp = fopen("load.imx", "wb");	/* 打开laod.imx				*/
+        if (fp == NULL)
+        {
+            printf("Cant't Open load.imx!!!\r\n");
+            free(buf);
+            return -1;
+        }
+        nbytes = fwrite(buf, 1, filelen + BIN_OFFSET, fp);
+        if (nbytes != (filelen + BIN_OFFSET))
+        {
+            printf("File Write Error!\r\n");
+            free(buf);
+            fclose(fp);
+            return -1;
+        }
         free(buf);
         fclose(fp);
-        return -1;
     }
-    free(buf);
-    fclose(fp);
+
+
 
     /* 构建烧写 sd卡的shell命令 */
     if (argc == 4)

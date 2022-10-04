@@ -24,9 +24,16 @@ INSTALL_PROGRAM	:= $(INSTALL) -m 755
 LN		:= ln -sf
 RM		:= rm -f
 
-CC	?= gcc
-AR	?= ar
-STRIP	?= strip
+CROSS_COMPILE = arm-linux-gnueabihf-
+
+# CC	?= gcc
+# AR	?= ar
+# STRIP	?= strip
+
+CC	= $(CROSS_COMPILE)gcc
+AR	= $(CROSS_COMPILE)ar
+STRIP	= $(CROSS_COMPILE)strip
+
 
 #CFLAGS		?= -O2
 # When debugging, use the following instead

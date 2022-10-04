@@ -176,25 +176,25 @@ int main(int argc, char *argv[])
     switch (action)
     {
 
-        case READ:
-            content_read(file, addr);
-            break;
+    case READ:
+        content_read(file, addr);
+        break;
 
-        case WRITE:
-            content_write(file, addr);
-            break;
+    case WRITE:
+        content_write(file, addr);
+        break;
 
-        case ERASE:
-            erase(file, addr, EEPROM_SIZE);
-            break;
-        case PHEADER:
-            pheader(file, addr);
-            break;
+    case ERASE:
+        erase(file, addr, EEPROM_SIZE);
+        break;
+    case PHEADER:
+        pheader(file, addr);
+        break;
 
-        default:
-            fprintf(stderr, "Internal error!\n");
-            exit(1);
-            break;
+    default:
+        fprintf(stderr, "Internal error!\n");
+        exit(1);
+        break;
     }
 
     close(file);
@@ -216,7 +216,7 @@ int block_write(int file, int dev_addr, int eeprom_addr, unsigned char *buf, int
     {
 
         struct i2c_msg *msgs; /* ptr to array of simple messages */
-        int nmsgs;			  /* number of messages to exchange */
+        int nmsgs;            /* number of messages to exchange */
     } msgst;
 
     if (lenght > (MAX_BLK_SIZE))
@@ -268,7 +268,7 @@ int block_read(int file, int dev_addr, int eeprom_addr, unsigned char *buf)
     {
 
         struct i2c_msg *msgs; /* ptr to array of simple messages */
-        int nmsgs;			  /* number of messages to exchange */
+        int nmsgs;            /* number of messages to exchange */
     } msgst;
 
     made_address(eeprom_addr, buff);
@@ -492,41 +492,41 @@ void bar(void)
     switch (stav)
     {
 
-        case 10:
-            fwrite("\\", 1, 1, stderr);
-            fflush(stderr);
-            rewind(stderr);
-            break;
-        case 20:
-            fwrite("|", 1, 1, stderr);
-            fflush(stderr);
-            rewind(stderr);
-            break;
-        case 30:
-            fwrite("/", 1, 1, stderr);
-            fflush(stderr);
-            rewind(stderr);
-            break;
-        case 40:
-            fwrite("-", 1, 1, stderr);
-            fflush(stderr);
-            rewind(stderr);
-            break;
-        case 50:
-            fwrite("\\", 1, 1, stderr);
-            fflush(stderr);
-            rewind(stderr);
-            break;
-        case 60:
-            fwrite("|", 1, 1, stderr);
-            fflush(stderr);
-            rewind(stderr);
-            break;
-        case 70:
-            fwrite("/", 1, 1, stderr);
-            fflush(stderr);
-            rewind(stderr);
-            break;
+    case 10:
+        fwrite("\\", 1, 1, stderr);
+        fflush(stderr);
+        rewind(stderr);
+        break;
+    case 20:
+        fwrite("|", 1, 1, stderr);
+        fflush(stderr);
+        rewind(stderr);
+        break;
+    case 30:
+        fwrite("/", 1, 1, stderr);
+        fflush(stderr);
+        rewind(stderr);
+        break;
+    case 40:
+        fwrite("-", 1, 1, stderr);
+        fflush(stderr);
+        rewind(stderr);
+        break;
+    case 50:
+        fwrite("\\", 1, 1, stderr);
+        fflush(stderr);
+        rewind(stderr);
+        break;
+    case 60:
+        fwrite("|", 1, 1, stderr);
+        fflush(stderr);
+        rewind(stderr);
+        break;
+    case 70:
+        fwrite("/", 1, 1, stderr);
+        fflush(stderr);
+        rewind(stderr);
+        break;
     }
     stav++;
 }
@@ -541,7 +541,7 @@ int inode_write(int file, int dev_addr, int lenght)
     {
 
         struct i2c_msg *msgs; /* ptr to array of simple messages */
-        int nmsgs;			  /* number of messages to exchange */
+        int nmsgs;            /* number of messages to exchange */
     } msgst;
 
     m_ind.timestamp = time(NULL);
@@ -590,7 +590,7 @@ int inode_read(int file, int dev_addr, void *p_inode)
     {
 
         struct i2c_msg *msgs; /* ptr to array of simple messages */
-        int nmsgs;			  /* number of messages to exchange */
+        int nmsgs;            /* number of messages to exchange */
     } msgst;
 
     made_address(START_ADDR, buff);

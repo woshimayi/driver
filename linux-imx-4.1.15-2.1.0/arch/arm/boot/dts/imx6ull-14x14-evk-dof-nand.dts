@@ -346,6 +346,11 @@
 		compatible = "dof,atm24c02";
 		reg = <0x50>;			// ap3216c 器件地址  注意 : 7位 IIC 地址
 	};
+
+    hmc5883@1e {
+		compatible = "dof,hmc5883";
+		reg = <0x1e>;			// hmc5883 器件地址  注意 : 7位 IIC 地址
+	};
 };
 
 &i2c2 {

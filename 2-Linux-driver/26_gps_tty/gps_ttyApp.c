@@ -7,6 +7,15 @@
 #include <unistd.h>
 #include <termios.h>
 #include <stdlib.h>
+#include <signal.h>
+
+
+int stop = 0;
+void handler(int sig __attribute__((unused)))
+{
+    stop = 1;
+}
+
 
 int set_opt(int fd, int nSpeed, int nBits, char nEvent, int nStop)
 {
@@ -86,11 +95,11 @@ int set_opt(int fd, int nSpeed, int nBits, char nEvent, int nStop)
 int open_port(int fd, int comport)
 {
     /* fd 打开串口 comport表示第几个串口 */
-    char *dev[] = {"/dev/ttyS0", "/dev/ttyS1", "/dev/ttyS2"};
+    char *dev[] = {"/dev/ttyUSB0", "/dev/ttyUSB1", "/dev/ttyS2"};
     long vdisable;
     if (comport == 1)
     {
-        fd = open("/dev/ttyS0", O_RDWR | O_NOCTTY | O_NDELAY);
+        fd = open("/dev/ttyUSB0", O_RDWR | O_NOCTTY | O_NDELAY);
         if (-1 == fd)
         {
             perror("Can't Open Serial Port");
@@ -101,7 +110,7 @@ int open_port(int fd, int comport)
     }
     else if (comport == 2)
     {
-        fd = open("/dev/ttyS1", O_RDWR | O_NOCTTY | O_NDELAY);
+        fd = open("/dev/ttyUSB1", O_RDWR | O_NOCTTY | O_NDELAY);
 
         if (-1 == fd)
         {
@@ -136,6 +145,8 @@ int open_port(int fd, int comport)
 
 int main(void)
 {
+    signal(SIGINT, handler);
+    signal(SIGTERM, handler);
     int fd;
     int nread, i;
     char buff[] = "Hello\n";
@@ -144,15 +155,29 @@ int main(void)
         perror("open_port error");
         return;
     }
-    if ((i = set_opt(fd, 115200, 8, 'N', 1)) < 0)
+    if ((i = set_opt(fd, 9600, 8, 'N', 2)) < 0)
     {
         perror("set_opt error");
         return;
     }
     printf("fd=%d\n", fd);
-    //    fd=3;
-    nread = read(fd, buff, 8);
-    printf("nread=%d,%s\n", nread, buff);
+
+    while (1)
+    {
+        if (1 == stop)
+        {
+            break;
+        }
+        if (strstr(buff, "GNRMC"))
+        {
+
+
+            memset(buff, '\0', sizeof(buff));
+            nread = read(fd, buff, 1024);
+            printf("nread=%d\n%s\n\n", nread, buff);
+            sleep(1);
+        }
+    }
     close(fd);
     return;
 }
