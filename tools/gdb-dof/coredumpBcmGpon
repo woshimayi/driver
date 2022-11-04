@@ -1,0 +1,84 @@
+#!/bin/bash
+#run coredump parse command for BCM GPON product automatically
+#created by chenxi 2022-01-24
+
+usage()
+{
+cat << EOF
+coredumpBcmGpon [your-core-dump-file]
+
+Note:
+1.[your-core-dump-file] is optional if current direcotry exists [your-core-dump-file](prefix with core-svn-*).
+2.fs.install files is required in current direcotry(images/fs.install).
+  Try to untar SVN_*_fs_install.tgz if it doesn't exists.
+
+EOF
+}
+
+create_image_files()
+{
+TGZFILENUM=`find ./ -name "SVN_*.tgz" | wc -l`
+if [ "${TGZFILENUM}" != "1" ]; then
+echo error! need one and only one tgz file in current directory. 
+exit -1
+fi
+echo ${TGZFILENUM}
+
+tar xzvf `find ./ -name "SVN_*.tgz"`
+
+}
+
+check_image_dir()
+{
+if [ ! -d ./images ]; then
+	echo create images/fs.install files
+	create_image_files
+fi
+}
+
+
+COREDUMPFILE=""
+
+check_coredump_file()
+{
+COREDUMPFILENUM=`find ./ -name "core-svn*" | wc -l`
+
+echo ${COREDUMPFILE}
+if [ "${COREDUMPFILENUM}" != "1" ]; then
+echo error! need one and only one core-svn file in current directory. 
+exit -1
+fi
+
+COREDUMPFILE=`find ./ -name "core-svn*"`
+FILE=`echo ${COREDUMPFILE} | awk -F '-' '{print $NF}'`
+
+}
+
+if [ "$#" == "1" ]; then
+case $1 in
+	h|help|-h|-help)
+		usage
+		exit 0
+esac
+fi
+
+case $# in
+	0)
+		check_image_dir
+		check_coredump_file
+		;;
+	1)
+		check_image_dir
+		COREDUMPFILE=$1
+		FILE=`echo ${COREDUMPFILE} | awk -F '-' '{print $NF}'`
+		;;
+
+	*)
+		usage
+		exit 0
+		;;
+esac
+
+
+echo  hgcoredump images/fs.install/bin/${FILE} ${COREDUMPFILE} images/fs.install/
+hgcoredump images/fs.install/bin/${FILE} ${COREDUMPFILE} images/fs.install/

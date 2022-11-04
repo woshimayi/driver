@@ -1,7 +1,19 @@
+/*
+ * @*************************************:
+ * @FilePath: /user/SourceCode/ipc/tshm_dof.c
+ * @version:
+ * @Author: dof
+ * @Date: 2022-09-29 13:15:52
+ * @LastEditors: dof
+ * @LastEditTime: 2022-09-29 13:18:21
+ * @Descripttion:
+ * @**************************************:
+ */
 #include <sys/types.h>
 #include <sys/ipc.h>
 #include <sys/shm.h>
-#include "ourhdr.h"
+#include <stdlib.h>
+// #include "ourhdr.h"
 
 #define ARRAY_SIZE 40000
 #define MALLOC_SIZE 100000
@@ -19,17 +31,27 @@ int main(void)
     printf("stack around %x\n", &shmid);
 
     if ((ptr = malloc(MALLOC_SIZE)) == NULL)
-        err_sys("malloc error");
+    {
+        printf("malloc error");
+    }
     printf("malloced from %x to %x\n", ptr, ptr + MALLOC_SIZE);
 
     if ((shmid = shmget(IPC_PRIVATE, SHM_SIZE, SHM_MODE)) < 0)
-        err_sys("shmget error");
+    {
+        printf("shmget error");
+    }
+
     if ((shmptr = shmat(shmid, 0, 0)) == (void *)-1)
-        err_sys("shmat error");
-    printf("shared memory attached from %x to %x\n",
-           shmptr, shmptr + SHM_SIZE);
+    {
+        printf("shmat error");
+    }
+
+    printf("shared memory attached from %x to %x\n", shmptr, shmptr + SHM_SIZE);
+
     if (shmctl(shmid, IPC_RMID, 0) < 0)
-        err_sys("shmctl error");
+    {
+        printf("shmctl error");
+    }
 
     exit(0);
 }
