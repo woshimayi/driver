@@ -5,14 +5,11 @@
  * @Author: dof
  * @Date: 2022-11-04 13:43:08
  * @LastEditors: dof
- * @LastEditTime: 2022-11-04 13:54:07
+ * @LastEditTime: 2022-11-07 10:21:52
  * @Descripttion: curl 下载测试程序
  * @build:  gcc httpdownload_test.c -lcurl
  * @**************************************:
  */
-
-
-
 
 #include <curl/curl.h>
 #include <stdio.h>
@@ -25,13 +22,13 @@ int progress_callback(void *clientp, curl_off_t dltotal, curl_off_t dlnow, curl_
 {
 	CURL *easy_handle = static_cast<CURL *>(clientp);
 	char timeFormat[9] = "Unknow";
- 
+
 	// Defaults to bytes/second
 	double speed;
 	string unit = "B";
- 
+
 	curl_easy_getinfo(easy_handle, CURLINFO_SPEED_DOWNLOAD, &speed); // curl_get_info必须在curl_easy_perform之后调用
- 
+
 	if (speed != 0)
 	{
 		// Time remaining
@@ -39,14 +36,14 @@ int progress_callback(void *clientp, curl_off_t dltotal, curl_off_t dlnow, curl_
 		int hours = leftTime / 3600;
 		int minutes = (leftTime - hours * 3600) / 60;
 		int seconds = leftTime - hours * 3600 - minutes * 60;
- 
+
 #ifdef _WIN32
 		sprintf_s(timeFormat, 9, "%02d:%02d:%02d", hours, minutes, seconds);
 #else
 		sprintf(timeFormat, "%02d:%02d:%02d", hours, minutes, seconds);
 #endif
 	}
- 
+
 	if (speed > 1024 * 1024 * 1024)
 	{
 		unit = "G";
@@ -62,18 +59,17 @@ int progress_callback(void *clientp, curl_off_t dltotal, curl_off_t dlnow, curl_
 		unit = "kB";
 		speed /= 1024;
 	}
- 
+
 	printf("speed:%.2f%s/s", speed, unit.c_str());
- 
+
 	if (dltotal != 0)
 	{
 		double progress = (dlnow + resumeByte) / downloadFileLength * 100;
 		printf("\t%.2f%%\tRemaing time:%s\n", progress, timeFormat);
 	}
- 
+
 	return 0;
 }
-
 
 int download_function(char *url, char *down_path)
 {

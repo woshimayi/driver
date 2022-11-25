@@ -1,19 +1,18 @@
 /*
- * @*************************************: 
+ * @*************************************:
  * @FilePath: /user/C/time/time.c
- * @version: 
+ * @version:
  * @Author: dof
  * @Date: 2021-10-20 19:33:39
  * @LastEditors: dof
- * @LastEditTime: 2022-02-09 17:53:03
- * @Descripttion: 
- * @**************************************: 
+ * @LastEditTime: 2022-11-09 10:30:41
+ * @Descripttion:
+ * @**************************************:
  */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-
 
 static void getTheCurrentTime(char *time_now)
 {
@@ -23,26 +22,25 @@ static void getTheCurrentTime(char *time_now)
 	time(&now);
 	timenow = localtime(&now);
 	snprintf(time_now, 32, "%d%02d%02d%02d%02d%02d", timenow->tm_year + 1900, timenow->tm_mon + 1, timenow->tm_mday,
-	         timenow->tm_hour, timenow->tm_min, timenow->tm_sec);
+			 timenow->tm_hour, timenow->tm_min, timenow->tm_sec);
 }
 
-char* strftime_HHMMSS(char *buf, unsigned len, time_t *tp)
-{
-	return strftime_fmt(buf, len, tp, "%H:%M:%S");
-}
+// char *strftime_HHMMSS(char *buf, unsigned len, time_t *tp)
+// {
+// 	return strftime_fmt(buf, len, tp, "%H:%M:%S");
+// }
 
-char* strftime_YYYYMMDDHHMMSS(char *buf, unsigned len, time_t *tp)
-{
-	return strftime_fmt(buf, len, tp, "%Y-%m-%d %H:%M:%S");
-}
-
+// char *strftime_YYYYMMDDHHMMSS(char *buf, unsigned len, time_t *tp)
+// {
+// 	return strftime_fmt(buf, len, tp, "%Y-%m-%d %H:%M:%S");
+// }
 
 int getDateTime(unsigned int t)
 {
 	int rc = 0;
 	time_t now;
-	struct tm   *tmp;
-	if(t == 0)
+	struct tm *tmp;
+	if (t == 0)
 	{
 		now = time(NULL);
 	}
@@ -50,11 +48,11 @@ int getDateTime(unsigned int t)
 	{
 		now = t;
 	}
-	
+
 	tmp = localtime(&now);
 
 	rc = mktime(tmp);
-	if(rc == 0)
+	if (rc == 0)
 	{
 		printf("get localtime failed\n");
 		return -1;
@@ -65,13 +63,12 @@ int getDateTime(unsigned int t)
 	return rc;
 }
 
-
-
+#if 0
 int main()
 {
-	#if 1
+#if 1
 	char *str = NULL;
-	// getTheCurrentTime(str);
+	getTheCurrentTime(str);
 	//
 	time_t t;
 	char buf[1024];
@@ -116,4 +113,20 @@ int main()
 	}
 	// printf("%s\n", str);
 	return 0;
+}
+#endif
+
+#include <time.h>
+int main()
+{
+	char *wday[] = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
+	time_t timep;
+	struct tm *p;
+	time(&timep);
+	p = localtime(&timep); /*取得当地时间*/
+	// printf("%d%d%d ", (1900 + p->tm_year), (1 + p->tm_mon), p->tm_mday);
+	// printf("%s%d:%d:%d\n", wday[p->tm_wday], p->tm_hour, p->tm_min, p->tm_sec);
+
+	timep = mktime(p);
+	printf("time()->localtime()->mktime():%d\n", timep);
 }

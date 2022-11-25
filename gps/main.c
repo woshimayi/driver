@@ -17,7 +17,14 @@ int main()
                         "$GLGSV,2,1,06,69,27,136,49,70,76,057,50,71,34,338,50,73,64,276,55*6B\r\n"
                         "$GLGSV,2,2,06,74,24,231,46,80,35,019,46*60\r\n"
                         "$GNGLL,2240.84105,N,11402.70763,E,013300.00,A,D*7C\r\n";
-    gps = gps_data_parse(gps_data);
+
+    GSA gsa_data;
+    char *p = strtok(strstr(gps_data, PRE_GSA), "\r\n");
+    printf("%s\n", strtok(strstr(gps_data, PRE_GSA), "\r\n"));
+
+    sscanf(p, "$GNGSA,%s,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d*", )
+
+    // gps = gps_data_parse(gps_data);
 
 #if ENABLE_GGA
     printf("----------GGA DATA----------\n");
