@@ -1,11 +1,11 @@
 /*
  * @*************************************: 
- * @FilePath: /network/ip_transform/ip_addr_trans.c
+ * @FilePath: /network/net_util/ip_addr_trans.c
  * @version: 
  * @Author: dof
  * @Date: 2021-12-28 15:46:42
  * @LastEditors: dof
- * @LastEditTime: 2022-01-17 20:09:05
+ * @LastEditTime: 2023-01-10 13:13:39
  * @Descripttion:  ip 地址比较大小
  * @**************************************: 
  */
@@ -13,6 +13,9 @@
 #include <stdio.h>
 #include <string.h>
 #include <arpa/inet.h>
+
+typedef unsigned char_t    unsigned char;
+
 
 int ipv6_compare(char * min, char * max)
 {
@@ -72,7 +75,7 @@ UBOOL8 cmsUtl_isValidIpAddress(SINT32 af, const char* address)
       UINT32 plen;
       char   addr[CMS_IPADDR_LENGTH];
 
-      if (cmsUtl_parsePrefixAddress(address, addr, &plen) != CMSRET_SUCCESS)
+      if (cmsUtl_parsePrefixAddress(address, addr, &plen) != 0)
       {
          cmsLog_debug("Invalid ipv6 address=%s", address);
          return FALSE;
@@ -121,7 +124,7 @@ UBOOL8 cmsUtl_isValidMacAddress(const char* input)
        xx:xx:xx:xx:xx:xx where x is hex number */
    pToken = strtok_r(buf, ":", &pLast);
    if ((strlen(pToken) != 2) ||
-       (cmsUtl_strtoul(pToken, NULL, 16, &num) != CMSRET_SUCCESS))
+       (cmsUtl_strtoul(pToken, NULL, 16, &num) != 0))
    {
       ret = FALSE;
    }
@@ -131,7 +134,7 @@ UBOOL8 cmsUtl_isValidMacAddress(const char* input)
       {
          pToken = strtok_r(NULL, ":", &pLast);
          if ((strlen(pToken) != 2) ||
-             (cmsUtl_strtoul(pToken, NULL, 16, &num) != CMSRET_SUCCESS))
+             (cmsUtl_strtoul(pToken, NULL, 16, &num) != 0))
          {
             ret = FALSE;
             break;
@@ -147,7 +150,7 @@ UBOOL8 cmsUtl_isValidPortNumber(const char * portNumberStr)
 {
    UINT32 portNum;
 
-   if (cmsUtl_strtoul(portNumberStr, NULL, 10, &portNum) != CMSRET_SUCCESS) 
+   if (cmsUtl_strtoul(portNumberStr, NULL, 10, &portNum) != 0) 
    {
       return FALSE;
    }
@@ -155,6 +158,69 @@ UBOOL8 cmsUtl_isValidPortNumber(const char * portNumberStr)
    return (portNum < (64 * 1024));
 }
 #endif
+
+
+/**
+ * @brief      str to num
+ * 
+ * @param macStr  input
+ * @param macNum  output
+ * @return int 
+ */
+int cmsUtl_macStrToNum(const char *macStr, unsigned char *macNum) 
+{
+   unsigned int i;
+   unsigned int macStrLen;
+   
+   if (macNum == NULL || macStr == NULL) 
+   {
+      printf("Invalid macNum/macStr %p/%p", macNum, macStr);
+      return -1;
+   }    
+   macStrLen = strnlen_safe(macStr, 19);
+   
+   i=sscanf(macStr, "%2hhx:%2hhx:%2hhx:%2hhx:%2hhx:%2hhx", 
+          &(macNum[0]), &(macNum[1]), &(macNum[2]), &(macNum[3]), &(macNum[4]), &(macNum[5]));
+
+   if (i != 6 && macStrLen == 14) {
+     i=sscanf(macStr, "%2hhx%2hhx:%2hhx%2hhx:%2hhx%2hhx", 
+              &(macNum[0]), &(macNum[1]), &(macNum[2]), &(macNum[3]), &(macNum[4]), &(macNum[5]));
+   }
+
+   if (i != 6 && macStrLen == 12) {
+     i=sscanf(macStr, "%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx", 
+              &(macNum[0]), &(macNum[1]), &(macNum[2]), &(macNum[3]), &(macNum[4]), &(macNum[5]));
+   }
+
+   if (i != 6) {
+      return -1;
+   }
+   
+   return 0;
+   
+}
+
+/**
+ * @brief  mac num to str
+ * 
+ * @param macNum  input
+ * @param macStr  output
+ * @return int 
+ */
+int cmsUtl_macNumToStr(const unsigned char *macNum, char *macStr) 
+{
+   if (macNum == NULL || macStr == NULL) 
+   {
+      printf("Invalid macNum/macStr %p/%p", macNum, macStr);
+      return -1;
+   }  
+
+   sprintf(macStr, "%2.2x:%2.2x:%2.2x:%2.2x:%2.2x:%2.2x",
+           (unsigned char) macNum[0], (unsigned char) macNum[1], (unsigned char) macNum[2],
+           (unsigned char) macNum[3], (unsigned char) macNum[4], (unsigned char) macNum[5]);
+
+   return 0;
+}
 
 
 int macaddr_compare(char *min, char *max)
