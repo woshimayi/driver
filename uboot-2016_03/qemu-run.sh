@@ -27,7 +27,7 @@ fi
 
 
 
-ip tuntap add mode tap $LAN
+ip tuntap add $LAN mode tap
 ip link set dev $LAN up
 ip addr add 10.8.8.4/24 dev $LAN
 
@@ -36,7 +36,7 @@ ip addr add 10.8.8.4/24 dev $LAN
 qemu-system-arm \
 	-M vexpress-a9 -m 512 -nographic  \
 	-net nic -net tap,ifname=$LAN,script=no \
-	-kernel u-boot
+	-kernel u-boot 
 
 ip addr flush dev $LAN
 ip link set dev $LAN down
