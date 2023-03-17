@@ -103,7 +103,7 @@ sudo docker rm 'CONTAINER ID'
 #### 删除镜像
 sudo docker rmi 'IMAGE ID'
 
-#### 显示容器元数据
+#### 显示容器元数据(配置信息)
 sudo docker inspect  'CONTAINER ID'/'NAMES'
 
 
