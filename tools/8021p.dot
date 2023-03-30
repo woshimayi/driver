@@ -1,0 +1,10 @@
+digraph 8021p{
+    bgcolor = "beige"
+
+    subgraph cluster1 {
+        node[color="grey"]
+        {"lan", "vlan", "pbit"} -> "br0"
+    }
+
+    
+}

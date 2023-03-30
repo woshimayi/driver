@@ -1,0 +1,14 @@
+@startuml
+nwdiag {
+    network up {
+        address = "192.168.1.1/24"
+
+        lan [address = "192.168.1.150"];
+    }
+    network wan {
+        address = "172.16.25.14/24"
+
+        wan [address = "172.16.25.14"];
+    }
+}
+@enduml
