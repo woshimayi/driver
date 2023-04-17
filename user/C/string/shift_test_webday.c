@@ -5,7 +5,7 @@
  * @Author: dof
  * @Date: 2022-12-06 14:55:53
  * @LastEditors: dof
- * @LastEditTime: 2022-12-26 13:19:39
+ * @LastEditTime: 2023-02-08 15:23:56
  * @Descripttion: 
  * @**************************************: 
  */
@@ -85,7 +85,7 @@ int week_calc_1(unsigned int weekday, char *retStr, unsigned int len)
 
 	if (weekday == 0x7f)
 	{
-		return 0;
+		return 1;
 	}
 
 	for (int i = 0; i < 8; i++)
@@ -133,14 +133,15 @@ int week_calc_1(unsigned int weekday, char *retStr, unsigned int len)
 
 int main(int argc, char const *argv[])
 {
-	unsigned int weekday = 0b1111011;
+	unsigned int weekday = 127;
 	char cmd[128] = {0};
+	int week = 0;
 
-	week_calc_1(weekday, cmd, sizeof(cmd));
-	printf("cmd = %s\n", cmd);
+	week = week_calc_1(weekday, cmd, sizeof(cmd));
+	printf("cmd = %d:%s\n", week, cmd);
 
-	unsigned int sec = 3800;
-	printf("%d:%d:%d\n", sec / 3600, (sec % 3600) / 60, sec%60);
+	// unsigned int sec = 3800;
+	// printf("%d:%d:%d\n", sec / 3600, (sec % 3600) / 60, sec%60);
 
 
 	printf("%s line: %d\n", __FILE__, __LINE__);    

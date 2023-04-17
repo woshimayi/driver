@@ -42,14 +42,15 @@ so, under the terms of the COPYING file.
 #include <time.h>
 
 #include <curl/curl.h>
+#include <curl/header.h>
 
 #define URL_BASE "http://speedtest.your.domain/"
-#define URL_1M   URL_BASE "file_1M.bin"
-#define URL_2M   URL_BASE "file_2M.bin"
-#define URL_5M   URL_BASE "file_5M.bin"
-#define URL_10M  URL_BASE "file_10M.bin"
-#define URL_20M  URL_BASE "file_20M.bin"
-#define URL_50M  URL_BASE "file_50M.bin"
+#define URL_1M URL_BASE "file_1M.bin"
+#define URL_2M URL_BASE "file_2M.bin"
+#define URL_5M URL_BASE "file_5M.bin"
+#define URL_10M URL_BASE "file_10M.bin"
+#define URL_20M URL_BASE "file_20M.bin"
+#define URL_50M URL_BASE "file_50M.bin"
 #define URL_100M URL_BASE "file_100M.bin"
 
 #define CHKSPEED_VERSION "1.0"
@@ -58,7 +59,7 @@ static size_t WriteCallback(void *ptr, size_t size, size_t nmemb, void *data)
 {
 	/* we are not interested in the downloaded bytes itself,
 	   so we only return the size we would have saved ... */
-	(void)ptr;  /* unused */
+	(void)ptr;	/* unused */
 	(void)data; /* unused */
 	return (size_t)(size * nmemb);
 }
@@ -70,6 +71,7 @@ int main(int argc, char *argv[])
 	int prtall = 0, prtsep = 0, prttime = 0;
 	const char *url = URL_1M;
 	char *appname = argv[0];
+	struct curl_header *header;
 
 	if (argc > 1)
 	{
@@ -171,7 +173,8 @@ int main(int argc, char *argv[])
 	curl_easy_setopt(curl_handle, CURLOPT_URL, url);
 
 	/* send all data to this function  */
-	curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, WriteCallback);
+	curl_easy_setopt(curl_handle,
+	                 CURLOPT_WRITEFUNCTION, WriteCallback);
 
 	/* some servers do not like requests that are made without a user-agent
 	   field, so we provide one */
@@ -180,6 +183,10 @@ int main(int argc, char *argv[])
 
 	/* get it! */
 	res = curl_easy_perform(curl_handle);
+
+	if (CURLHE_OK == curl_easy_header(curl_handle, "Content-Type", 0, CURLH_HEADER,
+	                                  -1, &header))
+		printf("Got content-type: %s\n", header->value);
 
 	if (CURLE_OK == res)
 	{
