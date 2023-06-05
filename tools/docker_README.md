@@ -315,3 +315,111 @@ openvpn --config xxx.ovpn --auth-user-pass pass.txt
 ```
 
 
+### gerrit 
+```shell
+sudo docker run -itd --name gerrit -p 8002:8080 -p 29418:29418 \
+	-v ~/gerrit:/var/gerrit/review_site \
+	-e WEBURL=http://172.16.27.16:8002 -e AUTH_TYPE=HTTP \
+	-e SMTP_SERVER=smtp.163.com  \
+	-e SMTP_SERVER_PORT=465 \
+	-e SMTP_ENCRYPTION=ssl \
+	-e SMTP_USER= zhengsen@henggucn.com\
+	-e SMTP_PASS=zhangxuemin0813 \
+	-e SMTP_FROM=zhengsen@henggucn.com \
+	openfrontier/gerrit
+```
+
+```ini
+[gerrit]
+        basePath = git
+        serverId = fc2c13d5-7037-48da-bb2c-dfa412807898
+        canonicalWebUrl = http://172.16.27.16:8002
+[database]
+        type = h2
+        database = /var/gerrit/review_site/db/ReviewDB
+[index]
+        type = LUCENE
+[auth]
+        type = HTTP
+        gitBasicAuthPolicy = HTTP
+[receive]
+        enableSignedPush = false
+[sendemail]
+        smtpServer = smtp.163.com
+        enable = true
+        smtpServerPort = 465
+        smtpUser = zhengsen@henggucn.com
+        smtpPass = 
+        smtpEncryption = ssl
+        sslVerify = false
+        from = zhengsen@henggucn.com
+[container]
+        user = gerrit2
+        javaHome = /usr/lib/jvm/java-1.8-openjdk/jre
+[sshd]
+        listenAddress = *:29418
+[httpd]
+        listenUrl = http://*:8080/
+[cache]
+        directory = cache
+[plugins]
+        allowRemoteAdmin = true
+[plugin "events-log"]
+        storeUrl = jdbc:h2:/var/gerrit/review_site/db/ChangeEvents
+[gitweb]
+        cgi = /usr/share/gitweb/gitweb.cgi
+        type = gitweb
+```
+
+
+docker run \
+      -e MIGRATE_TO_NOTEDB_OFFLINE=true \
+      -v ~/gerrit_volume:/var/gerrit/review_site \
+      -p 8080:8080 \
+      -p 29418:29418 \
+      -d openfrontier/gerrit
+	  
+	  
+	  
+	  
+
+docker run \
+	--name mygerrit \
+	-v /home/zs/gerrit:/var/gerrit/review_site \
+	-p 8091:8080 -p 29418:29418 \
+	-e USER_NAME=zhengsen \
+	-e USER_EMAIL=zhengsen@henggucn.com \
+	-e AUTH_TYPE=HTTP \
+	-e SMTP_SERVER=smtp.163.com \
+	-e SMTP_SERVER_PORT=465 \
+	-e SMTP_ENCRYPTION=ssl \
+	-e SMTP_USER=zhengsen@henggucn.com \
+	-e SMTP_CONNCT_TIMEOUT=30sec \
+	-e SMTP_FROM=USER \
+	-e SMTP_PASS=yourPassword \
+	-d openfrontier/gerrit
+
+
+sudo docker run \
+    --name mygerrit_3 \
+    -v /home/zs/gerrit:/var/gerrit  \
+    -p 8078:8080 -p 29428:29418 \
+    --restart=always \
+    -d gerritcodereview/gerrit
+
+
+### nginx
+
+docker run -p 80:80 --name mynginx -d nginx
+mkdir -p /home/zs/nginx/www /home/zs/nginx/logs /home/zs/nginx/conf /home/zs/nginx/htpasswd
+
+
+docker run -d -p 80:80 --name nginx-web \
+	-v /home/zs/nginx/www:/usr/share/nginx/html \
+	-v /home/zs/nginx/conf/nginx.conf:/etc/nginx/nginx.conf \
+	-v /home/zs/nginx/logs:/var/log/nginx \
+	-v /home/zs/htpasswd:/etc/nginx/conf.d \
+	nginx
+	
+	
+docker run -p 80:80 --name myhttpd -d httpd
