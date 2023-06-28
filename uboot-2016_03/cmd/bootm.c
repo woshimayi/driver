@@ -635,7 +635,7 @@ int do_bootz(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 	 */
 	bootm_disable_interrupts();
 
-	images.os.os = IH_OS_LINUX;
+	images.os.os = IH_OS_LINUX;                                    /* 设置启动类型为linux */
 	ret = do_bootm_states(cmdtp, flag, argc, argv,
 			      BOOTM_STATE_OS_PREP | BOOTM_STATE_OS_FAKE_GO |
 			      BOOTM_STATE_OS_GO,

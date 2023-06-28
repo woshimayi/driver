@@ -69,13 +69,13 @@ static inline void boot_start_lmb(bootm_headers_t *images) { }
 static int bootm_start(cmd_tbl_t *cmdtp, int flag, int argc,
 		       char * const argv[])
 {
-	memset((void *)&images, 0, sizeof(images));
-	images.verify = getenv_yesno("verify");
+	memset((void *)&images, 0, sizeof(images));   /* 清空 images */
+	images.verify = getenv_yesno("verify");       /* 初始化verify成员 */
 
 	boot_start_lmb(&images);
 
 	bootstage_mark_name(BOOTSTAGE_ID_BOOTM_START, "bootm_start");
-	images.state = BOOTM_STATE_START;
+	images.state = BOOTM_STATE_START;         /* 设置状态为BOOTM_STATE_START */
 
 	return 0;
 }
@@ -655,7 +655,7 @@ int do_bootm_states(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[],
 	/* From now on, we need the OS boot function */
 	if (ret)
 		return ret;
-	boot_fn = bootm_os_get_boot_func(images->os.os);
+	boot_fn = bootm_os_get_boot_func(images->os.os);		/* 查找对应的启动函数 */
 	need_boot_fn = states & (BOOTM_STATE_OS_CMDLINE |
 			BOOTM_STATE_OS_BD_T | BOOTM_STATE_OS_PREP |
 			BOOTM_STATE_OS_FAKE_GO | BOOTM_STATE_OS_GO);
@@ -694,7 +694,7 @@ int do_bootm_states(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[],
 		return ret;
 	}
 
-	/* Now run the OS! We hope this doesn't return */
+	/* Now run the OS! We hope this doesn't return 启动内核*/
 	if (!ret && (states & BOOTM_STATE_OS_GO))
 		ret = boot_selected_os(argc, argv, BOOTM_STATE_OS_GO,
 				images, boot_fn);

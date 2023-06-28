@@ -323,9 +323,9 @@ sudo docker run -itd --name gerrit -p 8002:8080 -p 29418:29418 \
 	-e SMTP_SERVER=smtp.163.com  \
 	-e SMTP_SERVER_PORT=465 \
 	-e SMTP_ENCRYPTION=ssl \
-	-e SMTP_USER= zhengsen@henggucn.com\
+	-e SMTP_USER= XXXXXXXX@XXXXXXXX.com\
 	-e SMTP_PASS=zhangxuemin0813 \
-	-e SMTP_FROM=zhengsen@henggucn.com \
+	-e SMTP_FROM=XXXXXXXX@XXXXXXXX.com \
 	openfrontier/gerrit
 ```
 
@@ -348,11 +348,11 @@ sudo docker run -itd --name gerrit -p 8002:8080 -p 29418:29418 \
         smtpServer = smtp.163.com
         enable = true
         smtpServerPort = 465
-        smtpUser = zhengsen@henggucn.com
+        smtpUser = XXXXXXXX@XXXXXXXX.com
         smtpPass = 
         smtpEncryption = ssl
         sslVerify = false
-        from = zhengsen@henggucn.com
+        from = XXXXXXXX@XXXXXXXX.com
 [container]
         user = gerrit2
         javaHome = /usr/lib/jvm/java-1.8-openjdk/jre
@@ -383,43 +383,159 @@ docker run \
 	  
 	  
 
-docker run \
-	--name mygerrit \
-	-v /home/zs/gerrit:/var/gerrit/review_site \
+sudo docker run \
+	--name hg_gerrit \
+	-v /home/hg-server/Documents/gerrit:/var/gerrit/review_site \
 	-p 8091:8080 -p 29418:29418 \
-	-e USER_NAME=zhengsen \
-	-e USER_EMAIL=zhengsen@henggucn.com \
 	-e AUTH_TYPE=HTTP \
-	-e SMTP_SERVER=smtp.163.com \
+	-e USER_NAME=XXXXXXXX \
+	-e USER_EMAIL=XXXXXXXX@XXXXXXXX.com \
+	-e AUTH_TYPE=HTTP \
+	-e SMTP_SERVER=smtp.XXXXXXXX.com \
 	-e SMTP_SERVER_PORT=465 \
 	-e SMTP_ENCRYPTION=ssl \
-	-e SMTP_USER=zhengsen@henggucn.com \
+	-e SMTP_USER=XXXXXXXX@XXXXXXXX.com \
 	-e SMTP_CONNCT_TIMEOUT=30sec \
 	-e SMTP_FROM=USER \
 	-e SMTP_PASS=yourPassword \
+	--restart=always \
 	-d openfrontier/gerrit
 
 
 sudo docker run \
     --name mygerrit_3 \
-    -v /home/zs/gerrit:/var/gerrit  \
     -p 8078:8080 -p 29428:29418 \
+    -v /home/zs/gerrit/etc:/var/gerrit/etc \
+    -v /home/zs/gerrit/git:/var/gerrit/git \
+    -v /home/zs/gerrit/db:/var/gerrit/db  \
+    -v /home/zs/gerrit/index:/var/gerrit/index \
+    -v /home/zs/gerrit/cache:/var/gerrit/cache \
+    -v /home/zs/gerrit/ldap/var:/var/lib/ldap \
+    -v /home/zs/gerrit/ldap/etc:/etc/ldap/slapd.d \
     --restart=always \
     -d gerritcodereview/gerrit
+	
+	
+sudo docker run \
+    --name mygerrit_3 \
+    -p 8078:8080 -p 29428:29418 \
+    -d gerritcodereview/gerrit
+
+
+
+
 
 
 ### nginx
 
 docker run -p 80:80 --name mynginx -d nginx
-mkdir -p /home/zs/nginx/www /home/zs/nginx/logs /home/zs/nginx/conf /home/zs/nginx/htpasswd
+mkdir -p /home/hg-server/Documents/nginx/www /home/hg-server/Documents/nginx/logs /home/hg-server/Documents/nginx/conf /home/hg-server/Documents/nginx/htpasswd
 
 
-docker run -d -p 80:80 --name nginx-web \
-	-v /home/zs/nginx/www:/usr/share/nginx/html \
-	-v /home/zs/nginx/conf/nginx.conf:/etc/nginx/nginx.conf \
-	-v /home/zs/nginx/logs:/var/log/nginx \
-	-v /home/zs/htpasswd:/etc/nginx/conf.d \
-	nginx
+sudo docker run -d -p 80:80 --name nginx-web \
+    -v /home/hg-server/Documents/nginx/www:/usr/share/nginx/html \
+    -v /home/hg-server/Documents/nginx/conf/nginx.conf:/etc/nginx/nginx.conf \
+    -v /home/hg-server/Documents/nginx/logs:/var/log/nginx \
+    -v /home/hg-server/Documents/nginx/htpasswd/gerrit.passwd:/etc/nginx/conf.d/gerrit.passwd \
+    nginx
+
+sudo docker run -p 81:80 \
+    --name hg-httpd \
+    -v /home/hg-server/Documents/nginx/htpasswd/:/var/pass \
+    -d httpd
+
+```
+gerrit_add_acount.sh 
+
+#!/bin/bash
+echo -n "pls input Acount: "
+read name
+echo -n "pls input Password: "
+read pass
+read name
+sudo docker exec -i hg-httpd  /bin/bash  -c "htpasswd -b /var/pass/gerrit.passwd $name $pass"
+```
+
+
+
+# 查看镜像所有版本
+curl https://registry.hub.docker.com/v1/repositories/openfrontier/gerrit/tags |python3 -m json.tool | more
+
+
+
+sudo docker pull  openfrontier/gerrit:3.1.12
+
+sudo docker run \
+	--name gerrit_4 \
+	-v /home/hg-server/Documents/gerrit:/var/gerrit/review_site \
+	-p 8091:8080 -p 29418:29418 \
+	-e AUTH_TYPE=HTTP \
+	-e USER_NAME=XXXXXXXX \
+	-e USER_EMAIL=XXXXXXXX@XXXXXXXX.com \
+	-e AUTH_TYPE=HTTP \
+	-e SMTP_SERVER=smtp.XXXXXXXX.com \
+	-e SMTP_SERVER_PORT=465 \
+	-e SMTP_ENCRYPTION=ssl \
+	-e SMTP_USER=XXXXXXXX@XXXXXXXX.com \
+	-e SMTP_CONNCT_TIMEOUT=30sec \
+	-e SMTP_FROM=USER \
+	-e SMTP_PASS=yourPassword \
+	--restart=always \
+	-d openfrontier/gerrit:3.1.12
 	
 	
-docker run -p 80:80 --name myhttpd -d httpd
+-v /home/hg-server/Documents/gerrit:/var/gerrit/review_site \
+	
+sudo docker run \
+    --name gerrit_5 \
+    -v /home/hg-server/Documents/gerrit/etc:/var/gerrit/review_site/etc \
+    -v /home/hg-server/Documents/gerrit/git:/var/gerrit/review_site/git \
+    -v /home/hg-server/Documents/gerrit/db:/var/gerrit/review_site/db  \
+    -v /home/hg-server/Documents/gerrit/index:/var/gerrit/review_site/index \
+    -v /home/hg-server/Documents/gerrit/cache:/var/gerrit/review_site/cache \
+	-v /home/hg-server/Documents/gerrit/plugins:/var/gerrit/review_site/plugins \
+    -v /home/hg-server/Documents/gerrit/ldap/var:/var/lib/review_site/ldap \
+    -v /home/hg-server/Documents/gerrit/ldap/etc:/etc/ldap/slapd.d \
+    -p 8091:8080 -p 29418:29418 \
+    -e AUTH_TYPE=HTTP \
+    -e USER_NAME=XXXXXXXX \
+    -e USER_EMAIL=XXXXXXXX@XXXXXXXX.com \
+    -e AUTH_TYPE=HTTP \
+    -e SMTP_SERVER=smtp.XXXXXXXX.com \
+    -e SMTP_SERVER_PORT=465 \
+    -e SMTP_ENCRYPTION=ssl \
+    -e SMTP_USER=XXXXXXXX@XXXXXXXX.com \
+    -e SMTP_CONNCT_TIMEOUT=30sec \
+    -e SMTP_FROM=USER \
+    -e SMTP_PASS=Zs123456! \
+    --restart=always \
+    -d openfrontier/gerrit:3.0.15
+	
+	
+	
+	
+sudo docker run \
+    --name gerrit_4 \
+    -p 8091:8080 -p 29418:29418 \
+    -e AUTH_TYPE=HTTP \
+    -e USER_NAME=XXXXXXXX \
+    -e USER_EMAIL=XXXXXXXX@XXXXXXXX.com \
+    -e AUTH_TYPE=HTTP \
+    -e SMTP_SERVER=smtp.XXXXXXXX.com \
+    -e SMTP_SERVER_PORT=465 \
+    -e SMTP_ENCRYPTION=ssl \
+    -e SMTP_USER=XXXXXXXX@XXXXXXXX.com \
+    -e SMTP_CONNCT_TIMEOUT=30sec \
+    -e SMTP_FROM=USER \
+    -e SMTP_PASS=Zs123456! \
+    --restart=always \
+    -d openfrontier/gerrit:3.0.15
+	
+	
+	
+
+uUIvZCGqlzJ+XS1txgR2My86Gcw9w1FUffEW1Q3nKQ
+
+
+
+sudo docker run  --hostname zs -u zs --name ubuntu_hg  -itd ubuntu 

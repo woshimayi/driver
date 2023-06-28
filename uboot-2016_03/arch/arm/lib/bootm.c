@@ -290,13 +290,13 @@ static void boot_jump_linux(bootm_headers_t *images, int flag)
 		kernel_entry(images->ft_addr, NULL, NULL, NULL);
 	}
 #else
-	unsigned long machid = gd->bd->bi_arch_number;
+	unsigned long machid = gd->bd->bi_arch_number;		/* 机器ID */
 	char *s;
 	void (*kernel_entry)(int zero, int arch, uint params);
 	unsigned long r2;
 	int fake = (flag & BOOTM_STATE_OS_FAKE_GO);
 
-	kernel_entry = (void (*)(int, int, uint))images->ep;
+	kernel_entry = (void (*)(int, int, uint))images->ep;	/* images->ep 为images 启始地址 */
 
 	s = getenv("machid");
 	if (s) {
@@ -335,6 +335,7 @@ static void boot_jump_linux(bootm_headers_t *images, int flag)
  * Modeled after the powerpc implementation
  * DIFFERENCE: Instead of calling prep and go at the end
  * they are called if subcommand is equal 0.
+ * 内核启动函数
  */
 int do_bootm_linux(int flag, int argc, char * const argv[],
 		   bootm_headers_t *images)
