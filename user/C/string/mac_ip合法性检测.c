@@ -1,6 +1,84 @@
+/*
+ * @*************************************: 
+ * @FilePath: /user/C/string/mac_ip合法性检测.c
+ * @version: 
+ * @Author: dof
+ * @Date: 2021-10-20 19:33:39
+ * @LastEditors: dof
+ * @LastEditTime: 2023-06-28 14:26:12
+ * @Descripttion: 正则表达式  使用用例
+ * @**************************************: 
+ */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/types.h>
+#include <regex.h>
+
+int ereg(char *pattern, char *value)
+{
+#if 0
+	int r, cflags = 0;
+	regmatch_t pm[10];
+	const size_t nmatch = 10;
+	regex_t reg;
+
+	r = regcomp(&reg, pattern, cflags);
+	if (r == 0)
+	{
+		r = regexec(&reg, value, nmatch, pm, cflags);
+		if (r == REG_NOMATCH)
+		{
+			printf("No match\n");
+		}
+		else if (r != 0)
+		{
+			char errorbuf[100];
+			regerror(r, &reg, errorbuf, sizeof(errorbuf));
+			printf("regexec() failed: %s\n", errorbuf);
+			// regfree(&reg);
+			// return 1;
+		}
+		else
+		{
+			printf("Matched at offset %d\n", pm[0].rm_so);
+		}
+
+	}
+
+	regfree(&reg);
+
+	return r;
+#else
+	regex_t regex;
+	int ret = regcomp(&regex, pattern, REG_EXTENDED);
+	if (ret != 0)
+	{
+		printf("regcomp() failed\n");
+		return 1;
+	}
+
+	ret = regexec(&regex, value, 0, NULL, 0);
+	if (ret == REG_NOMATCH)
+	{
+		printf("No match\n");
+	}
+	else if (ret != 0)
+	{
+		printf("regexec() failed\n");
+		regfree(&regex);
+		return 1;
+	}
+	else
+	{
+		printf("Match\n");
+	}
+	printf("ret= %d\n", ret);
+	regfree(&regex);
+	return ret;
+#endif
+}
+
 
 int isValidMac(char *value)
 {
@@ -18,26 +96,32 @@ int isValidIp(char *value)
 	return r;
 }
 
-int ereg(char *pattern, char *value)
+int isValiTime(char *value)
 {
-	int r, cflags = 0;
-	regmatch_t pm[10];
-	const size_t nmatch = 10;
-	regex_t reg;
-
-	r = regcomp(&reg, pattern, cflags);
-	if (r == 0)
-	{
-		r = regexec(&reg, value, nmatch, pm, cflags);
-	}
-	regfree(&reg);
-
+	int r; //r=0:valid, else not valid
+	char *reg = "((1|0?)[0-9]|2[0-3]):([0-5][0-9])";
+	r = ereg(reg, value);
 	return r;
 }
 
+int isValiWeek(char *value)
+{
+	int r; //r=0:valid, else not valid
+	char *reg = "^([0-7,])+$";
+	r = ereg(reg, value);
+	return r;
+}
+
+
+
 int main()
 {
-
+	// int r = isValidIp("192.168.1.1");
+	// int r = isValidMac("00:22:33:44:55:66");
+	// int r = isValiTime("19:38");
+	int r = isValiWeek("1,2,3,4,5,6,7");
+	// int r = isValiWeek("1234567");
+	printf("r = %d\n", r);
 	return 0;
 }
 
