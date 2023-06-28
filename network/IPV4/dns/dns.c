@@ -1,10 +1,10 @@
 /*
- * @FilePath: /network/dns/dns.c
+ * @FilePath: /network/IPV4/dns/dns.c
  * @version: 
  * @Author: sueRimn
  * @Date: 2020-10-10 13:53:43
  * @LastEditors: dof
- * @LastEditTime: 2021-07-23 10:31:17
+ * @LastEditTime: 2023-06-20 18:13:46
  * @Descripttion: dns 解析
  */
 #include <sys/types.h>
@@ -51,15 +51,22 @@ int lookup(char *host, int *d)
 
 int main(int argc, char **argv)
 {
+    char domain[128] = {0};
     if (argc != 2)
     {
         printf("Usag...\n");
-        exit(1);
+        strncpy(domain, "www.jd.com", sizeof(domain));
+        // exit(1);
     }
+    else
+    {
+        strncpy(domain, argv[1], sizeof(domain));
+    }
+
     int d = 0;
-    printf("dns = %s\n", argv[1]);
+    printf("dns = %s\n", domain);
     system("date");
-    lookup(argv[1], &d);
+    lookup(domain, &d);
     system("date");
     printf("%d\n", d);
 }

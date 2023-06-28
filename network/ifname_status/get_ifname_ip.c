@@ -4,7 +4,7 @@
  * @Author: sueRimn
  * @Date: 2021-01-22 10:35:10
  * @LastEditors: dof
- * @LastEditTime: 2023-06-13 14:52:15
+ * @LastEditTime: 2023-06-20 17:28:36
  * @Descripttion: 获取 指定接口地址
  */
 
@@ -72,9 +72,43 @@ int get_mac_by_ifname(char *ifname, char *pszMac, unsigned int len)
 }
 
 
-void mactostr(char * strmac, char *dstmac)
+void get_ipv6()
 {
-    
+    if ((f = fopen("/proc/net/if_inet6", "r")) != NULL)
+{
+    while (fscanf(f, "%4s%4s%4s%4s%4s%4s%4s%4s %02x %02x %02x %02x %20s\n", addr6p[0], addr6p[1], addr6p[2], addr6p[3], addr6p[4], addr6p[5], addr6p[6], addr6p[7], &if_idx, &plen, &scope, &dad_status, devname) != EOF)
+    {
+        if (!strcmp("eth0", ptr->name))
+        {
+            sprintf(addr6, "%s:%s:%s:%s:%s:%s:%s:%s", addr6p[0], addr6p[1], addr6p[2], addr6p[3], addr6p[4], addr6p[5], addr6p[6], addr6p[7]);
+            inet6_aftype.input(1, addr6, (struct sockaddr *)&sap);
+            printf(_(" inet6 addr: %s/%d"), inet6_aftype.sprint((struct sockaddr *)&sap, 1), plen);
+            printf(_(" Scope:"));
+            switch (scope)
+            {
+            case 0:
+                printf(_("Global"));
+                break;
+            case IPV6_ADDR_LINKLOCAL:
+                printf(_("Link"));
+                break;
+            case IPV6_ADDR_SITELOCAL:
+                printf(_("Site"));
+                break;
+            case IPV6_ADDR_COMPATv4:
+                printf(_("Compat"));
+                break;
+            case IPV6_ADDR_LOOPBACK:
+                printf(_("Host"));
+                break;
+            default:
+                printf(_("Unknown"));
+            }
+            printf("\n");
+        }
+    }
+    fclose(f);
+}
 }
 
 int main(int argc, char const *argv[])
@@ -90,3 +124,4 @@ int main(int argc, char const *argv[])
     /* code */
     return 0;
 }
+

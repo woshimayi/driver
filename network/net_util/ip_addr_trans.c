@@ -1,13 +1,13 @@
 /*
- * @*************************************: 
+ * @*************************************:
  * @FilePath: /network/net_util/ip_addr_trans.c
- * @version: 
+ * @version:
  * @Author: dof
  * @Date: 2021-12-28 15:46:42
  * @LastEditors: dof
  * @LastEditTime: 2023-06-13 14:56:49
  * @Descripttion:  ip 地址比较大小
- * @**************************************: 
+ * @**************************************:
  */
 
 #include <stdio.h>
@@ -16,52 +16,50 @@
 
 // typedef unsigned char_t    UINT8;
 
-
-int ipv6_compare(char * min, char * max)
+int ipv6_compare(char *min, char *max)
 {
-	struct in6_addr ip1;
-	struct in6_addr ip2;
-	int result = 0;
+   struct in6_addr ip1;
+   struct in6_addr ip2;
+   int result = 0;
 
-	inet_pton(AF_INET6, min, &ip1);
-	inet_pton(AF_INET6, max, &ip2);
+   inet_pton(AF_INET6, min, &ip1);
+   inet_pton(AF_INET6, max, &ip2);
 
-	result = memcmp(&ip1, &ip2, sizeof(struct in6_addr));
-	if (result > 0)
-		printf("%s > %s\n", min, max);
-	else if (result < 0)
-		printf("%s < %s\n", min, max);
-	else
-		printf("%s is == %s\n", min, max);
+   result = memcmp(&ip1, &ip2, sizeof(struct in6_addr));
+   if (result > 0)
+      printf("%s > %s\n", min, max);
+   else if (result < 0)
+      printf("%s < %s\n", min, max);
+   else
+      printf("%s is == %s\n", min, max);
 
-	return 0;
+   return 0;
 }
 
-
-int ipv4_compare(char * min, char * max)
+int ipv4_compare(char *min, char *max)
 {
-	struct in_addr ip1;
-	struct in_addr ip2;
-	int result = 0;
+   struct in_addr ip1;
+   struct in_addr ip2;
+   int result = 0;
 
-	inet_pton(AF_INET, min, &ip1);
-	inet_pton(AF_INET, max, &ip2);
+   inet_pton(AF_INET, min, &ip1);
+   inet_pton(AF_INET, max, &ip2);
 
-	result = memcmp(&ip1, &ip2, sizeof(struct in_addr));
-	if (result < 0)
-	{
-		printf("%s < %s\n", min, max);
-	}
-	else if (result > 0)
-	{
-		printf("%s > %s\n", min, max);
-	}
-	else
-	{
-		printf("%s == %s\n", min, max);
-	}
+   result = memcmp(&ip1, &ip2, sizeof(struct in_addr));
+   if (result < 0)
+   {
+      printf("%s < %s\n", min, max);
+   }
+   else if (result > 0)
+   {
+      printf("%s > %s\n", min, max);
+   }
+   else
+   {
+      printf("%s == %s\n", min, max);
+   }
 
-	return result;
+   return result;
 }
 
 #if 0
@@ -159,129 +157,129 @@ UBOOL8 util_isValidPortNumber(const char * portNumberStr)
 }
 #endif
 
-
-static int strnlen_safe(const char *str, int max) {
-  // note: strnlen is not supported on all compilers -- create our own version
-  const char * end = memchr(str, '\0', max+1);
-  if (end && *end == '\0') {
-       return end-str;
-  }
-  return -1;
+static int strnlen_safe(const char *str, int max)
+{
+   // note: strnlen is not supported on all compilers -- create our own version
+   const char *end = memchr(str, '\0', max + 1);
+   if (end && *end == '\0')
+   {
+      return end - str;
+   }
+   return -1;
 }
-
 
 /**
  * @brief      str to num  xx:xx:xx:xx:xx:xx    to   xxxxxxxxxxxx
- * 
+ *
  * @param macStr  input
  * @param macNum  output
- * @return int 
+ * @return int
  */
-int util_macStrToNum(const char *macStr, unsigned char *macNum) 
+int util_macStrToNum(const char *macStr, unsigned char *macNum)
 {
    unsigned int i;
    unsigned int macStrLen;
-   
-   if (macNum == NULL || macStr == NULL) 
+
+   if (macNum == NULL || macStr == NULL)
    {
       printf("Invalid macNum/macStr %p/%p", macNum, macStr);
       return -1;
-   }    
+   }
    macStrLen = strnlen_safe(macStr, 19);
-   
-   i=sscanf(macStr, "%2hhx:%2hhx:%2hhx:%2hhx:%2hhx:%2hhx", 
-          &(macNum[0]), &(macNum[1]), &(macNum[2]), &(macNum[3]), &(macNum[4]), &(macNum[5]));
 
-   if (i != 6 && macStrLen == 14) {
-     i=sscanf(macStr, "%2hhx%2hhx:%2hhx%2hhx:%2hhx%2hhx", 
+   i = sscanf(macStr, "%2hhx:%2hhx:%2hhx:%2hhx:%2hhx:%2hhx",
               &(macNum[0]), &(macNum[1]), &(macNum[2]), &(macNum[3]), &(macNum[4]), &(macNum[5]));
+
+   if (i != 6 && macStrLen == 14)
+   {
+      i = sscanf(macStr, "%2hhx%2hhx:%2hhx%2hhx:%2hhx%2hhx",
+                 &(macNum[0]), &(macNum[1]), &(macNum[2]), &(macNum[3]), &(macNum[4]), &(macNum[5]));
    }
 
-   if (i != 6 && macStrLen == 12) {
-     i=sscanf(macStr, "%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx", 
-              &(macNum[0]), &(macNum[1]), &(macNum[2]), &(macNum[3]), &(macNum[4]), &(macNum[5]));
+   if (i != 6 && macStrLen == 12)
+   {
+      i = sscanf(macStr, "%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx",
+                 &(macNum[0]), &(macNum[1]), &(macNum[2]), &(macNum[3]), &(macNum[4]), &(macNum[5]));
    }
 
-   if (i != 6) {
+   if (i != 6)
+   {
       return -1;
    }
-   
+
    return 0;
-   
 }
 
 /**
  * @brief  mac num to str
- * 
+ *
  * @param macNum  input
  * @param macStr  output
- * @return int 
+ * @return int
  */
-int util_macNumToStr(const unsigned char *macNum, char *macStr) 
+int util_macNumToStr(const unsigned char *macNum, char *macStr)
 {
-   if (macNum == NULL || macStr == NULL) 
+   if (macNum == NULL || macStr == NULL)
    {
       printf("Invalid macNum/macStr %p/%p", macNum, macStr);
       return -1;
-   }  
+   }
 
    sprintf(macStr, "%2.2x:%2.2x:%2.2x:%2.2x:%2.2x:%2.2x",
-           (unsigned char) macNum[0], (unsigned char) macNum[1], (unsigned char) macNum[2],
-           (unsigned char) macNum[3], (unsigned char) macNum[4], (unsigned char) macNum[5]);
+           (unsigned char)macNum[0], (unsigned char)macNum[1], (unsigned char)macNum[2],
+           (unsigned char)macNum[3], (unsigned char)macNum[4], (unsigned char)macNum[5]);
 
    return 0;
 }
 
-typedef uint8_t    UINT8;
+typedef uint8_t UINT8;
 
 int util_macToNumStr(const char *macStr, char *macNumStr)
 {
-	UINT8 macNum[6] = {0};
-	if (macStr == NULL || macNumStr == NULL)
-	{
-		printf("Invalid macNum/macStr %p/%p\n", macNum, macStr);
-		return -1;
-	}
+   UINT8 macNum[6] = {0};
+   if (macStr == NULL || macNumStr == NULL)
+   {
+      printf("Invalid macNum/macStr %p/%p\n", macNum, macStr);
+      return -1;
+   }
 
-	if (util_macStrToNum(macStr, macNum) == 0)
-		sprintf(macNumStr, "%2.2X%2.2X%2.2X%2.2X%2.2X%2.2X",
-			(UINT8) macNum[0], (UINT8) macNum[1], (UINT8) macNum[2],
-			(UINT8) macNum[3], (UINT8) macNum[4], (UINT8) macNum[5]);
-	else 
-		return -1;
+   if (util_macStrToNum(macStr, macNum) == 0)
+      sprintf(macNumStr, "%2.2X%2.2X%2.2X%2.2X%2.2X%2.2X",
+              (UINT8)macNum[0], (UINT8)macNum[1], (UINT8)macNum[2],
+              (UINT8)macNum[3], (UINT8)macNum[4], (UINT8)macNum[5]);
+   else
+      return -1;
 
-	return 0;
+   return 0;
 }
-
-
 
 int macaddr_compare(char *min, char *max)
 {
-	return strcmp(min, max);
+   return strcmp(min, max);
 }
 
 int main()
 {
-	char *min = "192.168.4.1";
-	char *max = "192.168.4.1";
-	int ret = 0;
+   char *min = "192.168.4.1";
+   char *max = "192.168.4.1";
+   int ret = 0;
 
-	if (ipv4_compare(min, max))
-	{
-		printf("ssss\n");
-	}
+   if (ipv4_compare(min, max))
+   {
+      printf("ssss\n");
+   }
 
-	char *str1 = "2000::10";
-	char *str2 = "2000::2";
+   char *str1 = "2000::10";
+   char *str2 = "2000::2";
 
-	if (ipv6_compare(str1, str2))
-	{
-		printf("ssss\n");
-	}
+   if (ipv6_compare(str1, str2))
+   {
+      printf("ssss\n");
+   }
 
-	char *mac1 = "00:11:22:33:44:57";
-	char *mac2 = "00:11:22:33:44:56";
-	printf("mac %d \n", macaddr_compare(mac1, mac2));
+   char *mac1 = "00:11:22:33:44:57";
+   char *mac2 = "00:11:22:33:44:56";
+   printf("mac %d \n", macaddr_compare(mac1, mac2));
 
-	return 0;
+   return 0;
 }

@@ -4,7 +4,7 @@
  * @Author: sueRimn
  * @Date: 2020-10-10 13:53:43
  * @LastEditors: dof
- * @LastEditTime: 2022-08-08 13:52:11
+ * @LastEditTime: 2023-06-20 18:11:21
  * @Descripttion: dns6 解析
  */
 #include <sys/types.h>
@@ -46,7 +46,7 @@ int lookup(char *host, char * ipv6addr, uint32_t len)
         addr = (struct sockaddr_in6 *)cur->ai_addr;
         printf("addr 1 = %s\n", inet_ntop(AF_INET6,
                                  &addr->sin6_addr, ipbuf, sizeof(ipbuf)));
-        printf("addr 2 = %s ret = %d\n", ipbuf, inet_pton(AF_INET6, ipbuf, &addr->sin6_addr));
+        printf("addr 2 = %s \vret = %d\n", ipbuf, inet_pton(AF_INET6, ipbuf, &addr->sin6_addr));
     }
     freeaddrinfo(res);
     strncpy(ipv6addr, ipbuf, len);
@@ -59,8 +59,8 @@ int main(int argc, char **argv)
     if (argc != 2)
     {
         printf("Usag... input ipv6 domain\n");
-        // strncpy(domain, "www.baidu.com", sizeof(domain));
-        exit(1);
+        strncpy(domain, "www.jd.com", sizeof(domain));
+        // exit(1);
     }
     else
     {
