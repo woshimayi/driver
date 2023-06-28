@@ -6,6 +6,11 @@ git config --global user.email "woshidamayi@Gmail.com"
 git config --global user.name "woshidamayi"
 git config --global core.editor vim
 git config --global merge.tool vimdiff
+git config --global core.quotepath false 
+git config --global gui.encoding utf-8
+git config --global i18n.commit.encoding utf-8 
+git config --global i18n.logoutputencoding utf-8 
+git config core.filemode false
 cp git_template ~/.git_template
 git config --global commit.template ~/.git_template
 
