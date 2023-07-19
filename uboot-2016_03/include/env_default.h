@@ -85,6 +85,15 @@ const uchar default_environment[] = {
 #ifdef	CONFIG_LOADADDR
 	"loadaddr="	__stringify(CONFIG_LOADADDR)	"\0"
 #endif
+#ifdef	CONFIG_BOOT_NFS
+	"bootnfs="	"reset"	"\0"
+#endif
+#ifdef	CONFIG_BOOT_SD
+	"bootsd="	"reset"	"\0"
+#endif
+#ifdef	CONFIG_BOOT_NAND
+	"bootnand="	"reset"	"\0"
+#endif
 #ifdef	CONFIG_CLOCKS_IN_MHZ
 	"clocks_in_mhz=1\0"
 #endif
