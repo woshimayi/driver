@@ -235,7 +235,7 @@
 		"scriptaddr=0xa8000000\0" \
 		"kernel_addr_r=0xa0008000\0"
 #endif
-#if 0
+
 #define CONFIG_EXTRA_ENV_SETTINGS \
 		CONFIG_PLATFORM_ENV_SETTINGS \
                 BOOTENV \
@@ -249,27 +249,25 @@
 			"devtmpfs.mount=0  vmalloc=256M\0" \
 		"bootflash=run flashargs; " \
 			"cp ${ramdisk_addr} ${ramdisk_addr_r} ${maxramdisk}; " \
-			"bootm ${kernel_addr} ${ramdisk_addr_r}\0"
-#endif
+			"bootm ${kernel_addr} ${ramdisk_addr_r}\0" \
+		"bootmenu_0=update rootfs=" \
+				"run rootfsupdate\0" \
+		"bootmenu_1=update kernel=" \
+				"run updatekernel\0" \
+		"bootmenu_2=update dtb=" \
+				"run updatedtb\0" \
+		"bootmenu_3=update fwk=" \
+				"run updatefek\0" \
+		"bootmenu_4=update uboot=" \
+				"run updateuboot\0" \
+		"bootmenu_5=update cfga=" \
+				"run updatecfga\0" \
+		"bootmenu_6=reboot cfgb=" \
+				"run updatecfgb\0" \
+		"bootmenu_7=update fwk=" \
+				"run updatefwk\0" \
+				""
 
-#define CONFIG_EXTRA_ENV_SETTINGS \
-         "bootmenu_0=update rootfs=" \
-                 "run rootfsupdate\0" \
-         "bootmenu_1=update kernel=" \
-                 "run updatekernel\0" \
-         "bootmenu_2=update dtb=" \
-                 "run updatedtb\0" \
-         "bootmenu_3=update fwk=" \
-                 "run updatefek\0" \
-         "bootmenu_4=update uboot=" \
-                 "run updateuboot\0" \
-         "bootmenu_5=update cfga=" \
-                 "run updatecfga\0" \
-         "bootmenu_6=reboot cfgb=" \
-                 "run updatecfgb\0" \
-         "bootmenu_7=update fwk=" \
-                 "run updatefwk\0" \
-                 ""
 
 /* FLASH and environment organization */
 #define PHYS_FLASH_SIZE			0x04000000	/* 64MB */

@@ -148,6 +148,12 @@ config CMD_BOOTM
 	help
 	  Boot an application image from the memory.
 
+config CMD_BOOTMENU
+	bool "bootmenu"
+	default y
+	help
+	  Boot an application image from the memory.
+
 config CMD_ELF
 	bool "bootelf, bootvx"
 	default y
