@@ -1,0 +1,3 @@
+[submodule "user/usb/uhubctl"]
+	path = user/usb/uhubctl
+	url = https://github.com/mvp/uhubctl.git
