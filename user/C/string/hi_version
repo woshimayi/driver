@@ -1,0 +1,11 @@
+product name       :hsan
+product version    :HSAN_3.3.10.linux.0941
+version type       :debug
+product author     :Hisilicon
+sdk version        :HSAN_3.3.10.linux.0941
+flash type         :nand
+release time       :2023-07-09 22:22:44
+git url            :http://172.16.8.160:8091/HSAN_091
+git branch         :hisi_094
+git info           :2eb6dbc0728c79820b3b0ad9b666b02dae820786
+build name         :zhengsen

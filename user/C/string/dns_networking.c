@@ -1,3 +1,14 @@
+/*
+ * @*************************************:
+ * @FilePath: /user/C/string/dns_networking.c
+ * @version:
+ * @Author: dof
+ * @Date: 2021-10-20 19:33:39
+ * @LastEditors: dof
+ * @LastEditTime: 2023-08-19 19:57:48
+ * @Descripttion: dns 解析
+ * @**************************************:
+ */
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netdb.h>
@@ -15,9 +26,9 @@ int lookup(char *host, int *d)
 	char ipbuf[16];
 
 	memset(&hints, 0, sizeof(struct addrinfo));
-	hints.ai_family = AF_INET; /* Allow IPv4 */
+	hints.ai_family = AF_INET;	 /* Allow IPv4 */
 	hints.ai_flags = AI_PASSIVE; /* For wildcard IP address */
-	hints.ai_protocol = 0; /* Any protocol */
+	hints.ai_protocol = 0;		 /* Any protocol */
 	hints.ai_socktype = SOCK_STREAM;
 
 	ret = getaddrinfo(host, NULL, &hints, &res);
@@ -31,14 +42,13 @@ int lookup(char *host, int *d)
 	for (cur = res; cur != NULL; cur = cur->ai_next)
 	{
 		addr = (struct sockaddr_in *)cur->ai_addr;
-		//printf("%s\n",
+		// printf("%s\n",
 		inet_ntop(AF_INET, &addr->sin_addr, ipbuf, 16);
 	}
 	freeaddrinfo(res);
 	*d = inet_addr(ipbuf);
 	return ret;
 }
-
 
 int main(int argc, char **argv)
 {

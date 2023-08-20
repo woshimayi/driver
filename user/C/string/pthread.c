@@ -1,3 +1,14 @@
+/*
+ * @*************************************: 
+ * @FilePath: /user/C/string/pthread.c
+ * @version: 
+ * @Author: dof
+ * @Date: 2021-10-20 19:33:39
+ * @LastEditors: dof
+ * @LastEditTime: 2023-08-10 15:26:21
+ * @Descripttion: 
+ * @**************************************: 
+ */
 #include <pthread.h>
 #include <unistd.h>
 #include <stdio.h>
@@ -43,7 +54,7 @@ void *tprocess2(void *a)
 	while (1)
 	{
 		buf = getenv("POT_NTP");
-		signal(SIG_MY_MSG, userFun);
+		// signal(SIG_MY_MSG, userFun);
 		if (NULL != buf)
 		{
 			printf("buf = %s\n", buf);
@@ -68,10 +79,10 @@ int main()
 	printf("uhttp pid%s\n", str);
 	setenv("UHTTPD_PID", str, 1);
 
-	if (0 != pthread_create(&t1, NULL, (void *)tprocess1, (void *)&a))
-	{
-		perror("fail error 1");
-	}
+	// if (0 != pthread_create(&t1, NULL, (void *)tprocess1, (void *)&a))
+	// {
+	// 	perror("fail error 1");
+	// }
 	if (0 != pthread_create(&t2, NULL, (void *)tprocess2, (void *)&b))
 	{
 		perror("fail error 1");

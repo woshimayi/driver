@@ -5,7 +5,7 @@
  * @Author: dof
  * @Date: 2021-10-20 19:33:39
  * @LastEditors: dof
- * @LastEditTime: 2021-12-07 13:56:03
+ * @LastEditTime: 2023-08-19 20:07:00
  * @Descripttion: ## 连接符
  * @**************************************:
  */
@@ -19,7 +19,7 @@
 
 int main()
 {
-	printf("SF_GetFeature(3)\n");
+	printf("SF_GetFeature(3) %s\n", SF_GetFeature(4));
 
 	return 0;
 }

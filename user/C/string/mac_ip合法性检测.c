@@ -5,7 +5,7 @@
  * @Author: dof
  * @Date: 2021-10-20 19:33:39
  * @LastEditors: dof
- * @LastEditTime: 2023-06-28 14:26:12
+ * @LastEditTime: 2023-08-11 10:16:10
  * @Descripttion: 正则表达式  使用用例
  * @**************************************: 
  */
@@ -99,18 +99,37 @@ int isValidIp(char *value)
 int isValiTime(char *value)
 {
 	int r; //r=0:valid, else not valid
-	char *reg = "((1|0?)[0-9]|2[0-3]):([0-5][0-9])";
+	char *reg = "([1|0?][0-9]|2[0-3]):([0-5][0-9])";
 	r = ereg(reg, value);
 	return r;
 }
 
 int isValiWeek(char *value)
 {
+	if (NULL == value)
+	{
+		return 1;
+	}
+
 	int r; //r=0:valid, else not valid
-	char *reg = "^([0-7,])+$";
+	char *reg = "^([1-7]|[,?])+$";
 	r = ereg(reg, value);
 	return r;
 }
+
+int isValiDNS(char *value)
+{
+	if (NULL == value)
+	{
+		return 1;
+	}
+
+	int r; //r=0:valid, else not valid
+	char *reg = "^(%*s|[,?])+$";
+	r = ereg(reg, value);
+	return r;
+}
+
 
 
 
@@ -118,8 +137,9 @@ int main()
 {
 	// int r = isValidIp("192.168.1.1");
 	// int r = isValidMac("00:22:33:44:55:66");
-	// int r = isValiTime("19:38");
-	int r = isValiWeek("1,2,3,4,5,6,7");
+	// int r = isValiTime("23:59");
+	// int r = isValiWeek("2,45");
+	int r = isValiDNS("3000::2,3000::5,");
 	// int r = isValiWeek("1234567");
 	printf("r = %d\n", r);
 	return 0;

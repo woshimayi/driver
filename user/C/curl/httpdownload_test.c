@@ -5,7 +5,7 @@
  * @Author: dof
  * @Date: 2022-11-04 13:43:08
  * @LastEditors: dof
- * @LastEditTime: 2022-11-07 10:21:52
+ * @LastEditTime: 2023-08-10 15:51:26
  * @Descripttion: curl 下载测试程序
  * @build:  gcc httpdownload_test.c -lcurl
  * @**************************************:
@@ -124,7 +124,7 @@ int main()
 	int ret;
 	char url[300];
 
-	ret = download_function("http://172.16.80.4/anysize/100k", "123.w");
+	ret = download_function("http://192.168.1.100:8080/", "456.w");
 	printf("ret = %d\n", ret);
 	return 0;
 }

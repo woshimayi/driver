@@ -1,3 +1,14 @@
+/*
+ * @*************************************: 
+ * @FilePath: /user/C/string/dns.c
+ * @version: 
+ * @Author: dof
+ * @Date: 2021-10-20 19:33:39
+ * @LastEditors: dof
+ * @LastEditTime: 2023-08-19 19:58:25
+ * @Descripttion:  dns 解析
+ * @**************************************: 
+ */
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netdb.h>

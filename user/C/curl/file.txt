@@ -1,0 +1,2 @@
+upgradefile=ota
+cmd=ls

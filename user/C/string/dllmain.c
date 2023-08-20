@@ -1,4 +1,17 @@
+/*
+ * @*************************************: 
+ * @FilePath: /user/C/string/dllmain.c
+ * @version: 
+ * @Author: dof
+ * @Date: 2021-10-20 19:33:39
+ * @LastEditors: dof
+ * @LastEditTime: 2023-08-19 19:56:24
+ * @Descripttion: 
+ * @**************************************: 
+ */
 /* Replace "dll.h" with the name of your header */
+
+
 #include "dll.h"
 #include <windows.h>
 

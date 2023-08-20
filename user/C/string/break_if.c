@@ -5,7 +5,7 @@
  * @Author: dof
  * @Date: 2022-07-18 09:36:57
  * @LastEditors: dof
- * @LastEditTime: 2022-07-18 10:53:48
+ * @LastEditTime: 2023-08-19 20:12:15
  * @Descripttion: if 跳出后面的执行步骤，使用  do {} while(0);
  * @**************************************:
  */
@@ -16,17 +16,16 @@
 
 int cmsUtl_strlen(const char *src)
 {
-   char emptyStr[1] = {0};
-   char *str = (char *)src;
-   
-   if(src == NULL)
-   {
-      str = emptyStr;
-   }	
+	char emptyStr[1] = {0};
+	char *str = (char *)src;
 
-   return strlen(str);
-} 
+	if (src == NULL)
+	{
+		str = emptyStr;
+	}
 
+	return strlen(str);
+}
 
 int main(int argc, char const *argv[])
 {
@@ -40,7 +39,7 @@ int main(int argc, char const *argv[])
 		{
 			printf("qweqweqwe mac = %s %s\n", MAC_1, MAC_2);
 		}
-		
+
 		// ip = 9;
 		if (0 == cmsUtl_strlen(IP))
 		{

@@ -1,3 +1,14 @@
+/*
+ * @*************************************: 
+ * @FilePath: /user/C/string/pthread_one.c
+ * @version: 
+ * @Author: dof
+ * @Date: 2021-10-20 19:33:39
+ * @LastEditors: dof
+ * @LastEditTime: 2023-08-10 15:22:01
+ * @Descripttion: 
+ * @**************************************: 
+ */
 #include <stdio.h>
 #include <pthread.h>
 #include <stdlib.h>
@@ -8,7 +19,7 @@ void *thread_function(void *arg)
 	int i;
 	for (i = 0; i < 20; i++)
 	{
-		printf("Thread says hi! ");
+		printf("Thread says hi! \n");
 		sleep(1);
 	}
 	return NULL;

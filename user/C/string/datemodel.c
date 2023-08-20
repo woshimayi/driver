@@ -1,3 +1,16 @@
+/*
+ * @*************************************: 
+ * @FilePath: /user/C/string/datemodel.c
+ * @version: 
+ * @Author: dof
+ * @Date: 2021-10-20 19:33:39
+ * @LastEditors: dof
+ * @LastEditTime: 2023-08-19 19:55:38
+ * @Descripttion: sscan 截取字符串
+ * @**************************************: 
+ */
+
+
 // Device.DHCPv4.Server.Pool.{i}.StaticAddress.{i}.Chaddr
 
 

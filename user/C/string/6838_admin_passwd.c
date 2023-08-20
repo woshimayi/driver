@@ -5,7 +5,7 @@
  * @Author: dof
  * @Date: 2021-10-20 19:33:39
  * @LastEditors: dof
- * @LastEditTime: 2021-12-07 13:58:29
+ * @LastEditTime: 2023-08-19 20:08:17
  * @Descripttion: 加密
  * @**************************************:
  */
@@ -31,7 +31,6 @@ int i64c(int i)
 	return ('z');
 }
 
-
 char *util_cryptMakeSalt(void)
 {
 	time_t now;
@@ -47,8 +46,6 @@ char *util_cryptMakeSalt(void)
 	return result;
 }
 
-
-
 int main()
 {
 	char *str = crypt("34BF90268626", NULL);
@@ -57,5 +54,3 @@ int main()
 
 	return 0;
 }
-
-
