@@ -5,7 +5,7 @@
  * @Author: dof
  * @Date: 2021-10-20 19:33:39
  * @LastEditors: dof
- * @LastEditTime: 2022-08-17 10:13:31
+ * @LastEditTime: 2023-08-30 17:23:21
  * @Descripttion:
  * @**************************************:
  */
@@ -96,6 +96,12 @@ int main(int argc, char *argv[])
 	long long num = 0;
 	sscanf("", "%lld", &num);
 	printf("num = %lld\n", num);
+
+	// 分割字符串 下划线
+	char date[64] = {0};
+	char time[64] = {0};
+    sscanf("2023-08-30_16:01:36", "%[^_]_%s", date, time);
+    printf("date = %s time = %s\n", date, time);
 
 #else
 
