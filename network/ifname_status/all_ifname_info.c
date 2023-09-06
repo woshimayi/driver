@@ -1,28 +1,28 @@
 /*
- * @FilePath: /network/soclket_get_ip.c
- * @version: 
+ * @FilePath: /network/ifname_status/all_ifname_info.c
+ * @version:
  * @Author: sueRimn
  * @Date: 2020-03-29 09:46:25
- * @LastEditors: sueRimn
- * @LastEditTime: 2021-02-25 17:02:26
- * @Descripttion: 
+ * @LastEditors: dof
+ * @LastEditTime: 2023-09-04 11:22:46
+ * @Descripttion:
  */
 
 /*
-* 使用socket 获取网卡有效信息
-* ioctl https://baike.baidu.com/item/ioctl/6392403
-*
-* 网络接口信息, 如下所示：
-*
-* 接口数量:5
-* 接口：docker0
-* 接口状态: UP
-* IP地址:172.17.0.1
-* 子网掩码:255.255.0.0
-* 广播地址:0.0.0.0
-* MAC地址:02:42:3d:e3:4a:04
-*
-*/
+ * 使用socket 获取网卡有效信息
+ * ioctl https://baike.baidu.com/item/ioctl/6392403
+ *
+ * 网络接口信息, 如下所示：
+ *
+ * 接口数量:5
+ * 接口：docker0
+ * 接口状态: UP
+ * IP地址:172.17.0.1
+ * 子网掩码:255.255.0.0
+ * 广播地址:0.0.0.0
+ * MAC地址:02:42:3d:e3:4a:04
+ *
+ */
 
 #include <arpa/inet.h>
 #include <net/if.h>
@@ -33,8 +33,45 @@
 #include <sys/ioctl.h>
 #include <sys/socket.h>
 #include <unistd.h>
+#include <linux/sockios.h>
+#include <linux/ethtool.h>
 
 #define MAXINTERFACES 16 /* 最大接口数 */
+
+int get_max_link_speed(const char *interface_name)
+{
+    int fd;
+    struct ifreq ifr;
+    struct ethtool_cmd edata;
+
+    // 打开套接字
+    fd = socket(AF_INET, SOCK_DGRAM, 0);
+    if (fd < 0)
+    {
+        perror("socket");
+        return -1;
+    }
+
+    // 获取接口信息
+    strncpy(ifr.ifr_name, interface_name, IFNAMSIZ - 1);
+    ifr.ifr_data = (char *)&edata;
+    edata.cmd = ETHTOOL_GSET;
+
+    if (ioctl(fd, SIOCETHTOOL, &ifr) == -1)
+    {
+        // perror("ioctl");
+        close(fd);
+        return -1;
+    }
+
+    // 提取最大速率
+    int speed = ethtool_cmd_speed(&edata);
+
+    // 关闭套接字
+    close(fd);
+
+    return speed;
+}
 
 int main(int argc, char *argv[])
 {
@@ -68,6 +105,11 @@ int main(int argc, char *argv[])
     while (if_len-- != 0)
     {
         printf("接口：%s\n", buf[if_len].ifr_name); /* 接口名称 */
+        int speed = get_max_link_speed(buf[if_len].ifr_name);
+        if (0 < speed)
+        {
+            printf("速度：%dMbps\n", speed); /* 接口名称 */
+        }
 
         /* 获得接口标志 */
         if (!(ioctl(fd, SIOCGIFFLAGS, (char *)&buf[if_len])))
@@ -145,9 +187,9 @@ int main(int argc, char *argv[])
             sprintf(str, "SIOCGIFHWADDR ioctl %s\n", buf[if_len].ifr_name);
             perror(str);
         }
-    } //–while end
+    } // –while end
 
-    //关闭socket
+    // 关闭socket
     close(fd);
     return 0;
 }

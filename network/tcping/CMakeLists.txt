@@ -14,4 +14,4 @@ configure_file (
 
 # add the executable
 add_executable(tcping tcping.c)       # 添加执行文件 源文件
-install (TARGETS tcping DESTINATION bin)
+install (TARGETS tcping DESTINATION bin) # 安装目录

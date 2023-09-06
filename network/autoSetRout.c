@@ -18,6 +18,26 @@
 #include <sys/ioctl.h>
 #include <signal.h>
 
+#ifdef linux
+	#define NONE          "\033[m"
+	#define RED           "\033[0;32;31m"
+	#define LIGHT_RED     "\033[1;31m"
+	#define GREEN         "\033[0;32;32m"
+	#define LIGHT_GREEN   "\033[1;32m"
+	#define BLUE          "\033[0;32;34m"
+	#define LIGHT_BLUE    "\033[1;34m"
+	#define DARY_GRAY     "\033[1;30m"
+	#define CYAN          "\033[0;36m"
+	#define LIGHT_CYAN    "\033[1;36m"
+	#define PURPLE        "\033[0;35m"
+	#define LIGHT_PURPLE "\033[1;35m"
+	#define BROWN         "\033[0;33m"
+	#define YELLOW        "\033[1;33m"
+	#define LIGHT_GRAY    "\033[0;37m"
+	#define WHITE         "\033[1;37m"
+#endif // __LINUX__
+
+
 #define MDMVS_ANY_WAN "Any_WAN"
 #define ACS_TR69C "tr69"
 
@@ -25,6 +45,9 @@ static volatile int stop = 0;
 static char *URL = "http://www.baidu.com";
 static char hostname_acs[64] = {0};
 static char port_acs[32] = {0};
+
+
+
 
 struct ifNameInfo
 {
@@ -180,7 +203,7 @@ int connect_to(struct addrinfo *addr, const char *ifname)
             goto next_addr0;
 
         strncpy(ifr.ifr_name, ifname, strlen(ifname) + 1);
-        if (setsockopt(fd, SOL_SOCKET, SO_BINDTODEVICE, &ifr, sizeof(ifr)) < 0) //setsockopt:用来设置fd 的socket状态， SOL_SOCKET:套接字级别， SO_BINDTODEVICE:将套接字绑定到一个特定的设备上
+        if (setsockopt(fd, SOL_SOCKET, SO_BINDTODEVICE, &ifr, sizeof(ifr)) < 0) // setsockopt:用来设置fd 的socket状态， SOL_SOCKET:套接字级别， SO_BINDTODEVICE:将套接字绑定到一个特定的设备上
         {
             perror("SO_BINDTODEVICE failed");
             goto next_addr1;
@@ -209,9 +232,10 @@ int connect_to(struct addrinfo *addr, const char *ifname)
                 FD_SET(fd, &wset);
                 FD_SET(fd, &rset);
                 int res = select(fd + 1, &rset, &wset, NULL, &tm);
-                printf("res = %d\n", res);
+                // printf("res = %d\n", res);
                 if (res < 0)
                 {
+                    perror("connect_to");
                     printf("network error in connect\n");
                     goto next_addr0;
                 }
@@ -262,7 +286,7 @@ int ifname_test(const char *ifname)
     signal(SIGINT, handler);
     signal(SIGTERM, handler);
 
-    printf("hostname_acs=%s, port_acs = %s", hostname_acs, port_acs);
+    printf("hostname_acs=%s, port_acs = %s\n", hostname_acs, port_acs);
     if ((errcode = lookup(hostname_acs, port_acs, &resolved)) != 0)
     {
         fprintf(stderr, "%s\n", gai_strerror(errcode));
@@ -275,12 +299,12 @@ int ifname_test(const char *ifname)
         {
             printf("inval address\n");
         }
-        printf("--- %s:%s unreachable ---", hostname_acs, port_acs);
+        printf("--- %s:%s unreachable ---\n", hostname_acs, port_acs);
         ret = -1;
     }
     else
     {
-        printf("--- %s:%s ping statistics ---", hostname_acs, port_acs);
+        printf("--- %s:%s ping statistics ---\n", hostname_acs, port_acs);
         ret = 0;
     }
 
@@ -341,7 +365,7 @@ int fromIfnameGetIp(struct ifNameInfo *ifnameinfo)
         {
             printf("子网掩码:%s\n",
                    (char *)inet_ntoa(((struct sockaddr_in *)(&buf[if_len].ifr_addr))->sin_addr));
-            snprintf(ifnameinfo->submask, sizeof(ifnameinfo->submask, "%s", (char *)inet_ntoa(((struct sockaddr_in *)(&buf[if_len].ifr_addr))->sin_addr));
+            snprintf(ifnameinfo->submask, sizeof(ifnameinfo->submask), "%s", (char *)inet_ntoa(((struct sockaddr_in *)(&buf[if_len].ifr_addr))->sin_addr));
         }
         else
         {
@@ -392,13 +416,12 @@ int fromIfnameGetIp(struct ifNameInfo *ifnameinfo)
             sprintf(str, "SIOCGIFFLAGS ioctl %s\n", buf[if_len].ifr_name);
             perror(str);
         }
-    } //–while end
+    } // –while end
 
-    //关闭socket
+    // 关闭socket
     close(fd);
     return 0;
 }
-
 
 int main(int argc, char const *argv[])
 {
@@ -410,7 +433,7 @@ int main(int argc, char const *argv[])
     struct ifNameInfo ifnameinfo;
 
     www_ParseUrl(URL, NULL, hostname_acs, &port, NULL);
-    snprintf(port_acs, sizeof(port_acs), "%d", port?port:80);
+    snprintf(port_acs, sizeof(port_acs), "%d", port ? port : 80);
 
     // 获取系统指定网关ping测试结果
     // ret = tr69_ifname_test(ifnameinfo);

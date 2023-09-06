@@ -1,3 +1,14 @@
+/*
+ * @*************************************: 
+ * @FilePath: /call-cmake/main.c
+ * @version: 
+ * @Author: dof
+ * @Date: 2023-08-20 17:08:43
+ * @LastEditors: dof
+ * @LastEditTime: 2023-09-06 10:59:12
+ * @Descripttion: 
+ * @**************************************: 
+ */
 #include <stdlib.h>
 #include <stdio.h>
 #include "call_function.h"
@@ -13,11 +24,16 @@
 
 int main(int argc, char *argv[])
 {
-    int i;
+    int i = 23;
+    
+    vos_print("aaaaaaaa");
+    vos_error("aaaaaaaa");
+    vos_notic("aaaaaaaa");
+    vos_debug("aaaaaaaa");
 
-    //    for(i = 0 ; i < 100; i++)
-    //            setTimer(1, 0);
 
-    printf("asdas");
+    Test4((void *)&i);
+
+    printf("asdas\n");
     return 0;
 }

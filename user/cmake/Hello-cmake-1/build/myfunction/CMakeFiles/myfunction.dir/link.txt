@@ -1,2 +1,0 @@
-/usr/bin/ar qc libmyfunction.a  CMakeFiles/myfunction.dir/world.o
-/usr/bin/ranlib libmyfunction.a

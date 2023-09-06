@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "call_function.h"
+#include "vos_log.h"
 
 int Test2(void *num)
 {

@@ -1,0 +1,5 @@
+mkdir build
+cd build
+cmake  -DCMAKE_INSTALL_PREFIX=/tmp/t2/usr ../           # 安装目录  不写的话，默认安装到 /usr/local
+make 
+make install 

@@ -1,3 +1,14 @@
+/*
+ * @*************************************: 
+ * @FilePath: /call-cmake/vos_log.h
+ * @version: 
+ * @Author: dof
+ * @Date: 2023-08-20 17:08:43
+ * @LastEditors: dof
+ * @LastEditTime: 2023-09-04 13:28:28
+ * @Descripttion: 
+ * @**************************************: 
+ */
 #ifndef _VA_LIST_H_
 #define _VA_LIST_H_
 
@@ -27,7 +38,7 @@ void err_sys(const char *fmt, ...);
 
 #ifdef __WIN32
     #include <windows.h>
-    // param: FOREGROUND_INTENSITY ¼ÓÁÁ
+    // param: FOREGROUND_INTENSITY ï¿½ï¿½ï¿½ï¿½
     #define WHITE   SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),FOREGROUND_RED|FOREGROUND_BLUE|FOREGROUND_GREEN);
     #define BLUE    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),FOREGROUND_BLUE|FOREGROUND_INTENSITY);
     #define RED     SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),FOREGROUND_RED|FOREGROUND_INTENSITY);
@@ -57,6 +68,8 @@ void err_sys(const char *fmt, ...);
 
 #define VOS_LOG log_level
 
+void log_log(VosLogLevel level, const char *func, int linenum, const char *fmt, ...);
+
 //#ifdef (VOS_LOG == )
 #define vos_print(args...) log_log(VOS_LOG_LEVEL_PRINT,  __FUNCTION__, __LINE__, args)
 #define vos_error(args...) log_log(VOS_LOG_LEVEL_ERR,    __FUNCTION__, __LINE__, args)
@@ -67,7 +80,6 @@ void err_sys(const char *fmt, ...);
 //#endif // VOS_LOG
 
 
-void log_log(VosLogLevel level, const char *func, int linenum, const char *fmt, ...);
 
 #endif // _VA_LIST_H_
 

@@ -15,3 +15,5 @@ configure_file (
 # add the executable
 add_executable(tcping tcping.c)       # 添加执行文件 源文件
 
+INSTALL(TARGETS tcping
+		LIBRARY DESTINATION bin)
