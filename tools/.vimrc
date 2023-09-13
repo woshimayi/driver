@@ -1,0 +1,10 @@
+set number
+set hlsearch
+set tabstop=4
+set softtabstop=4
+set expandtab
+set autoindent
+set cindent
+set shiftwidth=4
+set list
+set listchars=tab:>-,trail:-
