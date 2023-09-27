@@ -89,7 +89,8 @@
 		compatible = "gpio-leds";
 		pinctrl-names = "default";
 		pinctrl-0 = <&pinctrl_gpio_leds
-				 &pinctrl_beep>;
+				 &pinctrl_beep
+				 >;
 
 		led1{
 			label = "sys-led";
@@ -103,6 +104,7 @@
 			gpios = <&gpio5 1 GPIO_ACTIVE_LOW>;
 			default-state = "off";
 		};
+
 	};
 
 	dof {
@@ -135,6 +137,17 @@
 		pinctrl-0 = <&pinctrl_beep>;
 		beep-gpio = <&gpio1 1 GPIO_ACTIVE_HIGH>;
 		status = "okay";
+	};
+
+	red_led_pwm {
+		compatible = "red_led,pwm";
+		pinctrl-names = "default";
+		pinctrl-0 = <&red_led_pwm>;
+
+		back {
+			pwm-names = "red_led_pwm";
+			pwms = <&pwm3 0 50000>;   // 使用 pwm3 0 50000ns 1/0.00005ms = 20kHz
+		};
 	};
 
 	dofStepperMotor {
@@ -388,7 +401,7 @@
 		};
 	};
 
-		edt-ft5x06@38 {
+	edt-ft5x06@38 {
 		compatible = "edt,edt-ft5306", "edt,edt-ft5x06";
 		pinctrl-names = "default";
 		pinctrl-0 = <&ts_int_pin
@@ -402,7 +415,7 @@
 		status = "disabled";
 	};
 
-		goodix_ts@5d {
+	goodix_ts@5d {
 				compatible = "goodix,gt9xx";
 				reg = <0x5d>;
 				status = "disabled";
@@ -484,6 +497,7 @@
 		pinctrl_gpio_leds: gpio-leds {
 			fsl,pins = <
 				MX6UL_PAD_GPIO1_IO03__GPIO1_IO03	0x17059
+				MX6UL_PAD_UART5_TX_DATA__GPIO1_IO30 0x17059
 			>;
 		};
 
@@ -563,6 +577,12 @@
 		pinctrl_pwm1: pwm1grp {
 			fsl,pins = <
 				MX6UL_PAD_GPIO1_IO08__PWM1_OUT	 0x110b0
+			>;
+		};
+
+		red_led_pwm: ledsgrp {
+			fsl,pins = <
+				MX6UL_PAD_GPIO1_IO04__PWM3_OUT 0x1b088
 			>;
 		};
 
