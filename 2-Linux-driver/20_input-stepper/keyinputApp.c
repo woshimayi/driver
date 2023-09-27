@@ -24,6 +24,12 @@
 #include <fcntl.h>
 #include <linux/input.h>
 
+
+#define CLOSE_CMD 		(_IO(0XEF, 0x1))	/* 关闭定时器 */
+#define OPEN_CMD		(_IO(0XEF, 0x2))	/* 打开定时器 */
+#define SETPERIOD_CMD	(_IO(0XEF, 0x3))	/* 设置定时器周期命令 */
+
+
 /* 定义一个input_event变量，存放输入事件信息 */
 static struct input_event inputevent;
 
@@ -74,7 +80,9 @@ int main(int argc, char *argv[])
                     {
                         if (inputevent.code == 114)
                         {
-                            databuf[0] = atoi("2"); /* 要执行的操作：打开或关闭 */
+//                            databuf[0] = atoi("2"); /* 要执行的操作：打开或关闭 */
+                            printf("zzzzz\n");
+                            ioctl(fd2, SETPERIOD_CMD, 10);
                         }
                         else if (inputevent.code == 115)
                         {
@@ -84,7 +92,7 @@ int main(int argc, char *argv[])
                         {
                             databuf[0] = atoi("0"); /* 要执行的操作：打开或关闭 */
                         }
-                        write(fd2, databuf, sizeof(databuf));
+//                        write(fd2, databuf, sizeof(databuf));
                     }
                     else
                     {
@@ -96,7 +104,9 @@ int main(int argc, char *argv[])
                 {
                     printf("button %d %s\r\n", inputevent.code, inputevent.value ? "press" : "release");
                     databuf[0] = atoi("0"); /* 要执行的操作：打开或关闭 */
-                    write(fd2, databuf, sizeof(databuf));
+//                    write(fd2, databuf, sizeof(databuf));
+					ioctl(fd2, 1, 10);
+
                 }
                 break;
 

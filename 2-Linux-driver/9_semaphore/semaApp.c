@@ -10,8 +10,7 @@ Copyright © ALIENTEK Co., Ltd. 1998-2029. All rights reserved.
 文件名		: semaApp.c
 作者	  	: dof
 版本	   	: V1.0
-描述	   	: 信号量测试APP，测试信号量能不能实现一次
-			 只允许一个应用程序使用LED。
+描述	   	: 信号量测试APP，测试信号量能不能实现一次只允许一个应用程序使用LED。
 其他	   	: 无
 使用方法	 ：./semaApp /dev/gpioled  0 关闭LED灯
 		     ./semaApp /dev/gpioled  1 打开LED灯

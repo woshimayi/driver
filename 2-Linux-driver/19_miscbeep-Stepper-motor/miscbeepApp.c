@@ -5,6 +5,8 @@
 #include "fcntl.h"
 #include "stdlib.h"
 #include "string.h"
+#include "linux/ioctl.h"
+
 /***************************************************************
 Copyright © ALIENTEK Co., Ltd. 1998-2029. All rights reserved.
 文件名		: miscbeepApp.c
@@ -19,6 +21,11 @@ Copyright © ALIENTEK Co., Ltd. 1998-2029. All rights reserved.
 ***************************************************************/
 #define BEEPOFF 0
 #define BEEPON 1
+/* 命令值 */
+#define CLOSE_CMD 		(_IO(0XEF, 0x1))	/* 关闭定时器 */
+#define OPEN_CMD		(_IO(0XEF, 0x2))	/* 打开定时器 */
+#define SETPERIOD_CMD	(_IO(0XEF, 0x3))	/* 设置定时器周期命令 */
+
 
 typedef struct stepmotor
 {
@@ -41,29 +48,44 @@ int main(int argc, char *argv[])
     int fd, retvalue;
     char *filename;
     unsigned char databuf[1];
+    unsigned char str[100];
+    unsigned int cmd;
+    unsigned int arg;
 
-    if (argc != 3)
-    {
-        printf("Error Usage!\r\n");
-        return -1;
-    }
-
-    filename = argv[1];
-    fd = open(filename, O_RDWR); /* 打开beep驱动 */
+    fd = open(STEP_DEV, O_RDWR); /* 打开beep驱动 */
     if (fd < 0)
     {
         printf("file %s open failed!\r\n", argv[1]);
         return -1;
     }
 
-    databuf[0] = atoi(argv[2]); /* 要执行的操作：打开或关闭 */
-    retvalue = write(fd, databuf, sizeof(databuf));
-    if (retvalue < 0)
+    while (1)
     {
-        printf("BEEP Control Failed!\r\n");
-        close(fd);
-        return -1;
+        printf("Input CMD:");
+        retvalue = scanf("%d", &cmd);
+        if (retvalue != 1)  				/* 参数输入错误 */
+        {
+            scanf("%s", str);				/* 防止卡死 */
+        }
+
+        if (cmd == 1)				/* 关闭LED灯 */
+            cmd = CLOSE_CMD;
+        else if (cmd == 2)			/* 打开LED灯 */
+            cmd = OPEN_CMD;
+        else if (cmd == 3)
+        {
+            cmd = SETPERIOD_CMD;	/* 设置周期值 */
+            printf("Input Timer Period:");
+            retvalue = scanf("%d", &arg);
+            if (retvalue != 1)  			/* 参数输入错误 */
+            {
+                scanf("%s", str);			/* 防止卡死 */
+            }
+        }
+        ioctl(fd, cmd, arg);		/* 控制定时器的打开和关闭 */
     }
+
+    
 
     retvalue = close(fd); /* 关闭文件 */
     if (retvalue < 0)

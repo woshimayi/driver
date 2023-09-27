@@ -119,7 +119,7 @@ static int keyio_init(void)
     char name[10];
     int ret = 0;
 
-    keyinputdev.nd = of_find_node_by_path("/key");
+    keyinputdev.nd = of_find_node_by_path("/gpio_keys");
     if (keyinputdev.nd == NULL)
     {
         printk("key node not find!\r\n");

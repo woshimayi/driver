@@ -56,7 +56,9 @@ int main(int argc, char *argv[])
 
     while (1)
     {
+    printf("read success 00000 \r\n");
         err = read(fd, &inputevent, sizeof(inputevent));
+		printf("read success 1111 \r\n");
         if (err > 0)   /* 读取数据成功 */
         {
             switch (inputevent.type)

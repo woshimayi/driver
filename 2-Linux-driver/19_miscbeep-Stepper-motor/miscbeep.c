@@ -13,9 +13,13 @@
 #include <linux/of_gpio.h>
 #include <linux/platform_device.h>
 #include <linux/miscdevice.h>
+#include <linux/timer.h>
 #include <asm/mach/map.h>
 #include <asm/uaccess.h>
 #include <asm/io.h>
+#include <linux/semaphore.h>
+
+
 /***************************************************************
 Copyright © ALIENTEK Co., Ltd. 1998-2029. All rights reserved.
 文件名		: miscbeep.c
@@ -28,14 +32,19 @@ Copyright © ALIENTEK Co., Ltd. 1998-2029. All rights reserved.
 ***************************************************************/
 #define MISCBEEP_NAME "stepmotor" /* 设备名字 */
 #define MISCBEEP_MINOR 144        /* 子设备号 */
-#define BEEPOFF 0                 /* 关蜂鸣器 */
-#define BEEPON 1                  /* 开蜂鸣器 */
-#define BEEP_2 2                  /* Clockwise */
-#define BEEP_3 3                  /* Counterclockwise  */
-#define BEEP_4 4                  /* Continuous operation   */
+#define BEEPOFF        0          /* 关蜂鸣器 */
+#define BEEPON         1          /* 开蜂鸣器 */
+#define BEEP_2         2          /* Clockwise */
+#define BEEP_3         3          /* Counterclockwise  */
+#define BEEP_4         4          /* Continuous operation   */
+
+#define CLOSE_CMD     (_IO(0XEF, 0x1))     /* 关闭定时器 */
+#define OPEN_CMD      (_IO(0XEF, 0x2))      /* 打开定时器 */
+#define SETPERIOD_CMD (_IO(0XEF, 0x3)) /* 设置定时器周期命令 */
+
 
 uint16_t CCW[8] = {0x08, 0x0c, 0x04, 0x06, 0x02, 0x03, 0x01, 0x09};
-uint16_t CW[8] = {0x09, 0x01, 0x03, 0x02, 0x06, 0x04, 0x0c, 0x08};
+uint16_t CW[8] =  {0x09, 0x01, 0x03, 0x02, 0x06, 0x04, 0x0c, 0x08};
 
 /* miscbeep设备结构体 */
 struct miscbeep_dev
@@ -46,7 +55,11 @@ struct miscbeep_dev
     struct device *device;  /* 设备 	 */
     struct device_node *nd; /* 设备节点 */
     int beep_gpio[4];       /* beep所使用的GPIO编号		*/
+    int timeperiod;          /* 定时周期,单位为ms */
+    struct timer_list timer; /* 定义一个定时器*/
+    spinlock_t lock;         /* 定义自旋锁 */
 };
+
 
 struct miscbeep_dev miscbeep; /* beep设备 */
 
@@ -60,6 +73,8 @@ struct miscbeep_dev miscbeep; /* beep设备 */
 static int miscbeep_open(struct inode *inode, struct file *filp)
 {
     filp->private_data = &miscbeep; /* 设置私有数据 */
+
+    miscbeep.timeperiod = 1000; /* 默认周期为1s */
     return 0;
 }
 
@@ -110,6 +125,47 @@ static void motor_cw(int time)
         }
     }
 }
+
+
+
+static void motor_cw_timer(int time)
+{
+    uint8_t i, j;
+//    static int step = 0;
+//    for (j = 0; j < 8; j++) // 电机内部运转一周
+    {
+        for (i = 0; i < 8; i++)
+        {
+            gpio_set_value(miscbeep.beep_gpio[0], ~(CW[i] >> 0) & 0x01);
+            gpio_set_value(miscbeep.beep_gpio[1], ~(CW[i] >> 1) & 0x01);
+            gpio_set_value(miscbeep.beep_gpio[2], ~(CW[i] >> 2) & 0x01);
+            gpio_set_value(miscbeep.beep_gpio[3], ~(CW[i] >> 3) & 0x01);
+            mdelay(time);
+            gpio_set_value(miscbeep.beep_gpio[0], 0);
+            gpio_set_value(miscbeep.beep_gpio[1], 0);
+            gpio_set_value(miscbeep.beep_gpio[2], 0);
+            gpio_set_value(miscbeep.beep_gpio[3], 0);
+            mdelay(time);
+        }
+    }
+
+//	gpio_set_value(miscbeep.beep_gpio[0], ~(CW[step] >> 0) & 0x01);
+//	gpio_set_value(miscbeep.beep_gpio[1], ~(CW[step] >> 1) & 0x01);
+//	gpio_set_value(miscbeep.beep_gpio[2], ~(CW[step] >> 2) & 0x01);
+//	gpio_set_value(miscbeep.beep_gpio[3], ~(CW[step] >> 3) & 0x01);
+//	mdelay(time);
+//	gpio_set_value(miscbeep.beep_gpio[0], 0);
+//	gpio_set_value(miscbeep.beep_gpio[1], 0);
+//	gpio_set_value(miscbeep.beep_gpio[2], 0);
+//	gpio_set_value(miscbeep.beep_gpio[3], 0);
+//	step++;
+//	step = (step==7)?0:step;
+}
+
+
+
+
+
 
 // 指定运转角度
 static void motor_angle_speed(int angle, int direction)
@@ -200,12 +256,63 @@ static ssize_t miscbeep_write(struct file *filp, const char __user *buf, size_t 
     return 0;
 }
 
+/* 定时器回调函数 私有函数 添加私有功能  */
+void timer_function(unsigned long arg)
+{
+    struct miscbeep_dev *dev = (struct miscbeep_dev *)arg;
+    int timerperiod;
+    unsigned long flags;
+//	printk("sta = %d\r", sta);
+    motor_cw_timer(2);
+
+    /* 重启定时器 */
+    spin_lock_irqsave(&dev->lock, flags);                                /*  加锁之前 保存中断状态    */
+    timerperiod = dev->timeperiod;                                       /*  定时周期                */
+    spin_unlock_irqrestore(&dev->lock, flags);                           /*  解锁之后 恢复中断状态    */
+    mod_timer(&dev->timer, jiffies + msecs_to_jiffies(dev->timeperiod)); /*  重新设置定时器          */
+}
+
+
+
+
+static long miscbeep_unlocked_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+{
+    struct miscbeep_dev *dev = (struct miscbeep_dev *)filp->private_data;
+    int timerperiod;
+    unsigned long flags;
+
+    switch (cmd)
+    {
+    case CLOSE_CMD: /* 关闭定时器 */
+        del_timer_sync(&dev->timer);
+        break;
+    case OPEN_CMD: /* 打开定时器 */
+        spin_lock_irqsave(&dev->lock, flags);				// 保存中断状态，禁止本地中断，并获取自旋锁
+        timerperiod = dev->timeperiod;
+        spin_unlock_irqrestore(&dev->lock, flags);			// 将中断状态恢复到以前的状态，并且激活本地中断, 释放自旋锁
+        mod_timer(&dev->timer, jiffies + msecs_to_jiffies(timerperiod));
+        break;
+    case SETPERIOD_CMD: /* 设置定时器周期 */
+        spin_lock_irqsave(&dev->lock, flags);				// 保存中断状态，禁止本地中断，并获取自旋锁
+        dev->timeperiod = arg;
+        spin_unlock_irqrestore(&dev->lock, flags);			// 将中断状态恢复到以前的状态，并且激活本地中断, 释放自旋锁
+        mod_timer(&dev->timer, jiffies + msecs_to_jiffies(arg));
+        break;
+    default:
+        break;
+    }
+    return 0;
+}
+
+
+
 /* 设备操作函数 */
 static struct file_operations miscbeep_fops =
     {
         .owner = THIS_MODULE,
         .open = miscbeep_open,
         .write = miscbeep_write,
+        .unlocked_ioctl = miscbeep_unlocked_ioctl,
 };
 
 /* MISC设备结构体 */
@@ -226,6 +333,9 @@ static int miscbeep_probe(struct platform_device *dev)
 {
     int ret = 0;
     int i = 0;
+    /* 初始化自旋锁 */
+    spin_lock_init(&miscbeep.lock);
+
     printk("beep driver and device was matched!\r\n");
     /* 设置BEEP所使用的GPIO */
     /* 1、获取设备节点：dofbeep */
@@ -264,6 +374,11 @@ static int miscbeep_probe(struct platform_device *dev)
         return -EFAULT;
     }
 
+
+    init_timer(&miscbeep.timer);
+    miscbeep.timer.function = timer_function;
+    miscbeep.timer.data = (unsigned long)&miscbeep; /*  定时器回调函数参数   */
+
     return 0;
 }
 
@@ -282,6 +397,7 @@ static int miscbeep_remove(struct platform_device *dev)
 
     /* 注销misc设备 */
     misc_deregister(&beep_miscdev);
+    del_timer_sync(&miscbeep.timer);
     return 0;
 }
 

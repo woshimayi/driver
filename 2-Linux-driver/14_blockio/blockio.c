@@ -311,7 +311,7 @@ static int __init imx6uirq_init(void)
         return PTR_ERR(imx6uirq.device);
     }
 
-    /* 5、始化按键 */
+    /* 5、始化按键       atomic_set 初始化原子变量         */
     atomic_set(&imx6uirq.keyvalue, INVAKEY);
     atomic_set(&imx6uirq.releasekey, 0);
     keyio_init();

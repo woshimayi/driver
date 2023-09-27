@@ -1,13 +1,13 @@
 /*
- * @*************************************: 
- * @FilePath: /driver/2-Linux-driver/12_timer/timer.c
- * @version: 
+ * @*************************************:
+ * @FilePath: /driver/2-Linux-driver/12_timer_dof/timer.c
+ * @version:
  * @Author: dof
  * @Date: 2021-03-02 11:18:26
  * @LastEditors: dof
- * @LastEditTime: 2023-09-03 00:53:44
+ * @LastEditTime: 2023-09-03 02:56:55
  * @Descripttion: Linux内核定时器实验
- * @**************************************: 
+ * @**************************************:
  */
 #include <linux/types.h>
 #include <linux/kernel.h>
@@ -39,17 +39,18 @@
 /* timer设备结构体 */
 struct timer_dev
 {
-    dev_t devid;             /* 设备号 	 */
-    struct cdev cdev;        /* cdev 	*/
-    struct class *class;     /* 类 		*/
-    struct device *device;   /* 设备 	 */
-    int major;               /* 主设备号	  */
-    int minor;               /* 次设备号   */
-    struct device_node *nd;  /* 设备节点 */
-    int led_gpio;            /* key所使用的GPIO编号		*/
-    int timeperiod;          /* 定时周期,单位为ms */
-    struct timer_list timer; /* 定义一个定时器*/
-    spinlock_t lock;         /* 定义自旋锁 */
+    dev_t devid;              /* 设备号 	 */
+    struct cdev cdev;         /* cdev 	*/
+    struct class *class;      /* 类 		*/
+    struct device *device;    /* 设备 	 */
+    int major;                /* 主设备号	  */
+    int minor;                /* 次设备号   */
+    struct device_node *nd;   /* 设备节点 */
+    int led_gpio[2];          /* key所使用的GPIO编号		*/
+    int timeperiod;           /* 定时周期,单位为ms */
+    struct timer_list timer;  /* 定义一个定时器*/
+    struct timer_list timer1; /* 定义一个定时器*/
+    spinlock_t lock;          /* 定义自旋锁 */
 };
 
 struct timer_dev timerdev; /* timer设备 */
@@ -132,12 +133,14 @@ static long timer_unlocked_ioctl(struct file *filp, unsigned int cmd, unsigned l
         timerperiod = dev->timeperiod;
         spin_unlock_irqrestore(&dev->lock, flags);
         mod_timer(&dev->timer, jiffies + msecs_to_jiffies(timerperiod));
+        mod_timer(&dev->timer1, jiffies + msecs_to_jiffies(timerperiod));
         break;
     case SETPERIOD_CMD: /* 设置定时器周期 */
         spin_lock_irqsave(&dev->lock, flags);
         dev->timeperiod = arg;
         spin_unlock_irqrestore(&dev->lock, flags);
         mod_timer(&dev->timer, jiffies + msecs_to_jiffies(arg));
+        mod_timer(&dev->timer1, jiffies + msecs_to_jiffies(arg));
         break;
     default:
         break;
@@ -162,7 +165,7 @@ void timer_function(unsigned long arg)
     unsigned long flags;
     // printk("sta = %d\r", sta);
     sta = !sta; /* 每次都取反，实现LED灯反转 */
-    gpio_set_value(dev->led_gpio, sta);
+    gpio_set_value(dev->led_gpio[0], sta);
 
     /* 重启定时器 */
     spin_lock_irqsave(&dev->lock, flags);                                /*  加锁之前 保存中断状态    */
@@ -215,11 +218,23 @@ static int __init timer_init(void)
     {
         return PTR_ERR(timerdev.device);
     }
+    
+    timerdev.device = device_create(timerdev.class, NULL, timerdev.devid, NULL, TIMER_NAME);
+    if (IS_ERR(timerdev.device))
+    {
+        return PTR_ERR(timerdev.device);
+    }
 
     /* 6、初始化timer，设置定时器处理函数,还未设置周期，所以不会激活定时器 */
     init_timer(&timerdev.timer);
     timerdev.timer.function = timer_function;
     timerdev.timer.data = (unsigned long)&timerdev; /*  定时器回调函数参数   */
+
+
+    init_timer(&timerdev.timer1);
+    timerdev.timer1.function = timer_function;
+    timerdev.timer1.data = (unsigned long)&timerdev; /*  定时器回调函数参数   */
+
     return 0;
 }
 
