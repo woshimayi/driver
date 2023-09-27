@@ -20,8 +20,8 @@ $(obj): $(obj-m)
 	$(CC)  $(sub)  -o  $(obj) -lm
 
 install: 
-	cp -a $(CURRENT_PATH)/*.ko  $(INSTALL_DIR)
-	cp -a $(CURRENT_PATH)/*App  $(INSTALL_DIR)
+	install $(CURRENT_PATH)/*.ko  $(INSTALL_DIR)
+	install $(CURRENT_PATH)/*App  $(INSTALL_DIR)
 
 clean:
 	$(MAKE) -C $(KERNELDIR) M=$(CURRENT_PATH) clean	
