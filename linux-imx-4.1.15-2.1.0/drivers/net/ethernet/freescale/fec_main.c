@@ -3618,7 +3618,7 @@ fec_probe(struct platform_device *pdev)
 
 	/* Carrier starts down, phylib will bring it up */
 	netif_carrier_off(ndev);
-	fec_enet_clk_enable(ndev, false);
+	//fec_enet_clk_enable(ndev, false);
 	pinctrl_pm_select_sleep_state(&pdev->dev);
 
 	ret = register_netdev(ndev);
