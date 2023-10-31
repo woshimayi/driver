@@ -5,7 +5,7 @@
  * @Author: dof
  * @Date: 2023-07-10 09:42:08
  * @LastEditors: dof
- * @LastEditTime: 2023-08-01 20:02:37
+ * @LastEditTime: 2023-10-26 17:06:08
  * @Descripttion:
  * @**************************************:
  */
@@ -70,10 +70,31 @@ int main(int argc, char const *argv[])
 
 	// printf("release time = %s\n", release_time);
 
-	char str[] = "2010::ca6c:20ff:fec4:ee9d/64";
+	#define isspace0(c)	((c) == ' ')
+	char *separator = NULL;
+	char str[] = " 202.96.209.5 ";
+	char dnsSecondary[64] = {0};
 	// sscanf("2010::ca6c:20ff:fec4:ee9d/64", "%s/%*d", str);
 
-	printf("str = %s\n", strtok(str, "/"));
+	printf("str = %s--\n", strstr(str, ","));
+	printf("str = %s--\n", strtok(str, ","));
+	separator = strtok(str, ",");
+
+	if (separator != NULL)
+    {
+		/* break the string into two strings */
+		// *separator = 0;
+		 while ((isspace0(*separator)) && (*separator != 0))
+		 {
+			/* skip white space after comma */
+			separator++;
+		 }
+		// separator++;
+
+		strcpy(dnsSecondary, separator);
+		printf("dnsSecondary=%s--\n", dnsSecondary);
+    }
+
 
 	return 0;
 }
