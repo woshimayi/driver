@@ -539,3 +539,7 @@ uUIvZCGqlzJ+XS1txgR2My86Gcw9w1FUffEW1Q3nKQ
 
 
 sudo docker run  --hostname zs -u zs --name ubuntu_hg  -itd ubuntu 
+
+
+### jforg
+sudo docker run --name artifactory -d -p 8081:8081 -p 8082:8082 -v /home/zs/jfor_data:/var/opt/jfrog/artifactory --privileged=true  docker.bintray.io/jfrog/artifactory-oss
