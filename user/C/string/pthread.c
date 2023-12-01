@@ -1,13 +1,13 @@
 /*
- * @*************************************: 
+ * @*************************************:
  * @FilePath: /user/C/string/pthread.c
- * @version: 
+ * @version:
  * @Author: dof
  * @Date: 2021-10-20 19:33:39
  * @LastEditors: dof
- * @LastEditTime: 2023-08-10 15:26:21
- * @Descripttion: 
- * @**************************************: 
+ * @LastEditTime: 2023-12-01 11:08:17
+ * @Descripttion: 线程标准例程
+ * @**************************************:
  */
 #include <pthread.h>
 #include <unistd.h>
@@ -20,12 +20,12 @@
 /**
  * 用户自定义signal
  */
-#define   SIG_MY_MSG   SIGUSR1+100
+#define SIG_MY_MSG SIGUSR1 + 100
 
 void userFun(int a)
 {
 	printf("signal user = %d\n", a);
-	return ;
+	return;
 }
 
 void *tprocess1(void *a)
@@ -76,22 +76,23 @@ int main()
 
 	char str[64] = {0};
 	snprintf(str, sizeof(str), "%d", getpid());
-	printf("uhttp pid%s\n", str);
+	printf("uhttp pid %s\n", str);
 	setenv("UHTTPD_PID", str, 1);
 
-	// if (0 != pthread_create(&t1, NULL, (void *)tprocess1, (void *)&a))
-	// {
-	// 	perror("fail error 1");
-	// }
+	if (0 != pthread_create(&t1, NULL, (void *)tprocess1, (void *)&a))
+	{
+		perror("fail error 1");
+	}
+
 	if (0 != pthread_create(&t2, NULL, (void *)tprocess2, (void *)&b))
 	{
 		perror("fail error 1");
 	}
 	while (1)
 	{
-		// sleep(1);
-		// printf("asdasd %d\n", a++);
-		a = a ;
+		sleep(1);
+		printf("asdasd %d\n", a++);
+		a = a;
 	}
 
 	return 0;

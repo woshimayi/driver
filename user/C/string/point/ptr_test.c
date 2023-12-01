@@ -1,3 +1,14 @@
+/*
+ * @*************************************: 
+ * @FilePath: /user/C/string/point/ptr_test.c
+ * @version: 
+ * @Author: dof
+ * @Date: 2023-10-31 14:04:56
+ * @LastEditors: dof
+ * @LastEditTime: 2023-11-07 14:24:48
+ * @Descripttion: 
+ * @**************************************: 
+ */
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -25,5 +36,8 @@ int main(int argc, char *argv[])
     printf("%p %s %p\n", &str1, str1, &str1);
     // freeStr(&str1);
     free(str1);
+
+    printf("%d\n", strcasecmp("zhengsen.dof.com", "zHengsen.Dof.com"));
+
     return 0;
 }
