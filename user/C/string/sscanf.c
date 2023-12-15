@@ -5,7 +5,7 @@
  * @Author: dof
  * @Date: 2021-10-20 19:33:39
  * @LastEditors: dof
- * @LastEditTime: 2023-08-30 17:23:21
+ * @LastEditTime: 2023-12-01 17:38:24
  * @Descripttion:
  * @**************************************:
  */
@@ -14,14 +14,14 @@
 #include <stdlib.h>
 
 /*
-* @param:
-* @param:
-* @param:
-*/
+ * @param:
+ * @param:
+ * @param:
+ */
 int main(int argc, char *argv[])
 {
 #if 1
-	char str[128] = "sdfsd_yes_no=2&asda_flag=3";
+    char str[128] = "sdfsd_yes_no=2&asda_flag=3";
 	int yes = 0;
 	int flag = 0;
 
@@ -73,7 +73,7 @@ int main(int argc, char *argv[])
 	// 注意1：%只能使用一次，但%*可以使用多次，比如在这个实验里面，先用%*[A-Z]过滤大写字母，然后用%*[a-z]过滤小写字母。
 	// 注意2：^后面可以带多个条件，且这些条件都受^的作用，比如^a-z=表示^a-z且^=(既不是小写字母，也不是等于号)
 	memset(str1, '!', sizeof(str1));
-	sscanf("AAAaaaBC=", "%*[A-Z]%*[a-z]%[^a-z=]", str1) ;
+	sscanf("AAAaaaBC=", "%*[A-Z]%*[a-z]%[^a-z=]", str1);
 	printf("str z = %s\n", str1);
 
 	int k = 0;
@@ -84,7 +84,6 @@ int main(int argc, char *argv[])
 	memset(str1, '!', sizeof(str1));
 	sscanf("123334abcd123", "%[0-9]*", str1);
 	printf("str d = %s\n", str1);
-
 
 	memset(str1, '!', sizeof(str1));
 	char resp_ms[3][32] = {0};
@@ -100,19 +99,19 @@ int main(int argc, char *argv[])
 	// 分割字符串 下划线
 	char date[64] = {0};
 	char time[64] = {0};
-    sscanf("2023-08-30_16:01:36", "%[^_]_%s", date, time);
-    printf("date = %s time = %s\n", date, time);
+	sscanf("2023-08-30_16:01:36", "%[^_]_%s", date, time);
+	printf("date = %s time = %s\n", date, time);
 
 #else
 
 #define BUF_SIZE_MAX 4096
 
-    char buf[BUF_SIZE_MAX] = "GET  HTTP/1.1";
+	char buf[BUF_SIZE_MAX] = "GET  HTTP/1.1";
 	// char buf[BUF_SIZE_MAX] = "GET / HTTP/1.1";
 	// char buf[BUF_SIZE_MAX] = "GET";
-    char method[BUF_SIZE_MAX];
-    char path[BUF_SIZE_MAX];
-    char protocol[BUF_SIZE_MAX];
+	char method[BUF_SIZE_MAX];
+	char path[BUF_SIZE_MAX];
+	char protocol[BUF_SIZE_MAX];
 
 	int ret = sscanf(buf, "%[^ ] %[^ ] %[^ ]", method, path, protocol);
 
@@ -123,7 +122,7 @@ int main(int argc, char *argv[])
 			memset(path, '\0', sizeof(path));
 			sscanf(buf, "%[^ ] %[^ ]", method, protocol);
 			printf("22222 method = %s, path = %s, protocol = %s\n", method, path, protocol);
-			printf("22222 sscanf error on >>%s<<\n",buf);
+			printf("22222 sscanf error on >>%s<<\n", buf);
 		}
 		else
 		{
