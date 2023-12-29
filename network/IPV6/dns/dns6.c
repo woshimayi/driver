@@ -1,6 +1,6 @@
 /*
  * @FilePath: /network/IPV6/dns/dns6.c
- * @version: 
+ * @version:
  * @Author: sueRimn
  * @Date: 2020-10-10 13:53:43
  * @LastEditors: dof
@@ -15,22 +15,22 @@
 #include <string.h>
 #include <arpa/inet.h>
 
-int lookup(char *host, char * ipv6addr, uint32_t len)
+int lookup(char *host, char *ipv6addr, uint32_t len)
 {
     struct addrinfo hints;
     struct addrinfo *res, *cur;
     int ret;
-    
+
     // struct sockaddr_in *addr;
-    
+
     struct sockaddr_in6 *addr;
-    
+
     char ipbuf[128];
 
     memset(&hints, 0, sizeof(struct addrinfo));
     hints.ai_family = AF_INET6; /* Allow IPv4 */
-    hints.ai_flags = AI_ALL; /* For wildcard IP address */
-    hints.ai_protocol = 0; /* Any protocol */
+    hints.ai_flags = AI_ALL;    /* For wildcard IP address */
+    hints.ai_protocol = 0;      /* Any protocol */
     hints.ai_socktype = SOCK_DGRAM;
 
     ret = getaddrinfo(host, NULL, &hints, &res);
@@ -45,13 +45,12 @@ int lookup(char *host, char * ipv6addr, uint32_t len)
     {
         addr = (struct sockaddr_in6 *)cur->ai_addr;
         printf("addr 1 = %s\n", inet_ntop(AF_INET6,
-                                 &addr->sin6_addr, ipbuf, sizeof(ipbuf)));
+                                          &addr->sin6_addr, ipbuf, sizeof(ipbuf)));
         printf("addr 2 = %s \vret = %d\n", ipbuf, inet_pton(AF_INET6, ipbuf, &addr->sin6_addr));
     }
     freeaddrinfo(res);
     strncpy(ipv6addr, ipbuf, len);
 }
-
 
 int main(int argc, char **argv)
 {

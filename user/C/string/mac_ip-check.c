@@ -1,7 +1,32 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/types.h>
+#include <regex.h>
 
+/**
+ * @brief rule match
+ * 
+ * @param pattern 
+ * @param value 
+ * @return int 
+ */
+int ereg(char *pattern, char *value)
+{
+	int r, cflags = 0;
+	regmatch_t pm[10];
+	const size_t nmatch = 10;
+	regex_t reg;
+
+	r = regcomp(&reg, pattern, cflags);
+	if (r == 0)
+	{
+		r = regexec(&reg, value, nmatch, pm, cflags);
+	}
+	regfree(&reg);
+
+	return r;
+}
 
 /*
     mac ip 合法性检测
@@ -23,26 +48,17 @@ int isValidIp(char *value)
 	return r;
 }
 
-int ereg(char *pattern, char *value)
-{
-	int r, cflags = 0;
-	regmatch_t pm[10];
-	const size_t nmatch = 10;
-	regex_t reg;
-
-	r = regcomp(&reg, pattern, cflags);
-	if (r == 0)
-	{
-		r = regexec(&reg, value, nmatch, pm, cflags);
-	}
-	regfree(&reg);
-
-	return r;
-}
 
 int main()
 {
-
+	if (isValidIp("192.168.1.1"))
+	{
+		printf("match");
+	}
+	else
+	{
+		printf("no match");
+	}
 	return 0;
 }
 

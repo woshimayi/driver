@@ -1,13 +1,13 @@
 /*
- * @*************************************: 
+ * @*************************************:
  * @FilePath: /user/C/string/regex_my.c
- * @version: 
+ * @version:
  * @Author: dof
  * @Date: 2021-11-30 11:39:26
  * @LastEditors: dof
- * @LastEditTime: 2023-08-11 10:14:16
- * @Descripttion: 
- * @**************************************: 
+ * @LastEditTime: 2023-12-22 15:20:46
+ * @Descripttion:
+ * @**************************************:
  */
 #if 0
 #include <sys/types.h>
@@ -69,8 +69,6 @@ int main(void)
 
 	char *test_str = "asdas=4";
 	char *reg_str = "(\w)=(\d)";
-
-
 
 	ret = regcomp(&reg, reg_str, cflags);
 	if (ret)

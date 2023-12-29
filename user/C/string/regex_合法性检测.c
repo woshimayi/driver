@@ -1,11 +1,11 @@
 /*
  * @*************************************: 
- * @FilePath: /user/C/string/mac_ip合法性检测.c
+ * @FilePath: /user/C/string/regex_合法性检测.c
  * @version: 
  * @Author: dof
  * @Date: 2021-10-20 19:33:39
  * @LastEditors: dof
- * @LastEditTime: 2023-08-11 10:16:10
+ * @LastEditTime: 2023-12-22 15:15:17
  * @Descripttion: 正则表达式  使用用例
  * @**************************************: 
  */
@@ -135,13 +135,13 @@ int isValiDNS(char *value)
 
 int main()
 {
-	// int r = isValidIp("192.168.1.1");
-	// int r = isValidMac("00:22:33:44:55:66");
-	// int r = isValiTime("23:59");
-	// int r = isValiWeek("2,45");
-	int r = isValiDNS("3000::2,3000::5,");
-	// int r = isValiWeek("1234567");
-	printf("r = %d\n", r);
+	printf("[%s%d] %d\n", __FUNCTION__, __LINE__, isValidIp("192.168.1.1"));
+	printf("[%s%d] %d\n", __FUNCTION__, __LINE__, isValidMac("00:22:33:44:55:66"));
+	printf("[%s%d] %d\n", __FUNCTION__, __LINE__, isValiTime("23:59"));
+	printf("[%s%d] %d\n", __FUNCTION__, __LINE__, isValiWeek("2,45"));
+	printf("[%s%d] %d\n", __FUNCTION__, __LINE__, isValiDNS("3000::2,3000::5,"));
+	printf("[%s%d] %d\n", __FUNCTION__, __LINE__, isValiWeek("1234567"));
+	// printf("r = %d\n", r);
 	return 0;
 }
 

@@ -1,13 +1,13 @@
 /*
- * @*************************************: 
- * @FilePath: /driver/network/ifname_status/autoSetRout.c
- * @version: 
+ * @*************************************:
+ * @FilePath: /network/ifname_status/autoSetRout.c
+ * @version:
  * @Author: dof
  * @Date: 2021-07-21 10:49:35
  * @LastEditors: dof
- * @LastEditTime: 2021-07-28 11:54:44
+ * @LastEditTime: 2023-12-29 18:33:16
  * @Descripttion: 自动添加主机默认路由
- * @**************************************: 
+ * @**************************************:
  */
 
 #include <stdio.h>
@@ -32,6 +32,12 @@
 
 #define MDMVS_ANY_WAN "Any_WAN"
 #define ACS_TR69C "tr69"
+
+#if 0
+#define DNS_LOG(fmt, args...) 
+#else
+#define DNS_LOG(fmt, args...) printf("[DNS: %s(%d)]"fmt"\r\n", __func__, __LINE__, ##args)
+#endif
 
 static volatile int stop = 0;
 static char *URL = "http://www.baidu.com";
@@ -166,7 +172,7 @@ int lookup(char *host, char *portnr __attribute__((unused)), struct addrinfo **r
     struct addrinfo hints;
 
     memset(&hints, 0, sizeof(struct addrinfo));
-    hints.ai_family = AF_UNSPEC;
+    hints.ai_family = AF_INET;
     hints.ai_socktype = SOCK_STREAM;
     hints.ai_flags = AI_NUMERICSERV;
     hints.ai_protocol = 0;
@@ -193,7 +199,7 @@ int connect_to(struct addrinfo *addr, const char *ifname)
             goto next_addr0;
 
         strncpy(ifr.ifr_name, ifname, strlen(ifname) + 1);
-        if (setsockopt(fd, SOL_SOCKET, SO_BINDTODEVICE, &ifr, sizeof(ifr)) < 0) //setsockopt:用来设置fd 的socket状态， SOL_SOCKET:套接字级别， SO_BINDTODEVICE:将套接字绑定到一个特定的设备上
+        if (setsockopt(fd, SOL_SOCKET, SO_BINDTODEVICE, &ifr, sizeof(ifr)) < 0) // setsockopt:用来设置fd 的socket状态， SOL_SOCKET:套接字级别， SO_BINDTODEVICE:将套接字绑定到一个特定的设备上
         {
             perror("SO_BINDTODEVICE failed");
             goto next_addr1;
@@ -211,7 +217,7 @@ int connect_to(struct addrinfo *addr, const char *ifname)
         else
         {
             if (errno != EINPROGRESS)
-                printf("connect error :%s", strerror(errno));
+                DNS_LOG("connect error :%s", strerror(errno));
             else
             {
                 struct timeval tm;
@@ -222,15 +228,15 @@ int connect_to(struct addrinfo *addr, const char *ifname)
                 FD_SET(fd, &wset);
                 FD_SET(fd, &rset);
                 int res = select(fd + 1, &rset, &wset, NULL, &tm);
-                printf("res = %d\n", res);
+                DNS_LOG("res = %d\n", res);
                 if (res < 0)
                 {
-                    printf("network error in connect\n");
+                    DNS_LOG("network error in connect\n");
                     goto next_addr0;
                 }
                 else if (0 == res)
                 {
-                    printf("connect time out\n");
+                    DNS_LOG("connect time out\n");
                     close(fd);
                     return -1;
                 }
@@ -238,14 +244,14 @@ int connect_to(struct addrinfo *addr, const char *ifname)
                 {
                     if (FD_ISSET(fd, &wset))
                     {
-                        printf("connect succeed.\n");
+                        DNS_LOG("connect succeed.\n");
                         fcntl(fd, F_SETFL, fcntl(fd, F_GETFL, 0) & ~O_NONBLOCK);
                         close(fd);
                         return 0;
                     }
                     else
                     {
-                        printf("other error when select:%s\n", strerror(errno));
+                        DNS_LOG("other error when select:%s\n", strerror(errno));
                     }
                 }
             }
@@ -275,7 +281,7 @@ int ifname_test(const char *ifname)
     signal(SIGINT, handler);
     signal(SIGTERM, handler);
 
-    printf("hostname_acs=%s, port_acs = %s", hostname_acs, port_acs);
+    DNS_LOG("hostname_acs=%s, port_acs = %s", hostname_acs, port_acs);
     if ((errcode = lookup(hostname_acs, port_acs, &resolved)) != 0)
     {
         fprintf(stderr, "%s\n", gai_strerror(errcode));
@@ -286,14 +292,14 @@ int ifname_test(const char *ifname)
     {
         if (errcode != -EADDRNOTAVAIL)
         {
-            printf("inval address\n");
+            DNS_LOG("inval address\n");
         }
-        printf("--- %s:%s unreachable ---", hostname_acs, port_acs);
+        DNS_LOG("--- %s:%s unreachable ---", hostname_acs, port_acs);
         ret = -1;
     }
     else
     {
-        printf("--- %s:%s ping statistics ---", hostname_acs, port_acs);
+        DNS_LOG("--- %s:%s ping statistics ---", hostname_acs, port_acs);
         ret = 0;
     }
 
@@ -303,10 +309,10 @@ int ifname_test(const char *ifname)
 
 int fromIfnameGetIp(struct ifNameInfo *ifnameinfo)
 {
-    int fd;               /* 套接字 */
-    int if_len;           /* 接口数量 */
-    struct ifreq buf[16]; /* ifreq结构数组 */
-    struct ifconf ifc;    /* ifconf结构 */
+    int fd;                     /* 套接字 */
+    int if_len;                 /* 接口数量 */
+    struct ifreq buf[16] = {0}; /* ifreq结构数组 */
+    struct ifconf ifc;          /* ifconf结构 */
 
     /* 建立IPv4的UDP套接字fd */
     if ((fd = socket(AF_INET, SOCK_DGRAM, 0)) == -1)
@@ -327,12 +333,12 @@ int fromIfnameGetIp(struct ifNameInfo *ifnameinfo)
     }
 
     if_len = ifc.ifc_len / sizeof(struct ifreq); /* 接口数量 */
-    printf("接口数量:%d\n\n", if_len);
+    DNS_LOG("接口数量:%d\n\n", if_len);
 
     /* 遍历每个接口 */
     while (if_len-- != 0)
     {
-        printf("接口：%s\n", buf[if_len].ifr_name); /* 接口名称 */
+        DNS_LOG("接口：%s\n", buf[if_len].ifr_name); /* 接口名称 */
 
         if (0 == strcmp(buf[if_len].ifr_name, "lo"))
         {
@@ -344,14 +350,14 @@ int fromIfnameGetIp(struct ifNameInfo *ifnameinfo)
         /* IP地址 */
         if (!(ioctl(fd, SIOCGIFADDR, (char *)&buf[if_len])))
         {
-            printf("IP地址:%s %x\n",
+            DNS_LOG("IP地址:%s %x\n",
                    (char *)inet_ntoa(((struct sockaddr_in *)(&buf[if_len].ifr_addr))->sin_addr), ((struct sockaddr_in *)(&buf[if_len].ifr_addr))->sin_addr);
             // ifnameinfo->ifnameIp = strdup((char *)inet_ntoa(((struct sockaddr_in *)(&buf[if_len].ifr_addr))->sin_addr));
             snprintf(ifnameinfo->ifnameIp, sizeof(ifnameinfo->ifnameIp), "%s", (char *)inet_ntoa(((struct sockaddr_in *)(&buf[if_len].ifr_addr))->sin_addr));
         }
         else
         {
-            char str[256];
+            char str[256] = {0};
             sprintf(str, "SIOCGIFADDR ioctl %s\n", buf[if_len].ifr_name);
             perror(str);
         }
@@ -359,19 +365,20 @@ int fromIfnameGetIp(struct ifNameInfo *ifnameinfo)
         /* 子网掩码 */
         if (!(ioctl(fd, SIOCGIFNETMASK, (char *)&buf[if_len])))
         {
-            printf("子网掩码:%s %x\n",
+            DNS_LOG("子网掩码:%s %x\n",
                    (char *)inet_ntoa(((struct sockaddr_in *)(&buf[if_len].ifr_addr))->sin_addr), ((struct sockaddr_in *)(&buf[if_len].ifr_addr))->sin_addr);
             snprintf(ifnameinfo->submask, sizeof(ifnameinfo->ifnameIp), "%s", (char *)inet_ntoa(((struct sockaddr_in *)(&buf[if_len].ifr_addr))->sin_addr));
         }
         else
         {
-            char str[256];
+            char str[256] = {0};
             sprintf(str, "SIOCGIFADDR ioctl %s\n", buf[if_len].ifr_name);
             perror(str);
         }
 
         // 网关计算
-        unsigned int ip = htonl(ntohl(inet_addr(ifnameinfo->ifnameIp) & inet_addr(ifnameinfo->submask)) + 1);
+        // unsigned int ip = htonl(ntohl(inet_addr(ifnameinfo->ifnameIp) & inet_addr(ifnameinfo->submask)) + 1);
+        unsigned int ip = htonl(ntohl(inet_addr(ifnameinfo->ifnameIp) & inet_addr(ifnameinfo->submask)));
 
         struct in_addr addr;
         memcpy(&addr, &ip, 4);
@@ -380,7 +387,7 @@ int fromIfnameGetIp(struct ifNameInfo *ifnameinfo)
         /*MAC地址 */
         if (!(ioctl(fd, SIOCGIFHWADDR, (char *)&buf[if_len])))
         {
-            printf("ifr_hwaddr = %x\n", buf[if_len].ifr_hwaddr.sa_data);
+            // DNS_LOG("ifr_hwaddr = %X\n", buf[if_len].ifr_hwaddr.sa_data);
             snprintf(ifnameinfo->ifnameMac, sizeof(ifnameinfo->ifnameMac), "%02x:%02x:%02x:%02x:%02x:%02x",
                      (unsigned char)buf[if_len].ifr_hwaddr.sa_data[0],
                      (unsigned char)buf[if_len].ifr_hwaddr.sa_data[1],
@@ -388,6 +395,7 @@ int fromIfnameGetIp(struct ifNameInfo *ifnameinfo)
                      (unsigned char)buf[if_len].ifr_hwaddr.sa_data[3],
                      (unsigned char)buf[if_len].ifr_hwaddr.sa_data[4],
                      (unsigned char)buf[if_len].ifr_hwaddr.sa_data[5]);
+            DNS_LOG("mac = %s\n", ifnameinfo->ifnameMac);
         }
         else
         {
@@ -402,7 +410,7 @@ int fromIfnameGetIp(struct ifNameInfo *ifnameinfo)
             /* 接口状态 */
             if (buf[if_len].ifr_flags & IFF_UP)
             {
-                printf("接口状态: UP\n");
+                DNS_LOG("接口状态: UP\n");
                 if (0 == ifname_test(buf[if_len].ifr_name))
                 {
                     break;
@@ -410,7 +418,7 @@ int fromIfnameGetIp(struct ifNameInfo *ifnameinfo)
             }
             else
             {
-                printf("接口状态: DOW\n");
+                DNS_LOG("接口状态: DOW\n");
             }
         }
         else
@@ -419,9 +427,9 @@ int fromIfnameGetIp(struct ifNameInfo *ifnameinfo)
             sprintf(str, "SIOCGIFFLAGS ioctl %s\n", buf[if_len].ifr_name);
             perror(str);
         }
-    } //–while end
+    } // –while end
 
-    //关闭socket
+    // 关闭socket
     close(fd);
     return 0;
 }
@@ -443,10 +451,12 @@ int setRoute(void)
 
     // 获取系统指定网关ping测试接口信息
     ret = fromIfnameGetIp(&ifnameinfo);
-    if (0 == ret)
+    if (0 > ret)
     {
-        printf("ifname = %s, ifnameIp = %s, ifnameMac = %s, submask = %s gatway = %s\n", ifnameinfo.ifname, ifnameinfo.ifnameIp, ifnameinfo.ifnameMac, ifnameinfo.submask, ifnameinfo.gatwayIp);
+        return -1;
     }
+    
+    printf("ifname = %s\nifnameIp = %s\nifnameMac = %s\nsubmask = %s\ngatway = %s\n\n\n", ifnameinfo.ifname, ifnameinfo.ifnameIp, ifnameinfo.ifnameMac, ifnameinfo.submask, ifnameinfo.gatwayIp);
 
     // 1：添加策略路由
     // {
@@ -458,23 +468,28 @@ int setRoute(void)
     // }
     // 2：添加默认路由
     {
-        char cmd[128] = {0};
-        system("ip ro del default");
-        snprintf(cmd, sizeof(cmd), "ip ro add default via %s dev %s", ifnameinfo.gatwayIp, ifnameinfo.ifname);
+        char cmd[256] = {0};
+        // snprintf(cmd, sizeof(cmd), "ip ro del %s/%s dev %s proto kernel scope link src %s", ifnameinfo.gatwayIp, ifnameinfo.submask, ifnameinfo.ifname, ifnameinfo.ifnameIp);
+        // DNS_LOG("%s\n", cmd);
+        // system(cmd);
+
+        snprintf(cmd, sizeof(cmd), "ip ro add %s/%s dev %s proto kernel scope link src %s", ifnameinfo.gatwayIp, ifnameinfo.submask, ifnameinfo.ifname, ifnameinfo.ifnameIp);
+        DNS_LOG("%s\n", cmd);
+        system(cmd);
+
+        snprintf(cmd, sizeof(cmd), "ip ro add default dev %s proto kernel scope link src %s", ifnameinfo.ifname, ifnameinfo.ifnameIp);
+        // snprintf(cmd, sizeof(cmd), "ip ro add default dev %s", ifnameinfo.gatwayIp, ifnameinfo.ifname);
+        DNS_LOG("%s\n", cmd);
         system(cmd);
     }
 
     return 0;
 }
 
-
-
-
-
 // 向标准错误输出信息，告诉用户时间到了
 void prompt_info(int signo)
 {
-    printf("time is running out\n");
+    DNS_LOG("time is running out\n");
     setRoute();
 }
 
@@ -511,7 +526,7 @@ int main()
         ret = getitimer(ITIMER_REAL, &curr_value); // 获取当前定时器状态
         if (0 == ret)
         {
-            printf("%d %d\n", curr_value.it_value.tv_sec, curr_value.it_interval);
+            DNS_LOG("%ld %ld\n", curr_value.it_value.tv_sec, curr_value.it_interval.tv_usec);
         }
         sleep(1);
     }

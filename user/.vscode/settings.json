@@ -2,6 +2,8 @@
 	"files.associations": {
 		"*.tcc": "c",
 		"cctype": "c",
-		"regex.h": "c"
+		"regex.h": "c",
+		"atomic": "c",
+		"cstdint": "c"
 	}
 }

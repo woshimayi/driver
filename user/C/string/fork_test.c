@@ -5,7 +5,7 @@
  * @Author: dof
  * @Date: 2023-10-20 11:46:41
  * @LastEditors: dof
- * @LastEditTime: 2023-10-20 11:51:00
+ * @LastEditTime: 2023-12-21 17:57:17
  * @Descripttion: 进程可以自我守护，父进程监控，子进程运行程序
  * @**************************************: 
  */
@@ -16,6 +16,17 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
+#include <fcntl.h>           /* Definition of AT_* constants */
+#include <unistd.h>
+#include <signal.h>
+
+void __main()
+{
+    printf("zzzzzzzzzzzzz \n");
+    system("echo > 123.tmp");
+    while (1)
+    {}
+}
 
 int main() {
 	printf("父进程 %d \n", getpid());
@@ -31,13 +42,23 @@ int main() {
         if (pid == 0) {
             // 子进程
             printf("子进程ID: %d\n", getpid());
-            sleep(4); // 子进程睡眠2秒，模拟某种处理
-            printf("子进程 %d 退出\n", getpid());
-            exit(EXIT_SUCCESS); // 子进程退出
+            __main();
         } else {
             // 父进程
             int status;
-			printf("父进程 %d \n", getpid());
+			printf("父进程 %d %d\n", getpid(), pid);
+            while (1)
+            {
+                sleep(2);
+                if (0 > access("123.tmp", F_OK))
+                {
+                    printf("子进程 11111 %d 退出\n", pid);
+                    kill(pid, SIGINT);
+                    break;
+                }
+                
+            }
+
             waitpid(pid, &status, 0); // 等待子进程结束
         }
     }

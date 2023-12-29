@@ -5,7 +5,7 @@
  * @Author: dof
  * @Date: 2023-12-14 11:51:45
  * @LastEditors: dof
- * @LastEditTime: 2023-12-15 18:03:46
+ * @LastEditTime: 2023-12-22 15:31:06
  * @Descripttion:
  * @**************************************:
  */
@@ -56,8 +56,8 @@
 
 typedef unsigned char uint8_t;
 typedef unsigned short uint16_t;
-typedef unsigned int  uint32_t;
-typedef unsigned long int	uint64_t;
+typedef unsigned int uint32_t;
+typedef unsigned long int uint64_t;
 
 /*建立一个定义单个LED三原色值大小的结构体*/
 typedef struct
@@ -306,7 +306,6 @@ static void rainbowCycle(uint8_t wait)
     }
     RGB_SendArray();
 }
-
 
 void HAL_Delay(int msec)
 {
