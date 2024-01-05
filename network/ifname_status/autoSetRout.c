@@ -5,7 +5,7 @@
  * @Author: dof
  * @Date: 2021-07-21 10:49:35
  * @LastEditors: dof
- * @LastEditTime: 2023-12-29 18:33:16
+ * @LastEditTime: 2024-01-02 15:09:46
  * @Descripttion: 自动添加主机默认路由
  * @**************************************:
  */
@@ -478,6 +478,11 @@ int setRoute(void)
         system(cmd);
 
         snprintf(cmd, sizeof(cmd), "ip ro add default dev %s proto kernel scope link src %s", ifnameinfo.ifname, ifnameinfo.ifnameIp);
+        // snprintf(cmd, sizeof(cmd), "ip ro add default dev %s", ifnameinfo.gatwayIp, ifnameinfo.ifname);
+        DNS_LOG("%s\n", cmd);
+        system(cmd);
+
+        snprintf(cmd, sizeof(cmd), "ip ro add default via %s dev %s", ifnameinfo.ifnameIp, ifnameinfo.ifname);
         // snprintf(cmd, sizeof(cmd), "ip ro add default dev %s", ifnameinfo.gatwayIp, ifnameinfo.ifname);
         DNS_LOG("%s\n", cmd);
         system(cmd);
