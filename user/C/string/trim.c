@@ -5,7 +5,7 @@
  * @Author: dof
  * @Date: 2022-09-28 15:00:27
  * @LastEditors: dof
- * @LastEditTime: 2022-09-29 09:44:04
+ * @LastEditTime: 2024-01-10 17:25:39
  * @Descripttion: 删除字符串两边的空格
  * @**************************************: 
  */
@@ -42,6 +42,12 @@ char *right_trim(char *str)
     return str;
 }
  
+/**
+ * @brief 去除字符串两边的空格
+ * 
+ * @param str 
+ * @return char* 
+ */
 char *trim(char *str)
 {
     str = left_trim(str);
@@ -50,6 +56,35 @@ char *trim(char *str)
     return str;
 }
  
+
+/**
+ * @brief 去除字符串两边的空格
+ * 
+ * @param str 
+ */
+char * trim_space(char *str)
+{
+    char *p = str;
+    char *q = str + strlen(str) - 1;
+
+    while (*p == ' ')
+    {
+        p++;
+    }
+
+    while (*q == ' ')
+    {
+        q--;
+    }
+
+    if (p < q)
+    {
+        memmove(str, p, q - p + 1);
+        str[q - p + 1] = '\0';
+    }
+    return str;
+}
+
 int main(void)
 {
     char *src[] =
@@ -66,7 +101,8 @@ int main(void)
     for(int index = 0; src[index] != NULL; index++)
     {
         strcpy(result, src[index]);
-        printf("[%s] -> [%s]\n", src[index], trim(result));          
+        // printf("[%s] -> [%s]\n", src[index], trim(result));          
+        printf("[%s] -> [%s]\n", src[index], trim_space(result));          
     }
  
     return 0;
