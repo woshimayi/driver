@@ -5,7 +5,7 @@
  * @Author: dof
  * @Date: 2021-10-20 19:33:39
  * @LastEditors: dof
- * @LastEditTime: 2022-02-15 21:18:51
+ * @LastEditTime: 2024-03-21 11:50:47
  * @Descripttion: 宏定义 常规用例
  * @**************************************: 
  */
@@ -69,6 +69,19 @@ char *ip6defaultClassifications[] =
 #define nested(param) tostring(param)
 
 
+int hi_ipc_call(char *pc_call_name)
+{
+	printf("pc_call_name = %s\n", pc_call_name);
+	return 0;
+}
+
+
+#define HI_IPC_CALL(ipc_fun)                       \
+    hi_ipc_call("hi_" ipc_fun "_call")
+
+
+
+
 // void defaultClassifications(int ipmode)
 // {
 // 	int i = 0;
@@ -120,6 +133,8 @@ int main()
 	printf("[%s]\n", DEFINECLASSIFICATIONS(6)[0]);
 
 	// defaultClassifications(4);
+
+	HI_IPC_CALL("zzzzzzz");
 
 	return 0;
 }

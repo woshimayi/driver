@@ -5,7 +5,7 @@
  * @Author: dof
  * @Date: 2021-10-20 19:33:39
  * @LastEditors: dof
- * @LastEditTime: 2022-11-09 10:30:41
+ * @LastEditTime: 2024-03-22 16:11:15
  * @Descripttion:
  * @**************************************:
  */
@@ -129,4 +129,8 @@ int main()
 
 	timep = mktime(p);
 	printf("time()->localtime()->mktime():%d\n", timep);
+
+	char str[128] = {0};
+	getTheCurrentTime(str);
+	printf("str = %s\n", str);
 }

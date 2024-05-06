@@ -5,7 +5,7 @@
  * @Author: dof
  * @Date: 2023-07-10 09:42:08
  * @LastEditors: dof
- * @LastEditTime: 2023-10-26 17:06:08
+ * @LastEditTime: 2024-03-20 14:03:33
  * @Descripttion:
  * @**************************************:
  */
@@ -44,6 +44,18 @@ static void cgi_get_info_from_file(const char *name, char *buf, unsigned int len
 	fclose(fp);
 }
 
+#define PP(fmt,args...) printf("[mdm :%s(%d)] " fmt "\r\n", __func__, __LINE__, ##args )
+
+#ifndef PP(fmt,args...)
+#if 0
+#define PP(fmt,args...) printf("[mdm :%s(%d)] " fmt "\r\n", __func__, __LINE__, ##args )
+#else
+#define PP(fmt,args...)
+#endif
+#endif
+
+
+
 int main(int argc, char const *argv[])
 {
 	// char deviceinfo[1024] = {0};
@@ -72,29 +84,43 @@ int main(int argc, char const *argv[])
 
 	#define isspace0(c)	((c) == ' ')
 	char *separator = NULL;
-	char str[] = " 202.96.209.5 ";
+	char str[] = "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANPPPConnection.4.Username";
 	char dnsSecondary[64] = {0};
 	// sscanf("2010::ca6c:20ff:fec4:ee9d/64", "%s/%*d", str);
 
-	printf("str = %s--\n", strstr(str, ","));
-	printf("str = %s--\n", strtok(str, ","));
-	separator = strtok(str, ",");
+	// printf("1 str = %s--\n", strstr(str, "Username"));
+	// printf("2 str = %s--\n", strtok(str, "."));
+	char *ret = strrchr(str, '.');
+	str[ret-&str[0]+1] = '\0';
+	printf("3 str = %s-- %s\n", ret, str);
 
-	if (separator != NULL)
-    {
-		/* break the string into two strings */
-		// *separator = 0;
-		 while ((isspace0(*separator)) && (*separator != 0))
-		 {
-			/* skip white space after comma */
-			separator++;
-		 }
-		// separator++;
+	// separator = strtok(str, ",");
 
-		strcpy(dnsSecondary, separator);
-		printf("dnsSecondary=%s--\n", dnsSecondary);
-    }
+	// if (separator != NULL)
+    // {
+	// 	/* break the string into two strings */
+	// 	// *separator = 0;
+	// 	 while ((isspace0(*separator)) && (*separator != 0))
+	// 	 {
+	// 		/* skip white space after comma */
+	// 		separator++;
+	// 	 }
+	// 	// separator++;
 
+	// 	strcpy(dnsSecondary, separator);
+	// 	printf("dnsSecondary=%s--\n", dnsSecondary);
+    // }
+
+	printf("0x%x\n",  0x11111111 & ~0x10000000);
+
+	char *s = NULL;
+	if (s && 0 == strcasecmp(s, "FALse"))
+	{
+		char  t_v[8] = {0};
+		void **v = &t_v[0];
+		*v = (void *)1;
+		printf("sss v = %d\n", (int *)(*v));
+	}
 
 	return 0;
 }

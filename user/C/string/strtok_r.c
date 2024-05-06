@@ -65,8 +65,13 @@ int main(void)
 		printf(">%s<\n", p[j]);
 	}
 #endif
-	int i = igdCmWanResolveIPv6DnsServerName("3000::2,3000::5,");
-	printf("i = %d\n", i);
+	//int i = igdCmWanResolveIPv6DnsServerName("3000::2,3000::5,");
+	//printf("i = %d\n", i);
+    char *str = "/RMS-server/RMS?sn=SCTY18321B39";
+	printf("i = %s\n", str);
+    char *p ;
+    p = strtok(str, "?");
+	printf("i = %s\n", p);
 	return 0;
 }
 

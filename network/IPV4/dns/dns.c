@@ -1,10 +1,10 @@
 /*
- * @FilePath: /network/IPV4/dns/dns.c
- * @version: 
+ * @FilePath: \network\IPV4\dns\dns.c
+ * @version:
  * @Author: sueRimn
  * @Date: 2020-10-10 13:53:43
  * @LastEditors: dof
- * @LastEditTime: 2023-06-20 18:13:46
+ * @LastEditTime: 2024-04-12 14:09:16
  * @Descripttion: dns 解析
  */
 #include <sys/types.h>
@@ -24,9 +24,9 @@ int lookup(char *host, int *d)
     char ipbuf[16];
 
     memset(&hints, 0, sizeof(struct addrinfo));
-    hints.ai_family = AF_INET; /* Allow IPv4 */
+    hints.ai_family = AF_INET;   /* Allow IPv4 */
     hints.ai_flags = AI_PASSIVE; /* For wildcard IP address */
-    hints.ai_protocol = 0; /* Any protocol */
+    hints.ai_protocol = 0;       /* Any protocol */
     hints.ai_socktype = SOCK_STREAM;
 
     ret = getaddrinfo(host, NULL, &hints, &res);
@@ -40,14 +40,13 @@ int lookup(char *host, int *d)
     for (cur = res; cur != NULL; cur = cur->ai_next)
     {
         addr = (struct sockaddr_in *)cur->ai_addr;
-        printf("%s\n", inet_ntop(AF_INET,
-                                 &addr->sin_addr, ipbuf, 16));
+        printf("[%s:%d] %s\n", __FUNCTION__, __LINE__, inet_ntop(AF_INET, &addr->sin_addr, ipbuf, 16));
     }
     freeaddrinfo(res);
     *d = inet_addr(ipbuf);
-    exit(0);
+    // exit(0);
+    return 0;
 }
-
 
 int main(int argc, char **argv)
 {
@@ -68,5 +67,5 @@ int main(int argc, char **argv)
     system("date");
     lookup(domain, &d);
     system("date");
-    printf("%d\n", d);
+    printf("zzzz %d\n", d);
 }

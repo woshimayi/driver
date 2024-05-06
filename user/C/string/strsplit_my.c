@@ -113,7 +113,7 @@ int main(int argc, const char *argv[])
 	tok = strtok_r(gps_data, ",", &ptr);
 	while (tok)
 	{
-		printf("tok = %s ptr = %s\n", tok, ptr);
+		printf("tok = %10s \tptr = %s\n", tok, ptr);
 		tok = strtok_r(NULL, ",", &ptr);
 	}
 
