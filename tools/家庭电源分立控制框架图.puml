@@ -1,0 +1,38 @@
+@startuml
+
+[*] -> 总开关
+
+总开关 -D-> 插板: 继电器(磁保持) 任务需求
+总开关 -D-> zsUbuntu
+插板 -D-> zsWork
+插板 -D-> zsLenovo
+插板 -D-> 音响
+插板 -D-> ps4
+插板 -D-> 路由器
+
+插板1: 常开
+
+
+state 插板 {
+    [*] --> 继电器
+    继电器 --> 串口控制
+    串口控制 --> 插座
+}
+
+state zsUbuntu {
+    [*] --> zsWork: 网络开机
+    [*] --> USB: uhubctl控制(常闭)
+    USB --> linuxBoard
+    USB --> 插板
+}
+
+state zsLenovo {
+    [*] --> USB1: USB poweroff: serial control
+    USB1 --> stm32Board:mos管(常闭)
+}
+
+
+' 电脑下挂USB设备
+' 独立控制设备
+
+@enduml

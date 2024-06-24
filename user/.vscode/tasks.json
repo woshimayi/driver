@@ -9,11 +9,30 @@
                 "-g",
                 "${file}",
                 "-o",
-                "${fileDirname}/${fileBasenameNoExtension}",
-                "-lcurl"
+                "${fileDirname}/${fileBasenameNoExtension}"
+                // "-lcurl"
             ],
             "problemMatcher": [
                 "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "linux compile cpp",
+            "type": "shell",
+            "command": "/usr/bin/g++",
+            "args": [
+                "-g",
+                "${file}",
+                "-o",
+                "${fileDirname}/${fileBasenameNoExtension}"
+                // "-lcurl"
+            ],
+            "problemMatcher": [
+                "$g++"
             ],
             "group": {
                 "kind": "build",
