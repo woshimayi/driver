@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 apt update
-apt vim git htop range net-tools openssh-server samba samba-common build-essential -y
+apt vim git htop range net-tools openssh-server samba samba-common build-essential psmisc  -y
 apt-get install language-pack-zh-hans
 apt-get install fonts-droid-fallback ttf-wqy-zenhei ttf-wqy-microhei fonts-arphic-ukai fonts-arphic-uming
 

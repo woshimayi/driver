@@ -88,6 +88,7 @@ int connect_to(struct addrinfo *addr, struct timeval *rtt)
 			goto next_addr1;
 
 		/* connect to peer */
+		struct sockaddr *tmp_addr = (struct sockaddr *)(addr->ai_addr);
 		if ((connect_result = connect(fd, addr->ai_addr, addr->ai_addrlen)) == 0)
 		{
 			if (gettimeofday(rtt, NULL) == -1)
@@ -168,6 +169,7 @@ int main(int argc, char *argv[])
 		fprintf(stderr, "%s\n", gai_strerror(errcode)); /*用以释放调用getaddrinfo 没有释放的内存*/
 		return 2;
 	}
+	// printf("host ip = %s\n", resolved->ai_addr);
 
 	if (!quiet)
 		printf("PING %s:%s\n", hostname, portnr);
@@ -181,7 +183,7 @@ int main(int argc, char *argv[])
 		{
 			if (errcode != -EADDRNOTAVAIL)
 			{
-				//				break;
+//				break;
 				printf("error connecting to host (%s):%s: -- seq=%d %s\n", hostname, portnr, curncount, strerror(-errcode));
 				err++;
 			}
@@ -217,8 +219,8 @@ int main(int argc, char *argv[])
 
 		curncount++;
 
-		//if (curncount != count)
-		//	sleep(wait);
+		if (curncount != count)
+			sleep(wait);
 	}
 
 	if (!quiet)
