@@ -5,10 +5,14 @@
  * @Author: dof
  * @Date: 2024-06-13 16:23:12
  * @LastEditors: dof
- * @LastEditTime: 2024-06-13 17:34:40
+ * @LastEditTime: 2024-08-01 11:09:13
  * @Descripttion: 打印内存数据
  * @**************************************:
  */
+
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 
 void mutils_dump_hex_more_data(const unsigned char *head, int len)
 {
@@ -29,7 +33,7 @@ void mutils_dump_hex_more_data(const unsigned char *head, int len)
     for (i = 0; i < len;)
     {
         p = lineBuf;
-        p += sprintf(p, "%xh:  ", (unsigned long)(head + i));
+        p += sprintf(p, "%xh:  ", (unsigned int)(head + i));
         pText = tmpBuf;
         for (n = 0; (i < len) && (n < LINE_CHAR_NUM); n++, i++, curPtr++)
         {
@@ -63,7 +67,7 @@ int main(int argc, char const *argv[])
 {
 
     mutils_dump_hex_more_data(str, 1024);
-    char p = str + 20;
+    char *p = str + 20;
     p = "dddddddddd";
     mutils_dump_hex_more_data(str, 1024);
 

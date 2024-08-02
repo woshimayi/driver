@@ -10,9 +10,10 @@
  * @**************************************:
  */
 
-#include "stdio.h"
+#include <stdio.h>
 #include <stdlib.h>
-#include "libgen.h"
+#include <libgen.h>
+
 int main()
 {
 	char *p;

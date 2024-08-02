@@ -18,7 +18,7 @@ typedef enum
 {
 	false,
 	true
-}bool；
+}bool;
 
 int directions[4][2] = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
 
