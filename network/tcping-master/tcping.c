@@ -11,17 +11,6 @@
 #include <sys/types.h>
 #include <fcntl.h>
 
-#ifdef BRCM_CMS_BUILD
-	#include "mdm.h"
-	#include "rut_util.h"
-	#include "cms_obj.h"
-	#include "cms_log.h"
-
-
-	void *msgHandle = NULL;
-	CmsMsgHeader *msg = NULL;
-	int shmId = 0;
-#endif
 int result = 0;
 
 #define abs(x) ((x) < 0 ? -(x) : (x))
@@ -131,26 +120,6 @@ int main(int argc, char *argv[])
 	int errcode;
 	int seen_addrnotavail = 0;
 
-#ifdef BRCM_CMS_BUILD
-	int ret = 0;
-	cmsLog_init(EID_MDM_TCPING);
-	if ((ret = (int)cmsMsg_init(EID_MDM_TCPING, &msgHandle)) != 0)
-	{
-		cmsLog_cleanup();
-		fprintf(stdout, "%d", ret);
-		return ret;
-	}
-
-	if ((ret = (int)cmsMdm_init(EID_MDM_TCPING, msgHandle, &shmId)) != 0)
-	{
-		cmsMsg_cleanup(&msgHandle);
-		cmsLog_cleanup();
-		fprintf(stdout, "%d", ret);
-		return ret;
-	}
-
-	mdmLibCtx.eid = EID_MDM_TCPING;
-#endif
 
 	while ((c = getopt(argc, argv, "h:p:c:i:fq?")) != -1)
 	{
@@ -278,29 +247,6 @@ int main(int argc, char *argv[])
 			}
 
 		}
-#ifdef BRCM_CMS_BUILD
-		CmsRet ret = CMSRET_SUCCESS;
-		_HgTcpingObject *tcpingObj = NULL;
-		InstanceIdStack iidStack = EMPTY_INSTANCE_ID_STACK;
-
-		if ((ret = cmsObj_get(MDMOID_HG_TCPING, &iidStack, 0, (void **)&tcpingObj)) != CMSRET_SUCCESS)
-		{
-			cmsLog_error("Failed to get <MDMOID_HG_TCPING>, ret=%d", ret);
-			return ret;
-		}
-
-		tcpingObj->result = result;
-		tcpingObj->lost = (((double)err) / abs(((double)count)) * 100.0);
-		tcpingObj->rtt = (int)(((avg / ok) < 1) ? 1 : (avg / ok));
-
-		ret = cmsObj_set(tcpingObj, &iidStack);
-		if (ret != CMSRET_SUCCESS)
-		{
-			cmsLog_error("cmsObj_set MDMOID_HG_TCPING failed ret=%d", ret);
-		}
-
-		cmsObj_free((void **)&tcpingObj);
-#endif
 	}
 
 	freeaddrinfo(resolved);
