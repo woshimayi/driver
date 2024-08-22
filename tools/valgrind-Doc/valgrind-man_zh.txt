@@ -1,0 +1,1889 @@
+VALGRIND(1) VALGRIND VALGRIND(1)
+
+姓名
+       valgrind - 一套用于调试和分析程序的工具
+
+概要
+
+       valgrind [valgrind 选项] [你的程序] [你的程序选项]
+
+描述
+       Valgrind 是一个灵活的程序，用于调试和分析 Linux 可执行文件。它由一个核心组成，
+       提供软件合成 CPU 以及一系列调试和分析工具。架构如下：
+       模块化，这样可以轻松创建新的工具而不会干扰现有结构。
+
+       下面描述的一些选项适用于所有 Valgrind 工具，而有些选项仅适用于少数或一个工具。
+       MEMCHECK OPTIONS 部分及其下面的部分描述了特定于工具的选项。
+
+       本手册页仅涵盖基本用法和选项。有关更全面的信息，请参阅 HTML
+       系统上的文档：$INSTALL/share/doc/valgrind/html/index.html，或在线：
+       http://www.valgrind.org/docs/manual/index.html。
+
+工具选择选项
+       最重要的选择。
+
+       --tool=<工具名称> [默认值：memcheck]
+           运行名为 toolname 的 Valgrind 工具，例如 memcheck、cachegrind、callgrind、helgrind、drd、massif、dhat，
+           lackey、none、exp-bbv 等等。
+
+基本选项
+       这些选项适用于所有工具。
+
+       -h --help
+           显示所有选项的帮助，包括核心和所选工具的帮助。如果选项重复，则
+           相当于提供--help-debug。
+
+       --help-debug
+           与 --help 相同，但还列出了通常仅对 Valgrind 开发人员有用的调试选项。
+
+       --version
+           显示 Valgrind 核心的版本号。工具可以有自己的版本号。
+           确保工具仅在已知核心版本可用时才执行。这是
+           这样做是为了尽量减少因工具与核心版本不兼容而出现奇怪问题的可能性。
+
+       -q, --quiet
+           静默运行，仅打印错误消息。如果您正在运行回归测试或有其他问题，则很有用
+           自动测试机械。
+
+       -v, --verbose
+           更详细一些。提供有关程序各个方面的额外信息，例如：共享对象
+           加载、使用的抑制、检测和执行引擎的进度以及警告
+           不寻常的行为。重复该选项会增加详细程度。
+
+       --trace-children=<yes|no> [default: no]
+           启用后，Valgrind 将跟踪通过 exec 系统调用启动的子进程。这是必要的
+           用于多进程程序。
+
+           请注意，Valgrind 会跟踪 fork 的子进程（很难不跟踪，因为 fork 会创建一个
+           进程的相同副本），因此这个选项的命名可能不太恰当。然而，fork 调用的大多数子调用
+           无论如何都要立即调用 exec。
+
+       --trace-children-skip=patt1,patt2,...
+           此选项仅在指定 --trace-children=yes 时才有效。它允许某些子进程
+           跳过。该选项采用逗号分隔的模式列表作为子可执行文件的名称，
+           Valgrind 不应该跟踪。模式可能包括元字符 ? 和 *，它们具有通常的
+           意义。
+
+           这对于从 Valgrind 上运行的进程树中修剪不感兴趣的分支非常有用。但是
+           使用它时应该小心。当 Valgrind 跳过跟踪可执行文件时，它不会跳过
+           跟踪该可执行文件时，它还会跳过跟踪该可执行文件的任何子进程。换句话说，
+           标志不仅仅导致跟踪在指定的可执行文件处停止 - 它还会跳过整个过程的跟踪
+           以任何指定的可执行文件为根的子树。
+
+       --trace-children-skip-by-arg=patt1,patt2,...
+           这与 --trace-children-skip 相同，但有一点不同：决定是否跟踪到
+           子进程是通过检查子进程的参数而不是其名称来创建的
+           可执行文件。
+
+       --child-silent-after-fork=<yes|no> [default: no]
+           启用后，Valgrind 将不会显示由以下原因导致的子进程的任何调试或日志输出：
+           fork 调用。这可以使处理进程时的输出不那么令人困惑（尽管更具误导性）
+           创建子进程。它与 --trace-children= 结合使用时特别有用。此选项的使用方式是
+           如果你请求 XML 输出（--xml=yes），也强烈建议这样做，因为否则子
+           和父母可能会混淆，这通常会使其变得毫无用处。
+
+       --vgdb=<no|yes|full> [default: yes]
+           当指定 --vgdb=yes 或 --vgdb=full 时，Valgrind 将提供“gdbserver”功能。这允许
+           外部 GNU GDB 调试器用于在 Valgrind 上运行时控制和调试您的程序。--vgdb=full 会产生
+           性能开销较大，但提供了更精确的断点和观察点。请参阅调试
+           对Valgrind的gdbserver和GDB程序的使用进行了详细的说明。
+
+           如果启用了嵌入式 gdbserver，但当前没有使用 gdb，则 vgdb 命令行实用程序可以
+           从 shell 向 Valgrind 发送“监控命令”。Valgrind 核心提供了一组 Valgrind 监控
+           命令。工具可以选择提供特定于工具的监控命令，这些命令记录在工具中
+           具体章节。
+
+       --vgdb-error=<number> [default: 999999999]
+           当 Valgrind gdbserver 使用 --vgdb=yes 或 --vgdb=full 启用时，请使用此选项。报告
+           错误将等待“数字”错误报告，然后冻结程序并等待您
+           与 GDB 连接。因此，值为零将导致 gdbserver 在程序之前启动
+           执行。这通常用于在执行前插入 GDB 断点，也可以与工具一起使用
+           不报告错误，例如 Massif。
+
+       --vgdb-stop-at=<set> [default: none]
+           当 Valgrind gdbserver 使用 --vgdb=yes 或 --vgdb=full 启用时，请使用此选项。Valgrind
+           报告 --vgdb-error 后，将针对每个错误调用 gdbserver。您还可以询问
+           Valgrind gdbserver 将为其他事件调用，以下列方式之一指定：
+
+           • 用逗号分隔的一个或多个启动退出 abexit valgrindabexit 列表。
+
+               值 startup exit valgrindabexit 分别表示在程序运行之前调用 gdbserver
+               在程序的最后一条指令之后，在 Valgrind 异常退出时执行（例如内部错误，
+               内存不足， ...）。
+
+               选项 abexit 与 exit 类似，但指示仅在应用程序退出时调用 gdbserver
+               异常（即退出代码不为 0）。
+
+               注意：startup 和 --vgdb-error=0 都会导致在程序启动之前调用 Valgrind gdbserver。
+               执行。--vgdb-error=0 还将导致您的程序在所有后续错误上停止。
+
+           • all 指定完整集合。它相当于 --vgdb-stop-at=startup,exit,abexit,valgrindabexit。
+
+           • none 表示空集。
+
+       --track-fds=<yes|no|all> [default: no]
+           启用后，Valgrind 将在退出或请求时通过以下方式打印出打开的文件描述符列表：
+           gdbserver 监视命令 v.info open_fds。每个文件描述符都会打印一个堆栈回溯
+           文件打开的位置以及与文件描述符相关的任何详细信息，例如文件名或套接字
+           详细信息。使用全部来包含有关 stdin、stdout 和 stderr 的报告。
+
+       --time-stamp=<yes|no> [default: no]
+           启用后，每条消息前面都会显示自启动以来经过的挂钟时间，
+           以天、小时、分钟、秒和毫秒表示。
+
+       --log-fd=<number> [default: 2, stderr]
+           指定 Valgrind 应将其所有消息发送到指定的文件描述符。默认值为 2，即
+           标准错误通道 (stderr)。请注意，这可能会干扰客户端自己对 stderr 的使用，因为
+           Valgrind 的输出将与客户端发送到 stderr 的任何输出交错。
+
+       --log-file=<filename>
+           指定 Valgrind 应将其所有消息发送到指定文件。如果文件名为空，则
+           导致中止。文件名中可以​​使用三种特殊格式说明符。
+
+           %p 替换为当前进程 ID。这对于调用多个进程的程序非常有用。
+           警告：如果你使用 --trace-children=yes，并且你的程序调用多个进程，或者你的程序分叉
+           之后不调用 exec，并且不使用此说明符（或下面的 %q 说明符），Valgrind
+           所有这些过程的输出将进入一个文件，可能混乱，也可能不完整。注意：
+           如果程序 fork 之后调用 exec ，Valgrind 会输出 fork 之间的子进程信息
+           并且 exec 将丢失。幸运的是，对于大多数程序来说，这个差距真的很小；现代程序使用
+           无论如何，posix_spawn。
+
+           %n 将被替换为此进程唯一的文件序列号。这对于以下进程很有用：
+           从相同的文件名模板生成多个文件。
+
+           %q{FOO} 被替换为环境变量 FOO 的内容。如果 {FOO} 部分格式不正确，则
+           导致中止。此说明符很少需要，但在某些情况下非常有用（例如，当运行
+           MPI 程序）。其思想是指定一个变量，该变量将针对 MPI 程序中的每个进程进行不同的设置。
+           作业，例如 BPROC_RANK 或 MPI 设置中适用的任何内容。如果命名的环境变量
+           未设置，则会导致中止。请注意，在某些 shell 中，可能需要使用以下方式转义 { 和 } 字符
+           反斜杠。
+
+           %% 被 % 替换。
+
+           如果 % 后面跟着任何其他字符，就会导致中止。
+
+           如果文件名指定了相对文件名，则将其放在程序的初始工作目录中：这
+           是程序在 fork 或 exec 之后开始执行时的当前目录。如​​果
+           指定一个绝对文件名（即以“/”开头），然后将其放在那里。
+
+       --log-socket=<ip-address:port-number>
+           指定 Valgrind 应将其所有消息发送到指定 IP 地址的指定端口。
+           可以省略端口，在这种情况下使用端口 1500。如果无法连接到指定的
+           socket，Valgrind 将返回到将输出写入标准错误 (stderr)。此选项旨在
+           与 valgrind-listener 程序一起使用。有关详细信息，请参阅
+           手动的。
+
+       --enable-debuginfod=<no|yes> [default: yes]
+           启用后，Valgrind 将尝试从 debuginfod 服务器下载缺失的调试信息（如果以空格分隔）
+           服务器 URL 存在于 $DEBUGINFOD_URLS 环境变量中。Linux 支持此选项
+           仅有的。
+
+错误相关选项
+       所有可以报告错误的工具都使用这些选项，例如 Memcheck，但不是 Cachegrind。
+
+       --xml=<yes|no> [default: no]
+           启用后，输出的重要部分（例如工具错误消息）将采用 XML 格式，而不是
+           纯文本。此外，XML 输出将发送到与纯文本不同的输出通道
+           输出。因此，您还必须使用 --xml-fd、--xml-file 或 --xml-socket 之一来指定 XML 的位置
+           将被寄出。
+
+           不太重要的消息仍将以纯文本形式打印，但由于 XML 输出和纯文本
+           输出被发送到不同的输出通道（纯文本输出的目的地仍然受控制
+           通过--log-fd，--log-file 和--log-socket) 这应该不会造成问题。
+
+           此选项旨在使使用 Valgrind 输出作为输入的工具（例如 GUI）的使用更加轻松
+           前端。目前此选项适用于 Memcheck、Helgrind 和 DRD。输出格式在
+           Valgrind 3.5.0 或更高版本源树中的文件 docs/internals/xml-output-protocol4.txt。
+
+           请求 XML 输出时，建议 GUI 传递的选项为：--xml=yes 启用 XML 输出，
+           --xml-file 将 XML 输出发送到（可能是 GUI 选择的）文件，--log-file 发送纯文本
+           输出到第二个 GUI 选择的文件，--child-silent-after-fork=yes，以及 -q 来限制纯文本
+           输出 Valgrind 自身创建的关键错误消息。例如，无法读取指定的
+           抑制文件被视为严重错误消息。这样，为了成功运行文本输出文件
+           将是空的。但如果不是空的，那么它将包含 GUI 用户应该
+           被意识到。
+
+       --xml-fd=<number> [default: -1, disabled]
+           指定 Valgrind 应将其 XML 输出发送到指定的文件描述符。它必须在
+           与--xml=yes结合。
+
+       --xml-file=<filename>
+           指定 Valgrind 应将其 XML 输出发送到指定文件。必须与
+           使用 --xml=yes。文件名中出现的任何 %p 或 %q 序列都以与以下方式完全相同的方式扩展
+           它们用于 --log-file。有关详细信息，请参阅 --log-file 的描述。
+
+       --xml-socket=<ip-address:port-number>
+           指定 Valgrind 应将其 XML 输出发送到指定 IP 地址的指定端口。它必须
+           与 --xml=yes 一起使用。参数格式与 --log-socket 相同。
+           更多详细信息请参阅--log-socket 的描述。
+
+       --xml-user-comment=<string>
+           在 XML 输出的开头嵌入额外的用户注释字符串。仅当指定 --xml=yes 时才有效；
+           否则，请忽略。
+
+       --demangle=<yes|no> [default: yes]
+           启用/禁用 C++ 名称的自动解析（解码）。默认启用。启用后，Valgrind 将
+           尝试将编码的 C++ 名称转换回接近原始名称。解混淆器处理
+           被 g++ 版本 2.X、3.X 和 4.X 弄乱的符号。
+
+           关于分解的一个重要事实是，抑制文件中提到的函数名称应该在其
+           混乱的形式。Valgrind 在搜索适用的抑制时不会对函数名称进行分解，因为
+           否则，抑制文件的内容将取决于 Valgrind 解析的状态
+           机械，同时也减慢了抑制匹配的速度。
+
+       --num-callers=<number> [default: 12]
+           指定堆栈跟踪中显示的用于标识程序位置的最大条目数。请注意
+           错误仅使用前四个函数位置（当前函数中的位置，以及
+           其三个直接调用者的错误总数）。因此，这不会影响报告的错误总数。
+
+           最大值为 500。请注意，更高的设置将使 Valgrind 运行得更慢，并且
+           占用更多内存，但在处理具有深层嵌套调用链的程序时很有用。
+
+       --unw-stack-scan-thresh=<number> [default: 0] , --unw-stack-scan-frames=<number> [default: 5]
+           堆栈扫描支持仅在 ARM 目标上可用。
+
+           这些标志通过堆栈扫描启用和控制堆栈展开。当正常的堆栈展开机制
+           -- 使用 Dwarf CFI 记录和帧指针跟踪 -- 失败，堆栈扫描可能能够恢复
+           堆栈跟踪。
+
+           请注意，堆栈扫描是一种不精确的启发式机制，可能会产生非常误导的结果，或者根本没有
+           完全没有。它应该只在紧急情况下使用，当正常的解开失败时，重要的是
+           仍然有堆栈跟踪。
+
+           堆栈扫描是一种简单的技术：展开器从堆栈中读取单词，并尝试猜测其中哪一个
+           通过检查它们是否指向 ARM 或 Thumb 调用指令之后，它们可能是返回地址。
+           如果是的话，这个单词就会被添加到回溯中。
+
+           主要的危险发生在函数调用返回时，其返回地址暴露，并且新函数
+           被调用，但新函数不会覆盖旧地址。结果是回溯
+           可能包含已经返回的函数的条目，因此非常令人困惑。
+
+           此实现的第二个限制是它将仅扫描包含
+           起始堆栈指针。如果堆栈框架很大，这可能导致只有少数（甚至没有）
+           出现在跟踪中。另外，如果你运气不好，在它的末尾有一个初始堆栈指针
+           包含页面，扫描可能会错过所有有趣的帧。
+
+           默认情况下堆栈扫描是禁用的。正常用例是在堆栈跟踪需要时请求它
+           否则会非常短。因此，要启用它，请使用 --unw-stack-scan-thresh=number。这要求 Valgrind 尝试
+           使用堆栈扫描来“扩展”包含少于数字帧的堆栈跟踪。
+
+           如果确实发生了堆栈扫描，它将最多只生成由以下指定的帧数
+           --unw-stack-scan-frames。通常，堆栈扫描会生成大量垃圾条目，因此设置此值
+           默认情况下为低值 (5)。在任何情况下，堆栈跟踪都不会大于指定的值
+           --num-callers 被创建。
+
+       --error-limit=<yes|no> [default: yes]
+           启用后，Valgrind 在总共报告 10,000,000 个错误（即 1,000 个不同的错误）后停止报告
+           可以看到。这是为了防止错误跟踪机制成为程序中巨大的性能开销
+           有很多错误。
+
+       --error-exitcode=<number> [default: 0]
+           指定 Valgrind 在运行中报告任何错误时返回的替代退出代码。设置为
+           默认值（零），Valgrind 的返回值始终是正在执行的进程的返回值
+           模拟。当设置为非零值时，如果 Valgrind 检测到任何错误，则返回该值。这
+           对于将 Valgrind 用作自动化测试套件的一部分非常有用，因为它可以轻松检测测试用例
+           Valgrind 已报告错误，只需检查返回代码即可。当设置为非零值时，
+           Valgrind 未检测到错误，Valgrind 的返回值将是正在运行的程序的返回值
+           模擬的。
+
+       --exit-on-first-error=<yes|no> [default: no]
+           如果启用此选项，Valgrind 会在第一次出现错误时退出。必须使用以下方法定义非零退出值
+           --error-exitcode 选项。如果你正在运行回归测试或者有其他自动化测试，那么这个选项很有用
+           机械。
+
+       --error-markers=<begin>,<end> [default: none]
+           当错误以纯文本形式输出（即不使用 XML）时，--error-markers 指示输出一行
+           包含每个错误之前（之后）的开始（结束）字符串。
+
+           此类标记线有助于在包含以下项的输出文件中搜索错误和/或提取错误：
+           valgrind 错误与程序输出混合在一起。
+
+           请注意，空标记是可以接受的。因此，只能使用开始（或结束）标记。
+
+       --show-error-list=no|yes|all [default: no]
+           如果此选项为是，对于报告错误的工具，valgrind 将显示检测到的错误列表和
+           退出时使用的抑制列表。值 all 表示还显示抑制错误的列表。
+
+           请注意，在详细程度 2 及以上时，valgrind 会自动显示检测到的错误列表和
+           在退出时使用抑制，除非选择了 --show-error-list=no。
+
+       -s
+           指定 -s 相当于 --show-error-list=yes。
+
+       --sigill-diagnostics=<yes|no> [default: yes]
+           启用/禁用打印非法指令诊断。默认启用，但默认禁用
+           当指定 --quiet 时。始终可以通过指定此选项明确覆盖默认值。
+
+           启用后，每当执行一条指令时，都会打印一条警告消息以及一些诊断信息
+           在程序收到 SIGILL 信号之前，Valgrind 无法解码或翻译。通常
+           非法指令表示程序中有错误，或者缺少对特定指令的支持
+           Valgrind。但有些程序确实会故意尝试执行可能缺失的指令，并捕获
+           SIGILL 信号来检测处理器特性。使用此标志可以避免诊断输出
+           在这种情况下，您否则会得到
+
+       --keep-debuginfo=<yes|no> [default: no]
+           启用后，保留（“存档”）符号和未加载代码的所有其他调试信息。这允许保存堆栈
+           跟踪包含已 dlclose 的代码的文件/行信息（或类似信息）。请小心使用，因为
+           对于重复加载和卸载共享对象的程序来说，这会导致无限制的内存使用。
+
+           有些工具和功能对存档调试信息的支持有限。Memcheck 完全
+           支持。通常，报告错误的工具可以使用存档的调试信息来显示错误堆栈跟踪。
+           已知的限制是：Helgrind 过去对竞争条件的访问堆栈跟踪不使用存档
+           调试信息。Massif（以及更常见的 xtree Massif 输出格式）不使用存档调试
+           信息。只有 Memcheck 已（某种程度上）使用 --keep-debuginfo=yes 进行了测试，因此其他工具可能存在未知
+           限制。
+
+       --show-below-main=<yes|no> [default: no]
+           默认情况下，错误的堆栈跟踪不会显示 main 函数下的任何函数，因为大多数
+           有时它是无趣的 C 库内容和/或官样文章。或者，如果 main 不在
+           堆栈跟踪，堆栈跟踪不会显示任何低于主函数的函数，例如 glibc 的
+           __libc_start_main。此外，如果跟踪中存在类似 main 的函数，则它们将被规范化为
+           （在主要部分下方），以使输出更加确定。
+
+           如果启用此选项，将显示所有堆栈跟踪条目，并且不会显示类似 main 的函数
+           正常化。
+
+       --fullpath-after=<string> [default: don't show source paths]
+           默认情况下，Valgrind 仅显示堆栈跟踪中的文件名，但不显示源文件的完整路径。使用
+           Valgrind 在大型项目中，源代码位于多个不同的目录中，这可以是
+           不方便。--fullpath-after 为这个问题提供了一个灵活的解决方案。当这个选项存在时，
+           显示每个源文件的路径，但有以下非常重要的警告：如果在
+           路径，则省略直到字符串的路径，否则路径显示为未修改。注意
+           字符串不需要作为路径的前缀。
+
+           例如，考虑一个名为 /home/janedoe/blah/src/foo/bar/xyzzy.c 的文件。指定
+           --fullpath-after=/home/janedoe/blah/src/ 将导致 Valgrind 将名称显示为 foo/bar/xyzzy.c。
+
+           由于字符串不需要作为前缀，因此 --fullpath-after=src/ 将产生相同的输出。这
+           当路径包含任意机器生成的字符时很有用。例如，路径
+           可以使用 --fullpath-after=/blah/src/ 将 /my/build/dir/C32A1B47/blah/src/foo/xyzzy 修剪为 foo/xyzzy。
+
+           如果您只想查看完整路径，只需指定一个空字符串：--fullpath-after=。这不是
+           特殊情况，仅仅是上述规则的逻辑结果。
+
+           最后，你可以多次使用 --fullpath-after。每次出现都会导致 Valgrind 切换到
+           生成完整路径并应用上述过滤规则。生成的每条路径都会与所有
+           --fullpath-after-specified 字符串，按指定的顺序。第一个匹配的字符串导致路径
+           如上所述截断。如果没有匹配，则显示完整路径。这有助于截断前缀
+           当源文件来自多个不相关的目录时。
+
+       --extra-debuginfo-path=<path> [default: undefined and unused]
+           默认情况下，Valgrind 在几个众所周知的路径中搜索调试对象，例如 /usr/lib/debug/。
+
+           但是，在某些情况下，您可能希望将调试对象放在任意位置，例如
+           在本地存储有限的移动设备上运行 Valgrind 时，可能需要外部存储。另一个示例可能是
+           可能存在您没有权限在系统上安装调试对象包的情况
+           运行 Valgrind。
+
+           在这些情况下，您可以提供一个绝对路径作为 Valgrind 搜索的额外最终位置
+           通过指定 --extra-debuginfo-path=/path/to/debug/objects 来调试对象。给定的路径将被添加到前面
+           到搜索对象的绝对路径名。例如，如果 Valgrind 正在寻找 debuginfo
+           对于 /w/x/y/zz.so 并且指定了 --extra-debuginfo-path=/a/b/c，它将在以下位置寻找调试对象
+           /a/b/c/w/x/y/zz.so。
+
+           此标志只能指定一次。如果指定多次，则只有最后一次指定
+           荣幸。
+
+       --debuginfo-server=ipaddr:port [default: undefined and unused]
+           这是 3.9.0 版本中引入的一项新的实验性功能。
+
+           在某些情况下，从存储在不同机器上的对象中读取调试信息可能会很方便。
+           此标志，Valgrind 将查询在 ipaddr 上运行并监听端口 port 的调试信息服务器，如果无法
+           在本地文件系统中查找 debuginfo 对象。
+
+           debuginfo 服务器必须接受端口 port 上的 TCP 连接。debuginfo 服务器包含在
+           源文件 auxprogs/valgrind-di-server.c。它将仅从启动的目录提供服务。端口
+           如果未指定，客户端和服务器的默认设置为 1500。
+
+           如果 Valgrind 使用 debuginfo 服务器查找 /w/x/y/zz.so 的调试信息，它将删除
+           路径名组件，并仅请求服务器上的 zz.so。反过来，服务器只会在其当前
+           匹配的调试信息对象的工作目录。
+
+           调试信息数据按照 Valgrind 的要求以小片段（8 KB）的形式传输。每个块
+           使用 LZO 压缩以减少传输时间。该实现已针对最佳性能进行了调整
+           通过单级 802.11g（WiFi）网络链路。
+
+           请注意，使用 GNU debuglink CRC 方案检查主要对象与调试对象的匹配情况，即使
+           使用 debuginfo 服务器时。要禁用此类检查，您还需要指定
+           --allow-mismatched-debuginfo=yes。
+
+           默认情况下，Valgrind 构建系统将为目标平台构建 valgrind-di-server，这几乎
+           当然不是你想要的。到目前为止，我们还无法找到如何让 automake/autoconf 来构建它
+           适用于构建平台。如果您想使用它，则必须使用显示的命令手动重新编译它
+           在 auxprogs/valgrind-di-server.c 的顶部。
+
+           Valgrind 还可以通过 debuginfod 下载调试信息。有关更多信息，请参阅 DEBUGINFOD 部分。
+
+       --allow-mismatched-debuginfo=no|yes [no]
+           当从单独的调试信息对象读取调试信息时，Valgrind 默认会检查主调试信息和
+           使用 GNU 调试链接机制匹配调试信息对象。这保证它不会读取调试信息
+           来自过时的调试信息对象，并且还确保 Valgrind 不会由于不匹配而崩溃。
+
+           可以使用 --allow-mismatched-debuginfo=yes 覆盖此检查。当 debuginfo
+           并且主对象没有以正确的方式分割。使用时要小心：它会禁用所有
+           一致性检查，并且据观察，当主对象和调试信息对象不
+           匹配。
+
+       --suppressions=<filename> [default: $PREFIX/lib/valgrind/default.supp]
+           指定一个额外的文件，从中读取要抑制的错误描述。您最多可以使用 100 个额外的
+           抑制文件。
+
+       --gen-suppressions=<yes|no|all> [default: no]
+           当设置为是时，Valgrind 将在显示每个错误后暂停并打印以下行：
+
+                   ---- 打印抑制？ --- [返回/N/n/Y/y/C/c] ----
+
+           按 Ret、N Ret 或 n Ret 会导致 Valgrind 继续执行，而不会打印此抑制
+           错误。
+
+           按 Y Ret 或 y Ret 会导致 Valgrind 为该错误编写一个抑制。然后您可以剪切并粘贴它
+           如果您不想在将来听到有关错误的信息，请将其放入抑制文件中。
+
+           当设置为全部时，Valgrind 将为每个报告的错误打印一个抑制，而无需询问用户。
+
+           此选项对于 C++ 程序特别有用，因为它会打印出名称混乱的抑制，
+           按要求。
+
+           请注意，打印的抑制尽可能具体。您可能希望通过以下方式来共享类似的抑制：
+           在函数名中添加通配符，以及使用框架级通配符。通配符功能包括
+           强大而灵活，通过一些仔细的编辑，你也许能够抑制一整个家族的
+           仅需抑制少量相关错误。
+
+           有时两个不同的错误被同一种抑制所抑制，在这种情况下 Valgrind 将输出
+           压制不止一次，但你只需要在你的压制文件中有一个副本（但有更多
+           不会造成问题）。此外，抑制名称为<在此处插入抑制名称>；
+           名称实际上并不重要，它只与 -v 选项一起使用，打印出所有使用过的抑制记录。
+
+       --input-fd=<number> [default: 0, stdin]
+           当使用 --gen-suppressions=yes 时，Valgrind 会在每次出现错误时停止并读取你的键盘输入
+           发生。默认情况下，它从标准输入 (stdin) 读取，这对于关闭
+           stdin。此选项允许您指定用于读取输入的备用文件描述符。
+
+       --dsymutil=no|yes [yes]
+           此选项仅在 macOS 上运行 Valgrind 时才相关。
+
+           macOS 使用延迟调试信息 (debuginfo) 链接方案。当包含 debuginfo 的目标文件
+           链接到 .dylib 或可执行文件中时，调试信息不​​会被复制到最终文件中。相反，
+           必须通过在可执行文件上运行系统提供的实用程序 dsymutil 来手动链接 debuginfo，或者
+           .dylib。生成的组合调试信息放置在可执行文件或 .dylib 旁边的目录中，但
+           扩展名为.dSYM。
+
+           使用 --dsymutil=no 时，Valgrind 将检测 .dSYM 目录缺失或存在的情况
+           但似乎与关联的可执行文件或 .dylib 不匹配，很可能是因为它已过期。在
+           在这些情况下，Valgrind 会打印一条警告消息，但不会采取进一步的行动。
+
+           使用 --dsymutil=yes 时，Valgrind 将在这种情况下根据需要自动运行 dsymutil 来
+           debuginfo 是最新的。从实际目的来看，如果你总是使用 --dsymutil=yes，那么永远不会有任何
+           需要手动运行 dsymutil，或者将其作为应用程序构建系统的一部分运行，因为 Valgrind 会将其作为
+           必要的。
+
+           Valgrind 不会尝试在 /usr/、/bin/、/sbin/、/opt/、/sw/ 中的任何可执行文件或库上运行 dsymutil，
+           /System/、/Library/ 或 /Applications/，因为 dsymutil 在这种情况下总是会失败。它同时失败
+           因为这些预安装的系统组件的调试信息在任何地方都不可用，而且因为
+           它需要这些目录的写权限。
+
+           使用 --dsymutil=yes 时要小心，因为它会导致预先存在的 .dSYM 目录被静默
+           删除并重新创建。另请注意，dsymutil 相当慢，有时甚至慢得离谱。
+
+       --max-stackframe=<number> [default: 2000000]
+           堆栈框架的最大大小。如果堆栈指针移动超过此量，则 Valgrind 将
+           假设程序正在切换到不同的堆栈。
+
+           如果你的程序有大型堆栈分配数组，你可能需要使用此选项。Valgrind 会跟踪
+           程序的堆栈指针。如果变化量超过阈值，Valgrind 会认为程序
+           正在切换到不同的堆栈，并且 Memcheck 的行为与堆栈指针更改的行为不同
+           小于阈值。通常这种启发式方法效果很好。但是，如果你的程序分配了较大的
+           堆栈上的结构，这种启发式方法将被欺骗，并且 Memcheck 随后将报告大量
+           无效堆栈访问。此选项允许您将阈值更改为其他值。
+
+           仅当 Valgrind 的调试输出指示您这样做时，您才应该考虑使用此选项。在这种情况下
+           将告诉您应指定的新阈值。
+
+           一般来说，在堆栈上分配大型结构是一个坏主意，因为你很容易用完堆栈
+           空间，特别是在内存有限或需要支持大量线程的系统上
+           使用较小的堆栈，并且 Memcheck 执行的错误检查对于
+           堆分配的数据比堆栈分配的数据更慢。如果您必须使用此选项，您可能希望考虑
+           重写代码以在堆上而不是在堆栈上分配。
+
+       --main-stacksize=<number> [default: use current 'ulimit' value]
+           指定主线程堆栈的大小。
+
+           为了简化内存管理，Valgrind 保留了主线程堆栈所需的所有空间
+           启动时。这意味着它需要知道启动时所需的堆栈大小。
+
+           默认情况下，Valgrind 使用当前“ulimit”值作为堆栈大小，或 16 MB，以较低者为准。在
+           很多情况下，这会使堆栈大小在 8 到 16 MB 之间，对于大多数情况来说，这几乎不会溢出
+           应用程序。
+
+           如果需要更大的总堆栈大小，请使用 --main-stacksize 来指定。只需将其设置为您需要的大小即可，
+           因为预留的空间远远超过你需要的空间（也就是比你需要的多出几百兆字节）会限制
+           Valgrind 的内存分配器可能会减少 Valgrind 可以使用的内存总量。这仅仅是
+           对于 32 位机器来说确实很重要。
+
+           在 Linux 上，您可以请求最大 2GB 的堆栈。如果出现以下情况，Valgrind 将停止并显示诊断消息：
+           无法分配堆栈。
+
+           --main-stacksize 仅影响程序初始线程的堆栈大小。它与大小无关
+           线程堆栈，因为 Valgrind 没有分配这些。
+
+           您可能需要同时使用 --main-stacksize 和 --max-stackframe。重要的是要理解
+           --main-stacksize 设置最大总堆栈大小，而 --max-stackframe 指定最大大小
+           任何一个堆栈框架。你必须自己计算出 --main-stacksize 值（通常，如果你的
+           应用程序段错误）。但是，如果需要，Valgrind 会告诉您所需的 --max-stackframe 大小。
+
+           正如在 --max-stackframe 的描述中进一步讨论的那样，对大堆栈的要求是
+           潜在的可移植性问题。建议将所有大数据放在堆分配的内存中。
+
+       --max-threads=<number> [default: 500]
+           默认情况下，Valgrind 最多可以处理 500 个线程。有时，这个数字太小。使用此
+           选项提供不同的限制。例如 --max-threads=3000。
+
+       --realloc-zero-bytes-frees=yes|no [default: yes for glibc no otherwise]
+           realloc() 的行为是实现定义的（在 C17 中，在 C23 中它可能会变得未定义）。
+           Valgrind 尝试以与配置的底层系统和 C 运行时库相同的方式工作
+           并建立在。但是，如果您使用不同的 C 运行时库，则此默认值可能不正确。如果值
+           为是，则 realloc 将释放内存并返回 NULL。如果值为否，则 realloc 将不会
+           释放内存并且大小将被视为一个字节。
+
+           例如，如果你使用通过 Linux 发行版上的软件包安装的 Valgrind，使用 GNU libc，但链接你的
+           使用 musl libc 或 JEMalloc 库测试可执行文件，然后考虑使用 --realloc-zero-bytes-frees=no。
+
+           Address Sanitizer 有一个类似甚至更冗长的选项 allocator_frees_and_returns_null_on_realloc_zero。
+
+MALLOC() 相关选项
+       对于使用自己版本的 malloc 的工具（例如 Memcheck、Massif、Helgrind、DRD），以下选项
+       申请。
+
+       --alignment=<number> [default: 8 or 16, depending on the platform]
+           默认情况下，Valgrind 的 malloc、realloc 等返回一个起始地址为 8 字节对齐的块，或者
+           16 字节对齐（该值取决于平台并与平台默认值匹配）。此选项允许您
+           指定不同的对齐方式。提供的值必须大于或等于默认值，小于
+           或等于 4096，并且必须是 2 的幂。
+
+       --redzone-size=<number> [default: depends on the tool]
+           Valgrind 的 malloc、realloc 等在由
+           正在运行的程序。此类填充块称为 redzones。redzone 大小的默认值取决于
+           在该工具上。例如，Memcheck 在每个块前后添加并保护至少 16 个字节
+           客户端分配的内存空间。这样它就可以检测最多 16 个字节的块欠载或超载。
+
+           增加红区大小可以检测到更大距离的超限，但会增加
+           Valgrind 使用的内存量。减少 redzone 大小将减少 Valgrind 所需的内存，但
+           还会降低检测超出/不足的机会，因此不推荐。
+
+       --xtree-memory=none|allocs|full [none]
+           替代 Valgrind 的 malloc、realloc 等的工具可以选择性地生成一个执行树，详细说明
+           代码片段负责堆内存的使用。有关
+           执行树。
+
+           当设置为 none 时，不会产生内存执行树。
+
+           当设置为 allocs 时，内存执行树给出当前分配的字节数和当前
+           分配的块的数量。
+
+           当设置为 full 时，内存执行树会给出 6 种不同的测量值：当前分配的
+           字节和块（与 allocs 的值相同），已分配的字节和块的总数，总
+           释放的字节数和块数。
+
+           请注意，生成 xtree 所需的 CPU 和内存开销取决于工具。CPU 开销为
+           对于价值分配来说很小，因为无论如何，生成此报告所需的信息都由
+           工具。对于 massif 和 helgrind，指定 full 意味着捕获每个自由操作的堆栈跟踪，
+           虽然这些工具通常只捕获分配堆栈跟踪。对于 Memcheck，
+           值 full 很小，因为它只能与 --keep-stacktraces=alloc-and-free 结合使用，或者
+           --keep-stacktraces=alloc-then-free，它已经为每个释放操作记录了堆栈跟踪。内存
+           xtree 中每个唯一堆栈跟踪的开销在 5 到 10 个字之间，加上记录所需的内存
+           如果 xtree 特别需要，则释放操作的堆栈跟踪。
+
+       --xtree-memory-file=<filename> [default: xtmemory.kcg.%p]
+           指定 Valgrind 应在指定文件中生成 xtree 内存报告。任何 %p 或 %q 序列
+           文件名中出现的字符的扩展方式与 --log-file 的扩展方式完全相同。请参阅
+           --log-file 的描述以了解详细信息。
+
+           如果文件名包含扩展名 .ms，则生成的文件格式将是 massif 输出文件
+           格式。如果文件名包含扩展名 .kcg 或未提供或识别任何扩展名，则
+           生成的文件格式将是 callgrind 输出格式。
+
+           有关执行树格式的详细说明，请参阅执行树。
+
+不常见的选择
+       这些选项适用于所有工具，因为它们会影响 Valgrind 核心的某些晦涩难懂的工作原理。大多数人
+       就不需要使用它们了。
+
+       --smc-check=<none|stack|all|all-non-file> [default: all-non-file for x86/amd64/s390x, stack for other archs]
+           此选项控制 Valgrind 对自修改代码的检测。如果没有进行检查，当程序
+           执行一些代码，然后用新代码覆盖它，并执行新代码，Valgrind 将继续
+           执行对旧代码所做的翻译。这可能会导致不正确的行为和/或
+           崩溃。
+
+           对于“现代”架构（非 x86、amd64 或 s390x 的任何架构），默认为堆栈。这是
+           因为正确的程序必须采取明确的行动来重建以下代码的DI缓存一致性
+           修改。Valgrind 观察并尊重此类行为，因此自修改代码
+           透明处理，无需额外费用。
+
+           对于 x86、amd64 和 s390x，程序不需要通知硬件所需的 DI 一致性
+           同步。因此，默认值为 all-non-file，这涵盖了将代码生成到
+           匿名（非文件支持）mmap 区域。
+
+           四个可用设置的含义如下。不检测（none）、检测自修改代码
+           在堆栈上（GCC 用来实现嵌套函数）（stack），检测自修改代码
+           到处（全部），并检测除文件支持映射（所有非文件）之外的所有地方的自修改代码。
+
+           使用 all 运行时 Valgrind 速度会明显变慢。使用 none 运行时很少会加快速度，因为
+           在大多数程序中，动态生成的代码很少。VALGRIND_DISCARD_TRANSLATIONS 客户端
+           request 是 --smc-check=all 和 --smc-check=all-nonfile 的替代方案，需要更多程序员
+           这样做虽然费力，但可以让 Valgrind 更快地运行你的程序，因为它可以准确地告诉它何时需要翻译
+           重新制作。
+
+           --smc-check=all-non-file 提供了 --smc-check=all 的一个更便宜但更有限的版本。它添加了检查
+           任何不源自文件支持的内存映射的转换。典型的应用程序会产生
+           代码，例如 Web 浏览器中的 JIT，会将代码生成到匿名映射区域中，而“固定”代码
+           浏览器始终存在于文件支持的映射中。--smc-check=all-non-file 利用了这一点
+           观察，将检查的开销限制在可能由 JIT 生成的代码上。
+
+       --read-inline-info=<yes|no> [default: see below]
+           启用后，Valgrind 将从 DWARF3 调试信息中读取有关内联函数调用的信息。这会降低
+           Valgrind 启动时会占用更多内存（通常对于每段内联代码，6 个字和空间
+           函数名称），但它会产生更具描述性的堆栈跟踪。目前，此功能
+           默认情况下仅针对 Linux、FreeBSD、Android 和 Solaris 目标启用，并且仅适用于工具 Memcheck，
+           Massif、Helgrind 和 DRD。以下是使用 --read-inline-info=no 的一些堆栈跟踪示例：
+
+               ==15380== 条件跳转或移动取决于未初始化的值
+               ==15380== 位于 0x80484EA: main (inlinfo.c:6)
+               ==15380==
+               ==15380== 条件跳转或移动取决于未初始化的值
+               ==15380== 在 0x8048550: fun_noninline (inlinfo.c:6)
+               ==15380== 由 0x804850E: main (inlinfo.c:34)
+               ==15380==
+               ==15380== 条件跳转或移动取决于未初始化的值
+               ==15380== 在 0x8048520: main (inlinfo.c:6)
+
+           使用 --read-inline-info=yes 时，会出现同样的错误：
+
+               ==15377== 条件跳转或移动取决于未初始化的值
+               ==15377== 在 0x80484EA: fun_d (inlinfo.c:6)
+               ==15377== 由 0x80484EA: fun_c (inlinfo.c:14)
+               ==15377== 由 0x80484EA: fun_b (inlinfo.c:20)
+               ==15377== 由 0x80484EA: fun_a (inlinfo.c:26)
+               ==15377== 由 0x80484EA: main (inlinfo.c:33)
+               ==15377==
+               ==15377== 条件跳转或移动取决于未初始化的值
+               ==15377== 在 0x8048550: fun_d (inlinfo.c:6)
+               ==15377== 由 0x8048550: fun_noninline (inlinfo.c:41)
+               ==15377== 由 0x804850E: main (inlinfo.c:34)
+               ==15377==
+               ==15377== 条件跳转或移动取决于未初始化的值
+               ==15377== 在 0x8048520: fun_d (inlinfo.c:6)
+               ==15377== 由 0x8048520: main (inlinfo.c:35)
+
+       --read-var-info=<yes|no> [default: no]
+           启用后，Valgrind 将从 DWARF3 调试信息中读取有关变量类型和位置的信息。这
+           大大减慢了 Valgrind 的启动速度，并使其占用更多的内存，但对于可以
+           利用它（Memcheck、Helgrind、DRD）可以得到更精确的错误消息。例如，
+           以下是 Memcheck 发出的一些标准错误：
+
+               ==15363== 客户端检查请求期间发现未初始化的字节
+               ==15363== 在 0x80484A9: croak (varinfo1.c:28)
+               ==15363== 由 0x8048544: main (varinfo1.c:55)
+               ==15363==地址 0x80497f7 是数据符号“global_i2”内的 7 个字节
+               ==15363==
+               ==15363== 客户端检查请求期间发现未初始化的字节
+               ==15363== 在 0x80484A9: croak (varinfo1.c:28)
+               ==15363== 由 0x8048550: main (varinfo1.c:56)
+               ==15363== 地址 0xbea0d0cc 位于线程 1 的堆栈上
+               ==15363== 在框架#1中，由 main (varinfo1.c:45) 创建
+
+           使用 --read-var-info=yes 时，会出现同样的错误：
+
+               ==15370== 客户端检查请求期间发现未初始化的字节
+               ==15370== 在 0x80484A9: croak (varinfo1.c:28)
+               ==15370== 由 0x8048544: main (varinfo1.c:55)
+               ==15370== global_i2[7] 中的 0x80497f7 位置为 0 字节，
+               ==15370== 在 varinfo1.c:41 声明的全局变量
+               ==15370==
+               ==15370== 客户端检查请求期间发现未初始化的字节
+               ==15370== 在 0x80484A9: croak (varinfo1.c:28)
+               ==15370== 由 0x8048550: main (varinfo1.c:56)
+               ==15370== 位置 0xbeb4a0cc 在本地变量“local”内为 0 个字节
+               ==15370== 在线程 1 的框架 #1 中的 varinfo1.c:46 中声明
+
+       --vgdb-poll=<number> [default: 5000]
+           作为主循环的一部分，Valgrind 调度程序将轮询检查是否有某些活动（例如外部
+           命令或来自 gdb 的一些输入）必须由 gdbserver 处理。此活动轮询将在以下时间之后进行：
+           运行了给定数量的基本块（或略多于给定数量的基本块）。这
+           poll 非常便宜，因此默认值设置得相对较低。如果
+           如果所有线程（大多数时候）被阻塞，vgdb 就无法使用 ptrace 系统调用来中断 Valgrind
+           系统调用。
+
+       --vgdb-shadow-registers=no|yes [default: no]
+           激活后，gdbserver 将向 GDB 公开 Valgrind 影子寄存器。这样，
+           可以使用 GDB 检查或更改 Valgrind 影子寄存器。暴露影子寄存器仅适用于
+           GDB 7.1 或更高版本。
+
+       --vgdb-prefix=<prefix> [default: /tmp/vgdb-pipe]
+           为了与 gdb/vgdb 通信，Valgrind gdbserver 创建了 3 个文件（2 个名为 FIFO 和一个 mmap 共享内存
+           文件）。prefix 选项控制创建这些文件的目录和前缀。
+
+       --run-libc-freeres=<yes|no> [default: yes]
+           此选项仅在使用 GNU libc 在 Linux 上运行 Valgrind 时才相关。
+
+           所有程序都会用到的 GNU C 库 (libc.so) 可能会分配内存供自己使用。通常它
+           在程序结束时不需要释放该内存——这毫无意义，因为 Linux 内核
+           无论如何，当进程退出时都会回收所有进程资源，因此只会减慢速度。
+
+           glibc 的作者意识到，这种行为会导致泄漏检查器（如 Valgrind）错误地报告
+           在退出时进行泄漏检查时，glibc 中会发生泄漏。为了避免这种情况，他们提供了一个名为
+           __libc_freeres 专门用于让 glibc 释放它已分配的所有内存。因此 Memcheck 会尝试
+           在退出时运行__libc_freeres。
+
+           不幸的是，在一些非常老的 glibc 版本中，__libc_freeres 存在很多缺陷，会导致
+           分段错误。这在 Red Hat 7.1 上尤其明显。因此提供此选项是为了
+           抑制 __libc_freeres 的运行。如果你的程序在 Valgrind 上似乎运行良好，但在退出时出现段错误，你
+           可能会发现 --run-libc-freeres=no 可以解决这个问题，尽管可能会错误地报告空间
+           libc.so 中存在泄漏。
+
+       --run-cxx-freeres=<yes|no> [default: yes]
+           此选项仅在使用以下方式在 Linux、FreeBSD 或 Solaris C++ 程序上运行 Valgrind 时相关
+           libstdc++。
+
+           所有使用 g++ 编译的 C++ 程序都会用到 GNU 标准 C++ 库 (libstdc++.so)，
+           分配内存供自己使用。通常程序结束时它不会费心释放内存——
+           没有任何意义，因为内核在进程退出时会回收所有进程资源，所以
+           放慢速度。
+
+           gcc 的作者意识到这种行为会导致泄漏检查器（例如 Valgrind）错误地报告泄漏
+           在 libstdc++ 中，在退出时进行泄漏检查。为了避免这种情况，他们提供了一个名为
+           __gnu_cxx::__freeres 专门用于使 libstdc++ 释放其已分配的所有内存。因此 Memcheck
+           尝试在退出时运行 __gnu_cxx::__freeres。
+
+           为了灵活性和 __gnu_cxx::__freeres 的不可预见的问题，选项 --run-cxx-freeres=no
+           存在，但可能会错误地报告 libstdc++.so 中的空间泄漏。
+
+       --sim-hints=hint1,hint2,...
+           向 Valgrind 传递各种提示，稍微修改非标准或
+           危险的方式，可能有助于模拟奇怪的特征。默认情况下不启用任何提示。使用
+           小心！目前已知的提示是：
+
+           • lax-ioctls：对 ioctl 处理非常宽松；唯一的假设是大小是正确的。
+               要求在写入时初始化整个缓冲区。如果没有这个，使用一些带有
+               大量奇怪的 ioctl 命令变得非常令人厌烦。
+
+           • fuse-compatible：对可能在 FUSE 文件系统中阻塞的某些系统调用启用特殊处理。
+               在多线程程序上运行 Valgrind 时，这可能是必要的，因为该程序使用一个线程来管理
+               FUSE 文件系统和另一个线程来访问该文件系统。
+
+           • enable-outer：当运行的程序本身是 Valgrind 时，启用所需的一些特殊魔法。
+
+           • no-inner-prefix：禁用在内部的每个 stdout 或 stderr 输出行前面打印前缀 >
+               Valgrind 由外部 Valgrind 运行。这在运行 Valgrind 回归测试时很有用
+               外部/内部设置。请注意，前缀 > 将始终打印在内部调试日志的前面
+               線。
+
+           • no-nptl-pthread-stackcache：此提示仅在 Linux 上运行 Valgrind 时相关；它会被忽略
+               FreeBSD、Solaris 和 macOS。
+
+               pthread 程序使用的 GNU glibc pthread 库 (libpthread.so) 维护着
+               pthread 堆栈。当 pthread 终止时，用于 pthread 堆栈的内存和一些线程本地
+               与存储相关的数据结构并不总是直接释放。该内存保存在缓存中（最多
+               它有一个固定的大小（即一定大小），如果启动了新线程，则会重新使用这个固定的大小。
+
+               此缓存导致 helgrind 工具报告此缓存上的一些误报竞争条件错误
+               内存，因为 helgrind 不理解内部 glibc 缓存同步原语。因此，当
+               使用 helgrind 禁用缓存有助于避免误报竞争条件，特别是当
+               使用线程本地存储变量（例如使用__thread限定符的变量）。
+
+               使用 memcheck 工具时，禁用缓存可确保 glibc 处理 __thread 所用的内存
+               当线程终止时直接释放变量。
+
+               注意：Valgrind 使用 glibc 堆栈缓存实现的一些内部知识来禁用缓存
+               并检查 pthread 库的调试信息。因此，这种技术有些脆弱
+               可能不适用于所有 glibc 版本。此方法已在各种 glibc 版本上成功测试
+               （例如 2.11、2.16、2.18）在各个平台上。
+
+           • lax-doors：（仅限 Solaris）对于无法识别的门文件，门系统调用的处理非常松懈
+               描述符。写入时不需要初始化完整缓冲区。如果没有这个，使用
+               具有完全专有语义的 libdoor(3LIB) 功能可能会报告大量错误
+               积极的方面。
+
+           • fallback-llsc：（仅限 MIPS 和 ARM64）：启用 Load-Linked (LL) 的替代实现，并
+               条件存储 (SC) 指令。标准实现提供了更正确的行为，但可能
+               在某些不能容忍额外内存的处理器实现上导致无限循环
+               LL 和 SC 之间的引用。到目前为止，这种情况只发生在 Cavium 3 核心上。您不需要
+               使用此标志，因为在启动时检测到相关核心，并且替代实现是
+               必要时自动启用。没有等效的反标记：您无法强制禁用
+               替代实现，如果自动启用的话。存在根本问题是因为
+               LL 和 SC 的“标准”实现是通过将 LL 和 SC 指令复制到
+               插桩代码。但是，工具可能会在 LL 之间插入额外的插桩内存引用
+               和 SC 指令。这些内存引用在原始未检测代码中不存在，并且
+               它们在被检测代码中的存在可能会导致 SC 指令持续失败，从而导致
+               LL-SC 块中的无限循环。替代实现给出了 LL 和 SC 的正确行为
+               进程中线程之间的指令，直至 ABA 场景。它还提供了正确的
+               Valgrinded 线程与在不同进程中运行的非 Valgrinded 线程之间的行为
+               通过共享内存进行通信，但仅限于正确的 CAS 行为——在这种情况下
+               ABA 场景可能无法正确处理。
+
+       --scheduling-quantum=<number> [default: 100000]
+           --scheduling-quantum 选项控制线程在执行之前执行的最大基本块数
+           释放 Valgrind 用于序列化线程执行的锁。较小的值提供更精细的交错
+           但会增加调度开销。更精细的交错可以用于重现竞争条件
+           helgrind 或 DRD。有关 Valgrind 线程序列化方案及其对
+           性能和线程调度，请参阅调度和多线程性能。
+
+       --fair-sched=<no|yes|try> [default: no]
+           --fair-sched 选项控制 Valgrind 用于序列化线程执行的锁定机制。
+           锁定机制控制线程的调度方式，不同的设置会产生不同的
+           公平性和性能之间的权衡。有关 Valgrind 线程序列化方案的更多详细信息
+           及其对性能和线程调度的影响，请参阅调度和多线程性能。
+
+           • 值 --fair-sched=yes 激活公平调度程序。简而言之，如果多个线程准备运行，
+               线程将以循环方式进行调度。此机制并非在所有平台上都可用
+               或 Linux 版本。如果不可用，使用 --fair-sched=yes 将导致 Valgrind 终止并显示
+               错误。
+
+               如果你正在运行交互式
+               Valgrind 上的多线程程序，例如 Web 浏览器。
+
+           • 如果平台上可用，则值 --fair-sched=try 激活公平调度。否则，它将
+               自动回退到--fair-sched=no。
+
+           • 值 --fair-sched=no 激活一个调度程序，该调度程序不保证就绪线程之间的公平性
+               运行，但总体而言性能最高。
+
+       --kernel-variant=variant1,variant2,...
+           处理因该平台默认内核的次要变体而产生的系统调用和 ioctl。这是
+           例如，对于在破解的内核或支持非标准 ioctl 的内核模块上运行很有用。
+           请谨慎使用。如果您不了解此选项的作用，那么您几乎肯定不需要它。
+           目前已知的变体有：
+
+           • bproc：支持 x86 上的 sys_broc 系统调用。这适用于在 BProc 上运行，这是一个次要变体
+               标准Linux有时用于构建集群。
+
+           • android-no-hw-tls：某些版本的 ARM Android 模拟器不提供硬件 TLS
+               （线程本地状态）寄存器，Valgrind 在启动时崩溃。使用此变体来选择软件
+               支持 TLS。
+
+           • android-gpu-sgx5xx：使用它来支持处理 PowerVR SGX 5XX 系列的专有 ioctl
+               Android 设备上的 GPU。未选择此项不会导致稳定性问题，但可能会导致
+               程序执行 GPU 特定的 ioctl 后，Memcheck 报告虚假错误。
+
+           • android-gpu-adreno3xx：同样，使用它来支持处理 Qualcomm 的专有 ioctl
+               Android 设备上的 Adreno 3XX 系列 GPU。
+
+       --merge-recursive-frames=<number> [default: 0]
+           一些递归算法，例如平衡二叉树的实现，会创建许多不同的堆栈
+           跟踪，每个跟踪都包含调用周期。一个周期定义为两个相同的程序计数器值
+           由零个或多个其他程序计数器值分隔。Valgrind 可能会使用大量内存来存储所有
+           这些堆栈跟踪。考虑到这些堆栈跟踪包含重复的
+           无趣的递归调用，而不是更有趣的信息，比如函数
+           发起递归调用。
+
+           选项 --merge-recursive-frames=<number> 指示 Valgrind 检测并合并递归调用循环
+           最大为 <number> 帧。当检测到这样的循环时，Valgrind 会将循环记录在
+           堆栈跟踪作为唯一的程序计数器。
+
+           值 0（默认值）不会导致递归调用合并。值 1 将导致简单堆栈跟踪
+           递归算法（例如，阶乘实现）将被折叠。值 2 通常是
+           需要折叠由二叉树、快速排序等递归算法产生的堆栈跟踪。
+           更复杂的递归算法可能需要更高的值。
+
+           注意：递归调用是通过分析程序计数器的值来检测的。它们不是通过查看来检测的。
+           在函数名称处。
+
+       --num-transtab-sectors=<number> [default: 6 for Android platforms, 16 for all others]
+           Valgrind 将程序的机器代码翻译成小片段（基本块），并对其进行检测。
+           翻译存储在翻译缓存中，该缓存分为多个部分（扇区）。如果
+           缓存已满，则包含最旧翻译的扇区将被清空并重新使用。如果这些旧的
+           需要再次翻译，Valgrind 必须重新翻译并重新检测相应的机器码，
+           这是昂贵的。如果程序的“执行指令”工作集很大，那么增加
+           扇区可以通过减少需要重新翻译的次数来提高性能。扇区分配在
+           需求。一旦分配，扇区就永远不能被释放，并且会占用相当大的空间，具体取决于工具
+           以及 --avg-transtab-entry-size 的值（对于 Memcheck，每个扇区大约 40 MB）。使用选项 --stats=yes
+           获得有关扇区使用的内存以及扇区的分配和回收的精确信息。
+
+       --avg-transtab-entry-size=<number> [default: 0, meaning use tool provided default]
+           已转换基本块的平均大小。此平均大小用于确定扇区的大小。每个扇区
+           工具提供了一个默认值。如果此默认值太小，翻译扇区将
+           很快就会变得很满。如果此默认值太大，翻译区中的很大一部分
+           内存将不会被使用。请注意，基本块翻译的平均大小取决于工具，并且
+           可能取决于工具选项。例如，memcheck 选项 --track-origins=yes 会增加
+           基本块转换。使用 --avg-transtab-entry-size 调整扇区的大小，以获得
+           记忆或避免过多的重复翻译。
+
+       --aspace-minaddr=<address> [default: depends on the platform]
+           为了避免与某些系统库发生潜在冲突，Valgrind 不使用以下地址空间
+           --aspace-minaddr 值，保留该值以防库特别请求该区域的内存。
+           因此，Valgrind 会根据平台猜测一些“悲观”值。在 Linux 上，默认情况下，
+           Valgrind 避免使用前 64MB，即使这个完整区域通常没有冲突。你可以
+           使用选项 --aspace-minaddr 可让您的内存需求大的应用程序从中受益更多
+           内存。另一方面，如果遇到冲突，增加 aspace-minaddr 值可能会解决该问题。
+           冲突通常会表现为地址空间低范围内的 mmap 失败。
+           提供的地址必须是页面对齐的，并且必须等于或大于 0x1000 (4KB)。要查找默认值
+           在您的平台上，执行诸如 valgrind -d -d date 2>&1 | grep -i minaddr 之类的操作。低于 0x10000 的值
+           （64KB）已知会在某些发行版上产生问题。
+
+       --valgrind-stacksize=<number> [default: 1MB]
+           对于每个线程，Valgrind 都需要自己的“私有”堆栈。这些堆栈的默认大小大致为
+           尺寸合适，因此在大多数情况下应该足够了。如果尺寸太小，Valgrind 将
+           段错误。在发生段错误之前，当接近限制时，Valgrind 可能会发出警告。
+
+           如果出现此类（不太可能）警告，或者 Valgrind 由于以下原因而死亡，请使用选项 --valgrind-stacksize
+           分段违规。在分解巨大的 C++ 符号时，曾发现过此类分段违规。
+
+           如果你的应用程序使用很多线程，并且需要大量内存，你可以通过减少
+           使用选项--valgrind-stacksize来调整这些Valgrind堆栈的大小。
+
+       --show-emwarns=<yes|no> [default: no]
+           启用后，Valgrind 会在某些情况下发出有关其 CPU 模拟的警告。这些通常不是
+           有趣的。
+
+       --require-text-symbol=:sonamepatt:fnnamepatt
+           当 soname 与 sonamepatt 匹配的共享对象加载到进程中时，检查所有文本
+           它导出的符号。如果这些都不匹配 fnnamepatt，则打印错误消息并放弃运行。这
+           可以确保运行不会继续，除非给定的共享对象包含
+           特定的函数名称。
+
+           sonamepatt 和 fnnamepatt 都可以使用常见的 ? 和 * 通配符来编写。例如：
+           “:*libc.so*:foo?bar”。您可以使用冒号以外的字符来分隔这两个模式。它只是
+           第一个字符和分隔符必须相同。例如，上面的例子
+           也可以写为“Q*libc.so*Qfoo?bar”。多个
+            允许使用 --require-text-symbol 标志，在这种情况下，加载到进程中的共享对象将
+           并与所有这些进行检查。
+
+           这样做的目的是支持标记库的可靠使用。例如，假设我们有一个
+           GCC 的 libgomp.so 版本已标注了注释以支持 Helgrind。
+           很容易混淆，将错误的、未注释的 libgomp.so 加载到应用程序中。因此，我们的想法是：添加一个
+           标记库中的文本符号，例如 annotated_for_helgrind_3_6，然后给出标志
+           --require-text-symbol=:*libgomp*so*:annotated_for_helgrind_3_6 这样当加载 libgomp.so 时，Valgrind
+           扫描其符号表，如果符号不存在，则运行中止，而不是默默继续
+           使用未标记的库。请注意，您应将整个标志放在引号中，以阻止 shell 扩展
+           加上 * 和 ? 通配符。
+
+       --soname-synonyms=syn1=pattern1,syn2=pattern2,...
+           当加载共享库时，Valgrind 会检查库中必须替换或
+           包装。例如，Memcheck 替换了一些字符串和内存函数（strchr、strlen、strcpy、memchr、
+           memcpy、memmove 等）有自己的版本。此类替换通常仅在共享库中完成
+           其 soname 与预定义的 soname 模式匹配（例如 Linux 上的 libc.so*）。默认情况下，没有替换
+           针对静态链接二进制文件或替代库完成，分配函数除外
+           （malloc、free、calloc、memalign、realloc、operator new、operator delete 等）这样的分配函数有
+           如果它们被导出为全局符号，则在任何共享库或可执行文件中都会被默认拦截。
+           这意味着如果找到了替代分配库（如 tcmalloc），其函数也会
+           默认情况下会被拦截。在某些情况下，替换允许 --soname-synonyms 指定一个额外的
+           同义词模式，提供替换的灵活性。或者防止拦截所有公共配置
+           符號。
+
+           目前，这种灵活性仅允许用于 malloc 相关函数，使用同义词 somalloc。
+           此同义词适用于所有执行 malloc 相关函数标准替换的工具（例如 memcheck、
+           （例如：helgrind、drd、massif、dhat）。
+
+           • 备用 malloc 库：用特定备用库中的 malloc 相关函数替换
+               soname mymalloclib.so （而不是其他任何名称），给出选项
+               --soname-synonyms=somalloc=mymalloclib.so. 可以使用一个模式来匹配多个库 soname。
+               例如，--soname-synonyms=somalloc=*tcmalloc* 将匹配 tcmalloc 所有变体的 soname
+               库（本机、调试、分析……tcmalloc 变体）。
+
+               注意：可以使用 readelf 实用程序检索 elf 共享库的 soname。
+
+           • 静态链接库中的替换是使用 NONE 模式完成的。例如，如果您链​​接
+               使用 libtcmalloc.a，并且只想拦截可执行文件中的 malloc 相关函数（和
+               标准库）本身，但不是任何其他共享库，你可以给出选项
+               --soname-synonyms=somalloc=NONE。请注意，NONE 模式将匹配主可执行文件和任何共享
+               没有 soname 的库。
+
+           • 仅拦截默认系统库中的分配符号，而不拦截任何其他共享
+               定义公共 malloc 或 operator new 相关函数的库或可执行文件使用不存在的
+               库名称，如 --soname-synonyms=somalloc=nouserintercepts （其中 nouserintercepts 可以是任何
+               不存在的库名）。
+
+           • 动态（运行时）链接器的共享库被排除在全局公共符号搜索之外，
+               例如那些与 malloc 相关的函数（由 somalloc 同义词标识）。
+
+       --progress-interval=<number> [default: 0, meaning 'disabled']
+           这是对 Valgrind 调试输出的增强。最终用户可能不太感兴趣。
+
+           当 number 设置为非零值时，Valgrind 将在每个 number 打印一行进度摘要
+           秒。数字的有效设置介于 0 到 3600 之间（含）。以下是一些带有数字的示例输出
+           设置为 10：
+
+               进度：U 110 秒，W 113 秒，97.3% CPU，EvC 414.79M，TIn 616.7k，TOut 0.5k，#thr 67
+               进度：U 120 秒，W 124 秒，96.8% CPU，EvC 505.27M，TIn 636.6k，TOut 3.0k，#thr 64
+               进度：U 130 秒，W 134 秒，97.0% CPU，EvC 574.90M，TIn 657.5k，TOut 3.0k，#thr 63
+
+           每行显示：
+
+           • U：总用户时间
+
+           • W：总挂钟时间
+
+           • CPU：总体平均 CPU 使用率
+
+           • EvC：事件检查次数。事件检查是模拟程序中的向后分支，因此这是
+               计划进展的衡量标准
+
+           • TIn：JIT 检测的代码块数量
+
+           • TOut：已被丢弃的已检测代码块的数量
+
+           • #thr：程序中的线程数
+
+           从这些进展中，我们可以观察到：
+
+           • 当程序受计算限制时（TIn 上升缓慢，EvC 上升迅速）
+
+           • 当程序处于自旋循环中时（TIn/TOut 固定，EvC 快速上升）
+
+           • 当程序受 JIT 约束时（TIn 迅速上升）
+
+           • 当程序快速丢弃代码时（TOut 快速上升）
+
+           • 当程序即将达到某个预期状态时（EvC 达到您期望的某个值）
+
+           • 当程序处于空闲状态时（U 上升速度比 W 慢）
+
+调试 VALGRIND 选项
+       Valgrind 本身也有一些调试选项。在正常运行时，你不需要使用它们
+       事情。如果您希望查看列表，请使用 --help-debug 选项。
+
+MEMCHECK 选项
+       --leak-check=<no|summary|yes|full> [default: summary]
+           启用后，在客户端程序完成时搜索内存泄漏。如果设置为 summary，则显示有多少
+           发生泄漏。如果设置为完整或“是”，则每个单独的泄漏将详细显示和/或计为
+           错误，如选项--show-leak-kinds 和--errors-for-leak-kinds 所指定。
+
+           如果指定了 --xml=yes，memcheck 将自动使用值 --leak-check=full。您可以使用
+           如果您对泄漏结果不感兴趣，可以使用 --show-leak-kinds=none 来减少 xml 输出的大小。
+
+       --leak-resolution=<low|med|high> [default: high]
+           在进行泄漏检查时，确定 Memcheck 将不同回溯视为相同的意愿程度
+           用于将多个泄漏合并为一份泄漏报告。设置为低时，只有前两个
+           条目需要匹配。当为中等时，四个条目必须匹配。当为高时，所有条目都需要匹配。
+
+           对于硬核泄漏调试，您可能需要将 --leak-resolution=high 与 --num-callers=40 一起使用
+           或者像这样大的一个数字。
+
+           请注意，--leak-resolution 设置不会影响 Memcheck 查找泄漏的能力。它只会改变
+           结果如何呈现。
+
+       --show-leak-kinds=<set> [default: definite,possible]
+           通过以下方式之一指定在完整泄漏搜索中显示的泄漏类型：
+
+           • 用逗号分隔的一个或多个明确间接可能可达的列表。
+
+           • all 指定完整集合（所有泄漏类型）。它相当于
+               --show-leak-kinds=definite,indirect,possible,reachable。
+
+           • none 表示空集。
+
+       --errors-for-leak-kinds=<set> [default: definite,possible]
+           指定在完整泄漏搜索中计为错误的泄漏类型。 <set> 的指定方式类似于
+           --显示泄漏种类
+
+       --leak-check-heuristics=<set> [default: all]
+           指定在泄漏搜索期间使用的泄漏检查启发式方法集。启发式方法控制哪些
+           指向块的内部指针会导致该块被视为可到达。启发式集在一个中指定
+           以下方式之一：
+
+           • 用逗号分隔的一个或多个 stdstring length64 newarray multipleinheritance 列表。
+
+           • 全部激活启发式方法的完整集合。这相当于
+               --leak-check-heuristics=stdstring，length64，newarray，multipleinheritance。
+
+           • none 表示空集。
+
+           请注意，这些启发式方法依赖于 C++ 编译器生成的对象的布局。它们
+           已在某些 gcc 版本（例如 4.4 和 4.7）上进行了测试。它们可能无法与其他 C++ 一起正常工作
+           編譯器。
+
+       --show-reachable=<yes|no> , --show-possibly-lost=<yes|no>
+           这些选项提供了指定要显示的泄漏类型的另一种方法：
+
+           • --show-reachable=no --show-possibly-lost=yes 等同于 --show-leak-kinds=definite,possible。
+
+           • --show-reachable=no --show-possibly-lost=no 等同于 --show-leak-kinds=definite。
+
+           • --show-reachable=yes 等同于--show-leak-kinds=all。
+
+           请注意，如果指定了 --show-reachable=yes，则 --show-possibly-lost=no 无效。
+
+       --xtree-leak=<no|yes> [no]
+           如果设置为是，则退出时进行的泄漏搜索的结果将以“Callgrind 格式”执行输出
+           tree 文件。请注意，这会自动将选项 --leak-check=full 和 --show-leak-kinds=all 设置为
+           允许 xtree 可视化工具（例如 kcachegrind）选择要可视化的泄漏类型。生成的
+           文件将包含以下事件：
+
+           • RB：可到达字节
+
+           • PB：可能丢失字节
+
+           • IB ：间接丢失的字节
+
+           • DB ：肯定丢失的字节（直接加间接）
+
+           • DIB ：肯定间接丢失的字节（DB 的子集）
+
+           • RBk : 可达区块
+
+           • PBk : 可能丢失区块
+
+           • IBk : 间接丢失的区块
+
+           • DBk : 肯定丢失了方块
+
+           上述所有事件的增加或减少也将输出到文件中，以提供增量（增加
+           或减少）。例如，iRB 是 RB 事件的增加，dPBk 是
+           PBk 事件的减少。第一次泄漏时，增加和减少事件的值将为零
+           搜索完成。
+
+           有关执行树的详细说明，请参阅执行树。
+
+       --xtree-leak-file=<filename> [default: xtleak.kcg.%p]
+           指定 Valgrind 应在指定文件中生成 xtree 泄漏报告。任何 %p、%q 或 %n
+           文件名中出现的序列的扩展方式与 --log-file 完全相同。请参阅
+           --log-file 的描述以了解详细信息。
+
+           有关执行树格式的详细说明，请参阅执行树。
+
+       --undef-value-errors=<yes|no> [default: yes]
+           控制 Memcheck 是否报告未定义值的错误。如果您不想看到，请将其设置为 no
+           未定义值错误。它还具有加快 Memcheck 速度的副作用。AddrCheck（在
+           Valgrind 3.1.0) 的功能与 Memcheck 类似，但需要使用 --undef-value-errors=no。
+
+       --track-origins=<yes|no> [default: no]
+           控制 Memcheck 是否跟踪未初始化值的来源。默认情况下，它不跟踪，这意味着
+           虽然它可以告诉你未初始化的值正在以危险的方式被使用，但它不能告诉你
+           未初始化值从何而来。这通常会使追踪问题的根源变得困难。
+
+           当设置为 yes 时，Memcheck 会跟踪所有未初始化值的来源。然后，当
+           报告未初始化值错误时，Memcheck 将尝试显示值的来源。来源可以是
+           以下四个位置之一：堆块、堆栈分配、客户端请求或其他杂项
+           来源（例如对 brk 的调用）。
+
+           对于来自堆块的未初始化值，Memcheck 会显示该块的分配位置。对于
+           未初始化的值源自堆栈分配，Memcheck 可以告诉你哪个函数分配了
+           值，但不能超过这个值——通常它会显示
+           函数。因此，您应该仔细检查函数的所有局部变量是否都已正确初始化。
+
+           性能开销：原点跟踪成本高昂。它使 Memcheck 的速度减半，并增加了内存使用量
+           至少 100MB，甚至更多。尽管如此，它可以大大减少识别所需的工作量
+           未初始化值错误的根本原因，因此通常可以提高程序员的工作效率，尽管运行
+           更慢。
+
+           准确性：Memcheck 可以非常准确地跟踪源。为了避免很大的空间和时间开销，一些
+           进行近似。尽管可能性不大，但 Memcheck 可能会报告错误的来源，
+           或无法识别任何来源。
+
+           请注意，--track-origins=yes 和 --undef-value-errors=no 的组合是无意义的。Memcheck 检查
+           并在启动时拒绝这种组合。
+
+       --partial-loads-ok=<yes|no> [default: yes]
+           控制 Memcheck 如何处理来自以下地址的 32 位、64 位、128 位和 256 位自然对齐的负载：
+           有些字节是可寻址的，有些则不是。如果是，则此类加载不会产生地址错误。
+           相反，来自非法地址的加载字节被标记为未初始化，并且那些
+           对应于合法地址的地址将以正常方式处理。
+
+           如果否，则来自部分无效地址的加载将被视为与来自完全无效地址的加载相同
+           地址：发出非法地址错误，并且结果字节被标记为已初始化。
+
+           请注意，以这种方式运行的代码违反了 ISO C/C++ 标准，应被视为
+           损坏。如果可能的话，应该修复此类代码。
+
+       --expensive-definedness-checks=<no|auto|yes> [default: auto]
+           控制 Memcheck 是否应采用更精确但更昂贵（耗时）的方法
+           检查某些值的定义性时使用仪器。特别是，这会影响
+           整数加、减和相等比较的检测。
+
+           选择 --expensive-definedness-checks=yes 会导致 Memcheck 使用最准确的分析。
+           这可以最大限度地降低误报率，但可能会导致性能下降高达 30%。
+
+           选择 --expensive-definedness-checks=no 会导致 Memcheck 使用最便宜的仪器。
+           这可以最大限度地提高性能，但通常会产生难以使用的高误报率。
+
+           强烈建议使用默认设置 --expensive-definedness-checks=auto。这会导致 Memcheck
+           使用最少的昂贵仪器来实现相同的错误错误率
+           --expensive-definedness-checks=yes。它还启用了插桩时间分析过程，旨在
+           进一步降低精确检测的成本。总体而言，性能损失一般在 5% 左右
+           相对于 --expensive-definedness-checks=no，尽管这在很大程度上取决于工作负载。请注意
+           此模式下的精确检测设置取决于架构。
+
+       --keep-stacktraces=alloc|free|alloc-and-free|alloc-then-free|none [default: alloc-and-free]
+           控制为 malloc 和/或 freed 块保留哪些堆栈跟踪。
+
+           使用 alloc-then-free，在分配时会记录堆栈跟踪，并将其与块关联。当
+           释放该块后，将记录第二个堆栈跟踪，这将替换分配堆栈跟踪。作为
+           因此，与此块相关的任何“释放后使用”错误都只能显示块所在位置的堆栈跟踪
+           被释放。
+
+           使用 alloc-and-free 时，块的分配和释放堆栈跟踪都会被存储。因此
+           “use after free”错误会同时显示两者，这可能使错误更容易诊断。相比
+           alloc-then-free，此设置略微增加了 Valgrind 的内存使用量，因为该块包含两个引用
+           而不是一个。
+
+           使用 alloc 时，仅记录（并报告）分配堆栈跟踪。使用 free 时，仅记录（并报告）释放
+           堆栈跟踪会被记录（并报告）。这些值会在一定程度上降低 Valgrind 的内存和 CPU 使用率。它们
+           根据您搜索的错误类型和需要分析的详细程度，它可能很有用
+           它们。例如，如果您只对内存泄漏错误感兴趣，则记录
+           分配堆栈跟踪。
+
+           如果没有，则不会记录 malloc 和 free 操作的堆栈跟踪。如果你的程序分配了大量
+           阻止和/或从许多不同的堆栈跟踪分配/释放，这可以显著降低 CPU 和/或
+           所需的内存。当然，与堆块相关的错误将报告很少的详细信息。
+
+           请注意，一旦记录了堆栈跟踪，Valgrind 就会将堆栈跟踪保存在内存中，即使它不是
+           任何块都不能引用该函数。有些程序（例如，递归算法）可能会生成大量
+           堆栈跟踪。如果 Valgrind 在这种情况下使用了过多的内存，您可以减少所需的内存
+           使用选项 --keep-stacktraces 和/或使用较小的选项 --num-callers 值。
+
+           如果您想使用 --xtree-memory=full 内存分析（参见执行树），那么您不能指定
+           --keep-stacktraces=free 或 --keep-stacktraces=none。
+
+       --freelist-vol=<number> [default: 20000000]
+           当客户端程序使用 free（在 C 中）或 delete（C++）释放内存时，该内存不会立即
+           可供重新分配。相反，它被标记为不可访问，并被放置在释放块的队列中。
+           目的是尽可能推迟释放的内存重新进入循环的时间点。
+           这增加了 Memcheck 能够检测到某些块的无效访问的机会
+           被释放后很长一段时间内
+
+           此选项指定队列中块的最大总大小（以字节为单位）。默认值为
+           2000 万字节。增加此值会增加 Memcheck 使用的总内存量，但可能会检测到
+           释放的块的无效使用，否则将无法被检测到。
+
+       --freelist-big-blocks=<number> [default: 1000000]
+           当从释放块队列中重新分配块时，Memcheck 将优先
+           重新循环大小大于或等于 --freelist-big-blocks 的块。这确保释放大块
+           块（特别是释放大于 --freelist-vol 的块）不会立即导致
+           重新循环空闲列表中的所有（或许多）小块。换句话说，此选项会增加
+           即使大块已被释放，仍有可能发现“小”块的悬空指针。
+
+           设置值 0 意味着所有块都按照 FIFO 顺序重新循环。
+
+       --workaround-gcc296-bugs=<yes|no> [default: no]
+           启用后，假设在堆栈指针下方某小段距离处的读取和写入是由于以下错误造成的：
+           GCC 2.96，并且不报告它们。默认情况下，“小距离”为 256 字节。请注意，GCC 2.96 是
+           在某些旧版 Linux 发行版（RedHat 7.X）上，它是默认编译器，因此您可能需要使用此选项。
+           如果没有必要，不要使用它，因为它可能会导致真正的错误被忽视。更好的选择是
+           使用已修复此错误的较新的 GCC。
+
+           在 32 位 PowerPC Linux 上使用 GCC 3.X 或 4.X 时，可能还需要使用此选项。这是
+           因为 GCC 生成的代码偶尔会访问堆栈指针以下的内容，特别是对于
+           浮点数与整数之间的转换。这违反了 32 位 PowerPC ELF 规范，
+           这使得堆栈指针以下的位置无法访问。
+
+           此选项自 3.12 版起已弃用，可能会从未来版本中删除。你应该改用
+           --ignore-range-below-sp 指定应该在堆栈指针下方的偏移量的精确范围
+           忽略。合适的等效项是 --ignore-range-below-sp=1024-1。
+
+       --ignore-range-below-sp=<number>-<number>
+           这是已弃用的 --workaround-gcc296-bugs 选项的更通用的替代品。指定后，它
+           导致 Memcheck 不会报告堆栈指针下方指定偏移量的访问错误。这两个
+           偏移量必须是正十进制数，而且——有点违反直觉——第一个必须更大，
+           以表示要忽略的非回绕地址范围。例如，要忽略 8192 处的 4 字节访问
+           堆栈指针以下的字节，请使用 --ignore-range-below-sp=8192-8189。只能指定一个范围。
+
+       --show-mismatched-frees=<yes|no> [default: yes]
+           启用后，Memcheck 将使用与分配匹配的函数检查堆块是否被释放
+           函数。也就是说，它期望 free 用于释放 malloc 分配的块，delete 用于释放块
+           new 分配的块，以及 new[] 分配的块的 delete[]。如果检测到不匹配，则会出现错误
+           报告。这通常很重要，因为在某些环境中，使用不匹配的函数进行释放
+           可能会导致崩溃。
+
+           然而，有一种情况是无法避免这种不匹配的。那就是当用户提供
+           new/new[] 的实现调用 malloc，delete/delete[] 的实现调用 free，这些函数是
+           非对称内联。例如，假设 delete[] 是内联的，但 new[] 不是。结果是
+           Memcheck“认为”所有 delete[] 调用都是对 free 的直接调用，即使程序源不包含
+           不匹配的呼叫。
+
+           这会导致很多令人困惑和不相关的错误报告。--show-mismatched-frees=no 禁用这些
+           检查。但一般不建议禁用它们，因为这样可能会错过真正的错误。
+
+       --show-realloc-size-zero=<yes|no> [default: yes]
+           启用后，Memcheck 将检查 realloc 的大小是否为零。这种 realloc 用法不安全，因为
+           它不可移植。在某些系统上，它的行为与免费类似。在其他系统上，它要么不执行任何操作，要么
+           否则，行为就像调用 free 后再调用大小为零的 malloc 一样。
+
+       --ignore-ranges=0xPP-0xQQ[,0xRR-0xSS]
+           此选项中列出的任何范围（可以指定多个范围，以逗号分隔）都将被忽略
+           通过 Memcheck 的可寻址性检查。
+
+       --malloc-fill=<hexnumber>
+           用指定的字节填充由 malloc、new 等分配的块，但不是由 calloc 分配的块。这可能很有用
+           在试图解决模糊的内存损坏问题时。分配的区域仍然被
+           Memcheck 未定义 - 此选项仅影响其内容。请注意 --malloc-fill 不会影响
+           当它用作客户端请求的参数时，内存块 VALGRIND_MEMPOOL_ALLOC 或
+           VALGRIND_MALLOCLIKE_BLOCK。
+
+       --free-fill=<hexnumber>
+           用指定的字节值填充由 free、delete 等释放的块。这在尝试
+           解决模糊的内存损坏问题。Memcheck 仍认为释放的区域无效
+           访问——此选项仅影响其内容。请注意，--free-fill 不会影响内存块
+           当它用作客户端请求 VALGRIND_MEMPOOL_FREE 或 VALGRIND_FREELIKE_BLOCK 的参数时。
+
+CACHEGRIND 选项
+       --cachegrind-out-file=<file>
+           将 Cachegrind 输出文件写入文件，而不是默认输出文件 cachegrind.out.<pid>。
+           %p 和 %q 格式说明符可用于嵌入进程 ID 和/或环境的内容
+           名称中的变量，就像核心选项--log-file 的情况一样。
+
+       --cache-sim=no|yes [no]
+           启用或禁用缓存访问和未命中计数的收集。
+
+       --branch-sim=no|yes [no]
+           启用或禁用分支指令和错误预测计数的收集。
+
+       --instr-at-start=no|yes [yes]
+           在执行开始时启用或禁用检测。与
+           CACHEGRIND_START_INSTRUMENTATION 和 CACHEGRIND_STOP_INSTRUMENTATION 仅测量客户端的一部分
+           程序的执行。
+
+       --I1=<size>,<associativity>,<line size>
+           指定 1 级指令缓存的大小、关联性和行大小。仅适用于
+           --cache-sim=yes。
+
+       --D1=<size>,<associativity>,<line size>
+           指定 1 级数据缓存的大小、关联性和行大小。仅与 --cache-sim=yes 一起使用时有用。
+
+       --LL=<size>,<associativity>,<line size>
+           指定最后一级缓存的大小、关联性和行大小。仅与 --cache-sim=yes 一起使用时有用。
+
+CALLGRIND 选项
+       --callgrind-out-file=<file>
+           将配置文件数据写入文件，而不是默认输出文件 callgrind.out.<pid>。%p 和 %q
+           格式说明符可用于嵌入进程 ID 和/或环境变量的内容
+           名称，就像核心选项 --log-file 的情况一样。当进行多次转储时，文件名会被修改
+           进一步；见下文。
+
+       --dump-line=<no|yes> [default: yes]
+           这指定事件计数应以源行粒度执行。这允许源
+           使用调试信息 (-g) 编译的源代码的注释。
+
+       --dump-instr=<no|yes> [default: no]
+           这指定事件计数应按指令粒度执行。这允许
+           汇编代码注释。目前只能通过KCachegrind显示结果。
+
+       --compress-strings=<no|yes> [default: yes]
+           此选项影响配置文件数据的输出格式。它指定字符串（文件和
+           函数名）应该用数字来标识。这可以缩小文件大小，但会使它更难
+           人类阅读（无论如何不推荐）。
+
+       --compress-pos=<no|yes> [default: yes]
+           此选项影响配置文件数据的输出格式。它指定数字位置是否
+           总是指定为绝对值，或者允许相对于先前的数字。这会缩小文件
+           尺寸。
+
+       --combine-dumps=<no|yes> [default: no]
+           启用后，当需要生成多个配置文件数据部分时，这些部分将附加到同一个
+           输出文件。不推荐。
+
+       --dump-every-bb=<count> [default: 0, never]
+           每 count 个基本块转储配置文件数据。仅当 Valgrind 的
+           内部调度程序运行。因此，有用的最小设置约为 100000。计数是 64 位
+           值以使长转储周期成为可能。
+
+       --dump-before=<function>
+           进入函数时转储。
+
+       --zero-before=<function>
+           进入功能时所有成本归零。
+
+       --dump-after=<function>
+           离开函数时转储。
+
+       --instr-atstart=<yes|no> [default: yes]
+           指定是否希望 Callgrind 从程序开头开始模拟和分析。设置时
+           否，Callgrind 将无法收集任何信息，包括通话，但它最多会有一个
+           速度减慢了大约 4，这是 Valgrind 的最低开销。可以以交互方式启用仪表
+           通过 callgrind_control -i 开启。
+
+           请注意，生成的调用图很可能不包含 main，但将包含所有函数
+           在启用检测后执行。还可以通过编程启用/禁用检测。
+           请参阅 Callgrind 包含文件 callgrind.h，了解您必须在源代码中使用的宏。
+
+           对于缓存模拟，在程序中稍后打开检测时，结果会不太准确
+           运行，因为模拟器在那一刻启动时缓存为空。稍后打开事件收集以应对
+           出现此错误。
+
+       --collect-atstart=<yes|no> [default: yes]
+           指定在配置文件运行开始时是否启用事件收集。
+
+           如果只查看程序的某些部分，有两种方法：
+
+            1. 在进入要分析的程序部分之前将事件计数器清零，然后将事件计数器转储到
+               离开该程序部分后的文件。
+
+            2. 根据需要打开/关闭收集状态，以便只查看在
+               您想要分析的程序部分。
+
+           如果您要分析的程序部分被多次调用，则可以使用第二个选项。选项 1，即
+           在这里创建大量转储是不切实际的。
+
+           可以使用选项 --toggle-collect 在给定函数的入口和出口处切换收集状态。如果
+           使用此选项时，应在开始时禁用收集状态。请注意
+           --toggle-collect 隐式设置 --collect-state=no。
+
+           也可以通过插入客户端请求 CALLGRIND_TOGGLE_COLLECT 来切换收集状态；
+           所需的代码位置。
+
+       --toggle-collect=<function>
+           在进入/退出函数时切换收集。
+
+       --collect-jumps=<no|yes> [default: no]
+           这指定是否应收集（条件）跳转的信息。如上所述，callgrind_annotate
+           目前无法向您显示数据。您必须使用 KCachegrind 获取带注释的跳转箭头
+           代码。
+
+       --collect-systime=<no|yes|msec|usec|nsec> [default: no]
+           这指定是否应该收集系统调用时间的信息。
+
+           no表示不记录系统调用信息。
+
+           其他值表示记录完成的系统调用次数（sysCount 事件）和耗时
+           （sysTime 事件）在系统调用中花费的时间。--collect-systime 值给出 sysTime 使用的单位：毫秒
+           秒、微秒或纳秒。callgrind 还使用 nsec 值记录所花费的 CPU 时间
+           在系统调用（sysCpuTime）期间。
+
+           值 yes 是 msec 的同义词。Darwin 不支持值 nsec。
+
+       --collect-bus=<no|yes> [default: no]
+           指定是否应收集执行的全局总线事件数。事件类型“Ge”是
+           用于这些事件。
+
+       --cache-sim=<yes|no> [default: no]
+           指定是否要进行完整缓存模拟。默认情况下，仅计算指令读取访问
+           （“Ir”）。通过缓存模拟，可以启用更多事件计数器：指令读取时缓存未命中
+           （“I1mr”/“ILmr”）、数据读取访问（“Dr”）和相关缓存未命中（“D1mr”/“DLmr”）、数据写入访问
+           （“Dw”）和相关的缓存未命中（“D1mw”/“DLmw”）。有关更多信息，请参阅 Cachegrind：缓存和分支
+           預測擬決器。
+
+       --branch-sim=<yes|no> [default: no]
+           指定是否要进行分支预测模拟。其他事件计数器已启用：
+           执行条件分支和相关预测器未命中（“Bc”/“Bcm”），执行间接跳转和相关
+           跳转地址预测器（“Bi”/“Bim”）未命中。
+
+HELGRIND 选项
+       --free-is-write=no|yes [default: no]
+           启用时（非默认），Helgrind 将释放堆内存视为内存被写入
+           在释放之前立即释放内存。这暴露了内存被一个线程引用，并被
+           但没有可观察的同步事件来确保引用发生在另一个之前
+           自由的。
+
+           此功能是 Valgrind 3.7.0 中的新功能，并且被视为实验性的。默认情况下不启用
+           因为目前对其与自定义内存分配器的交互还不太了解。用户反馈是
+           欢迎。
+
+       --track-lockorders=no|yes [default: yes]
+           启用时（默认），Helgrind 会执行锁定顺序一致性检查。对于一些有缺陷的程序，
+           报告的大量锁定顺序错误可能会变得烦人，特别是如果你只对
+           竞争错误。因此，您可能会发现禁用锁定顺序检查很有帮助。
+
+       --history-level=none|approx|full [default: full]
+           --history-level=full （默认值）导致 Helgrind 收集有关“旧”访问的足够信息，以至于它
+           可以在竞争报告中生成两个堆栈跟踪——当前访问的堆栈跟踪和跟踪
+           针对较旧的、冲突的访问。为了限制内存使用量，“旧”访问堆栈跟踪被限制为
+           --history-backtrace-size 条目的最大值（默认值为 8）或 --num-callers 值（如果该值较小）。
+
+           收集此类信息在速度和内存方面都很昂贵，特别是对于执行许多操作的程序而言
+           线程间同步事件（锁定、解锁等）。如果没有这些信息，则很难
+           追踪种族问题的根本原因。不过，在以下情况下，你可能不需要它：
+           检查是否存在竞争，例如，在对以前的
+           无种族歧视计划。
+
+           --history-level=none 是相反的极端。它导致 Helgrind 不收集有关
+           以前的访问。这比 --history-level=full 快得多。
+
+           --history-level=approx 在这两个极端之间提供了一个折衷方案。它使 Helgrind 显示完整的
+           跟踪后续访问，以及有关早期访问的近似信息。这个近似值
+           信息由两个堆栈组成，并且保证较早的访问发生在两者之间的某个地方
+           两个堆栈表示的程序点。这不如显示前一个堆栈的确切堆栈有用
+           访问（如 --history-level=full 所做的那样），但总比没有好，而且它几乎和
+           --历史级别=无。
+
+       --history-backtrace-size=<number> [default: 8]
+           当选择--history-level=full时，--history-backtrace-size=number表示要记录多少条
+           在“旧”中访问堆栈跟踪。
+
+       --delta-stacktrace=no|yes [default: yes on linux amd64/x86]
+           此标志仅在 --history-level=full 时才有效。
+
+           --delta-stacktrace 配置 Helgrind 捕获选项 --history-level=full 的堆栈跟踪的方式。
+           每次在基本块中读取或写入新的内存时，通常都需要这样的堆栈跟踪。
+           指示。
+
+           --delta-stacktrace=no 使得 Helgrind 每次从展开信息中计算完整的历史堆栈跟踪
+           需要堆栈跟踪。
+
+           --delta-stacktrace=yes 指示 Helgrind 从前一个堆栈跟踪中派生出一个新的堆栈跟踪，如下所示
+           只要没有调用指令、返回指令或任何其他改变调用的指令
+           自上一次捕获堆栈跟踪以来的堆栈。如果没有执行这样的指令，则新的堆栈跟踪
+           只需将顶部框架更改为当前程序计数器，即可从前一个堆栈跟踪中得出。
+           当使用 --history-level=full 时，此选项可使 Helgrind 的速度提高 25%。
+
+           使用 --delta-stacktrace=yes 时必须考虑以下方面：
+
+           • 在某些情况下（例如在函数序言中），valgrind 展开器可能无法正确展开
+               堆栈，由于某些限制和/或错误的展开信息。当使用 --delta-stacktrace=yes 时，
+               在函数序言中捕获的错误堆栈跟踪将保留到下一次调用或返回。
+
+           • 另一方面，--delta-stacktrace=yes 有时有助于获取正确的堆栈跟踪，例如
+               当展开信息允许在序列开始时进行正确的堆栈跟踪，但不能
+               在指令序列的稍后部分。
+
+           • 确定哪些指令正在改变调用堆栈部分取决于平台相关
+               启发式方法，必须针对平台进行专门调整/验证。此外，在
+               函数序言必须足够好，才能允许使用 --delta-stacktrace=yes。目前，选项
+               --delta-stacktrace=yes 仅在 linux x86 32 位和 linux amd64 64 位上得到合理验证。
+               有关如何验证 --delta-stacktrace=yes 的详细信息，请参阅调试选项 --hg-sanity-flags 和
+               libhb_core.c 中的函数 check_cached_rcec_ok。
+
+       --conflict-cache-size=N [default: 1000000]
+           此标志仅在 --history-level=full 时才有效。
+
+           有关“旧”冲突访问的信息存储在有限大小的缓存中，使用 LRU 样式
+           管理。这是必要的，因为为每个内存存储堆栈跟踪是不切实际的
+           程序访问的位置。定期更新有关最近未访问位置的历史信息。
+           丢弃，以释放缓存中的空间。
+
+           此选项控制缓存的大小，即缓存中不同内存地址的数量
+           冲突的访问信息被存储。如果您发现 Helgrind 只显示一个竞争错误
+           堆栈而不是预期的两个堆栈，请尝试增加此值。
+
+           最小值为 10,000，最大值为 30,000,000（默认值的三十倍）。增加
+           值增加 1 会使 Helgrind 的内存需求增加大约 100 字节，因此最大值将
+           很容易就消耗掉大约3GB的额外内存。
+
+       --check-stack-refs=no|yes [default: yes]
+           默认情况下，Helgrind 会检查程序进行的所有数据内存访问。此标志使您可以跳过
+           检查对线程堆栈（局部变量）的访问。这可以提高性能，但代价是
+           堆栈分配数据中缺失竞争的成本。
+
+       --ignore-thread-creation=<yes|no> [default: no]
+           控制是否应忽略线程创建期间的所有活动。默认情况下，仅在
+           Solaris。Solaris 比其他操作系统提供更高的吞吐量、并行性和可扩展性，
+           更细粒度的锁定活动的成本。这意味着，例如，当在以下情况下创建线程时
+           glibc 中，所有线程设置都只使用一个大锁。Solaris libc 使用几个细粒度的锁，并且
+           创建者线程尽快恢复其活动，例如留下堆栈和 TLS 设置序列
+           到创建的线程。这种情况让 Helgrind 感到困惑，因为它认为存在一些错误的排序
+           在创建者和被创建的线程之间；因此应用程序中的许多类型的竞争条件不会
+           被报告。为了防止出现此类错误排序，在 Solaris 上，此命令行选项默认设置为 yes。
+           因此，在以下情况下，所有活动（加载、存储、客户端请求）都将被忽略：
+
+           • 创建线程中的 pthread_create() 调用
+
+           • 线程创建阶段（堆栈和 TLS 设置）在创建的线程中
+
+           另外，线程创建期间分配的新内存未被跟踪，也就是说竞争报告在那里被抑制。
+           DRD 隐式地执行相同的操作。这是必要的，因为 Solaris libc 缓存了许多对象并重用
+           将它们用于不同的线程，这会让 Helgrind 感到困惑。
+
+DRD 选项
+       --check-stack-var=<yes|no> [default: no]
+           控制 DRD 是否检测堆栈变量上的数据竞争。默认情况下，验证堆栈变量是禁用的
+           因为大多数程序不会在线程之间共享堆栈变量。
+
+       --exclusive-threshold=<n> [default: off]
+           如果任何互斥锁或写锁的持有时间超过指定的时间，则打印错误消息
+           毫秒。此选项启用锁争用检测。
+
+       --join-list-vol=<n> [default: 10]
+           如果发生以下情况，则可能会错过一个线程末尾的语句与另一个线程之间的数据竞争：
+           线程加入后，内存访问信息将立即被丢弃。此选项允许
+           指定应保留多少个连接线程的内存访问信息。
+
+        --first-race-only=<yes|no> [default: no]
+           是否仅报告在内存位置检测到的第一个数据竞争或所有数据竞争
+           在内存位置上检测到的。
+
+        --free-is-write=<yes|no> [default: no]
+           是否报告访问内存和释放内存之间的竞争。启用此选项可能会导致 DRD
+           运行速度稍慢。注意：
+
+           • 使用使用 VG_USERREQ__MALLOCLIKE_BLOCK 的自定义内存分配器时，请勿启用此选项
+               和 VG_USERREQ__FREELIKE_BLOCK，因为这会导致误报。
+
+           • 使用引用计数对象时不要启用此选项，因为这会导致错误
+               即使该代码已使用 ANNOTATE_HAPPENS_BEFORE 正确注释，也会出现错误
+               ANNOTATE_HAPPENS_AFTER。例如，请参阅以下命令的输出：valgrind --tool=drd
+               –free-is-write=yes drd/tests/annotate_smart_pointer。
+
+        --report-signal-unlocked=<yes|no> [default: yes]
+           是否报告对 pthread_cond_signal 和 pthread_cond_broadcast 的调用，其中与互斥锁关联的
+           通过 pthread_cond_wait 或 pthread_cond_timed_wait 发出的信号在发出时没有锁定。
+           发送信号而不持有相关互斥锁是一种常见的编程错误，它可能导致
+           导致微妙的竞争条件和不可预测的行为。存在一些不常见的同步模式
+           然而，无需锁定相关的互斥锁就可以安全地发送信号。
+
+       --segment-merging=<yes|no> [default: yes]
+           控制段合并。段合并是一种限制数据竞争检测内存使用的算法
+           算法。禁用段合并可能会提高所谓的“其他段”在
+           比赛报告但也可能触发内存不足错误。
+
+       --segment-merging-interval=<n> [default: 10]
+           仅在创建了指定数量的新段后才执行段合并。这是一个
+           高级配置选项，允许选择是否最小化 DRD 的内存使用量，方法是选择
+           较低的值，或者选择稍高的值让 DRD 运行得更快。此参数的最佳值
+           取决于正在分析的程序。默认值适用于大多数程序。
+
+       --shared-threshold=<n> [default: off]
+           如果读取器锁定的时间超过指定时间（以毫秒为单位），则打印错误消息。这
+           选项可以检测锁争用。
+
+       --show-confl-seg=<yes|no> [default: yes]
+           在竞争报告中显示冲突的片段。由于此信息有助于找到数据竞争的原因，
+           此选项默认启用。禁用此选项可使 DRD 的输出更加紧凑。
+
+       --show-stack-usage=<yes|no> [default: no]
+           在线程退出时打印堆栈使用情况。当程序创建大量线程时，这一点很重要
+           限制分配给线程堆栈的虚拟内存量。此选项可以观察
+           客户端程序的每个线程使用了多少堆栈内存。注意：DRD 工具本身
+           在客户端线程堆栈上分配一些临时数据。这些临时数据所需的空间必须
+           由客户端程序在分配堆栈内存时分配，但不包含在堆栈使用量中
+           DRD 报告。
+
+       --ignore-thread-creation=<yes|no> [default: no]
+           控制是否应忽略线程创建期间的所有活动。默认情况下，仅在
+           Solaris。Solaris 比其他操作系统提供更高的吞吐量、并行性和可扩展性，
+           更细粒度的锁定活动的成本。这意味着，例如，当在以下情况下创建线程时
+           glibc 中，所有线程设置都只使用一个大锁。Solaris libc 使用几个细粒度的锁，并且
+           创建者线程尽快恢复其活动，例如留下堆栈和 TLS 设置序列
+           到创建的线程。这种情况使 DRD 感到困惑，因为它认为存在一些错误的排序
+           在创建者和被创建的线程之间；因此应用程序中的许多类型的竞争条件不会
+           被报告。为了防止出现此类错误排序，在 Solaris 上，此命令行选项默认设置为 yes。
+           因此，在以下情况下，所有活动（加载、存储、客户端请求）都将被忽略：
+
+           • 创建线程中的 pthread_create() 调用
+
+           • 线程创建阶段（堆栈和 TLS 设置）在创建的线程中
+
+       --trace-addr=<address> [default: none]
+           跟踪指定地址的所有加载和存储活动。此选项可以指定多次。
+
+       --ptrace-addr=<address> [default: none]
+           跟踪指定地址的所有加载和存储活动，并继续这样做，即使在内存达到
+           该地址已被释放并重新分配。
+
+       --trace-alloc=<yes|no> [default: no]
+           跟踪所有内存分配和释放。可能会产生大量输出。
+
+       --trace-barrier=<yes|no> [default: no]
+           追踪所有屏障活动。
+
+       --trace-cond=<yes|no> [default: no]
+           跟踪所有条件变量活动。
+
+       --trace-fork-join=<yes|no> [default: no]
+           跟踪所有线程创建和所有线程终止事件。
+
+       --trace-hb=<yes|no> [default: no]
+           跟踪 ANNOTATE_HAPPENS_BEFORE()、ANNOTATE_HAPPENS_AFTER() 和 ANNOTATE_HAPPENS_DONE() 的执行情况
+           客户请求。
+
+       --trace-mutex=<yes|no> [default: no]
+           跟踪所有互斥活动。
+
+       --trace-rwlock=<yes|no> [default: no]
+           跟踪所有读写锁活动。
+
+       --trace-semaphore=<yes|no> [default: no]
+           跟踪所有信号量活动。
+
+地块选项
+       --heap=<yes|no> [default: yes]
+           指定是否应进行堆分析。
+
+       --heap-admin=<size> [default: 8]
+           如果启用了堆分析，则给出每个块要使用的管理字节数。这应该是
+           平均值的估计，因为它可能会有所不同。例如，Linux 上的 glibc 使用的分配器需要
+           每个块大约 4 到 15 个字节，具体取决于各种因素。该分配器还需要管理员
+           释放块的空间，但是 Massif 无法解释这一点。
+
+       --stacks=<yes|no> [default: no]
+           指定是否应进行堆栈分析。此选项会大大降低 Massif 的速度，因此
+           默认。请注意，Massif 假设主堆栈在启动时大小为零。事实并非如此，但这样做
+           否则很难准确计算。此外，从零开始可以更好地指示部分的大小
+           用户程序实际上控制的主堆栈。
+
+       --pages-as-heap=<yes|no> [default: no]
+           告诉 Massif 在页面级别而不是在 malloc 的块级别分析内存。请参阅上文
+           细节。
+
+       --depth=<number> [default: 30]
+           记录详细快照的分配树的最大深度。增加它将使 Massif 运行
+           速度会稍微慢一些，占用更多内存，并且会产生更大的输出文件。
+
+       --alloc-fn=<name>
+           使用此选项指定的函数将被视为堆分配函数，例如
+           malloc。这对于 malloc 或 new 的包装函数很有用，它们可以填充分配
+           包含无趣信息的树。可以在命令行上多次指定此选项，以
+           命名多个函数。
+
+           请注意，仅当命名函数是堆栈跟踪中的顶部条目时，才会以这种方式处理，或者只是
+           下面的另一个函数也这样处理。例如，如果你有一个函数 malloc1 包装了 malloc，并且
+           malloc2 包装了 malloc1，仅指定 --alloc-fn=malloc2 不会产生任何效果。您需要指定
+           --alloc-fn=malloc1。这有点不方便，但原因是检查分配
+           函数很慢，如果 Massif 可以停止查看堆栈跟踪条目，那么可以节省大量时间
+           一旦发现不匹配的条目，就会立即进行匹配，而不必继续查找所有条目。
+
+           请注意，C++ 名称是经过分解的。还请注意，重载的 C++ 名称必须完整书写。单
+           可能需要使用引号来防止 shell 将它们拆分。例如：
+
+               --alloc-fn='operator new (unsigned, std::nothrow_t const&)' 复制代码
+
+           在 64 位平台上，size_t 类型的参数需要替换为 unsigned long，在 32 位平台上则需要替换为 unsigned
+           平台。
+
+           --alloc-fn 将与内联函数一起使用。内联函数名称不会被破坏，这意味着您只需
+           需要提供函数名称而不是参数列表。
+
+           --alloc-fn 不支持通配符。
+
+       --ignore-fn=<name>
+           任何直接堆分配（即对 malloc、new 等的调用，或对以 --alloc-fn 命名的函数的调用
+           此选项指定的函数中出现的错误将被忽略。这主要适用于
+           测试目的。此选项可以在命令行上多次指定，以命名多个
+           功能。
+
+           任何被忽略块的 realloc 也将被忽略，即使 realloc 调用没有发生在被忽略的
+           函数。如果使用 realloc 缩小忽略块，这可以避免出现负堆大小的可能性。
+
+           编写 C++ 函数名称的规则与上面的 --alloc-fn 相同。
+
+       --threshold=<m.n> [default: 1.0]
+           堆分配的重要性阈值，占总内存大小的百分比。分配树
+           占比低于此值的条目将被汇总。请注意，应同时指定
+           与 ms_print 的选项同名。
+
+       --peak-inaccuracy=<m.n> [default: 1.0]
+           Massif 不一定记录实际的全局内存分配峰值；默认情况下，它记录峰值
+           只有当全局内存分配大小超过前一个峰值至少 1.0% 时才会发生这种情况。这是因为
+           在此过程中可能会出现许多局部分配峰值，对每个峰值进行详细的快照将是
+           昂贵且浪费，因为除了一个之外，其他的都会被丢弃。这种不准确性是可以改变的（甚至
+           到 0.0%），但当数字接近于零时，Massif 的运行速度会大大降低。
+
+       --time-unit=<i|ms|B> [default: i]
+           用于分析的时间单位。有三种可能性：执行的指令 (i)，即
+           适用于大多数情况；真实（挂钟）时间（ms，即毫秒），有时很有用；和字节
+           在堆和/或堆栈上分配/释放（B），这对于非常短期运行的程序很有用，并且对于
+           测试目的，因为它在不同的机器上最具可重复性。
+
+       --detailed-freq=<n> [default: 10]
+           详细快照的频率。使用 --detailed-freq=1，每个快照都是详细的。
+
+       --max-snapshots=<n> [default: 100]
+           记录的最大快照数。如果设置为 N，则对于除运行时间极短的程序之外的所有程序，
+           最终快照数量将在 N/2 和 N 之间。
+
+       --massif-out-file=<file> [default: massif.out.%p]
+           将配置文件数据写入文件，而不是默认输出文件 massif.out.<pid>。％p 和 ％q
+           格式说明符可用于嵌入进程 ID 和/或环境变量的内容
+           名称，就像核心选项--log-file 的情况一样。
+
+BBV 期权
+       --bb-out-file=<name> [default: bb.out.%p]
+           此选项选择基本块向量文件的名称。%p 和 %q 格式说明符可用于
+           在名称中嵌入进程 ID 和/或环境变量的内容，就像核心的情况一样
+           选项--log-file。
+
+       --pc-out-file=<name> [default: pc.out.%p]
+           此选项选择 PC 文件的名称。该文件保存程序计数器地址和函数名称
+           各种基本块的信息。这可以与基本块矢量文件结合使用，以
+           通过函数名称而不是指令计数来快进。%p 和 %q 格式说明符可以
+           用于在名称中嵌入进程 ID 和/或环境变量的内容，例如
+           核心选项--log-file。
+
+       --interval-size=<number> [default: 100000000]
+           此选项选择要使用的间隔大小。默认值为 1 亿条指令，即
+           常用值。可以使用其他大小；较小的间隔可以帮助程序实现更细粒度的阶段。
+           然而，由于热身效应，较小的间隔大小可能导致准确性问题（当快进
+           各种架构特征将被取消初始化，并且需要执行一些指令才能
+           它们会“预热”到完整模拟的状态，而无需快进。间隔大小较大
+           往往会缓解这种情况。）
+
+       --instr-count-only [default: no]
+           此选项告诉工具仅显示指令总数，而不生成实际的基本
+           块向量文件。这对于调试和收集指令计数信息非常有用，而无需生成
+           大型基本块矢量文件。
+
+**走狗选项**
+       --basic-counts=<no|yes> [default: yes]
+           启用后，Lackey 将打印有关客户端执行的以下统计信息和信息
+           程序：
+
+            1. 调用 --fnname 选项指定的函数的次数（默认为 main）。如果
+               程序的符号已被剥离，计数将始终为零。
+
+            2. 遇到的条件分支数以及采用的条件分支数和比例。
+
+            3. 程序输入和完成的超级块数量。请注意，由于
+               JIT，这根本不是一个准确的值。
+
+            4. 执行的客户机（x86、amd64、ppc 等）指令和 IR 语句的数量。IR 是 Valgrind 的
+               类似于 RISC 的中间表示，所有检测均通过它完成。
+
+            5. 其中一些计数之间的比率。
+
+            6.客户端程序的退出代码。
+
+       --detailed-counts=<no|yes> [default: no]
+           启用后，Lackey 会打印一个表格，其中包含加载、存储和 ALU 操作的计数，并区分为
+           IR 类型。IR 类型通过其 IR 名称来识别（“I1”、“I8”……“I128”、“F32”、“F64”和
+           请参阅“V128”以获得更多信息。
+
+       --trace-mem=<no|yes> [default: no]
+           启用后，Lackey 会打印程序进行的几乎每个内存访问的大小和地址。请参阅
+           文件 lackey/lk_main.c 顶部的注释中提供了有关输出格式、工作原理的详细信息，以及
+           地址跟踪中的不准确性。请注意，此选项会产生大量输出。
+
+       --trace-superblocks=<no|yes> [default: no]
+           启用后，Lackey 会打印出每个超级块的地址（单个入口、多个出口、线性块
+           程序执行的代码）。这主要对 Valgrind 开发人员感兴趣。请参阅
+           文件 lackey/lk_main.c 的顶部，了解有关输出格式的详细信息。请注意，此选项会产生
+           大量的输出。
+
+       --fnname=<name> [default: main]
+           当指定 --basic-counts=yes 时，更改计算调用次数的函数。
+
+调试信息
+       Valgrind 支持通过 debuginfod 下载调试信息文件，debuginfod 是一个用于分发 ELF/DWARF 的 HTTP 服务器
+       调试信息。当无法在本地找到 debuginfo 文件时，Valgrind 可以查询 debuginfod
+       使用文件的 build-id 查找该文件的服务器。
+
+       为了使用此功能，必须安装 debuginfod-find 和 $DEBUGINFOD_URLS 环境变量
+       必须包含以空格分隔的 debuginfod 服务器 URL。Valgrind 不支持 debuginfod-find verbose
+       通常使用 $DEBUGINFOD_PROGRESS 和 $DEBUGINFOD_VERBOSE 启用的输出。这些环境变量
+       将被忽略。此功能仅在 Linux 上受支持。
+
+       有关 debuginfod 的更多信息，请参阅 Elfutils Debuginfod[1] 。
+
+也可以看看
+       cg_annotate（1），callgrind_annotate（1），callgrind_control（1），ms_print（1），
+       $INSTALL/share/doc/valgrind/html/index.html 或 http://www.valgrind.org/docs/manual/index.html，调试你的
+       使用 Valgrind 的 gdbserver 和 GDB[2] vgdb[3] 编写程序，Valgrind 监控命令[4]，评论[5]，
+       调度和多线程性能[6]、Cachegrind：缓存和分支预测分析器[7]。执行
+       樹[8]
+
+作者
+       请参阅 valgrind 发行版中的 AUTHORS 文件以获取完整的作者列表。
+
+       本手册页由 Andres Roldan <aroldan@debian.org> 和 Valgrind 开发人员编写。
+
+笔记
+        1. Elfutils Debuginfod
+           https://sourceware.org/elfutils/Debuginfod.html
+
+        2. 使用 Valgrind 的 gdbserver 和 GDB 调试你的程序
+           http://www.valgrind.org/docs/manual/manual-core-adv.html#manual-core-adv.gdbserver
+
+        3. vgdb
+           http://www.valgrind.org/docs/manual/manual-core-adv.html#manual-core-adv.vgdb
+
+        4. Valgrind 监视命令
+           http://www.valgrind.org/docs/manual/manual-core-adv.html#manual-core-adv.valgrind-monitor-commands
+
+        5. 评论
+           http://www.valgrind.org/docs/manual/manual-core.html#manual-core.comment
+
+        6.调度和多线程性能
+           http://www.valgrind.org/docs/manual/manual-core.html#manual-core.pthreads_perf_sched
+
+        7. Cachegrind：缓存和分支预测分析器
+           http://www.valgrind.org/docs/manual/cg-manual.html
+
+        8. 执行树
+           http://www.valgrind.org/docs/manual/manual-core.html#manual-core.xtree
+
+版本 3.23.0 2024 年 4 月 26 日 VALGRIND(1)

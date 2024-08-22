@@ -1,4 +1,16 @@
 #!/bin/bash
+###
+ # @*************************************: 
+ # @FilePath     : /user/C/shell_generate_c/cppcheck_self.sh
+ # @version      : 
+ # @Author       : dof
+ # @Date         : 2024-08-22 16:25:22
+ # @LastEditors  : dof
+ # @LastEditTime : 2024-08-22 19:00:17
+ # @Descripttion :  
+ # @compile      :  
+ # @**************************************: 
+### 
 
 
 path=$1
@@ -25,17 +37,17 @@ then
 fi
 
 
-inlcude=-include=user/C/http-master \
-		-include=user/C/curl/__MACOSX/cJSON \
-		-include=user/C/curl/cJSON \
-		-include=user/C/log/log \
-		-include=user/C/string \
-		-include=user/C/cmake_test/src \
-		-include=user/C/fileIO/__MACOSX/cJSON \
-		-include=user/C/fileIO/cJSON \
-		-include=user/C/ipc_shm \
-		-include=user/C/123_call \
-		-include=user/C/FileIO/read-ini 
+# inlcude=-include=user/C/http-master \
+		# -include=user/C/curl/__MACOSX/cJSON \
+		# -include=user/C/curl/cJSON \
+		# -include=user/C/log/log \
+		# -include=user/C/string \
+		# -include=user/C/cmake_test/src \
+		# -include=user/C/fileIO/__MACOSX/cJSON \
+		# -include=user/C/fileIO/cJSON \
+		# -include=user/C/ipc_shm \
+		# -include=user/C/123_call \
+		# -include=user/C/FileIO/read-ini 
 
 echo "inlcude $inlcude"
 

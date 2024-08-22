@@ -10,7 +10,6 @@
                 "${file}",
                 "-o",
                 "${fileDirname}/${fileBasenameNoExtension}"
-                // "-lcurl"
             ],
             "problemMatcher": [
                 "$gcc"
@@ -29,7 +28,6 @@
                 "${file}",
                 "-o",
                 "${fileDirname}/${fileBasenameNoExtension}"
-                // "-lcurl"
             ],
             "problemMatcher": [
                 "$g++"

@@ -9,12 +9,6 @@
  * @Descripttion: 
  * @**************************************: 
  */
-/*********************************************************************
-Author:Li Junshi
-File Decription: Finite State Machine general framework
-File Created Time: 2017-06-23
-Please send email to lijunshi2015@163.com if you have any question.
-*********************************************************************/
 
 #include <stdio.h>
 //#include <windows.h> //windows
@@ -181,7 +175,7 @@ int main()
 		FSM_EventHandle(&fsm, event);
 		printf("fsm current state %d\n", fsm.curState);
 		test(&event);
-		Sleep(1); //休眠1秒，方便观察
+		sleep(1); //休眠1秒，方便观察
 	}
 
 	return 0;

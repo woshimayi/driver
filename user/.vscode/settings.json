@@ -5,5 +5,7 @@
 		"regex.h": "c",
 		"atomic": "c",
 		"cstdint": "c"
-	}
+	},
+	"cmake.sourceDirectory": "/home/zsD/Documents/driver/user/C/cmake_test",
+	"C_Cpp.errorSquiggles": "disabled"
 }

@@ -38,7 +38,7 @@ typedef signed char int8;		  /* Signed 8 bit value */
 // 按照LSB格式把两个字节转化为一个Word
 #define FLIPW(ray) ((((word)(ray)[0]) * 256) + (ray)[1])
 
-按照LSB格式把一个Word转化为两个字节
+//按照LSB格式把一个Word转化为两个字节
 #define FLOPW(ray, val)       \
 	(ray)[0] = ((val) / 256); \
 	(ray)[1] = ((val)&0xFF)
