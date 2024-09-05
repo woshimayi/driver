@@ -19,8 +19,15 @@
 #include <sys/time.h>
 #include <sys/epoll.h>
 
+#define PP_endl(fmt, args...)                                                               \
+    do                                                                                      \
+    {                                                                                       \
+        printf("\033[0;32;31m[mdm :%s(%d)] " fmt "\033[1;37m", __func__, __LINE__, ##args); \
+        fflush(stdout);                                                                     \
+    } while (0)
 
-#define PP(fmt,args...) printf("\033[0;32;31m[mdm :%s(%d)] " fmt "\033[1;37m\r\n", __func__, __LINE__, ##args )
+#define PP(fmt, args...) printf("\033[0;32;31m[mdm :%s(%d)] " fmt "\033[1;37m\r\n", __func__, __LINE__, ##args)
+#define PP_G(fmt, args...) printf("\033[0;32;32m[mdm :%s(%d)] " fmt "\033[1;37m\r\n", __func__, __LINE__, ##args)
 
 #define TW_BITS (8)
 #define TW_SIZE (1 << TW_BITS) // 单级时间轮大小（槽位数量）
@@ -77,9 +84,9 @@ struct link *link_del(struct link *link)
 typedef void (*func)(void *arg);
 struct tw_node
 {
-    struct link link;
-    int32_t expire_tick;
-    int32_t period_ticks;
+    struct link link;     // 链表
+    int32_t expire_tick;  // 到期时间
+    int32_t period_ticks; // 周期时间
     int flags;
     func cb;
     void *arg;
@@ -92,10 +99,10 @@ struct tw_node
  */
 struct tw
 {
-    uint32_t tick_ms;
-    uint32_t cur_tick;
-    struct link slots[TW_LEVEL][TW_SIZE];
-    pthread_spinlock_t  lock;
+    uint32_t tick_ms;                     // 循环定时器时长
+    uint32_t cur_tick;                    // 当前时间
+    struct link slots[TW_LEVEL][TW_SIZE]; // 3层 8级 时间轮槽数
+    pthread_spinlock_t lock;
 };
 
 /**
@@ -123,7 +130,7 @@ struct tw_node *tw_node_new(struct tw *tw, int expire_ms, int period_ms, int fla
     memset(node, 0, sizeof(struct tw_node));
     node->expire_tick = MS_TO_TICKS(expire_ms, tw->tick_ms);
     node->period_ticks = MS_TO_TICKS(period_ms, tw->tick_ms);
-    // PP("tw node new expire tick:%u,%u, peroid ticks:%u,%u\n", expire_ms, node->expire_tick, period_ms, node->period_ticks);
+    PP_G("tw node new expire tick:%u,%u, peroid ticks:%u,%u\n", expire_ms, node->expire_tick, period_ms, node->period_ticks);
     node->flags = flags;
     node->cb = cb;
     node->arg = arg;
@@ -219,25 +226,27 @@ void tw_add(struct tw *tw, struct tw_node *node, bool nolock)
     uint8_t e0 = IDX0(node->expire_tick);
     uint8_t e1 = IDX1(node->expire_tick);
     uint8_t e2 = IDX2(node->expire_tick);
-    // PP("tw add e0,e1,e2:%u,%u,%u\n", e0, e1, e2);
+
+    PP_G("tw add idx0,idx1,idx2:%u,%u,%u\n", idx0, idx1, idx2);
+    PP_G("tw add e0,  e1,  e2:  %u,%u,%u\n", e0, e1, e2);
 
     struct link *it = &node->link;
     if (e2 != idx2)
     {
         struct link *link = &tw->slots[2][e2];
-        PP("tw link add 2,e2:%u\n", e2);
+        PP_G("tw link add 2,e2:%u\n", e2);
         link_add(link, it);
     }
     else if (e1 != idx1)
     {
         struct link *link = &tw->slots[1][e1];
-        PP("tw link add 1,e1:%u\n", e1);
+        PP_G("tw link add 1,e1:%u\n", e1);
         link_add(link, it);
     }
     else if (e0 != idx0)
     {
         struct link *link = &tw->slots[0][e0];
-        PP("tw link add 0,e0:%u\n", e0);
+        PP_G("tw link add 0,e0:%u\n", e0);
         link_add(link, it);
     }
 
@@ -255,9 +264,12 @@ int tw_update(struct tw *tw)
 {
     pthread_spin_lock(&tw->lock);
     tw->cur_tick++;
+
     uint8_t idx0 = IDX0(tw->cur_tick);
     uint8_t idx1 = IDX1(tw->cur_tick);
     uint8_t idx2 = IDX2(tw->cur_tick);
+    PP("tw add idx0,idx1,idx2:%u,%u,%u\n", idx0, idx1, idx2);
+
     struct link active = {0};
     if ((idx0 == 0) && (idx1 == 0) && (idx2 > 0))
     {
@@ -265,7 +277,7 @@ int tw_update(struct tw *tw)
         struct link *it;
         while (it = link_del(link))
         {
-            // PP("tw update cur tick:%u, idx0:%u,idx1:%u,idx2:%u\n", tw->cur_tick, idx0, idx1, idx2);
+            PP("tw update cur tick:%u, idx0:%u,idx1:%u,idx2:%u\n", tw->cur_tick, idx0, idx1, idx2);
             struct tw_node *node = (struct tw_node *)it;
             uint8_t e0 = IDX0(node->expire_tick);
             uint8_t e1 = IDX1(node->expire_tick);
@@ -291,7 +303,7 @@ int tw_update(struct tw *tw)
         struct link *it;
         while (it = link_del(link))
         {
-            // PP("tw update cur tick:%u, idx0:%u,idx1:%u,idx2:%u\n", tw->cur_tick, idx0, idx1, idx2);
+            PP("tw update cur tick:%u, idx0:%u,idx1:%u,idx2:%u\n", tw->cur_tick, idx0, idx1, idx2);
             struct tw_node *node = (struct tw_node *)it;
             uint8_t e0 = IDX0(node->expire_tick);
             if (e0 == 0)
@@ -311,7 +323,7 @@ int tw_update(struct tw *tw)
         struct link *it;
         while (it = link_del(link))
         {
-            // PP("tw update cur tick:%u, idx0:%u,idx1:%u,idx2:%u\n", tw->cur_tick, idx0, idx1, idx2);
+            PP("tw update cur tick:%u, idx0:%u,idx1:%u,idx2:%u\n", tw->cur_tick, idx0, idx1, idx2);
             link_add(&active, it);
         }
     }
@@ -320,7 +332,7 @@ int tw_update(struct tw *tw)
     while (it = link_del(&active))
     {
         struct tw_node *node = (struct tw_node *)it;
-        // PP("tw update callback cur tick:%u@@\n", tw->cur_tick);
+        PP("tw update callback cur tick:%u@@\n", tw->cur_tick);
         node->cb(node->arg);
         if (node->flags & PERIOD_FLAG)
         {
@@ -359,6 +371,7 @@ void get_time(char *buffer)
 void *tw_driver_thread(void *arg)
 {
     struct tw *tw = (struct tw *)arg;
+    char i = 0;
 
 #if (TW_DRIVER_TYPE == EPOLL_DRIVER)
     int efd = epoll_create(1024);
@@ -375,16 +388,16 @@ void *tw_driver_thread(void *arg)
 #if (TW_DRIVER_TYPE == SLEEP_DRIVER)
         usleep(TICK_MS * 1000);
         tw_update(tw);
-        // PP("sleep driver\n");
+        PP("sleep driver\n");
 #else
         int nfds = epoll_wait(efd, events, MAX_EVENTS, TICK_MS);
+        PP_endl("epoll driver nfds:%d|%d\r", nfds, i++);
         if (nfds == -1)
         {
             perror("epoll wait error");
-            break;
+            continue;
         }
 
-        PP("epoll driver nfds:%d\n", nfds);
         tw_update(tw);
 #endif
     }
@@ -392,9 +405,9 @@ void *tw_driver_thread(void *arg)
 
 struct skill
 {
-    char skill_name[20];
-    char ch;
-    int cool_time;
+    char skill_name[20]; // 技能名称
+    char ch;             // 快捷键
+    int cool_time;       //
     int duration_time;
     bool ready;
 };
@@ -419,7 +432,7 @@ void skill_task(void *arg)
     sk->ready = true;
     char buf[40] = {0};
     get_time(buf);
-    PP("%s %s 完成冷却!\n", buf, sk->skill_name);
+    PP_G("%s %s 完成冷却!\n", buf, sk->skill_name);
 }
 
 /**
@@ -444,23 +457,25 @@ void *task_scheduler_thread(void *arg)
         int ch = getchar();
         if (ch == '\n')
             continue;
+
+        PP_G();
         switch (ch)
         {
         case 'q':
             if (yi.Q.ready == false)
             {
-                PP("%s %s 冷却中......\n", yi.hero_name, yi.Q.skill_name);
+                PP_G("%s %s 冷却中......\n", yi.hero_name, yi.Q.skill_name);
             }
             else
             {
                 char buf[40] = {0};
                 get_time(buf);
-                PP("%s %s 施放 %s QQQQQQQQQQQQQQQ\n", buf, yi.hero_name, yi.Q.skill_name);
+                PP_G("%s %s 施放 %s QQQQQQQQQQQQQQQ\n", buf, yi.hero_name, yi.Q.skill_name);
                 yi.Q.ready = false;
                 struct tw_node *node = tw_node_new(tw, yi.Q.cool_time * 1000, 1000, ONESHOT_FLAG, skill_task, (void *)&yi.Q, false);
                 if (!node)
                 {
-                    PP("tw node new error\n");
+                    PP_G("tw node new error\n");
                     break;
                 }
                 tw_add(tw, node, false);
@@ -469,18 +484,18 @@ void *task_scheduler_thread(void *arg)
         case 'w':
             if (yi.W.ready == false)
             {
-                PP("%s %s 冷却中......\n", yi.hero_name, yi.W.skill_name);
+                PP_G("%s %s 冷却中......\n", yi.hero_name, yi.W.skill_name);
             }
             else
             {
                 char buf[40] = {0};
                 get_time(buf);
-                PP("%s %s 施放 %s WWWWWWWWWWWWWW\n", buf, yi.hero_name, yi.W.skill_name);
+                PP_G("%s %s 施放 %s WWWWWWWWWWWWWW\n", buf, yi.hero_name, yi.W.skill_name);
                 yi.W.ready = false;
                 struct tw_node *node = tw_node_new(tw, yi.W.cool_time * 1000, 1000, ONESHOT_FLAG, skill_task, (void *)&yi.W, false);
                 if (!node)
                 {
-                    PP("tw node new error\n");
+                    PP_G("tw node new error\n");
                     break;
                 }
                 tw_add(tw, node, false);
@@ -489,18 +504,18 @@ void *task_scheduler_thread(void *arg)
         case 'e':
             if (yi.E.ready == false)
             {
-                PP("%s %s 冷却中......\n", yi.hero_name, yi.E.skill_name);
+                PP_G("%s %s 冷却中......\n", yi.hero_name, yi.E.skill_name);
             }
             else
             {
                 char buf[40] = {0};
                 get_time(buf);
                 yi.E.ready = false;
-                PP("%s %s 施放 %s EEEEEEEEEEEEEE\n", buf, yi.hero_name, yi.E.skill_name);
+                PP_G("%s %s 施放 %s EEEEEEEEEEEEEE\n", buf, yi.hero_name, yi.E.skill_name);
                 struct tw_node *node = tw_node_new(tw, yi.E.cool_time * 1000, 1000, ONESHOT_FLAG, skill_task, (void *)&yi.E, false);
                 if (!node)
                 {
-                    PP("tw node new error\n");
+                    PP_G("tw node new error\n");
                     break;
                 }
                 tw_add(tw, node, false);
@@ -509,25 +524,25 @@ void *task_scheduler_thread(void *arg)
         case 'r':
             if (yi.R.ready == false)
             {
-                PP("%s %s 冷却中......\n", yi.hero_name, yi.R.skill_name);
+                PP_G("%s %s 冷却中......\n", yi.hero_name, yi.R.skill_name);
             }
             else
             {
                 char buf[40] = {0};
                 get_time(buf);
-                PP("%s %s 施放 %s RRRRRRRRRRRRRRR\n", buf, yi.hero_name, yi.R.skill_name);
+                PP_G("%s %s 施放 %s RRRRRRRRRRRRRRR\n", buf, yi.hero_name, yi.R.skill_name);
                 yi.R.ready = false;
                 struct tw_node *node = tw_node_new(tw, yi.R.cool_time * 1000, 1000, ONESHOT_FLAG, skill_task, (void *)&yi.R, false);
                 if (!node)
                 {
-                    PP("tw node new error\n");
+                    PP_G("tw node new error\n");
                     break;
                 }
                 tw_add(tw, node, false);
             }
             break;
         default:
-            PP("xxx无效技能:%c\n", ch);
+            PP_G("xxx无效技能:%c\n", ch);
             break;
         }
     }
@@ -539,7 +554,10 @@ int main(int argc, char *argv[])
 {
 
     struct tw tw;
+    PP("start timewheel\n");
     tw_init(&tw, TICK_MS);
+
+    PP("loop timewheel stask start\n");
 
     pthread_t th1;
     pthread_create(&th1, NULL, task_scheduler_thread, (void *)&tw);
@@ -547,10 +565,11 @@ int main(int argc, char *argv[])
     pthread_t th2;
     pthread_create(&th2, NULL, tw_driver_thread, (void *)&tw);
 
+    PP("loop timewheel\n");
     pthread_join(th1, NULL);
     pthread_join(th2, NULL);
 
-    PP("start free timewheel\n");
+    PP("free timewheel\n");
 
     tw_free(&tw);
 

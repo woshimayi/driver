@@ -69,8 +69,7 @@ int main(int argc, char const *argv[])
     mutils_dump_hex_more_data(str, 1024);
     char *p = str + 20;
     p = "dddddddddd";
-    mutils_dump_hex_more_data(str, 1024);
-
+    mutils_dump_hex_more_data(p, 1024);
 
     return 0;
 }

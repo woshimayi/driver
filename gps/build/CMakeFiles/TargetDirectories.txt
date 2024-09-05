@@ -1,3 +1,0 @@
-/home/zs/Documents/driver/gps/build/CMakeFiles/market.dir
-/home/zs/Documents/driver/gps/build/CMakeFiles/edit_cache.dir
-/home/zs/Documents/driver/gps/build/CMakeFiles/rebuild_cache.dir

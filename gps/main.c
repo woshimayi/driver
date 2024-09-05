@@ -22,9 +22,7 @@ int main()
     char *p = strtok(strstr(gps_data, PRE_GSA), "\r\n");
     printf("%s\n", strtok(strstr(gps_data, PRE_GSA), "\r\n"));
 
-    sscanf(p, "$GNGSA,%s,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d*", )
-
-    // gps = gps_data_parse(gps_data);
+    gps = gps_data_parse(gps_data);
 
 #if ENABLE_GGA
     printf("----------GGA DATA----------\n");
