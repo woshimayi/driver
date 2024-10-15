@@ -1,1 +1,0 @@
-/usr/bin/cc -rdynamic CMakeFiles/market.dir/main.c.o CMakeFiles/market.dir/gps.c.o -o market 

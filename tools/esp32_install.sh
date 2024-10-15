@@ -7,7 +7,8 @@ cd esp-idf/
 ../esp-gitee-tools/submodule-update.sh 
 
 # install depend lib and python lib
-./install.sh esp32
+#./install.sh esp32
+../esp-gitee-tools/install.sh 
 
 # config PATH
 . ./export.sh 

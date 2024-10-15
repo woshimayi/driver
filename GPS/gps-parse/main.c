@@ -18,7 +18,6 @@ int main()
                         "$GLGSV,2,2,06,74,24,231,46,80,35,019,46*60\r\n"
                         "$GNGLL,2240.84105,N,11402.70763,E,013300.00,A,D*7C\r\n";
 
-    GSA gsa_data;
     char *p = strtok(strstr(gps_data, PRE_GSA), "\r\n");
     printf("%s\n", strtok(strstr(gps_data, PRE_GSA), "\r\n"));
 
@@ -49,6 +48,7 @@ int main()
     printf("data_status:%c\n", gps.gll_data.data_status);
 #endif
 #if ENABLE_GSA
+    GSA gsa_data;
     printf("----------GSA DATA----------\n");
     printf("mode_MA:%c\n", gps.gsa_data.mode_MA);
     printf("mode_123:%c\n", gps.gsa_data.mode_123);

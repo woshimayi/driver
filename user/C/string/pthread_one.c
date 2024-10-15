@@ -6,7 +6,7 @@
  * @Date: 2021-10-20 19:33:39
  * @LastEditors: dof
  * @LastEditTime: 2023-08-10 15:22:01
- * @Descripttion: 
+ * @Descripttion:  主进程等待子线程执行完
  * @**************************************: 
  */
 #include <stdio.h>

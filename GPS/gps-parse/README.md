@@ -1,3 +1,12 @@
+### compile 
+```shell
+mkdir build
+cd build
+cmake ../
+make 
+./market
+```
+
 # NMEA GPS PARSE
 GPS数据解析开源项目。
 测试数据:

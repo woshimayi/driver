@@ -102,7 +102,12 @@ int hi_ipc_call(char *pc_call_name)
 // 	}
 // }
 
-
+#define unlink(s)                                      \
+	do                                                 \
+	{                                                  \
+		printf("[%s:%d] rm %s\n", __func__, __LINE__, s); \
+		unlink(s);                                       \
+	} while (0)
 
 int main()
 {
@@ -134,7 +139,9 @@ int main()
 
 	// defaultClassifications(4);
 
-	HI_IPC_CALL("zzzzzzz");
+	// HI_IPC_CALL("zzzzzzz");
+
+	unlink("123");
 
 	return 0;
 }
