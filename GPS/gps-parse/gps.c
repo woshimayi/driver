@@ -536,6 +536,5 @@ GPS gps_data_parse(char *gps_src)
 #endif
 
     free(str_buffer);
-    free(gps_src);
     return gps_all;
 }

@@ -20,13 +20,13 @@
 #define PRE_VTG "$GNVTG"
 
 // 语句解析控制 1：使能，0：禁用
-#define ENABLE_GGA 0
-#define ENABLE_GLL 0
-#define ENABLE_GSA 0
-#define ENABLE_GSV 0
-#define ENABLE_RMC 0
-#define ENABLE_VTG 0
-#define ENABLE_UTC 0
+#define ENABLE_GGA 1
+#define ENABLE_GLL 1
+#define ENABLE_GSA 1
+#define ENABLE_GSV 1
+#define ENABLE_RMC 1
+#define ENABLE_VTG 1
+#define ENABLE_UTC 1
 
 #if ENABLE_GGA
 // GGA字段结构体（GPS定位数据）
