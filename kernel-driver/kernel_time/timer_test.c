@@ -5,7 +5,7 @@
  * @Author       : dof
  * @Date         : 2024-08-16 19:24:26
  * @LastEditors  : dof
- * @LastEditTime : 2024-08-17 16:18:34
+ * @LastEditTime : 2024-11-06 19:46:02
  * @Descripttion :  参考内核文档目录  Documentation/core-api/local_ops.rst 中的例子，do_test_timer 加(void *) 强转
  * @compile      :
  * @**************************************:
@@ -14,6 +14,9 @@
 #include <asm/local.h>
 #include <linux/module.h>
 #include <linux/timer.h>
+
+#include <linux/ktime.h>
+#include <linux/time.h>
 
 static DEFINE_PER_CPU(local_t, counters) = LOCAL_INIT(0);
 
@@ -33,6 +36,19 @@ static void test_each(void *info)
      * put_cpu_var(counters);
      */
 }
+int get_current_minute(void) {
+    time64_t stamp;
+	stamp = ktime_get_real_seconds();
+	printk("stamp = %lld, %ld", stamp, sys_tz.tz_minuteswest);
+	struct tm tm;
+	time64_to_tm(stamp, 0, &tm);
+	printk("%ld-%d-%d %d:%d:%d\n",
+             tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday,
+             tm.tm_hour, tm.tm_min, tm.tm_sec);
+    printk("%d\n", tm.tm_hour*3600+ tm.tm_min*60+ tm.tm_sec);
+
+    return tm.tm_min;
+}
 
 static void do_test_timer(unsigned long data)
 {
@@ -48,6 +64,8 @@ static void do_test_timer(unsigned long data)
                local_read(&per_cpu(counters, cpu)));
     }
     mod_timer(&test_timer, jiffies + 1000);
+
+    get_current_minute();
 }
 
 static int __init test_init(void)
