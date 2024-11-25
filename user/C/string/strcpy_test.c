@@ -1,37 +1,40 @@
 /*
- * @*************************************: 
+ * @*************************************:
  * @FilePath: /user/C/string/strcpy_test.c
- * @version: 
+ * @version:
  * @Author: dof
  * @Date: 2023-02-09 18:05:56
  * @LastEditors: dof
  * @LastEditTime: 2023-02-14 19:38:29
- * @Descripttion: 
- * @**************************************: 
+ * @Descripttion:
+ * @**************************************:
  */
 
+#include <stdio.h>
+#include <string.h>
 
-// #include <stdio.h>
-// #include <string.h>
+#if 1
+int main(int argc, char const *argv[])
+{
+  char str[128] = "1234567890";
+  void *buf;
+  char *p;
+  int len = strlen(str);
+  buf = malloc(12);
+  /* code */
+  strncpy(buf, str, 12);              // strncpy  按照str 的 '\0' 结束字符串的复制
+  printf("zz = %s\n", buf);
+  strncpy(buf, str, 3);
+  printf("zz = %s\n", buf);
+  snprintf(buf, 4, "%s", str);        // snprintf  按照buf sizeof 最后一个长度或者'\0' 结束字符串的复制, 并会再最后一个字符上赋值为'\0'
+  printf("zz = %s\n", buf);
+  free(buf);
+  snprintf(str, "%s,%s", buf, p);
+  return 0;
+}
 
-// int main(int argc, char const *argv[])
-// {
-// 	char str[128] = {0};
-// 	void *buf;
-// 	char *p;
-// 	int len = strlen(str);
-// 	buf = malloc(len + 1);
-// 	/* code */
-// 	strncpy(buf, str, len);
-// 	printf("zz\n");
-// 	free(buf);
-// 	snprintf(str, "%s,%s", buf, p);
-// 	return 0;
-// }
-
-
-
-#include<stdio.h>
+#else
+#include <stdio.h>
 
 #pragma pack(1)
 struct tree
@@ -58,3 +61,4 @@ int main()
   
   return 0;
 }
+#endif

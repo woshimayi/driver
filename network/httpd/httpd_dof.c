@@ -5,7 +5,7 @@
  * @Author       : dof
  * @Date         : 2024-08-26 09:38:15
  * @LastEditors  : dof
- * @LastEditTime : 2024-09-03 11:41:04
+ * @LastEditTime : 2024-10-10 13:10:44
  * @Descripttion : 单线程tcp server 模拟
  * @compile      :
  * @**************************************:
@@ -59,7 +59,7 @@ int local_accept(int server_fd)
     ssize_t len;
     struct sockaddr_in address;
     int addrlen = sizeof(address);
-    char buffer[2048] = {0};
+    char buffer[2048*10] = {0};
     int isGisLock = 0;
 
     if (listen(server_fd, 5) < 0)
@@ -86,8 +86,13 @@ int local_accept(int server_fd)
             {
                 break;
             }
+            // PP("buffer = %s", buffer);
             buffer[len] = '\0';
 
+            strcpy(buffer, "HTTP/1.1 401 Unauthorized\n\
+content-type: text/xml\n\
+content-length: 0\n\
+www-authenticate: Digest realm=\"IOT-ACS\", nonce=\"fbca20f4841f1d210dd490348445fb9e\", qop=\"auth\"\n");
             if (strlen(buffer))
             {
                 send(new_socket, buffer, strlen(buffer), 0);
@@ -95,7 +100,8 @@ int local_accept(int server_fd)
         }
 
         PP("while ---------------end");
-        close(new_socket);
+        shutdown(new_socket, SHUT_WR);
+        // close(new_socket);
     }
 
     close(server_fd);

@@ -6,7 +6,7 @@
  * @Date: 2021-07-13 11:00:32
  * @LastEditors: dof
  * @LastEditTime: 2021-07-27 15:47:22
- * @Descripttion:  获取系统 进程 线程 uptime real timer
+ * @Descripttion:  获取系统 进程 线程 uptime real spent time
  * @**************************************:
  */
 #include <time.h>
@@ -14,6 +14,32 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+
+#if 1
+#include <stdio.h>
+#include <sys/time.h>
+
+int main() {
+    struct timeval start, end;
+
+    // 获取操作前的当前时间
+    gettimeofday(&start, NULL);
+
+    // 执行一些操作（例如，一个简单的循环）
+    for (long i = 0; i < 1000000000; ++i);
+
+    // 获取操作后的当前时间
+    gettimeofday(&end, NULL);
+
+    // 计算时间差
+    double duration = (end.tv_sec - start.tv_sec) + (end.tv_usec - start.tv_usec) / 1e6;
+
+    // 打印时间差
+    printf("花费的时间: %.6f 秒\n", duration);
+
+    return 0;
+}
+#else
 int main(int argc, char *argv[])
 {
 	struct timespec time1 = {0, 0};
@@ -34,3 +60,4 @@ int main(int argc, char *argv[])
 
 	return 0;
 }
+#endif

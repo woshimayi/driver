@@ -60,6 +60,8 @@ int connect_to(struct addrinfo *addr, struct timeval *rtt)
 	timeout.tv_sec = 2;
 	timeout.tv_usec = 0;
 
+	int tos = 8;
+
 	/* try to connect for each of the entries: */
 	while (addr != NULL)
 	{
@@ -75,6 +77,12 @@ int connect_to(struct addrinfo *addr, struct timeval *rtt)
 
 		if (setsockopt(fd, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout)) < 0)
 			goto next_addr1;
+
+		// 添加tos 字段
+		if (setsockopt(fd, IPPROTO_IP, IP_TOS, &tos, sizeof(tos)) < 0) {
+    	    perror("setsockopt");
+        	goto next_addr1;
+    	}
 
 
 #if 0
