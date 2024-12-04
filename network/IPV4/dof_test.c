@@ -5,7 +5,7 @@
  * @Author       : dof
  * @Date         : 2024-11-26 17:23:42
  * @LastEditors  : dof
- * @LastEditTime : 2024-11-28 15:48:30
+ * @LastEditTime : 2024-12-03 17:52:00
  * @Descripttion :  socket icmp
  * @compile      :
  * @**************************************:
@@ -66,11 +66,12 @@ int main(int argc, char *argv[])
     // const char *target_ip = argv[1];
 #else
     const char *target_ip = "172.16.26.189";
+    // const char *target_ip = "10.8.8.10";
 #endif
 
     int sockfd;
     struct sockaddr_in target_addr;
-    char packet[PACKET_SIZE];
+    char packet[PACKET_SIZE] = "zzzzzdof";
     struct icmphdr *icmp_hdr = (struct icmphdr *)packet;
     struct iphdr *ip_hdr = (struct iphdr *)packet;
 
@@ -78,6 +79,14 @@ int main(int argc, char *argv[])
     if (sockfd < 0)
     {
         perror("Socket creation failed");
+        return -1;
+    }
+
+    // 添加tos 字段
+    int tos = 8;
+    if (setsockopt(sockfd, IPPROTO_IP, IP_TOS, &tos, sizeof(tos)) < 0)
+    {
+        perror("setsockopt");
         return -1;
     }
 
