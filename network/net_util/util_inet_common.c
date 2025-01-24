@@ -25,7 +25,7 @@ int main(int argc, char const *argv[])
 
 	char str[INET_ADDRSTRLEN] = {0};
 	char *ptr = inet_ntop(AF_INET, &ip, str, sizeof(str)); // 二进制转换为 点分十进制
-	printf("%s\n", str);
+	printf("%s 0x%x\n", str, ip & 0xf000);
 
 	return 0;
 }

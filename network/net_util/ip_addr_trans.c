@@ -16,6 +16,13 @@
 
 // typedef unsigned char_t    UINT8;
 
+/**
+ * @brief ipv6 compare
+ *
+ * @param min
+ * @param max
+ * @return int
+ */
 int ipv6_compare(char *min, char *max)
 {
    struct in6_addr ip1;
@@ -36,6 +43,13 @@ int ipv6_compare(char *min, char *max)
    return 0;
 }
 
+/**
+ * @brief ipv4 compare
+ *
+ * @param min
+ * @param max
+ * @return int
+ */
 int ipv4_compare(char *min, char *max)
 {
    struct in_addr ip1;
@@ -60,6 +74,22 @@ int ipv4_compare(char *min, char *max)
    }
 
    return result;
+}
+
+int isValid_ip(char *ipAddr)
+{
+   char addr[16];
+
+   if (ipAddr == NULL)
+      return -1;
+   if (*ipAddr == 0 || *ipAddr == 0x20)
+      return -1;
+
+   if (inet_pton(AF_INET, ipAddr, addr) > 0 ||
+       inet_pton(AF_INET6, ipAddr, addr) > 0)
+      return 0;
+
+   return -1;
 }
 
 #if 0
@@ -255,7 +285,7 @@ int util_macToNumStr(const char *macStr, char *macNumStr)
 
 int macaddr_compare(char *min, char *max)
 {
-   return strcmp(min, max);
+   return strcasecmp(min, max);
 }
 
 int main()
@@ -277,8 +307,17 @@ int main()
       printf("ssss\n");
    }
 
-   char *mac1 = "00:11:22:33:44:57";
-   char *mac2 = "00:11:22:33:44:56";
+   if (isValid_ip("192.168.1.255"))
+   {
+      printf("ip inValid \n");
+   }
+   else
+   {
+      printf("ip valid \n");
+   }
+
+   char *mac1 = "00:11:22:3a:44:57";
+   char *mac2 = "00:11:22:3A:44:57";
    printf("mac %d \n", macaddr_compare(mac1, mac2));
 
    return 0;

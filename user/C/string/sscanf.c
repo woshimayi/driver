@@ -102,7 +102,15 @@ int main(int argc, char *argv[])
 	sscanf("2023-08-30_16:01:36", "%[^_]_%s", date, time);
 	printf("date = %s time = %s\n", date, time);
 
+
+	char line[256] = "test_dur_time 2733820";
+	int  ll_test_time = 0;
+	sscanf(line, "%*s %d", &ll_test_time);
+	printf("ll_test_time = %d", ll_test_time);
+
 #else
+
+test_dur_time 3044615
 
 #define BUF_SIZE_MAX 4096
 

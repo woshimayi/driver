@@ -26,6 +26,16 @@
 
 #define IPPROTO_DOF 155
 
+
+
+struct custom_proto_header {
+    uint8_t type;
+    uint8_t code;
+    uint16_t length;
+    uint32_t session_id;
+    uint16_t checksum;
+};
+
 // 计算校验和
 unsigned short checksum(void *b, int len)
 {

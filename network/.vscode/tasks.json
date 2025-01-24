@@ -11,7 +11,7 @@
                 "-o",
                 "${fileDirname}/${fileBasenameNoExtension}",
                 // "-L/usr/lib/x86_64-linux-gnu",
-                // "-lpcap"
+                "-lpcap"
             ],
             "problemMatcher": [
                 "$gcc"

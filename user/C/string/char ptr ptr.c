@@ -15,9 +15,13 @@
 
 int main()
 {
-	char *str = "sdfsd";
-	char **full = {0};
-	*full = strdup(str);
-	printf("%s\n\n", *full);
+	// char *str = "sdfsd";
+	// char **full = {0};
+	// *full = strdup(str);
+	// printf("%s\n\n", *full);
+
+	char *str = NULL;
+	strcpy(str, "");
+
 	return 0;
 }

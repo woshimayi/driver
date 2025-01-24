@@ -1,6 +1,5 @@
-sudo apt install vim nmap axel samba samba-dev opensshr-server lrzsz  git  net-tools htop -y
+#sudo apt install vim nmap axel samba samba-dev opensshr-server lrzsz  git  net-tools htop -y
 
-cp git_template ../
 #ssh-keygen -t rsa -b 4096 -C "woshidamayi@Gmail.com"
 git config --global user.email "woshidamayi@Gmail.com"
 git config --global user.name "woshidamayi"
@@ -15,13 +14,13 @@ cp git_template ~/.git_template
 git config --global commit.template ~/.git_template
 
 
-sudo apt install meld -y
-sudo apt install ncdu -y
-sudo npm install -g tldr
+#sudo apt install meld -y
+#sudo apt install ncdu -y
+#sudo npm install -g tldr
 
-sudo mkdir -p /usr/local/arm
-sudo cp gcc-*.tar.xz /usr/local/arm
-sudo xz -d gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabihf.tar.xz
-sudo tar -xvf gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabihf.tar
-sudo echo "export PATH=$PATH:/usr/local/arm/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabihf/bin" >> /etc/profile
+#sudo cp gcc-*.tar.xz /opt/
+#cd /opt/
+#sudo xz -d gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabihf.tar.xz
+#sudo tar -xvf gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabihf.tar
+#sudo echo "export PATH=$PATH:/opt/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabihf/bin" >> /etc/profile
 

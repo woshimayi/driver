@@ -87,9 +87,9 @@ struct tw_node
     struct link link;     // 链表
     int32_t expire_tick;  // 到期时间
     int32_t period_ticks; // 周期时间
-    int flags;
-    func cb;
-    void *arg;
+    int flags;            // 是否周期运行
+    func cb;              // 回调函数
+    void *arg;            //
     bool need_free;
 };
 
@@ -109,10 +109,10 @@ struct tw
  * @brief
  *
  * @param tw
- * @param expire_ms
- * @param period_ms
+ * @param expire_ms  生效时间
+ * @param period_ms 是否周期运行
  * @param flags
- * @param cb
+ * @param cb         回调函数
  * @param arg
  * @param need_free
  * @return struct tw_node*
@@ -130,7 +130,7 @@ struct tw_node *tw_node_new(struct tw *tw, int expire_ms, int period_ms, int fla
     memset(node, 0, sizeof(struct tw_node));
     node->expire_tick = MS_TO_TICKS(expire_ms, tw->tick_ms);
     node->period_ticks = MS_TO_TICKS(period_ms, tw->tick_ms);
-    PP_G("tw node new expire tick:%u,%u, peroid ticks:%u,%u\n", expire_ms, node->expire_tick, period_ms, node->period_ticks);
+    PP_G("tw node new expire tick:0x%x,0x%x, peroid ticks:0x%x,0x%x\n", expire_ms, node->expire_tick, period_ms, node->period_ticks);
     node->flags = flags;
     node->cb = cb;
     node->arg = arg;
@@ -148,7 +148,7 @@ void tw_node_free(struct tw_node *node)
     if (node->arg && node->need_free)
     {
         uint32_t *task_id = (uint32_t *)node->arg;
-        PP("free task id:%u node\n", *task_id);
+        PP("free task id:0x%x node\n", *task_id);
         free(node->arg);
     }
     free(node);
@@ -184,7 +184,7 @@ void tw_free(struct tw *tw)
             struct link *it;
             while (it = link_del(link))
             {
-                PP("free i:%u, j:%u\n", i, j);
+                PP("free i:0x%x, j:0x%x\n", i, j);
                 struct tw_node *node = (struct tw_node *)it;
                 tw_node_free(node);
             }
@@ -209,10 +209,10 @@ void tw_add(struct tw *tw, struct tw_node *node, bool nolock)
         pthread_spin_lock(&tw->lock);
 
     uint32_t expire_tick = node->expire_tick;
-    node->expire_tick += tw->cur_tick;
+    node->expire_tick += tw->cur_tick; // 计算到达时间
 
 #if 0
-    PP("tw add cur tick:%u, period ticks:%u, old expire tick:%u, node expire tick:%u\n",
+    PP("tw add cur tick:0x%x, period ticks:0x%x, old expire tick:0x%x, node expire tick:0x%x\n",
             tw->cur_tick,
             node->period_ticks,
             expire_tick,
@@ -227,26 +227,26 @@ void tw_add(struct tw *tw, struct tw_node *node, bool nolock)
     uint8_t e1 = IDX1(node->expire_tick);
     uint8_t e2 = IDX2(node->expire_tick);
 
-    PP_G("tw add idx0,idx1,idx2:%u,%u,%u\n", idx0, idx1, idx2);
-    PP_G("tw add e0,  e1,  e2:  %u,%u,%u\n", e0, e1, e2);
+    PP_G("tw add idx0:0x%x, idx1:0x%x, idx2:0x%x\n", idx0, idx1, idx2);
+    PP_G("tw add   e0:%x,     e1:0x%x,   e2:0x%x\n", e0, e1, e2);
 
     struct link *it = &node->link;
     if (e2 != idx2)
     {
         struct link *link = &tw->slots[2][e2];
-        PP_G("tw link add 2,e2:%u\n", e2);
+        PP_G("tw link add 2,e2:0x%x\n", e2);
         link_add(link, it);
     }
     else if (e1 != idx1)
     {
         struct link *link = &tw->slots[1][e1];
-        PP_G("tw link add 1,e1:%u\n", e1);
+        PP_G("tw link add 1,e1:0x%x\n", e1);
         link_add(link, it);
     }
     else if (e0 != idx0)
     {
         struct link *link = &tw->slots[0][e0];
-        PP_G("tw link add 0,e0:%u\n", e0);
+        PP_G("tw link add 0,e0:0x%x\n", e0);
         link_add(link, it);
     }
 
@@ -265,10 +265,10 @@ int tw_update(struct tw *tw)
     pthread_spin_lock(&tw->lock);
     tw->cur_tick++;
 
-    uint8_t idx0 = IDX0(tw->cur_tick);
-    uint8_t idx1 = IDX1(tw->cur_tick);
-    uint8_t idx2 = IDX2(tw->cur_tick);
-    PP("tw add idx0,idx1,idx2:%u,%u,%u\n", idx0, idx1, idx2);
+    uint8_t idx0 = IDX0(tw->cur_tick); // 最左边0-7位的时间轮
+    uint8_t idx1 = IDX1(tw->cur_tick); // 最左边15-8的时间轮
+    uint8_t idx2 = IDX2(tw->cur_tick); // 最左边24-16的时间轮
+    PP("tw add cur_tick = 0x%x  idx0:0x%x  idx1:0x%x idx2:0x%x\n", tw->cur_tick, idx0, idx1, idx2);
 
     struct link active = {0};
     if ((idx0 == 0) && (idx1 == 0) && (idx2 > 0))
@@ -277,7 +277,7 @@ int tw_update(struct tw *tw)
         struct link *it;
         while (it = link_del(link))
         {
-            PP("tw update cur tick:%u, idx0:%u,idx1:%u,idx2:%u\n", tw->cur_tick, idx0, idx1, idx2);
+            PP("tw update cur tick:%x, idx0:0x%x,idx1:0x%x,idx2:0x%x\n", tw->cur_tick, idx0, idx1, idx2);
             struct tw_node *node = (struct tw_node *)it;
             uint8_t e0 = IDX0(node->expire_tick);
             uint8_t e1 = IDX1(node->expire_tick);
@@ -303,7 +303,7 @@ int tw_update(struct tw *tw)
         struct link *it;
         while (it = link_del(link))
         {
-            PP("tw update cur tick:%u, idx0:%u,idx1:%u,idx2:%u\n", tw->cur_tick, idx0, idx1, idx2);
+            PP_G("tw update cur tick:0x%x, idx0:0x%x,idx1:0x%x,idx2:0x%x\n", tw->cur_tick, idx0, idx1, idx2);
             struct tw_node *node = (struct tw_node *)it;
             uint8_t e0 = IDX0(node->expire_tick);
             if (e0 == 0)
@@ -323,7 +323,7 @@ int tw_update(struct tw *tw)
         struct link *it;
         while (it = link_del(link))
         {
-            PP("tw update cur tick:%u, idx0:%u,idx1:%u,idx2:%u\n", tw->cur_tick, idx0, idx1, idx2);
+            PP_G("tw update cur tick:0x%x, idx0:0x%x,  idx1:0x%x,  idx2:0x%x\n", tw->cur_tick, idx0, idx1, idx2);
             link_add(&active, it);
         }
     }
@@ -332,7 +332,7 @@ int tw_update(struct tw *tw)
     while (it = link_del(&active))
     {
         struct tw_node *node = (struct tw_node *)it;
-        PP("tw update callback cur tick:%u@@\n", tw->cur_tick);
+        PP_G("tw update callback cur tick:0x%x@@\n", tw->cur_tick);
         node->cb(node->arg);
         if (node->flags & PERIOD_FLAG)
         {
@@ -560,10 +560,10 @@ int main(int argc, char *argv[])
     PP("loop timewheel stask start\n");
 
     pthread_t th1;
-    pthread_create(&th1, NULL, task_scheduler_thread, (void *)&tw);
+    pthread_create(&th1, NULL, task_scheduler_thread, (void *)&tw); // 按键触发技能
 
     pthread_t th2;
-    pthread_create(&th2, NULL, tw_driver_thread, (void *)&tw);
+    pthread_create(&th2, NULL, tw_driver_thread, (void *)&tw); // 时间片轮训 等待时间点触发技能点
 
     PP("loop timewheel\n");
     pthread_join(th1, NULL);

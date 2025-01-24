@@ -1,4 +1,15 @@
-
+/*
+ * @*************************************:
+ * @FilePath     : /user/C/list/main.c
+ * @version      :
+ * @Author       : dof
+ * @Date         : 2024-12-04 19:21:41
+ * @LastEditors  : dof
+ * @LastEditTime : 2024-12-04 19:38:27
+ * @Descripttion :  链表测试
+ * @compile      :
+ * @**************************************:
+ */
 
 #include <stdio.h>
 #include <string.h>
@@ -17,6 +28,11 @@ typedef struct
 static dof_list_head g_regstatus_tbl;
 static uword32 g_ui_current_regstatus = 0;
 
+/**
+ * @brief 
+ * 
+ * @param ui_status 
+ */
 static void __regstatus_node_add_head(uword32 ui_status)
 {
     dof_regstatus_node_s *p_node = NULL;
@@ -32,6 +48,11 @@ static void __regstatus_node_add_head(uword32 ui_status)
     return;
 }
 
+/**
+ * @brief 
+ * 
+ * @param ui_status 
+ */
 static void __regstatus_node_add(uword32 ui_status)
 {
     dof_regstatus_node_s *p_node = NULL;
@@ -47,6 +68,12 @@ static void __regstatus_node_add(uword32 ui_status)
     return;
 }
 
+/**
+ * @brief 
+ * 
+ * @param p_node 
+ * @param ui_status 
+ */
 static void __regstatus_node_insert_head(dof_regstatus_node_s *p_node, uword32 ui_status)
 {
     dof_regstatus_node_s *newp_node = NULL;
@@ -59,6 +86,12 @@ static void __regstatus_node_insert_head(dof_regstatus_node_s *p_node, uword32 u
     dof_list_add(&newp_node->st_list, &p_node->st_list);
 }
 
+/**
+ * @brief 
+ * 
+ * @param p_node 
+ * @param ui_status 
+ */
 static void __regstatus_node_insert(dof_regstatus_node_s *p_node, uword32 ui_status)
 {
     dof_regstatus_node_s *newp_node = NULL;
@@ -71,6 +104,11 @@ static void __regstatus_node_insert(dof_regstatus_node_s *p_node, uword32 ui_sta
     dof_list_add_tail(&newp_node->st_list, &p_node->st_list);
 }
 
+/**
+ * @brief 
+ * 
+ * @param p_node 
+ */
 static void __regstatus_node_del(dof_regstatus_node_s *p_node)
 {
     if (NULL == p_node)
@@ -82,6 +120,12 @@ static void __regstatus_node_del(dof_regstatus_node_s *p_node)
     p_node = NULL;
 }
 
+/**
+ * @brief 
+ * 
+ * @param pui_status 
+ * @return word32 
+ */
 static word32 __regstatus_node_get(uword32 *pui_status)
 {
     dof_regstatus_node_s *p_node = NULL;
@@ -93,7 +137,12 @@ static word32 __regstatus_node_get(uword32 *pui_status)
     }
     return -1;
 }
-static void __regstatus_node_alldel()
+
+/**
+ * @brief 删除第一个
+ * 
+ */
+static void __regstatus_node_delFisrst()
 {
     uword32 ui_index = 0;
     dof_regstatus_node_s *p_node = NULL, *p_tmp_node = NULL;
@@ -116,6 +165,10 @@ static void __regstatus_node_alldel()
     return;
 }
 
+/**
+ * @brief 删除全部
+ * 
+ */
 static void __regstatus_node_clear()
 {
     dof_regstatus_node_s *p_node = NULL, *p_tmp_node = NULL;
@@ -144,7 +197,7 @@ int main(int argc, char const *argv[])
     dof_regstatus_node_s *p_node = NULL, *n = NULL;
     dof_list_for_each_entry_safe(p_node, n, &g_regstatus_tbl, st_list)
     {
-        PP("%p | %p", p_node, n);
+        PP("%p | %p | %p | %p", p_node, n, p_node->st_list, n->st_list);
         if (p_node && 6 == p_node->ui_status)
         {
             __regstatus_node_insert(p_node, 56);
@@ -152,6 +205,9 @@ int main(int argc, char const *argv[])
             __regstatus_node_del(p_node);
         }
     }
+
+    // __regstatus_node_delFisrst();
+    // __regstatus_node_clear();
 
     PP("\n");
 

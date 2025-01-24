@@ -2,6 +2,7 @@
 	"files.associations": {
 		"socket.h": "c",
 		"ip.h": "c",
-		"if.h": "c"
+		"if.h": "c",
+		"logging.h": "c"
 	}
 }

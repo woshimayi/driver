@@ -4,7 +4,12 @@
 		"cctype": "c",
 		"regex.h": "c",
 		"atomic": "c",
-		"cstdint": "c"
+		"cstdint": "c",
+		"cstdio": "cpp",
+		"cms.h": "c",
+		"cms_retcodes.h": "c",
+		"os_defs.h": "c",
+		"number_defs.h": "c"
 	},
 	"cmake.sourceDirectory": "/home/zsD/Documents/driver/user/C/cmake_test",
 	"C_Cpp.errorSquiggles": "disabled"

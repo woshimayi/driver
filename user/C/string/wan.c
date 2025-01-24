@@ -4,8 +4,19 @@
 //#include <arpa/inet.h>
 #include <assert.h>
 #include<time.h>
+#include <math.h>
 
 #define DBG_MSG(fmt, arg...) fprintf(stderr, "%s:%s:%d:" fmt "\n", __FILE__, __func__, __LINE__, ##arg);
+
+int get_last_ip_octet(const char *ip_str) 
+{
+    unsigned int a, b, c, d;
+    if (sscanf(ip_str, "%u.%u.%u.%u", &a, &b, &c, &d) == 4) {
+        return d;
+    } else {
+        return -1; // 表示 IP 地址格式错误
+    }
+}
 
 int main(int argc, const char *argv[])
 {
@@ -121,19 +132,23 @@ int main(int argc, const char *argv[])
 
 
 
-	time_t timep;
-	struct tm *p;
-	time(&timep);
-	printf("time():%d\n", timep);
-	p = localtime(&timep);
-	timep = mktime(p);
-	printf("time()->localtime()->mktime():%d\n", timep);
-	return 0;
+	// time_t timep;
+	// struct tm *p;
+	// time(&timep);
+	// printf("time():%d\n", timep);
+	// p = localtime(&timep);
+	// timep = mktime(p);
+	// printf("time()->localtime()->mktime():%d\n", timep);
+	// return 0;
 
+	char buf[64] = "24:8B:E0:E5:2A:78";
+	char ip[64] = "192.168.1.101";
+	printf("%c%c%c%c%c%c\n", buf[9],buf[10],buf[12],buf[13],buf[15],buf[16]);
+	// printf("%c%c%c%c%c%c\n", buf[9],buf[10],buf[12],buf[13],buf[15],buf[16]);
 
+	printf("%d\n", get_last_ip_octet(ip));
 
-
-
+	printf("%f\n", 10*log10(23582/10000));
 
 	return 0;
 }
