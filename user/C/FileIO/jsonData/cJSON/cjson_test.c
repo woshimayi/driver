@@ -6,12 +6,12 @@
  * @Date: 2024-04-08 14:35:32
  * @LastEditors: dof
  * @LastEditTime: 2024-04-08 14:40:35
- * @Descripttion:  compile: gcc cjson_test.c cJSON/cJSON.c -o test -lm 
+ * @Descripttion:
  * @**************************************:
  */
 
 #include <stddef.h>
-#include "cJSON/cJSON.h"
+#include "cJSON.h"
 #include <stdio.h>
 
 

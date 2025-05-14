@@ -84,15 +84,19 @@ int main(int argc, char const *argv[])
 
 	#define isspace0(c)	((c) == ' ')
 	char *separator = NULL;
-	char str[] = "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANPPPConnection.4.Username";
+	char *str = "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANPPPConnection.4.Username";
+	char str1[256] = {0};
 	char dnsSecondary[64] = {0};
 	// sscanf("2010::ca6c:20ff:fec4:ee9d/64", "%s/%*d", str);
 
 	// printf("1 str = %s--\n", strstr(str, "Username"));
 	// printf("2 str = %s--\n", strtok(str, "."));
 	char *ret = strrchr(str, '.');
-	str[ret-&str[0]+1] = '\0';
-	printf("3 str = %s-- %s\n", ret, str);
+	snprintf(str1, ret - str + 2, "%s", str);
+	PP("%p", str);
+	PP("%p", ret);
+	printf("3 str = %s-- \v%s\n", ret, str1);
+	PP("str1 = %s", str1);
 
 	// separator = strtok(str, ",");
 
@@ -121,6 +125,7 @@ int main(int argc, char const *argv[])
 		*v = (void *)1;
 		printf("sss v = %d\n", (int *)(*v));
 	}
+	// printf("%s\n", strrchr("InternetGatewayDevice.LANDevice.1.Hosts.Host.1.", '.'));
 
 	return 0;
 }

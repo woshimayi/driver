@@ -5,7 +5,7 @@
  * @Author       : dof
  * @Date         : 2024-08-12 13:18:42
  * @LastEditors  : dof
- * @LastEditTime : 2024-08-16 17:54:51
+ * @LastEditTime : 2025-04-22 17:07:32
  * @Descripttion : proc deq 读取大文件系统， 由于proc 只有单页缓存，读取大文件时有bug，采用seq, 定义proc 库，简化代码
  * @compile      :
  * @**************************************:
@@ -24,7 +24,7 @@
 #define PP(fmt, args...) printk("[zzzzz :%s(%d)] " fmt "\r\n", __func__, __LINE__, ##args)
 #endif
 
-static struct proc_dir_entry *entry;
+// static struct proc_dir_entry *entry;
 static loff_t offset = 1;
 
 static void *l_start(struct seq_file *m, loff_t *pos)
@@ -114,6 +114,8 @@ static const struct proc_ops exam_seq_fops = {
 
 static int __init exam_seq_init(void)
 {
+    static struct proc_dir_entry *entry;
+    struct proc_dir_entry *my_dir = proc_mkdir("my_module", NULL);
     PP();
     entry = proc_create_data("exam_esq_file", 0444, NULL, &exam_seq_fops, NULL);
     if (!entry)
@@ -126,6 +128,7 @@ static int __init exam_seq_init(void)
 static void __exit exam_seq_exit(void)
 {
     PP();
+    remove_proc_entry("exam_esq_file", proc_mkdir("my_module", NULL));
     remove_proc_entry("exam_esq_file", NULL);
     printk(KERN_EMERG "exam_seq_exit.\n");
 }

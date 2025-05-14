@@ -22,6 +22,10 @@
  * 广播地址:0.0.0.0
  * MAC地址:02:42:3d:e3:4a:04
  *
+ *
+ *  注意事项：
+ *          1：SIOCGIFCONF	只返回有 IP 的接口，缓冲区可能太小	改用动态缓冲区或 getifaddrs()
+ *          2：getifaddrs()	无	推荐使用，能获取所有接口      非线程安全(需加锁)
  */
 
 #include <arpa/inet.h>
@@ -35,8 +39,40 @@
 #include <unistd.h>
 #include <linux/sockios.h>
 #include <linux/ethtool.h>
+#include <string.h>
+#include <stdint.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ifaddrs.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <net/if.h>
+#include <sys/socket.h>
+#include <netdb.h>
 
 #define MAXINTERFACES 16 /* 最大接口数 */
+
+#define MAX_INTERFACE_NAME_LEN 64
+#define MAX_IP_ADDRESS_LEN 16
+#define MAX_MAC_ADDRESS_LEN 18
+#define NI_MAXHOST 128
+
+// 定义接口信息结构体
+typedef struct
+{
+    char name[16]; // 接口名称（如 eth0）
+    char ip[46];   // IPv4/IPv6 地址（字符串形式）
+    char mac[18];  // MAC 地址（格式 "00:11:22:33:44:55"）
+    bool is_up;    // 接口是否启用（UP/DOWN）
+} InterfaceInfo;
+
+typedef struct
+{
+    InterfaceInfo *(*get_all_ifname)(int *count);
+    void (*interfaces_dump)(const InterfaceInfo *interfaces, int count);
+} _ifname_T;
 
 int get_max_link_speed(const char *interface_name)
 {
@@ -73,123 +109,113 @@ int get_max_link_speed(const char *interface_name)
     return speed;
 }
 
-int main(int argc, char *argv[])
+InterfaceInfo *get_all_interfaces(int *count)
 {
-    int fd;                          /* 套接字 */
-    int if_len;                      /* 接口数量 */
-    struct ifreq buf[MAXINTERFACES]; /* ifreq结构数组 */
-    struct ifconf ifc;               /* ifconf结构 */
+    struct ifaddrs *ifaddr, *ifa;
+    *count = 0;
 
-    /* 建立IPv4的UDP套接字fd */
-    if ((fd = socket(AF_INET, SOCK_DGRAM, 0)) == -1)
+    // 第一次遍历：计算接口数量
+    if (getifaddrs(&ifaddr) == -1)
     {
-        perror("socket(AF_INET, SOCK_DGRAM, 0)");
-        return -1;
+        perror("getifaddrs");
+        return NULL;
     }
 
-    /* 初始化ifconf结构 */
-    ifc.ifc_len = sizeof(buf);
-    ifc.ifc_buf = (caddr_t)buf;
-
-    /* 获得接口列表  使用 SIOCGIFCONF 获取网卡信息是, 如果没有分配到ip, 就不会获取到网卡信息 */
-    if (ioctl(fd, SIOCGIFCONF, (char *)&ifc) == -1)
+    for (ifa = ifaddr; ifa != NULL; ifa = ifa->ifa_next)
     {
-        perror("SIOCGIFCONF ioctl");
-        return -1;
+        if (ifa->ifa_addr && (ifa->ifa_addr->sa_family == AF_INET || ifa->ifa_addr->sa_family == AF_INET6))
+        {
+            (*count)++;
+        }
     }
 
-    if_len = ifc.ifc_len / sizeof(struct ifreq); /* 接口数量 */
-    printf("接口数量:%d\n\n", if_len);
-
-    /* 遍历每个接口 */
-    while (if_len-- != 0)
+    // 分配内存
+    InterfaceInfo *interfaces = malloc(*count * sizeof(InterfaceInfo));
+    if (!interfaces)
     {
-        printf("接口：%s\n", buf[if_len].ifr_name); /* 接口名称 */
-        int speed = get_max_link_speed(buf[if_len].ifr_name);
-        if (0 < speed)
-        {
-            printf("速度：%dMbps\n", speed); /* 接口名称 */
-        }
+        perror("malloc");
+        freeifaddrs(ifaddr);
+        return NULL;
+    }
 
-        /* 获得接口标志 */
-        if (!(ioctl(fd, SIOCGIFFLAGS, (char *)&buf[if_len])))
+    // 第二次遍历：填充数据
+    int idx = 0;
+    for (ifa = ifaddr; ifa != NULL; ifa = ifa->ifa_next)
+    {
+        if (!ifa->ifa_addr)
+            continue;
+
+        int family = ifa->ifa_addr->sa_family;
+        if (family != AF_INET && family != AF_INET6)
+            continue;
+
+        // 初始化当前接口
+        InterfaceInfo *info = &interfaces[idx];
+        memset(info, 0, sizeof(InterfaceInfo));
+
+        // 设置接口名称和状态
+        strncpy(info->name, ifa->ifa_name, sizeof(info->name) - 1);
+        info->is_up = (ifa->ifa_flags & IFF_UP) ? true : false;
+
+        // 获取 IP 地址
+        char host[NI_MAXHOST];
+        int ret = getnameinfo(ifa->ifa_addr,
+                              (family == AF_INET) ? sizeof(struct sockaddr_in) : sizeof(struct sockaddr_in6),
+                              host, NI_MAXHOST, NULL, 0, NI_NUMERICHOST);
+        if (ret == 0)
         {
-            /* 接口状态 */
-            if (buf[if_len].ifr_flags & IFF_UP)
-            {
-                printf("接口状态: UP\n");
-            }
-            else
-            {
-                printf("接口状态: DOW\n");
-            }
+            strncpy(info->ip, host, sizeof(info->ip) - 1);
         }
         else
         {
-            char str[256];
-            sprintf(str, "SIOCGIFFLAGS ioctl %s\n", buf[if_len].ifr_name);
-            perror(str);
+            snprintf(info->ip, sizeof(info->ip), "N/A");
         }
 
-        /* IP地址 */
-        if (!(ioctl(fd, SIOCGIFADDR, (char *)&buf[if_len])))
-        {
-            printf("IP地址:%s\n",
-                   (char *)inet_ntoa(((struct sockaddr_in *)(&buf[if_len].ifr_addr))->sin_addr));
-        }
-        else
-        {
-            char str[256];
-            sprintf(str, "SIOCGIFADDR ioctl %s\n", buf[if_len].ifr_name);
-            perror(str);
-        }
+        idx++;
+    }
 
-        /* 子网掩码 */
-        if (!(ioctl(fd, SIOCGIFNETMASK, (char *)&buf[if_len])))
-        {
-            printf("子网掩码:%s\n",
-                   (char *)inet_ntoa(((struct sockaddr_in *)(&buf[if_len].ifr_addr))->sin_addr));
-        }
-        else
-        {
-            char str[256];
-            sprintf(str, "SIOCGIFADDR ioctl %s\n", buf[if_len].ifr_name);
-            perror(str);
-        }
+    freeifaddrs(ifaddr);
+    return interfaces;
+}
 
-        /* 广播地址 */
-        if (!(ioctl(fd, SIOCGIFBRDADDR, (char *)&buf[if_len])))
-        {
-            printf("广播地址:%s\n",
-                   (char *)inet_ntoa(((struct sockaddr_in *)(&buf[if_len].ifr_addr))->sin_addr));
-        }
-        else
-        {
-            char str[256];
-            sprintf(str, "SIOCGIFADDR ioctl %s\n", buf[if_len].ifr_name);
-            perror(str);
-        }
+void interfaces_dump(const InterfaceInfo *interfaces, int count)
+{
+    printf("=== 网络接口信息（共 %d 个）===\n", count);
+    for (int i = 0; i < count; i++)
+    {
+        printf("[%d] %-8s | IP: %-15s | %s\n",
+               i,
+               interfaces[i].name,
+               interfaces[i].ip,
+               interfaces[i].is_up ? "UP" : "DOWN");
+    }
+}
 
-        /*MAC地址 */
-        if (!(ioctl(fd, SIOCGIFHWADDR, (char *)&buf[if_len])))
-        {
-            printf("MAC地址:%02x:%02x:%02x:%02x:%02x:%02x\n\n",
-                   (unsigned char)buf[if_len].ifr_hwaddr.sa_data[0],
-                   (unsigned char)buf[if_len].ifr_hwaddr.sa_data[1],
-                   (unsigned char)buf[if_len].ifr_hwaddr.sa_data[2],
-                   (unsigned char)buf[if_len].ifr_hwaddr.sa_data[3],
-                   (unsigned char)buf[if_len].ifr_hwaddr.sa_data[4],
-                   (unsigned char)buf[if_len].ifr_hwaddr.sa_data[5]);
-        }
-        else
-        {
-            char str[256];
-            sprintf(str, "SIOCGIFHWADDR ioctl %s\n", buf[if_len].ifr_name);
-            perror(str);
-        }
-    } // –while end
+// #include "net_interfaces.h"
+#include <stdio.h>
 
-    // 关闭socket
-    close(fd);
+int main()
+{
+    int count = 0;
+    // InterfaceInfo *interfaces = get_all_interfaces(&count);
+
+    // if (interfaces)
+    // {
+    //     interfaces_dump(interfaces, count);
+    //     free(interfaces); // 必须释放内存！
+    // }
+    // else
+    // {
+    //     printf("无法获取接口信息！\n");
+    // }
+
+    _ifname_T ifnameInfo = {
+        .get_all_ifname = get_all_interfaces,
+        .interfaces_dump = interfaces_dump
+    };
+
+    InterfaceInfo *interfaces = ifnameInfo.get_all_ifname(&count);
+    ifnameInfo.interfaces_dump(interfaces, count);
+
     return 0;
 }
