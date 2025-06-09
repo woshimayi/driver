@@ -9,7 +9,11 @@
 		"cms.h": "c",
 		"cms_retcodes.h": "c",
 		"os_defs.h": "c",
-		"number_defs.h": "c"
+		"number_defs.h": "c",
+		"ostream": "cpp",
+		"test.h": "c",
+		"va_list.h": "c",
+		"iostream": "cpp"
 	},
 	"cmake.sourceDirectory": "/home/zsD/Documents/driver/user/C/cmake_test",
 	"C_Cpp.errorSquiggles": "disabled"
