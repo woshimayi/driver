@@ -4,7 +4,8 @@
 int main()
 {
     // IPv4查询示例
-    struct dns_result result = dns_query("www.baidu.com", "223.5.5.5", 4, "eth0", 5);
+    // struct dns_result result = dns_query("time.nist.gov", "202.96.209.5", 4, "eth0", 5);
+    struct dns_result result = dns_query("time.nist.gov", NULL, 4, NULL, 5);
     if (result.error_code == 0)
     {
         printf("IPv4 Address: %s\n", result.ipv4_address);
@@ -16,7 +17,8 @@ int main()
     }
 
     // IPv6查询示例
-    result = dns_query("www.baidu.com", "2001:4860:4860::8888", 6, "eth0", 5);
+    // result = dns_query("www.baidu.com", "2001:4860:4860::8888", 6, "eth0", 5);
+    result = dns_query("www.baidu.com", NULL, 6, NULL, 5);
     if (result.error_code == 0)
     {
         printf("IPv6 Address: %s\n", result.ipv6_address);

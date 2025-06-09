@@ -5,7 +5,7 @@
  * @Author       : dof
  * @Date         : 2025-01-06 15:25:27
  * @LastEditors  : dof
- * @LastEditTime : 2025-01-06 15:41:30
+ * @LastEditTime : 2025-03-14 10:16:40
  * @Descripttion :  mac char * to byte
  * @compile      :
  * @**************************************:
@@ -15,6 +15,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <regex.h>
+#include <mcheck.h>
+#include <sys/socket.h>
 
 // 定义最大MAC地址长度
 #define MAC_ADDR_LEN 6
@@ -126,8 +128,166 @@ int validate_mac_address(const char *mac_str)
     return result == 0; // 如果匹配成功，返回 1，失败返回 0
 }
 
+#if 0
+int IsValidIpv4(char *ip)
+{
+    struct sockaddr_in IPAddr4;
+    memset(&IPAddr4, 0, sizeof(struct sockaddr_in));
+    if (1 == inet_pton(AF_INET, ip, &IPAddr4)) {
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
+int IsValidIpv6(char *ip)
+{
+    struct sockaddr_in6 IPAddr6;
+    memset(&IPAddr6, 0, sizeof(struct sockaddr_in6));
+    if (1 == inet_pton(AF_INET6,ip,&IPAddr6)) {
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
+int Ipv4Compare(char *str1, char *str2)
+{
+    struct sockaddr_in ip1;
+    struct sockaddr_in ip2;
+    memset(&ip1, 0, sizeof(struct sockaddr_in));
+    memset(&ip2, 0, sizeof(struct sockaddr_in));
+
+    inet_pton(AF_INET, str1, &ip1);
+    inet_pton(AF_INET, str2, &ip2);
+    return memcmp(&ip1, &ip2, sizeof(struct sockaddr_in));
+}
+
+int Ipv6Compare(char *str1, char *str2)
+{
+    struct sockaddr_in6 ip1;
+    struct sockaddr_in6 ip2;
+    memset(&ip1, 0, sizeof(struct sockaddr_in6));
+    memset(&ip2, 0, sizeof(struct sockaddr_in6));
+    inet_pton(AF_INET6, str1, &ip1);
+    inet_pton(AF_INET6, str2, &ip2);
+    return memcmp(&ip1, &ip2, sizeof(struct sockaddr_in6));
+}
+
+
+int IpCompare(char *str1, char *str2)
+{
+    if (IsValidIpv4(str1)) {
+        return Ipv4Compare(str1, str2);
+    } else {
+        return Ipv6Compare(str1, str2);
+    }
+}
+
+int  IsValidIpParam(int flag, char * setIp, char * IpInData, char *compareIp)
+{
+    // flag = 0,set start ip;flag = 1,set end ip
+    if (flag == 0) {
+        if (strcmp(compareIp, "") == 0) {
+            if (strcmp(IpInData, "") == 0) {
+                return 1;
+            }
+            if (IpCompare(setIp, IpInData) > 0) {
+                return 0;
+            }
+            return 1;
+        }
+        if (IpCompare(setIp, compareIp) > 0) {
+            return 0;
+        }
+        return 1;
+    }
+    if (strcmp(compareIp, "") == 0) {
+        if (strcmp(IpInData, "") == 0) {
+            return 1;
+        }
+        if (IpCompare(IpInData, setIp) > 0) {
+            return 0;
+        }
+        return 1;
+    }
+    if (IpCompare(compareIp, setIp) > 0) {
+        return 0;
+    }
+    return 1;
+}
+int  IsValidPortParam(int flag, int setPort, int portInData,int comparePort)
+{
+    // flag = 0,set start port;flag = 1,set end port
+    if (flag == 0) {
+        if (comparePort == 0) {
+            if (setPort > portInData) {
+                return 0;
+            }
+            return 1;
+        }
+        if (setPort > comparePort) {
+            return 0;
+        }
+        return 1;
+    }
+    if (comparePort == 0) {
+        if (setPort < portInData) {
+            return 0;
+        }
+        return 1;
+    }
+    if (setPort < comparePort) {
+        return 0;
+    }
+    return 1;
+}
+#endif
+
+int natived_isValidMacAddress(const char *mac)
+{
+    regex_t regex;
+    int reti = 0, ret = 0;
+    char msgbuf[100];
+    char *pattern = (char *)"^([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}$";
+
+    reti = regcomp(&regex, pattern, REG_EXTENDED);
+    if (reti)
+    {
+        fprintf(stderr, "Could not compile regex\n");
+        return 0;
+    }
+
+    reti = regexec(&regex, mac, 0, NULL, 0);
+    if (!reti)
+    {
+        regfree(&regex);
+        ret = 1;
+    }
+    else if (reti == REG_NOMATCH)
+    {
+        regfree(&regex);
+        ret = 0;
+    }
+    else
+    {
+        regerror(reti, &regex, msgbuf, sizeof(msgbuf));
+        fprintf(stderr, "Regex match failed: %s\n", msgbuf);
+        ret = 0;
+    }
+
+    if (0 == strcmp("00:00:00:00:00:00", mac))
+    {
+        ret = 0;
+    }
+
+    return ret;
+}
+
+#if 0
 int main()
 {
+    mtrace();
 #if 0
     const char *mac_str = "01:23:45:67:89:AB";
     unsigned char mac_bytes[MAC_ADDR_LEN];
@@ -147,19 +307,76 @@ int main()
     char mac_str[18]; // MAC 地址的最大长度，包括冒号和末尾的 '\0'
 
     // 转换字节为MAC地址字符串
-    byte_to_mac_string(mac, mac_str);
-    printf("MAC Address: %s\n", mac_str);
+    // byte_to_mac_string(mac, mac_str);
+    // printf("MAC Address: %s\n", mac_str);
 
-    // 验证MAC地址格式
-    if (validate_mac_address(mac_str))
-    {
-        printf("Valid MAC address format\n");
-    }
-    else
-    {
-        printf("Invalid MAC address format\n");
-    }
+    // // 验证MAC地址格式
+    // if (validate_mac_address(mac_str))
+    // {
+    //     printf("Valid MAC address format\n");
+    // }
+    // else
+    // {
+    //     printf("Invalid MAC address format\n");
+    // }
+    
+    // setenv("MALLOC_TRACE", "./memleak.log", 1);
+    printf("ret = %d\n", natived_isValidMacAddress("00:11:22:33:44:5g"));
 
 #endif
     return 0;
+}
+#endif
+
+#include <regex.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+int main(void)
+{
+    regex_t preg;
+    char *string = "a very simple simple simple string";
+    char *pattern = "\\(sim[a-z]le\\) \\1";
+    int rc;
+    size_t nmatch = 2;
+    regmatch_t pmatch[2];
+
+    if (0 != (rc = regcomp(&preg, pattern, 0)))
+    {
+        printf("regcomp() failed, returning nonzero (%d)\n", rc);
+        exit(EXIT_FAILURE);
+    }
+
+    if (0 != (rc = regexec(&preg, string, nmatch, pmatch, 0)))
+    {
+        printf("Failed to match '%s' with '%s',returning %d.\n",
+               string, pattern, rc);
+    }
+    else
+    {
+        printf("With the whole expression, "
+               "a matched substring \n\"%.*s\"\n is found at position %d to %d.\n",
+               pmatch[0].rm_eo - pmatch[0].rm_so, &string[pmatch[0].rm_so],
+               pmatch[0].rm_so, pmatch[0].rm_eo - 1);
+        
+        printf("With the sub-expression, "
+               "a matched substring \n\"%.*s\"\n is found at position %d to %d.\n",
+               pmatch[1].rm_eo - pmatch[1].rm_so, &string[pmatch[1].rm_so],
+               pmatch[1].rm_so, pmatch[1].rm_eo - 1);
+    }
+    if (&preg)
+    {
+        printf("sssss\n");
+        regfree(&preg);
+    }
+    return 0;
+
+    /****************************************************************************
+       The output should be similar to :
+
+       With the whole expression, a matched substring "simple simple" is found
+       at position 7 to 19.
+       With the sub-expression, a matched substring "simple" is found
+       at position 7 to 12.
+    ****************************************************************************/
 }
