@@ -55,8 +55,8 @@ $(obj)/zImage:	$(obj)/compressed/vmlinux FORCE
 	$(call if_changed,objcopy)
 	@$(kecho) '  Kernel: $@ is ready'
 	$(warning $(obj), $(shell pwd))
-	install $(obj)/zImage /home/zs/linux/nfs
-	install $(obj)/dts/imx6ull-14x14-evk-dof-nand.dtb /home/zs/linux/nfs
+	install $(obj)/zImage /home/$(shell whoami)/linux/nfs
+	install $(obj)/dts/imx6ull-14x14-evk-dof-nand.dtb /home/$(shell whoami)/linux/nfs
 
 
 endif

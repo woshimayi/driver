@@ -250,75 +250,6 @@
 };
 
 
-&gpmi {
-	pinctrl-names = "default";
-	pinctrl-0 = <&pinctrl_gpmi_nand>;
-	status = "okay";
-	nand-on-flash-bbt;
-
-	compatible = "fsl,imx6ull-gpmi-nand", "fsl,imx-gpmi-nand"; // 或其他具体的NAND兼容字符串
-	#address-cells = <1>;
-	#size-cells = <1>;
-
-	partition@0 {
-		label = "uboot";
-		reg = <0x0 0x04000000>; // 64MB
-	};
-	partition@4000000 {
-		label = "kernel";
-		reg = <0x04000000 0x01000000>; // 16MB
-	};
-	partition@5000000 {
-		label = "dtb";
-		reg = <0x05000000 0x01000000>; // 16MB
-	};
-	partition@6000000 {
-		label = "nandtee";
-		reg = <0x06000000 0x01000000>; // 16MB
-	};
-	partition@7000000 {
-		label = "rootfs";
-		reg = <0x07000000 0>; // 剩余空间
-	};
-
-	// 上面是linux 4.1.15 版本 兼容的分区方式， 下面是 高版本的分区方式
-    // nand@0 {
-	// 	reg = <0 0>;
-    //     compatible = "fsl,imx6ull-gpmi-nand", "fsl,imx-gpmi-nand"; // 或其他具体的NAND兼容字符串
-    //     #address-cells = <1>;
-    //     #size-cells = <1>;
-
-    //     partitions {
-    //         compatible = "fixed-partitions";
-    //         #address-cells = <1>;
-    //         #size-cells = <1>;
-
-    //         partition@0 {
-    //             label = "uboot";
-    //             reg = <0x0 0x04000000>; // 64MB
-    //         };
-    //         partition@4000000 {
-    //             label = "kernel";
-    //             reg = <0x04000000 0x01000000>; // 16MB
-    //         };
-    //         partition@5000000 {
-    //             label = "dtb";
-    //             reg = <0x05000000 0x01000000>; // 16MB
-    //         };
-    //         partition@6000000 {
-    //             label = "nandtee";
-    //             reg = <0x06000000 0x01000000>; // 16MB
-    //         };
-	// 		partition@7000000 {
-    //             label = "rootfs";
-    //             reg = <0x07000000 0>; // 剩余空间
-    //         };
-    //     };
-    // };
-};
-
-
-
 &cpu0 {
 	arm-supply = <&reg_arm>;
 	soc-supply = <&reg_soc>;
@@ -826,29 +757,6 @@
 			>;
 		};
 	};
-
-	imx6ull-evk-gpmi-rework {
-		pinctrl_gpmi_nand: gpmi-nand {
-			fsl,pins = <
-				MX6UL_PAD_NAND_CLE__RAWNAND_CLE         0xb0b1
-				MX6UL_PAD_NAND_ALE__RAWNAND_ALE         0xb0b1
-				MX6UL_PAD_NAND_WP_B__RAWNAND_WP_B       0xb0b1
-				MX6UL_PAD_NAND_READY_B__RAWNAND_READY_B 0xb000
-				MX6UL_PAD_NAND_CE0_B__RAWNAND_CE0_B     0xb0b1
-				MX6UL_PAD_NAND_CE1_B__RAWNAND_CE1_B     0xb0b1
-				MX6UL_PAD_NAND_RE_B__RAWNAND_RE_B       0xb0b1
-				MX6UL_PAD_NAND_WE_B__RAWNAND_WE_B       0xb0b1
-				MX6UL_PAD_NAND_DATA00__RAWNAND_DATA00   0xb0b1
-				MX6UL_PAD_NAND_DATA01__RAWNAND_DATA01   0xb0b1
-				MX6UL_PAD_NAND_DATA02__RAWNAND_DATA02   0xb0b1
-				MX6UL_PAD_NAND_DATA03__RAWNAND_DATA03   0xb0b1
-				MX6UL_PAD_NAND_DATA04__RAWNAND_DATA04   0xb0b1
-				MX6UL_PAD_NAND_DATA05__RAWNAND_DATA05   0xb0b1
-				MX6UL_PAD_NAND_DATA06__RAWNAND_DATA06   0xb0b1
-				MX6UL_PAD_NAND_DATA07__RAWNAND_DATA07   0xb0b1
-			>;
-		};
-	};
 };
 
 &iomuxc_snvs {
@@ -1065,24 +973,15 @@
 	status = "okay";
 };
 
-// &usdhc2 {
-// 	pinctrl-names = "default";
-// 	pinctrl-0 = <&pinctrl_usdhc2>;
-// 	non-removable;
-// 	status = "okay";
-// };
+&usdhc2 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_usdhc2>;
+	non-removable;
+	status = "okay";
+};
 
 &wdog1 {
 	pinctrl-names = "default";
 	pinctrl-0 = <&pinctrl_wdog>;
 	fsl,wdog_b;
-};
-
-
-&qspi {
-	status = "disabled";
-};
-
-&usdhc2 {
-	status = "disabled";
 };
