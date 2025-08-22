@@ -34,7 +34,7 @@ static void netlink_test_recv_msg(struct sk_buff *skb)
 
 	// put received message into reply
 	nlh = nlmsg_put(skb_out, 0, 0, NLMSG_DONE, msg_size, 0);
-	//NETLINK_CB(skb_out).dst_group = MYGRP; /* in multicast group */
+	// NETLINK_CB(skb_out).dst_group = MYGRP; /* in multicast group */
 	strncpy(nlmsg_data(nlh), msg, msg_size);
 
 	printk(KERN_INFO "netlink_test: Send %s\n", msg);
@@ -49,9 +49,9 @@ static int __init netlink_test_init(void)
 	printk(KERN_INFO "netlink_test: Init module\n");
 
 	struct netlink_kernel_cfg cfg =
-	{
-		.input = netlink_test_recv_msg,
-	};
+		{
+			.input = netlink_test_recv_msg,
+		};
 
 	nl_sock = netlink_kernel_create(&init_net, MYPROTO, &cfg);
 	if (!nl_sock)

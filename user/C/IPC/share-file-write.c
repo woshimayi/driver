@@ -1,22 +1,22 @@
 /*
  * @*************************************:
- * @FilePath     : /user/C/IPC/share-memory-write.c
+ * @FilePath     : /user/C/IPC/share-file-write.c
  * @version      :
  * @Author       : dof
  * @Date         : 2024-08-15 10:01:12
  * @LastEditors  : dof
- * @LastEditTime : 2024-08-15 17:39:05
+ * @LastEditTime : 2025-07-29 17:37:47
  * @Descripttion :  写进程   文件型共享内存
  * @compile      :
  * @**************************************:
  */
 
 #include <stdio.h>
+#include <sys/mman.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
-#include <sys/mman.h>
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>

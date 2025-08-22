@@ -12,7 +12,7 @@
 ### 
 
 
-suod apt install qemu-user-static
+sudo apt install qemu-user-static
 sudo cp /usr/bin/qemu-arm-static usr/bin/
 
 vim mount_self.sh
@@ -40,10 +40,10 @@ echo "sudo umount /home/${whoami}/linux/nfs/ubuntu_rootfs/dev"       >> unmount_
 
 
 
-echo "deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu-ports/ jammy main restricted universe multiverse"                   > /etc/apt/sources.list
-echo "deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu-ports/ jammy-updates main restricted universe multiverse"          >> /etc/apt/sources.list
-echo "deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu-ports/ jammy-backports main restricted universe multiverse"        >> /etc/apt/sources.list
-echo "deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu-ports/ jammy-security main restricted universe multiverse"         >> /etc/apt/sources.list
+echo "deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu-ports/ jammy main restricted universe multiverse"                   > ./etc/apt/sources.list
+echo "deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu-ports/ jammy-updates main restricted universe multiverse"          >> ./etc/apt/sources.list
+echo "deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu-ports/ jammy-backports main restricted universe multiverse"        >> ./etc/apt/sources.list
+echo "deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu-ports/ jammy-security main restricted universe multiverse"         >> ./etc/apt/sources.list
 
 ./mount_self.sh
 

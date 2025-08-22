@@ -45,7 +45,7 @@ static void netlink_test_recv_msg(struct sk_buff *skb)
 	struct net *net = get_net_ns_by_pid(pid);
 
 	printk(KERN_INFO "netlink_test: Received from pid %d, namespace %p, net_id: %d: %s\n",
-	       pid, net, net_id, msg);
+		   pid, net, net_id, msg);
 
 	// get our data for this network namespace
 	struct ns_data *data = net_generic(net, net_id);
@@ -81,10 +81,10 @@ static void netlink_test_recv_msg(struct sk_buff *skb)
 static int __net_init ns_netlink_test_init(struct net *net)
 {
 	struct netlink_kernel_cfg cfg =
-	{
-		.input = netlink_test_recv_msg,
-		.flags = NL_CFG_F_NONROOT_RECV,
-	};
+		{
+			.input = netlink_test_recv_msg,
+			.flags = NL_CFG_F_NONROOT_RECV,
+		};
 
 	// create netlink socket
 	struct sock *nl_sock = netlink_kernel_create(net, NETLINK_TEST, &cfg);
@@ -112,11 +112,11 @@ static void __net_exit ns_netlink_test_exit(struct net *net)
 
 // callback to make the module network namespace aware
 static struct pernet_operations net_ops __net_initdata =
-{
-	.init = ns_netlink_test_init,
-	.exit = ns_netlink_test_exit,
-	.id = &net_id,
-	.size = sizeof(struct ns_data),
+	{
+		.init = ns_netlink_test_init,
+		.exit = ns_netlink_test_exit,
+		.id = &net_id,
+		.size = sizeof(struct ns_data),
 };
 
 static int __init netlink_test_init(void)

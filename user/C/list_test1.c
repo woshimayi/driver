@@ -5,7 +5,7 @@
  * @Author       : dof
  * @Date         : 2024-08-23 17:08:36
  * @LastEditors  : dof
- * @LastEditTime : 2024-08-24 15:21:00
+ * @LastEditTime : 2025-08-12 16:21:14
  * @Descripttion : 链表
  * @compile      :  
  * @**************************************: 
@@ -67,34 +67,34 @@ struct link * showall(struct link *it)
 int main(int argc, char const *argv[])
 {
     /* code */
-    // struct link *it = (struct link *)malloc(sizeof(struct link));
-    // link_init(it);
+    struct link *it = (struct link *)malloc(sizeof(struct link));
+    link_init(it);
 
-    // struct link *it1, it2_tmp;
-    // it1 = &it2_tmp;
-    // link_add(it1);
+    struct link *it1, it2_tmp;
+    it1 = &it2_tmp;
+    link_add(it1);
 
-    #define TW_BITS (8)
-    #define TW_SIZE (1 << TW_BITS) // 单级时间轮大小（槽位数量）
-    #define TW_MASK (TW_SIZE - 1)
-    #define TW_LEVEL (3) // 时间轮层级数
+    // #define TW_BITS (8)
+    // #define TW_SIZE (1 << TW_BITS) // 单级时间轮大小（槽位数量）
+    // #define TW_MASK (TW_SIZE - 1)
+    // #define TW_LEVEL (3) // 时间轮层级数
 
 
-    #define IDX0(data) data & TW_MASK;
-    #define IDX1(data) (data >> TW_BITS) & TW_MASK;
-    #define IDX2(data) (data >> (2 * TW_BITS)) & TW_MASK;
+    // #define IDX0(data) data & TW_MASK;
+    // #define IDX1(data) (data >> TW_BITS) & TW_MASK;
+    // #define IDX2(data) (data >> (2 * TW_BITS)) & TW_MASK;
 
-    int i = 0;
-    while (1)
-    {
-        i++;
-        uint8_t idx0 = IDX0(i);
-        uint8_t idx1 = IDX1(i);
-        uint8_t idx2 = IDX2(i);
+    // int i = 0;
+    // while (1)
+    // {
+    //     i++;
+    //     uint8_t idx0 = IDX0(i);
+    //     uint8_t idx1 = IDX1(i);
+    //     uint8_t idx2 = IDX2(i);
 
-        PP("idx0 = %d idx1 = %d idx2 = %d",  idx0, idx1, idx2);
-        sleep(1);
-    }
+    //     PP("idx0 = %d idx1 = %d idx2 = %d",  idx0, idx1, idx2);
+    //     sleep(1);
+    // }
 
     return 0;
 }
