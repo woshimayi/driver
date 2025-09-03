@@ -1,7 +1,6 @@
 ccflags-y := -std=gnu99 -Wno-declaration-after-statement    # 必须放在子模块中
 
-
-obj-m += timer_test.o
+obj-m += netfilter-br.o
 
 ifneq ($(SUB_BUILD), "SUB")
 

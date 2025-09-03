@@ -1,4 +1,5 @@
 KVERS = $(shell uname -r)
+KVERS = "6.11.0-21-generic"
 
 obj-m += char_dev.o
 
