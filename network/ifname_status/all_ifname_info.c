@@ -180,6 +180,7 @@ int main(int argc, char *argv[])
                    (unsigned char)buf[if_len].ifr_hwaddr.sa_data[3],
                    (unsigned char)buf[if_len].ifr_hwaddr.sa_data[4],
                    (unsigned char)buf[if_len].ifr_hwaddr.sa_data[5]);
+            printf("%pM", (unsigned char)buf[if_len].ifr_hwaddr.sa_data);
         }
         else
         {

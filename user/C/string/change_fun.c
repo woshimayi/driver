@@ -6,7 +6,7 @@
  * @Date: 2021-10-20 19:33:39
  * @LastEditors: dof
  * @LastEditTime: 2023-08-19 20:13:32
- * @Descripttion: 
+ * @Descripttion: fun api replace
  * @**************************************: 
  */
 #include <stdio.h>

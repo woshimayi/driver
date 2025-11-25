@@ -41,6 +41,72 @@ __json_type g_jsontype[] = {
 };
 
 
+const char* __mf_key_UpLoadLossPackets(void)
+{
+    if (1)
+    {
+        return "UploadLossPackets";
+    }
+    else
+    {
+        return "UpLoadLossPackets";
+    }
+}
+
+
+
+
+enum cm_tab_id {
+    IGD_TAB_ID_BEGIN = 0,
+    IGD_DEV_CAPABILITY_TAB,
+    IGD_DEVINFO_TAB,
+    IGD_GLOBAL_ATTR_TAB,
+    IGD_DEV_STATUS_INFO_TAB,
+    IGD_SYSCMD_CONFIG_TAB,
+    IGD_PON_LINK_STATUS_TAB,
+    IGD_PON_STATISTICS_TAB,
+    IGD_LAN_IP_ADDR_TAB,
+    IGD_TAB_ID_END
+};
+
+typedef struct {
+    enum cm_tab_id tab;
+    char *name;
+} _IGD_TAB_T;
+
+#define MAP_TAB(tab) [tab] = {tab, #tab},
+
+_IGD_TAB_T igd_tab_list[] = 
+{
+    MAP_TAB(IGD_TAB_ID_BEGIN)
+    MAP_TAB(IGD_DEV_CAPABILITY_TAB)
+    MAP_TAB(IGD_DEVINFO_TAB)
+    MAP_TAB(IGD_GLOBAL_ATTR_TAB)
+    MAP_TAB(IGD_DEV_STATUS_INFO_TAB)
+    MAP_TAB(IGD_SYSCMD_CONFIG_TAB)
+    MAP_TAB(IGD_PON_LINK_STATUS_TAB)
+    MAP_TAB(IGD_PON_STATISTICS_TAB)
+    MAP_TAB(IGD_LAN_IP_ADDR_TAB)
+};
+
+void test_tabToname(int tab)
+{
+    printf("tab = [%d|%s]\n", igd_tab_list[tab].tab, igd_tab_list[tab].name);
+}
+
+void test_nameTotab(const char *name)
+{
+    for (int i = 0; i < sizeof(igd_tab_list)/sizeof(igd_tab_list[0]); i++)
+    {
+        if (strcmp(igd_tab_list[i].name, name) == 0)
+        {
+            printf("tab = [%d|%s]\n", igd_tab_list[i].tab, igd_tab_list[i].name);
+            return;
+        }
+    }
+    printf("Not found tab for name: %s\n", name);
+}
+
 
 int main(int argc, char const *argv[])
 {
@@ -107,13 +173,30 @@ int main(int argc, char const *argv[])
     // strcpy(dest, "Hello, World!"); // 目标缓冲区太小
     // printf("%s\n", dest);
 
-    printf("%s\n", g_jsontype[3].name);
 
-    int j = 0, sumNum = 1;
-    if (0 == j && sumNum)
-    {
-        printf("ssss\n");
-    }
+    // printf("%s\n", g_jsontype[3].name);
+
+    // int j = 0, sumNum = 1;
+    // if (0 == j && sumNum)
+    // {
+    //     printf("ssss\n");
+    // }
+    // unsigned char testData[3] = {0x11, 0x22, 0x33};
+
+    // printf("testData = %02x %02x %02x\n", testData[0], testData[1], testData[2]);
+
+    // for (size_t i = 0; i < 256; i++)
+    // {
+    //     testData[2] = i % 256;
+    //     printf("testData[%zu] = %02x\n", i, testData[2]);
+    //     /* code */
+    // }
+    // printf("%d|%s\n", strlen(""), __mf_key_UpLoadLossPackets());
+    // printf("IGD_DEVINFO_TAB = %d, name = %s\n", igd_tab_list[IGD_DEVINFO_TAB].tab, igd_tab_list[IGD_DEVINFO_TAB].name);
+    
+    test_tabToname(IGD_PON_LINK_STATUS_TAB);
+    test_nameTotab("IGD_PON_LINK_STATUS_TAB");
+    test_nameTotab("IGD_XXXX_TAB");
 
     return 0;
 }

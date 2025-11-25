@@ -14,6 +14,8 @@
 #include <stdio.h>
 #include <stddef.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 // 获得结构体(TYPE)的变量成员(MEMBER)在此结构体中的偏移量。
 // #define offsetof(TYPE, MEMBER) ((size_t) & ((TYPE *)0)->MEMBER)
