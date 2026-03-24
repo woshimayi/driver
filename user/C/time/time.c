@@ -63,6 +63,26 @@ int getDateTime(unsigned int t)
 	return rc;
 }
 
+int get_current_year() {
+    time_t t;
+    struct tm *tm_info;
+    
+    // 获取当前时间
+    if (time(&t) == (time_t)-1) {
+        fprintf(stderr, "获取时间失败\n");
+        return -1;
+    }
+    
+    // 转换为本地时间
+    tm_info = localtime(&t);
+    if (tm_info == NULL) {
+        fprintf(stderr, "转换时间失败\n");
+        return -1;
+    }
+    
+    return tm_info->tm_year + 1900;
+}
+
 #if 0
 int main()
 {
@@ -128,9 +148,15 @@ int main()
 	// printf("%s%d:%d:%d\n", wday[p->tm_wday], p->tm_hour, p->tm_min, p->tm_sec);
 
 	timep = mktime(p);
-	printf("time()->localtime()->mktime():%d\n", timep);
+	printf("time()->localtime()->mktime():%ld\n", timep);
 
 	char str[128] = {0};
 	getTheCurrentTime(str);
 	printf("str = %s\n", str);
+
+    int year = get_current_year();
+    if (year != -1) {
+        printf("当前年份: %d\n", year);
+    }
+
 }

@@ -4,10 +4,10 @@
 
 
 exec=$1
-output=log.txt
-outputcallgrind=
+output=valgrind_log.txt
+outputcallgrind=valgrind_callgrind.txt
 
-rm callgrind.out.*
+rm callgrind.out.* $output
 
 #valgrind --tool=memcheck --log-file=$output -s --leak-check=yes $exec 
 
@@ -15,7 +15,9 @@ rm callgrind.out.*
 
 # valgrind  --log-file=$output    --leak-check=yes $exec 
 
-valgrind  --tool=callgrind  $exec 
+valgrind  --tool=callgrind  $exec
+
+valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all --track-origins=yes  --log-file=$output  #exec
 
 callgrind_annotate  --inclusive=yes --tree=both --auto=yes  callgrind.out.*  > $output
 

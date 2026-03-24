@@ -39,10 +39,10 @@
 #include <curl/mprintf.h>
 
 #ifndef CURLPIPE_MULTIPLEX
-	/* This little trick will just make sure that we do not enable pipelining for
-	libcurls old enough to not have this symbol. It is _not_ defined to zero in
-	a recent libcurl header. */
-	#define CURLPIPE_MULTIPLEX 0
+/* This little trick will just make sure that we do not enable pipelining for
+libcurls old enough to not have this symbol. It is _not_ defined to zero in
+a recent libcurl header. */
+#define CURLPIPE_MULTIPLEX 0
 #endif
 
 struct transfer
@@ -54,9 +54,8 @@ struct transfer
 
 #define NUM_HANDLES 1000
 
-static
-void dump(const char *text, int num, unsigned char *ptr, size_t size,
-          char nohex)
+static void dump(const char *text, int num, unsigned char *ptr, size_t size,
+				 char nohex)
 {
 	size_t i;
 	size_t c;
@@ -68,7 +67,7 @@ void dump(const char *text, int num, unsigned char *ptr, size_t size,
 		width = 0x40;
 
 	fprintf(stderr, "%d %s, %lu bytes (0x%lx)\n",
-	        num, text, (unsigned long)size, (unsigned long)size);
+			num, text, (unsigned long)size, (unsigned long)size);
 
 	for (i = 0; i < size; i += width)
 	{
@@ -89,16 +88,16 @@ void dump(const char *text, int num, unsigned char *ptr, size_t size,
 		{
 			/* check for 0D0A; if found, skip past and start a new line of output */
 			if (nohex && (i + c + 1 < size) && ptr[i + c] == 0x0D &&
-			        ptr[i + c + 1] == 0x0A)
+				ptr[i + c + 1] == 0x0A)
 			{
 				i += (c + 2 - width);
 				break;
 			}
 			fprintf(stderr, "%c",
-			        (ptr[i + c] >= 0x20) && (ptr[i + c] < 0x80) ? ptr[i + c] : '.');
+					(ptr[i + c] >= 0x20) && (ptr[i + c] < 0x80) ? ptr[i + c] : '.');
 			/* check again for 0D0A, to avoid an extra \n if it's at width */
 			if (nohex && (i + c + 2 < size) && ptr[i + c + 1] == 0x0D &&
-			        ptr[i + c + 2] == 0x0A)
+				ptr[i + c + 2] == 0x0A)
 			{
 				i += (c + 3 - width);
 				break;
@@ -108,10 +107,9 @@ void dump(const char *text, int num, unsigned char *ptr, size_t size,
 	}
 }
 
-static
-int my_trace(CURL *handle, curl_infotype type,
-             char *data, size_t size,
-             void *userp)
+static int my_trace(CURL *handle, curl_infotype type,
+					char *data, size_t size,
+					void *userp)
 {
 	const char *text;
 	struct transfer *t = (struct transfer *)userp;
@@ -120,30 +118,30 @@ int my_trace(CURL *handle, curl_infotype type,
 
 	switch (type)
 	{
-		case CURLINFO_TEXT:
-			fprintf(stderr, "== %u Info: %s", num, data);
-		/* FALLTHROUGH */
-		default: /* in case a new one is introduced to shock us */
-			return 0;
+	case CURLINFO_TEXT:
+		fprintf(stderr, "== %u Info: %s", num, data);
+	/* FALLTHROUGH */
+	default: /* in case a new one is introduced to shock us */
+		return 0;
 
-		case CURLINFO_HEADER_OUT:
-			text = "=> Send header";
-			break;
-		case CURLINFO_DATA_OUT:
-			text = "=> Send data";
-			break;
-		case CURLINFO_SSL_DATA_OUT:
-			text = "=> Send SSL data";
-			break;
-		case CURLINFO_HEADER_IN:
-			text = "<= Recv header";
-			break;
-		case CURLINFO_DATA_IN:
-			text = "<= Recv data";
-			break;
-		case CURLINFO_SSL_DATA_IN:
-			text = "<= Recv SSL data";
-			break;
+	case CURLINFO_HEADER_OUT:
+		text = "=> Send header";
+		break;
+	case CURLINFO_DATA_OUT:
+		text = "=> Send data";
+		break;
+	case CURLINFO_SSL_DATA_OUT:
+		text = "=> Send SSL data";
+		break;
+	case CURLINFO_HEADER_IN:
+		text = "<= Recv header";
+		break;
+	case CURLINFO_DATA_IN:
+		text = "<= Recv data";
+		break;
+	case CURLINFO_SSL_DATA_IN:
+		text = "<= Recv SSL data";
+		break;
 	}
 
 	dump(text, num, (unsigned char *)data, size, 1);
@@ -163,7 +161,7 @@ static void setup(struct transfer *t, int num)
 	if (!t->out)
 	{
 		fprintf(stderr, "error: could not open file %s for writing: %s\n",
-		        filename, strerror(errno));
+				filename, strerror(errno));
 		exit(1);
 	}
 
@@ -234,8 +232,7 @@ int main(int argc, char **argv)
 
 		if (mc)
 			break;
-	}
-	while (still_running);
+	} while (still_running);
 
 	for (i = 0; i < num_transfers; i++)
 	{

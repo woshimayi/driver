@@ -16,11 +16,14 @@
 branch=$1
 
 case "${branch}" in
-    'b19')
+    b19)
         echo "item = 1"
     ;;
-    'b16'|'b15')
+    b16|b15)
         echo "item = 2 or item = 3"
+    ;;
+    12t01*)
+        echo $@
     ;;
     *)
         echo "default (none of above)"
