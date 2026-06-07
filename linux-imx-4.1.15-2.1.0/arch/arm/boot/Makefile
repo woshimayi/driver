@@ -57,6 +57,7 @@ $(obj)/zImage:	$(obj)/compressed/vmlinux FORCE
 	$(warning $(obj), $(shell pwd))
 	install $(obj)/zImage /home/$(shell whoami)/linux/nfs
 	install $(obj)/dts/imx6ull-14x14-evk-dof-nand.dtb /home/$(shell whoami)/linux/nfs
+	install $(obj)/dts/imx6ull-14x14-evk-dof-nand-backup.dtb /home/$(shell whoami)/linux/nfs
 
 
 endif

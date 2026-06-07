@@ -325,6 +325,8 @@ PHONY += dtbs dtbs_install
 
 dtbs: prepare scripts
 	$(Q)$(MAKE) $(build)=$(boot)/dts
+	$(warning "zzzzz $(boot)")
+	install $(boot)/dts/imx6ull-14x14-evk-dof-nand.dtb /home/$(shell whoami)/linux/nfs
 
 dtbs_install:
 	$(Q)$(MAKE) $(dtbinst)=$(boot)/dts

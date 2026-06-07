@@ -36,7 +36,7 @@
 		};
 	};
 
-	backlight {
+	backlight: backlight {
 		compatible = "pwm-backlight";
 		pwms = <&pwm1 0 5000000>;
 		brightness-levels = <0 4 8 16 32 64 128 255>;
@@ -146,7 +146,7 @@
 
 		back {
 			pwm-names = "red_led_pwm";
-			pwms = <&pwm3 0 50000>;   // 使用 pwm3 0 50000ns 1/0.00005ms = 20kHz
+			pwms = <&pwm3 0 50000>;  /* 使用 pwm3 0 50000ns 1/0.00005ms = 20kHz */
 		};
 	};
 
@@ -169,22 +169,34 @@
 		pinctrl-0 = <&pinctrl_gpio_keys>;
 		#address-cells = <1>;
 		#size-cells = <0>;
-		// autorepeat;		//	重复功能
+		/* autorepeat;		重复功能 */
 
 		key1 {
 			label = "USER-KEY1";
 			linux,code = <114>;
 			gpios = <&gpio1 18 GPIO_ACTIVE_LOW>;
-			// gpio-key,wakeup;		// 唤醒事件
+			/* gpio-key,wakeup; 唤醒事件 */
 		};
 
-		key2 {
+		/* key2 {
 			label = "USER-KEY2";
 			linux,code = <115>;
 			gpios = <&gpio1 9 GPIO_ACTIVE_LOW>;
-			// gpio-key,wakeup;
-		};
+			gpio-key,wakeup;
+		}; */
 
+	};
+
+	/* 正交编码器 (GPIO A/B 相: GPIO1_IO11, GPIO1_IO12) */
+	rotary_encoder: rotary-encoder@0 {
+		compatible = "rotary-encoder";
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_rotary>;
+		gpios = <&gpio1 11 0>, <&gpio1 12 0>;  /* A相, B相 */
+		linux,axis = <0>;   /* REL_X */
+		rotary-encoder,relative-axis;  /* 相对轴，输出 +1/-1 事件 */
+		/* 若需绝对轴可改为: rotary-encoder,steps = <24>; rotary-encoder,rollover; */
+		status = "okay";
 	};
 
 	sound {
@@ -256,65 +268,93 @@
 	status = "okay";
 	nand-on-flash-bbt;
 
-	compatible = "fsl,imx6ull-gpmi-nand", "fsl,imx-gpmi-nand"; // 或其他具体的NAND兼容字符串
+	compatible = "fsl,imx6ull-gpmi-nand", "fsl,imx-gpmi-nand"; /* 或其他具体的NAND兼容字符串 */
+	#address-cells = <1>;
+	#size-cells = <1>;
+
+	compatible = "fsl,imx6ull-gpmi-nand", "fsl,imx-gpmi-nand"; /* 或其他具体的NAND兼容字符串 */
 	#address-cells = <1>;
 	#size-cells = <1>;
 
 	partition@0 {
-		label = "uboot";
-		reg = <0x0 0x04000000>; // 64MB
+		label = "uboot_a";
+		reg = <0x0 0x00800000>; /* 8MB for primary uboot */
 	};
-	partition@4000000 {
-		label = "kernel";
-		reg = <0x04000000 0x01000000>; // 16MB
+	partition@800000 {
+		label = "uboot_b";
+		reg = <0x00800000 0x00800000>; /* 8MB for backup uboot */
+	};
+	partition@1000000 {
+		label = "kfd_a";
+		reg = <0x01000000 0x02000000>; /* 32MB for primary kernel+fdt */
+	};
+	partition@3000000 {
+		label = "kfd_b";
+		reg = <0x03000000 0x02000000>; /* 32MB for backup kernel+fdt */
 	};
 	partition@5000000 {
-		label = "dtb";
-		reg = <0x05000000 0x01000000>; // 16MB
+		label = "tee_a";
+		reg = <0x05000000 0x01000000>; /* 16MB for primary tee */
 	};
 	partition@6000000 {
-		label = "nandtee";
-		reg = <0x06000000 0x01000000>; // 16MB
+		label = "tee_b";
+		reg = <0x06000000 0x01000000>; /* 16MB for backup tee */
 	};
 	partition@7000000 {
-		label = "rootfs";
-		reg = <0x07000000 0>; // 剩余空间
+		label = "env_a";
+		reg = <0x07000000 0x00020000>; /* 128KB for primary env */
+	};
+	partition@7020000 {
+		label = "env_b";
+		reg = <0x07020000 0x00020000>; /* 128KB for backup env */
+	};
+	partition@7040000 {
+		label = "rootfs_a";
+		reg = <0x07040000 0x0AF00000>; /* 175MB for primary rootfs */
+	};
+	partition@11f40000 {
+		label = "rootfs_b";
+		reg = <0x11f40000 0x0AF00000>; /* 175MB for backup rootfs */
+	};
+	partition@1ce40000 {
+		label = "date";
+		reg = <0x1ce40000 0x03200000>; /* 50MB for user data */
 	};
 
-	// 上面是linux 4.1.15 版本 兼容的分区方式， 下面是 高版本的分区方式
-    // nand@0 {
-	// 	reg = <0 0>;
-    //     compatible = "fsl,imx6ull-gpmi-nand", "fsl,imx-gpmi-nand"; // 或其他具体的NAND兼容字符串
-    //     #address-cells = <1>;
-    //     #size-cells = <1>;
+	/* 上面是linux 4.1.15 版本 兼容的分区方式， 下面是 高版本的分区方式
+    nand@0 {
+		reg = <0 0>;
+        compatible = "fsl,imx6ull-gpmi-nand", "fsl,imx-gpmi-nand";
+        #address-cells = <1>;
+        #size-cells = <1>;
 
-    //     partitions {
-    //         compatible = "fixed-partitions";
-    //         #address-cells = <1>;
-    //         #size-cells = <1>;
+        partitions {
+            compatible = "fixed-partitions";
+            #address-cells = <1>;
+            #size-cells = <1>;
 
-    //         partition@0 {
-    //             label = "uboot";
-    //             reg = <0x0 0x04000000>; // 64MB
-    //         };
-    //         partition@4000000 {
-    //             label = "kernel";
-    //             reg = <0x04000000 0x01000000>; // 16MB
-    //         };
-    //         partition@5000000 {
-    //             label = "dtb";
-    //             reg = <0x05000000 0x01000000>; // 16MB
-    //         };
-    //         partition@6000000 {
-    //             label = "nandtee";
-    //             reg = <0x06000000 0x01000000>; // 16MB
-    //         };
-	// 		partition@7000000 {
-    //             label = "rootfs";
-    //             reg = <0x07000000 0>; // 剩余空间
-    //         };
-    //     };
-    // };
+            partition@0 {
+                label = "uboot";
+                reg = <0x0 0x04000000>;
+            };
+            partition@4000000 {
+                label = "kernel";
+                reg = <0x04000000 0x01000000>;
+            };
+            partition@5000000 {
+                label = "dtb";
+                reg = <0x05000000 0x01000000>;
+            };
+            partition@6000000 {
+                label = "nandtee";
+                reg = <0x06000000 0x01000000>;
+		partition@7000000 {
+                label = "rootfs";
+                reg = <0x07000000 0>;
+            };
+        };
+    };
+    */
 };
 
 
@@ -340,21 +380,42 @@
 	};
 };
 
+
 &ecspi3 {
-		fsl,spi-num-chipselects = <1>;				// 设置当前片选数量为 1
-		cs-gpio = <&gpio1 20 GPIO_ACTIVE_LOW>;		// 自定义 cs 引脚 
+	status = "okay";
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_ecspi3>;
+	fsl,spi-num-chipselects = <1>;
+	cs-gpios = <&gpio1 1 GPIO_ACTIVE_LOW>;
+
+    ili9341@0 {
+        compatible = "ilitek,ili9341"; /* 或 ilitek,ili9431（若驱动存在） */
+        reg = <0>;
+        spi-max-frequency = <24000000>;
+		rotate = <90>;
+        dc-gpios = <&gpio1 9 GPIO_ACTIVE_HIGH>;
+        reset-gpios = <&gpio1 8 GPIO_ACTIVE_LOW>;
+        buswidth = <8>;
+        backlight = <&backlight>;
+        bgr; /* R/B 颜色相反时加上此项，驱动会设置 MADCTL 的 BGR 位修正显示 */
+    };
+};
+
+/* &ecspi3 {
+		fsl,spi-num-chipselects = <1>;
+		cs-gpio = <&gpio1 20 GPIO_ACTIVE_LOW>;
 		pinctrl-names = "default";
-		pinctrl-0 = <&pinctrl_ecspi3>; 
+		pinctrl-0 = <&pinctrl_ecspi3>;
 		status = "okay";
 
 	spidev: icm20608@0 {
 	compatible = "dof,icm20608";
-		spi-max-frequency = <8000000>; // spi 最大始终频率为 8M 
-		reg = <0>;	   // icm2060 连接在 0 通道上
+		spi-max-frequency = <8000000>;
+		reg = <0>;
 	};
-};
+}; */
 
-&fec1 {
+/* &fec1 {
 	pinctrl-names = "default";
 	pinctrl-0 = <&pinctrl_enet1
 			 &pinctrl_fec1_reset>;
@@ -363,7 +424,7 @@
 	phy-reset-gpios = <&gpio5 7 GPIO_ACTIVE_LOW>;
 	phy-reset-duration = <26>;
 	status = "okay";
-};
+}; */
 
 &fec2 {
 	pinctrl-names = "default";
@@ -419,21 +480,30 @@
 	pinctrl-0 = <&pinctrl_i2c1>;
 	status = "okay";
 
-	// mag3110@0e {
-	//	compatible = "fsl,mag3110";
-	//	reg = <0x0e>;		// mag3110 器件地址
-	//	position = <2>;
-	// };
+	/* mag3110@0e {
+		compatible = "fsl,mag3110";
+		reg = <0x0e>;
+		position = <2>;
+	}; */
 
-	atm24c02@50 {
+	/* oled: oled@3c {
+		compatible = "solomon,ssd1306fb-i2c";
+		reg = <0x3c>;
+		solomon,width = <128>;
+		solomon,height = <64>;
+		solomon,page-offset = <0>;
+		reset-gpios = <&gpio5 7 GPIO_ACTIVE_LOW>;
+	}; */
+
+	/* atm24c02@50 {
 		compatible = "dof,atm24c02";
-		reg = <0x50>;			// ap3216c 器件地址  注意 : 7位 IIC 地址
-	};
+		reg = <0x50>;
+	}; */
 
-	hmc5883@1e {
+	/* hmc5883@1e {
 		compatible = "dof,hmc5883";
-		reg = <0x1e>;			// hmc5883 器件地址  注意 : 7位 IIC 地址
-	};
+		reg = <0x1e>;
+	}; */
 };
 
 &i2c2 {
@@ -555,26 +625,43 @@
 			>;
 		};
 
+		/* pinctrl_ecspi3: ecspi3grp {
+			fsl,pins = <
+				MX6UL_PAD_UART2_RTS_B__ECSPI3_MISO  0x100b1
+				MX6UL_PAD_UART2_CTS_B__ECSPI3_MOSI  0x100b1
+				MX6UL_PAD_UART2_RX_DATA__ECSPI3_SCLK 0x100b1
+				MX6UL_PAD_UART2_TX_DATA__GPIO1_IO20  0x100b0
+			>;
+		}; */
+
 		pinctrl_ecspi3: ecspi3grp {
-				fsl,pins = <
-						MX6UL_PAD_UART2_RTS_B__ECSPI3_MISO		  0x100b1  /* MISO*/
-						MX6UL_PAD_UART2_CTS_B__ECSPI3_MOSI		  0x100b1  /* MOSI*/
-						MX6UL_PAD_UART2_RX_DATA__ECSPI3_SCLK	  0x100b1  /* CLK*/
-						MX6UL_PAD_UART2_TX_DATA__GPIO1_IO20		  0x100b0  /* CS*/
-				>;
+			fsl,pins = <
+				/* SPI 主控引脚 */
+				MX6UL_PAD_UART2_CTS_B__ECSPI3_MOSI		0x100b1  /* MOSI*/
+				MX6UL_PAD_UART2_RX_DATA__ECSPI3_SCLK	0x100b1  /* CLK*/
+				
+				/* 片选引脚 */
+				MX6UL_PAD_GPIO1_IO01__GPIO1_IO01     0x100b1  /* CS */
+				
+				/* LCD 控制引脚 */
+				MX6UL_PAD_GPIO1_IO08__GPIO1_IO08     0x100b1  /* RESET */
+				MX6UL_PAD_GPIO1_IO09__GPIO1_IO09     0x100b1  /* DC/RS */
+				
+				/* 背光控制（可选） */
+				/* MX6UL_PAD_GPIO1_IO10__GPIO1_IO10     0x100b1 */  /* BL */
+			>;
 		};
 
 		pinctrl_gpio_leds: gpio-leds {
-			fsl,pins = <
-				MX6UL_PAD_GPIO1_IO03__GPIO1_IO03	0x17059
-				MX6UL_PAD_UART5_TX_DATA__GPIO1_IO30 0x17059
-			>;
+ 			fsl,pins = <
+ 				MX6UL_PAD_GPIO1_IO03__GPIO1_IO03	0x17059
+ 				/* MX6UL_PAD_UART5_TX_DATA__GPIO1_IO30 0x17059 */
+ 			>;
 		};
 
 		pinctrl_gpio_keys: gpio-keys {
 			fsl,pins = <
 				MX6UL_PAD_UART1_CTS_B__GPIO1_IO18	0xF080
-				MX6UL_PAD_GPIO1_IO09__GPIO1_IO09	0xF080
 			>;
 		};
 
@@ -606,47 +693,47 @@
 			>;
 		};
 
-//		pinctrl_lcdif_dat: lcdifdatgrp {
-//			fsl,pins = <
-//				MX6UL_PAD_LCD_DATA00__LCDIF_DATA00	0x18
-//				MX6UL_PAD_LCD_DATA01__LCDIF_DATA01	0x18
-//				MX6UL_PAD_LCD_DATA02__LCDIF_DATA02	0x18
-//				MX6UL_PAD_LCD_DATA03__LCDIF_DATA03	0x18
-//				MX6UL_PAD_LCD_DATA04__LCDIF_DATA04	0x18
-//				MX6UL_PAD_LCD_DATA05__LCDIF_DATA05	0x18
-//				MX6UL_PAD_LCD_DATA06__LCDIF_DATA06	0x18
-//				MX6UL_PAD_LCD_DATA07__LCDIF_DATA07	0x18
-//				MX6UL_PAD_LCD_DATA08__LCDIF_DATA08	0x18
-//				MX6UL_PAD_LCD_DATA09__LCDIF_DATA09	0x18
-//				MX6UL_PAD_LCD_DATA10__LCDIF_DATA10	0x18
-//				MX6UL_PAD_LCD_DATA11__LCDIF_DATA11	0x18
-//				MX6UL_PAD_LCD_DATA12__LCDIF_DATA12	0x18
-//				MX6UL_PAD_LCD_DATA13__LCDIF_DATA13	0x18
-//				MX6UL_PAD_LCD_DATA14__LCDIF_DATA14	0x18
-//				MX6UL_PAD_LCD_DATA15__LCDIF_DATA15	0x18
-//				MX6UL_PAD_LCD_DATA16__LCDIF_DATA16	0x18
-//				MX6UL_PAD_LCD_DATA17__LCDIF_DATA17	0x18
-//				MX6UL_PAD_LCD_DATA18__LCDIF_DATA18	0x18
-//				MX6UL_PAD_LCD_DATA19__LCDIF_DATA19	0x18
-//				MX6UL_PAD_LCD_DATA20__LCDIF_DATA20	0x18
-//				MX6UL_PAD_LCD_DATA21__LCDIF_DATA21	0x18
-//				MX6UL_PAD_LCD_DATA22__LCDIF_DATA22	0x18
-//				MX6UL_PAD_LCD_DATA23__LCDIF_DATA23	0x18
-//			>;
-//		};
-//
-//		pinctrl_lcdif_ctrl: lcdifctrlgrp {
-//			fsl,pins = <
-//				MX6UL_PAD_LCD_CLK__LCDIF_CLK		0x18
-//				MX6UL_PAD_LCD_ENABLE__LCDIF_ENABLE	0x18
-//				MX6UL_PAD_LCD_HSYNC__LCDIF_HSYNC	0x18
-//				MX6UL_PAD_LCD_VSYNC__LCDIF_VSYNC	0x18
-//			>;
-//		};
+		/* pinctrl_lcdif_dat: lcdifdatgrp {
+			fsl,pins = <
+				MX6UL_PAD_LCD_DATA00__LCDIF_DATA00	0x18
+				MX6UL_PAD_LCD_DATA01__LCDIF_DATA01	0x18
+				MX6UL_PAD_LCD_DATA02__LCDIF_DATA02	0x18
+				MX6UL_PAD_LCD_DATA03__LCDIF_DATA03	0x18
+				MX6UL_PAD_LCD_DATA04__LCDIF_DATA04	0x18
+				MX6UL_PAD_LCD_DATA05__LCDIF_DATA05	0x18
+				MX6UL_PAD_LCD_DATA06__LCDIF_DATA06	0x18
+				MX6UL_PAD_LCD_DATA07__LCDIF_DATA07	0x18
+				MX6UL_PAD_LCD_DATA08__LCDIF_DATA08	0x18
+				MX6UL_PAD_LCD_DATA09__LCDIF_DATA09	0x18
+				MX6UL_PAD_LCD_DATA10__LCDIF_DATA10	0x18
+				MX6UL_PAD_LCD_DATA11__LCDIF_DATA11	0x18
+				MX6UL_PAD_LCD_DATA12__LCDIF_DATA12	0x18
+				MX6UL_PAD_LCD_DATA13__LCDIF_DATA13	0x18
+				MX6UL_PAD_LCD_DATA14__LCDIF_DATA14	0x18
+				MX6UL_PAD_LCD_DATA15__LCDIF_DATA15	0x18
+				MX6UL_PAD_LCD_DATA16__LCDIF_DATA16	0x18
+				MX6UL_PAD_LCD_DATA17__LCDIF_DATA17	0x18
+				MX6UL_PAD_LCD_DATA18__LCDIF_DATA18	0x18
+				MX6UL_PAD_LCD_DATA19__LCDIF_DATA19	0x18
+				MX6UL_PAD_LCD_DATA20__LCDIF_DATA20	0x18
+				MX6UL_PAD_LCD_DATA21__LCDIF_DATA21	0x18
+				MX6UL_PAD_LCD_DATA22__LCDIF_DATA22	0x18
+				MX6UL_PAD_LCD_DATA23__LCDIF_DATA23	0x18
+			>;
+		};
+
+		pinctrl_lcdif_ctrl: lcdifctrlgrp {
+			fsl,pins = <
+				MX6UL_PAD_LCD_CLK__LCDIF_CLK		0x18
+				MX6UL_PAD_LCD_ENABLE__LCDIF_ENABLE	0x18
+				MX6UL_PAD_LCD_HSYNC__LCDIF_HSYNC	0x18
+				MX6UL_PAD_LCD_VSYNC__LCDIF_VSYNC	0x18
+			>;
+		}; */
 
 		pinctrl_pwm1: pwm1grp {
 			fsl,pins = <
-				MX6UL_PAD_GPIO1_IO08__PWM1_OUT	 0x110b0
+				/* MX6UL_PAD_GPIO1_IO08__PWM1_OUT	 0x110b0 */
 			>;
 		};
 
@@ -679,10 +766,17 @@
 
 		pinctrl_tsc: tscgrp {
 			fsl,pins = <
-				MX6UL_PAD_GPIO1_IO01__GPIO1_IO01	0xb0
+				/* MX6UL_PAD_GPIO1_IO01__GPIO1_IO01	0xb0 */
 				MX6UL_PAD_GPIO1_IO02__GPIO1_IO02	0xb0
 				MX6UL_PAD_GPIO1_IO03__GPIO1_IO03	0xb0
 				MX6UL_PAD_GPIO1_IO04__GPIO1_IO04	0xb0
+			>;
+		};
+
+		pinctrl_rotary: rotarygrp {
+			fsl,pins = <
+				MX6UL_PAD_JTAG_TMS__GPIO1_IO11	0x17059
+				MX6UL_PAD_JTAG_TDO__GPIO1_IO12	0x17059
 			>;
 		};
 
@@ -815,7 +909,7 @@
 
 		ts_int_pin: ts_int_pin_mux {
 			fsl,pins = <
-				MX6UL_PAD_GPIO1_IO09__GPIO1_IO09	0x18
+				/* MX6UL_PAD_GPIO1_IO09__GPIO1_IO09	0x18 */
 			>;
 		};
 
@@ -915,8 +1009,8 @@
 
 		pinctrl_stepper: step_motor {
 			fsl,pins = <
-				MX6UL_PAD_GPIO1_IO04__GPIO1_IO04	0x17059 
-				MX6UL_PAD_GPIO1_IO01__GPIO1_IO01	0x17059
+				MX6UL_PAD_GPIO1_IO04__GPIO1_IO04	0x17059
+				/* MX6UL_PAD_GPIO1_IO01__GPIO1_IO01	0x17059 */
 				MX6UL_PAD_GPIO1_IO02__GPIO1_IO02	0x17059
 				MX6UL_PAD_GPIO1_IO03__GPIO1_IO03	0x17059
 			>;
@@ -927,38 +1021,38 @@
 };
 
 
-//&lcdif {
-//	pinctrl-names = "default";
-//	pinctrl-0 = <&pinctrl_lcdif_dat
-//			 &pinctrl_lcdif_ctrl>;
-//	display = <&display0>;
-//	status = "disabled";
-//
-//		  display0: display {
-//				  bits-per-pixel = <16>;
-//				  bus-width = <24>;
-//
-//				  display-timings {
-//						  native-mode = <&timing0>;
-//						  timing0: timing0 {
-//						  clock-frequency = <35500000>;
-//						  hactive = <800>;
-//						  vactive = <480>;
-//						  hfront-porch = <210>;
-//						  hback-porch = <46>;
-//						  hsync-len = <20>;
-//						  vback-porch = <23>;
-//						  vfront-porch = <22>;
-//						  vsync-len = <3>;
-//
-//						  hsync-active = <0>;
-//						  vsync-active = <0>;
-//						  de-active = <1>;
-//						  pixelclk-active = <1>;
-//						  };
-//				  };
-//		  };
-//};
+/* &lcdif {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_lcdif_dat
+			 &pinctrl_lcdif_ctrl>;
+	display = <&display0>;
+	status = "disabled";
+
+	display0: display {
+		bits-per-pixel = <16>;
+		bus-width = <24>;
+
+		display-timings {
+			native-mode = <&timing0>;
+			timing0: timing0 {
+				clock-frequency = <35500000>;
+				hactive = <800>;
+				vactive = <480>;
+				hfront-porch = <210>;
+				hback-porch = <46>;
+				hsync-len = <20>;
+				vback-porch = <23>;
+				vfront-porch = <22>;
+				vsync-len = <3>;
+
+				hsync-active = <0>;
+				vsync-active = <0>;
+				de-active = <1>;
+				pixelclk-active = <1>;
+			};
+		};
+	};
+}; */
 
 &pwm1 {
 	pinctrl-names = "default";
@@ -1065,12 +1159,12 @@
 	status = "okay";
 };
 
-// &usdhc2 {
-// 	pinctrl-names = "default";
-// 	pinctrl-0 = <&pinctrl_usdhc2>;
-// 	non-removable;
-// 	status = "okay";
-// };
+/* &usdhc2 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_usdhc2>;
+	non-removable;
+	status = "okay";
+}; */
 
 &wdog1 {
 	pinctrl-names = "default";
